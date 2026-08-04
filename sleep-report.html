@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#dde5ff" />
+    <title>睡眠评估报告</title>
+    <link rel="stylesheet" href="./css/sleep-report.css" />
+  </head>
+  <body>
+    <div class="phone" id="app">
+      <div class="status-bar" aria-hidden="true">
+        <span class="status-time" id="statusTime">15:28</span>
+        <div class="status-right">
+          <span class="status-net">5G</span>
+          <div class="status-battery"><span class="battery-level"></span></div>
+        </div>
+      </div>
+
+      <header class="nav-bar">
+        <button class="nav-back" type="button" id="btnBack" aria-label="返回">
+          <svg viewBox="0 0 24 24">
+            <path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+          </svg>
+        </button>
+        <h1 class="nav-title">睡眠评估报告</h1>
+        <div class="mp-capsule" aria-hidden="true">
+          <span class="capsule-more"><i></i><i></i><i></i></span>
+          <i class="capsule-divider"></i>
+          <span class="capsule-home"><i class="ring"></i></span>
+        </div>
+      </header>
+
+      <main class="page-body" id="reportDetail"></main>
+      <div class="wx-toast" id="toast" hidden></div>
+    </div>
+
+    <script src="./js/sleep-report-data.js"></script>
+    <script src="./js/sleep-care-data.js"></script>
+    <script src="./js/sleep-care-ui.js"></script>
+    <script src="./js/sleep-report.js"></script>
+  </body>
+</html>

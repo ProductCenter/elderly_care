@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+    <title>套餐权益用例 · 上架→下单→核销</title>
+    <style>
+      :root {
+        --bg: #f3f5f8;
+        --card: #fff;
+        --text: #1f2329;
+        --muted: #646a73;
+        --line: #e5e6eb;
+        --brand: #2f6bff;
+        --ok: #0f766e;
+        --warn: #b45309;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        background: linear-gradient(180deg, #eef3ff 0%, var(--bg) 40%);
+        color: var(--text);
+        min-height: 100vh;
+      }
+      .wrap { max-width: 720px; margin: 0 auto; padding: 28px 20px 48px; }
+      h1 { margin: 0 0 8px; font-size: 24px; }
+      .lead { margin: 0 0 20px; color: var(--muted); line-height: 1.6; font-size: 14px; }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 18px 18px 16px;
+        margin-bottom: 14px;
+        box-shadow: 0 8px 24px rgba(31, 35, 41, 0.04);
+      }
+      .card h2 { margin: 0 0 8px; font-size: 16px; }
+      .card p { margin: 0 0 12px; color: var(--muted); font-size: 13px; line-height: 1.55; }
+      .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+      .steps li {
+        display: grid;
+        grid-template-columns: 28px 1fr auto;
+        gap: 10px;
+        align-items: center;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fafbff;
+      }
+      .num {
+        width: 28px; height: 28px; border-radius: 50%;
+        display: grid; place-items: center;
+        background: #e8efff; color: var(--brand); font-size: 13px; font-weight: 700;
+      }
+      .steps strong { display: block; font-size: 14px; }
+      .steps span { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        height: 34px; padding: 0 12px; border-radius: 8px;
+        background: var(--brand); color: #fff; text-decoration: none;
+        font-size: 13px; border: none; cursor: pointer; white-space: nowrap;
+      }
+      .btn.ghost { background: #fff; color: var(--brand); border: 1px solid #c9d7ff; }
+      .btn.ok { background: var(--ok); }
+      .status {
+        display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px;
+      }
+      .pill {
+        font-size: 12px; padding: 4px 8px; border-radius: 999px;
+        background: #f2f3f5; color: var(--muted);
+      }
+      .pill.on { background: #e6f7f4; color: var(--ok); }
+      .pill.off { background: #fff7e6; color: var(--warn); }
+      .row { display: flex; flex-wrap: wrap; gap: 8px; }
+      code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; background: #f2f3f5; padding: 1px 6px; border-radius: 4px; }
+      .note { font-size: 12px; color: var(--muted); line-height: 1.6; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>套餐权益 HTML 用例</h1>
+      <p class="lead">
+        走通「后台上架 → 商城展示 → C 端下单支付 → 订单权益码 → 商家勾选核销」。
+        数据落在本机 <code>localStorage</code>，刷新不丢。
+      </p>
+
+      <div class="card">
+        <h2>当前状态</h2>
+        <div class="status" id="statusPills"></div>
+        <p id="statusText" style="margin-top:12px"></p>
+        <div class="row">
+          <button type="button" class="btn ghost" id="btnRefresh">刷新状态</button>
+          <button type="button" class="btn ghost" id="btnSeed">一键写入演示上架草稿</button>
+          <button type="button" class="btn ghost" id="btnClearOrders">清空套餐订单</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>按序点击走通</h2>
+        <ol class="steps">
+          <li>
+            <span class="num">1</span>
+            <div>
+              <strong>后台上架套餐权益</strong>
+              <span>商品类型=服务商品 · 形态=套餐权益 · 保存后写入草稿</span>
+            </div>
+            <a class="btn" href="./product-add.html?shape=package">去上架</a>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <div>
+              <strong>商城查看已上架商品</strong>
+              <span>首页精选 / 详情页会读取上架草稿覆盖名称与价格</span>
+            </div>
+            <a class="btn" href="./detail.html?id=package_meal_month">去详情</a>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <div>
+              <strong>C 端下单并支付</strong>
+              <span>支付成功后生成权益配额（次数×天数）与动态权益码</span>
+            </div>
+            <a class="btn" href="./order.html?type=package&amp;goodsId=package_meal_month&amp;storeId=store_cy001">去下单</a>
+          </li>
+          <li>
+            <span class="num">4</span>
+            <div>
+              <strong>用户订单 · 出示权益码</strong>
+              <span id="step4Hint">支付后自动跳转；也可从最近套餐订单进入</span>
+            </div>
+            <a class="btn ghost" id="linkOrderDetail" href="./orders.html">订单列表</a>
+          </li>
+          <li>
+            <span class="num">5</span>
+            <div>
+              <strong>商家核销 · 勾选扣次</strong>
+              <span>切到「套餐权益」页签，解析 PK1 码后勾选今日项目</span>
+            </div>
+            <a class="btn ok" id="linkMerchant" href="./merchant-verify.html">去核销</a>
+          </li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <h2>验收要点</h2>
+        <p class="note">
+          · 上架后详情页名称/售价应与后台一致<br />
+          · 支付后订单详情出现「套餐权益码」二维码与剩余次数<br />
+          · 商家勾选核销后，剩余次数减少；当日达上限的项目不可再勾<br />
+          · 默认可服务日为周一至周六；周日核销会按规则拒绝<br />
+          · 权益码约 3 分钟有效，可在订单详情点「刷新权益码」
+        </p>
+        <div class="row" style="margin-top:10px">
+          <a class="btn ghost" href="./index.html">商城首页</a>
+          <a class="btn ghost" href="./merchant-verify.html">商家核销（可生成演示单）</a>
+        </div>
+      </div>
+    </div>
+
+    <script src="./js/products.js"></script>
+    <script src="./js/hmac.js"></script>
+    <script src="./js/package-entitlement.js"></script>
+    <script>
+      (() => {
+        const DRAFT_KEY = "kangyang_package_draft_v1";
+        const ORDER_KEY = "kangyang_orders_v1";
+
+        function readDraft() {
+          try {
+            return JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+          } catch {
+            return null;
+          }
+        }
+
+        function listPackageOrders() {
+          try {
+            const map = JSON.parse(localStorage.getItem(ORDER_KEY) || "{}");
+            return Object.values(map)
+              .filter((o) => o.fulfillment === "package" || o.serviceType === "package")
+              .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+          } catch {
+            return [];
+          }
+        }
+
+        function refresh() {
+          const draft = readDraft();
+          const orders = listPackageOrders();
+          const latest = orders[0];
+          const pills = document.getElementById("statusPills");
+          pills.innerHTML = `
+            <span class="pill ${draft ? "on" : "off"}">${draft ? "已上架草稿" : "尚未上架"}</span>
+            <span class="pill ${orders.length ? "on" : "off"}">套餐订单 ${orders.length}</span>
+            <span class="pill">${latest ? `最近剩余 ${window.PackageEntitlement ? PackageEntitlement.totalRemain(latest) : "—"}` : "暂无权益"}</span>
+          `;
+          document.getElementById("statusText").textContent = draft
+            ? `上架商品：${draft.name} · 售价 ¥${draft.salePrice} · ${draft.items?.length || 0} 个服务项目 · ${draft.serviceDays} 天`
+            : "尚未检测到上架草稿。可点「一键写入演示上架草稿」，或去后台配置后保存。";
+
+          const linkDetail = document.getElementById("linkOrderDetail");
+          const linkMerchant = document.getElementById("linkMerchant");
+          if (latest) {
+            linkDetail.href = `./order-detail.html?orderId=${encodeURIComponent(latest.orderId)}`;
+            linkDetail.textContent = "打开最近订单";
+            linkDetail.classList.remove("ghost");
+            linkMerchant.href = `./merchant-verify.html?orderId=${encodeURIComponent(latest.orderId)}`;
+            document.getElementById("step4Hint").textContent = `最近订单 ${latest.orderId}`;
+          } else {
+            linkDetail.href = "./orders.html";
+            linkDetail.textContent = "订单列表";
+            linkDetail.classList.add("ghost");
+            linkMerchant.href = "./merchant-verify.html";
+            document.getElementById("step4Hint").textContent = "支付后自动跳转；也可从最近套餐订单进入";
+          }
+        }
+
+        document.getElementById("btnRefresh").addEventListener("click", refresh);
+        document.getElementById("btnSeed").addEventListener("click", () => {
+          const seed = {
+            productType: "service",
+            serviceShape: "package",
+            fulfillment: "package",
+            goodsId: "package_meal_month",
+            name: "包月订餐-2餐1饮料",
+            providerName: "心相伴机构",
+            providerType: "org",
+            serviceDays: 26,
+            guideTotalPrice: 1040,
+            salePrice: 900,
+            intro: "包月订餐提供正餐、健康饮品（用例演示上架）",
+            storeId: "store_cy001",
+            shelfStatus: "on",
+            publishedAt: Date.now(),
+            items: [
+              { id: "item_1", name: "午餐正餐", provider: "心相伴机构", mode: "station", verifyMode: "count", serviceType: "community", category: "社区服务", timesPerDay: 1, guidePrice: 15, weekdays: ["1", "2", "3", "4", "5", "6"], description: "午餐正餐" },
+              { id: "item_2", name: "午餐饮品", provider: "心相伴机构", mode: "station", verifyMode: "count", serviceType: "community", category: "社区服务", timesPerDay: 1, guidePrice: 5, weekdays: ["1", "2", "3", "4", "5", "6"], description: "午餐饮品" },
+              { id: "item_3", name: "晚餐正餐", provider: "心相伴机构", mode: "station", verifyMode: "count", serviceType: "community", category: "社区服务", timesPerDay: 1, guidePrice: 15, weekdays: ["1", "2", "3", "4", "5", "6"], description: "晚餐正餐" },
+              { id: "item_4", name: "晚餐饮品", provider: "心相伴机构", mode: "station", verifyMode: "count", serviceType: "community", category: "社区服务", timesPerDay: 1, guidePrice: 5, weekdays: ["1", "2", "3", "4", "5", "6"], description: "晚餐饮品" },
+            ],
+          };
+          localStorage.setItem(DRAFT_KEY, JSON.stringify(seed));
+          window.applyPackageDraftToMall?.();
+          refresh();
+          alert("已写入演示上架草稿，可前往商品详情下单");
+        });
+        document.getElementById("btnClearOrders").addEventListener("click", () => {
+          if (!confirm("确认清空所有套餐订单？（不影响上架草稿）")) return;
+          try {
+            const map = JSON.parse(localStorage.getItem(ORDER_KEY) || "{}");
+            Object.keys(map).forEach((k) => {
+              if (map[k]?.fulfillment === "package" || map[k]?.serviceType === "package") delete map[k];
+            });
+            localStorage.setItem(ORDER_KEY, JSON.stringify(map));
+          } catch (_) {}
+          refresh();
+        });
+
+        refresh();
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <title>我的</title>
+    <link rel="stylesheet" href="./css/mine.css" />
+  </head>
+  <body>
+    <div class="phone" id="app">
+      <div class="status-bar" aria-hidden="true">
+        <span class="status-time">16:17</span>
+        <div class="status-right">
+          <span class="status-net">5G</span>
+          <div class="status-battery"><span class="battery-level"></span></div>
+        </div>
+      </div>
+
+      <header class="nav-bar">
+        <span class="nav-side"></span>
+        <h1 class="nav-title">我的</h1>
+        <div class="mp-capsule" aria-hidden="true">
+          <span class="capsule-more"><i></i><i></i><i></i></span>
+          <i class="capsule-divider"></i>
+          <span class="capsule-home"><i class="ring"></i></span>
+        </div>
+      </header>
+
+      <main class="page-body">
+        <section class="profile-card" id="profileCard">
+          <div class="avatar" id="profileAvatar" aria-hidden="true">会</div>
+          <div class="profile-info">
+            <div class="profile-name" id="profileName">未登录</div>
+            <div class="profile-meta">
+              <span id="profileStation">登录后享受会员折扣与积分</span>
+              <span class="dot" id="profileDot" hidden>·</span>
+              <span id="profileLevel" hidden></span>
+            </div>
+          </div>
+          <button type="button" class="profile-edit" id="btnProfile">登录</button>
+        </section>
+
+        <section class="card member-entry" id="memberEntry" hidden>
+          <a class="member-strip" href="./member.html">
+            <div>
+              <strong id="stripLevel">会员中心</strong>
+              <span id="stripPoints">查看积分与权益</span>
+            </div>
+            <span class="chevron">›</span>
+          </a>
+        </section>
+
+        <!-- 订单入口 -->
+        <section class="card order-entry">
+          <a class="card-hd" href="./orders.html">
+            <h2>我的订单</h2>
+            <span class="more">全部订单 ›</span>
+          </a>
+          <div class="order-shortcuts">
+            <a class="shortcut" href="./orders.html?filter=paid">
+              <span class="sc-icon wait" id="badgePaid" data-count="0">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+              </span>
+              <span>待核销</span>
+            </a>
+            <a class="shortcut" href="./orders.html?filter=verified">
+              <span class="sc-icon done">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+              </span>
+              <span>已完成</span>
+            </a>
+            <a class="shortcut" href="./orders.html?filter=other">
+              <span class="sc-icon refund">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 5V1L7 6l5 5V7c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6H4c0 4.4 3.6 8 8 8s8-3.6 8-8-3.6-8-8-8z"/></svg>
+              </span>
+              <span>退款/其他</span>
+            </a>
+            <a class="shortcut" href="./orders.html">
+              <span class="sc-icon all">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+              </span>
+              <span>全部</span>
+            </a>
+          </div>
+        </section>
+
+        <section class="card menu-card">
+          <a class="menu-item" href="./member.html" id="menuMember">
+            <span class="menu-icon ic-member"></span>
+            <span class="menu-text">会员中心</span>
+            <span class="menu-extra" id="memberExtra">未登录</span>
+            <span class="chevron">›</span>
+          </a>
+          <a class="menu-item" href="./orders.html">
+            <span class="menu-icon ic-order"></span>
+            <span class="menu-text">订单列表</span>
+            <span class="menu-extra" id="orderCount">0 笔</span>
+            <span class="chevron">›</span>
+          </a>
+          <a class="menu-item" href="./sleep-reports.html">
+            <span class="menu-icon ic-sleep"></span>
+            <span class="menu-text">睡眠报告</span>
+            <span class="menu-extra">3 份</span>
+            <span class="chevron">›</span>
+          </a>
+          <a class="menu-item" href="./sleep-todo.html">
+            <span class="menu-icon ic-sleep"></span>
+            <span class="menu-text">睡眠健康闭环</span>
+            <span class="menu-extra">待办/计划</span>
+            <span class="chevron">›</span>
+          </a>
+          <a class="menu-item" href="./sleep-entitlements.html">
+            <span class="menu-icon ic-member"></span>
+            <span class="menu-text">睡眠权益</span>
+            <span class="chevron">›</span>
+          </a>
+          <button type="button" class="menu-item" id="btnAddress">
+            <span class="menu-icon ic-addr"></span>
+            <span class="menu-text">收货地址</span>
+            <span class="chevron">›</span>
+          </button>
+          <button type="button" class="menu-item" id="btnCoupon">
+            <span class="menu-icon ic-coupon"></span>
+            <span class="menu-text">优惠券</span>
+            <span class="menu-extra">2 张</span>
+            <span class="chevron">›</span>
+          </button>
+          <a class="menu-item" href="./merchant-verify.html">
+            <span class="menu-icon ic-scan"></span>
+            <span class="menu-text">商家核销（演示）</span>
+            <span class="chevron">›</span>
+          </a>
+          <a class="menu-item" href="./logistics-track.html">
+            <span class="menu-icon ic-order"></span>
+            <span class="menu-text">物流轨迹</span>
+            <span class="chevron">›</span>
+          </a>
+          <a class="menu-item" href="./aid-rental.html">
+            <span class="menu-icon ic-coupon"></span>
+            <span class="menu-text">辅具租赁</span>
+            <span class="chevron">›</span>
+          </a>
+          <a class="menu-item" href="./aftersale-apply.html">
+            <span class="menu-icon ic-service"></span>
+            <span class="menu-text">售后申请</span>
+            <span class="chevron">›</span>
+          </a>
+        </section>
+
+        <section class="card menu-card">
+          <a class="menu-item" href="./aftersale-apply.html">
+            <span class="menu-icon ic-service"></span>
+            <span class="menu-text">联系客服 / 售后</span>
+            <span class="chevron">›</span>
+          </a>
+          <button type="button" class="menu-item" id="btnAbout">
+            <span class="menu-icon ic-about"></span>
+            <span class="menu-text">关于春风康养</span>
+            <span class="chevron">›</span>
+          </button>
+        </section>
+      </main>
+
+      <nav class="tabbar" aria-label="主导航">
+        <a class="tab-item" href="./index.html">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          <span>首页</span>
+        </a>
+        <a class="tab-item" href="./sleep-todo.html" id="tabHealth">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          <span>健康</span>
+        </a>
+        <a class="tab-item" href="./index.html">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M18 6h-2c0-2.21-1.79-4-4-4S8 3.79 8 6H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm6 16H6V8h2v2h2V8h4v2h2V8h2v12z"/></svg>
+          <span>商城</span>
+        </a>
+        <a class="tab-item active" href="./mine.html" aria-current="page">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          <span>我的</span>
+        </a>
+      </nav>
+
+      <div class="wx-toast" id="toast" hidden></div>
+    </div>
+
+    <script src="./js/hmac.js"></script>
+    <script src="./js/verify-code.js"></script>
+    <script src="./js/member.js"></script>
+    <script src="./js/mine.js"></script>
+  </body>
+</html>

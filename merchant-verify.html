@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <title>商家核销</title>
+    <link rel="stylesheet" href="./css/merchant-verify.css" />
+  </head>
+  <body>
+    <div class="phone" id="app">
+      <div class="status-bar" aria-hidden="true">
+        <span class="status-time">15:27</span>
+        <div class="status-right"><span class="status-net">商家端</span></div>
+      </div>
+
+      <header class="nav-bar">
+        <button class="nav-back" type="button" id="btnBack" aria-label="返回">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </button>
+        <h1 class="nav-title">扫码核销</h1>
+        <span class="nav-spacer"></span>
+      </header>
+
+      <main class="page-body">
+        <section class="card mode-card">
+          <div class="mode-tabs" role="tablist">
+            <button type="button" class="mode-tab active" data-mode="ticket">单次核销码</button>
+            <button type="button" class="mode-tab" data-mode="package">套餐权益</button>
+          </div>
+        </section>
+
+        <section class="card store-card">
+          <label class="field-label">当前门店</label>
+          <select id="storeSelect">
+            <option value="store_cy001">春风社区中心站 · 朝阳门店</option>
+            <option value="jinsheng">柳州市金盛社区AI康养驿站</option>
+            <option value="store_other">春风社区 · 望京店（测门店不匹配）</option>
+          </select>
+          <label class="field-label">操作人</label>
+          <input id="operatorInput" type="text" value="店员小李" />
+        </section>
+
+        <!-- 单次码 -->
+        <div id="panelTicket">
+          <section class="card scan-card">
+            <h3>扫码核销</h3>
+            <p class="hint">模拟扫码枪/摄像头识别结果：粘贴用户二维码内容后核销</p>
+            <textarea
+              id="tokenInput"
+              rows="4"
+              placeholder="粘贴核销码 token（KY1....）或点击下方「从最近订单填入」"
+            ></textarea>
+            <div class="btn-row">
+              <button type="button" class="btn ghost" id="btnFillLatest">从最近订单填入</button>
+              <button type="button" class="btn primary" id="btnScanRedeem">扫码核销</button>
+            </div>
+          </section>
+
+          <section class="card manual-card">
+            <h3>手动输入核销码</h3>
+            <p class="hint">扫码失败时的备选方案</p>
+            <input id="codeInput" type="text" placeholder="例如 HX1234ABCD" autocomplete="off" />
+            <button type="button" class="btn primary block" id="btnManualRedeem">确认核销</button>
+          </section>
+
+          <section class="card list-card">
+            <h3>最近到店订单</h3>
+            <ul class="order-list" id="orderList"></ul>
+          </section>
+        </div>
+
+        <!-- 套餐权益 -->
+        <div id="panelPackage" hidden>
+          <section class="card scan-card">
+            <h3>套餐权益核销</h3>
+            <p class="hint">粘贴用户「套餐权益码」(PK1…)，解析后勾选今日要核销的项目</p>
+            <textarea id="pkgTokenInput" rows="3" placeholder="粘贴套餐权益码 PK1...."></textarea>
+            <div class="btn-row">
+              <button type="button" class="btn ghost" id="btnPkgDemo">生成演示订单+码</button>
+              <button type="button" class="btn primary" id="btnPkgParse">解析权益码</button>
+            </div>
+          </section>
+
+          <section class="card pkg-card" id="pkgDetailCard" hidden>
+            <div class="pkg-head">
+              <div class="pkg-name" id="pkgName">—</div>
+              <div class="pkg-meta" id="pkgMeta">—</div>
+            </div>
+            <p class="hint" id="pkgHint">勾选今日核销项目（受星期与日上限约束）</p>
+            <ul class="pkg-items" id="pkgItemList"></ul>
+            <button type="button" class="btn primary block" id="btnPkgRedeem">确认扣次核销</button>
+          </section>
+
+          <section class="card list-card">
+            <h3>最近套餐订单</h3>
+            <ul class="order-list" id="pkgOrderList"></ul>
+          </section>
+        </div>
+
+        <section class="card result-card" id="resultCard" hidden>
+          <div class="result-title" id="resultTitle"></div>
+          <pre class="result-body" id="resultBody"></pre>
+        </section>
+      </main>
+
+      <div class="wx-toast" id="toast" hidden></div>
+    </div>
+
+    <script src="./js/hmac.js"></script>
+    <script src="./js/verify-code.js"></script>
+    <script src="./js/package-entitlement.js"></script>
+    <script src="./js/merchant-verify.js"></script>
+  </body>
+</html>

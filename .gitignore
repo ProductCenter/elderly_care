@@ -1,0 +1,8 @@
+.DS_Store
+**/.DS_Store
+.venv-xlsx/
+.tmp-*
+*.zip
+node_modules/
+.env
+.env.*
