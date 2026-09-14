@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>收费模板 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body data-primary="org" data-sub="fee-tpl" data-tab="收费模板" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">收费模板</h1>
+          <p class="page-desc">按楼层、房间标准配置收费标准，供合同与账单引用</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="btnAdd">+ 新增模板</button>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="k">模板数</div><div class="v" id="stTotal">0</div></div>
+        <div class="stat-card"><div class="k">启用中</div><div class="v" id="stOn">0</div></div>
+        <div class="stat-card"><div class="k">覆盖楼层</div><div class="v" id="stFloors">0</div></div>
+        <div class="stat-card"><div class="k">最高月费</div><div class="v" id="stMax">0<em>元</em></div></div>
+      </div>
+      <div class="filter-card">
+        <div class="filter-grid">
+          <div class="filter-item"><label>模板名称</label><input class="ctrl" id="qKeyword" /></div>
+          <div class="filter-item"><label>适用楼层</label>
+            <select class="ctrl" id="qFloor"><option value="">全部</option><option>1F</option><option>2F</option><option>3F</option><option>4F</option><option>5F</option><option>全院</option></select>
+          </div>
+          <div class="filter-item"><label>状态</label>
+            <select class="ctrl" id="qStatus"><option value="">全部</option><option value="on">启用</option><option value="off">停用</option></select>
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
+            <button type="button" class="btn btn-default" id="btnReset">重置</button>
+          </div>
+        </div>
+      </div>
+      <div class="list-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>模板名称</th><th>适用楼层</th><th>房间标准</th><th>床位费</th><th>护理费</th><th>餐费</th><th>月合计</th><th>状态</th><th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="body"></tbody>
+          </table>
+        </div>
+        <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div>
+      </div>
+      <div class="drawer-mask" data-drawer-mask="tplDrawer" data-close-drawer="tplDrawer"></div>
+      <aside class="drawer" id="tplDrawer">
+        <div class="drawer-head"><h3 id="drawerTitle">新增模板</h3><button type="button" class="drawer-close" data-close-drawer="tplDrawer">×</button></div>
+        <div class="drawer-body">
+          <div class="form-grid">
+            <div class="form-field"><label>模板名称<span class="req">*</span></label><input class="ctrl" id="tName" /></div>
+            <div class="form-field"><label>适用楼层</label>
+              <select class="ctrl" id="tFloor"><option>全院</option><option>1F</option><option>2F</option><option>3F</option><option>4F</option><option>5F</option></select>
+            </div>
+            <div class="form-field"><label>房间标准</label>
+              <select class="ctrl" id="tStandard"><option>标准间</option><option>精品间</option><option>特护间</option></select>
+            </div>
+            <div class="form-field"><label>状态</label>
+              <select class="ctrl" id="tStatus"><option value="on">启用</option><option value="off">停用</option></select>
+            </div>
+            <div class="form-field"><label>床位费(元/月)</label><input class="ctrl" id="tBed" type="number" value="3600" /></div>
+            <div class="form-field"><label>护理费(元/月)</label><input class="ctrl" id="tCare" type="number" value="2000" /></div>
+            <div class="form-field"><label>餐费(元/月)</label><input class="ctrl" id="tMeal" type="number" value="1200" /></div>
+            <div class="form-field"><label>月合计</label><input class="ctrl" id="tTotal" readonly /></div>
+            <div class="form-field full"><label>说明</label><textarea class="ctrl" id="tNote"></textarea></div>
+          </div>
+        </div>
+        <div class="drawer-foot">
+          <button type="button" class="btn btn-default" data-close-drawer="tplDrawer">取消</button>
+          <button type="button" class="btn btn-primary" id="btnSave">保存</button>
+        </div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/org-fee-template.js"></script>
+  </body>
+</html>

@@ -9,9 +9,21 @@ cd kangyang-mall
 python3 -m http.server 5173
 ```
 
+### AI 智伴（对接大模型）
+
+```bash
+cd kangyang-mall
+cp llm.env.example llm.env   # 填入 LLM_API_KEY 或 QIANFAN_API_KEY
+python3 scripts/llm_server.py
+# 打开 http://127.0.0.1:8091/agent.html（商城与智伴同端口）
+```
+
+默认走 DeepSeek / 千帆 OpenAI 兼容接口（`LLM_BASE_URL` / `LLM_MODEL` 可改）。未配置密钥时进入演示模式，页面仍可对话。
+
 | 页面 | 地址 |
 |------|------|
-| 商城 | http://127.0.0.1:5173/ |
+| 商城 | http://127.0.0.1:8091/ |
+| AI 智伴 | http://127.0.0.1:8091/agent.html |
 | 我的 | http://127.0.0.1:5173/mine.html |
 | 我的订单 | http://127.0.0.1:5173/orders.html |
 | 到店下单 | http://127.0.0.1:5173/order.html?type=instore |

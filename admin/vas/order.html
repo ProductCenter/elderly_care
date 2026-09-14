@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>服务订单 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body data-primary="vas" data-sub="order" data-tab="服务订单" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div><h1 class="page-title">服务订单</h1><p class="page-desc">管理院内长者下单的增值服务订单</p></div>
+        <div style="display:flex;gap:8px"><button type="button" class="btn btn-primary" id="btnAdd">+ 代客下单</button></div>
+      </div>
+      <div class="stat-row"><div class="stat-card"><div class="k">订单数</div><div class="v" id="stTotal">0</div></div><div class="stat-card"><div class="k">待服务</div><div class="v" id="stTodo">0</div></div><div class="stat-card"><div class="k">已完成</div><div class="v" id="stDone">0</div></div><div class="stat-card"><div class="k">成交额</div><div class="v" id="stAmt">0</div></div></div>
+      
+      <div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>长者 / 服务</label><input class="ctrl" id="qKeyword" placeholder="" /></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="待服务">待服务</option><option value="服务中">服务中</option><option value="已完成">已完成</option><option value="已取消">已取消</option></select></div><div class="filter-item"><label>支付</label><select class="ctrl" id="qPay"><option value="">全部</option><option value="已支付">已支付</option><option value="未支付">未支付</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+      <div class="list-card">
+        <div class="table-wrap"><table class="data-table"><thead><tr><th>订单号</th><th>长者</th><th>服务项目</th><th>预约时间</th><th>金额</th><th>支付</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+        <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div>
+      </div>
+      <div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+      <aside id="listDrawer" class="drawer">
+        <div class="drawer-head"><h3 id="drawerTitle">代客下单</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+        <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>长者<span class="req">*</span></label><select class="ctrl" id="fElder"><option value="张秀英">张秀英</option><option value="李建国">李建国</option><option value="陈桂兰">陈桂兰</option><option value="王德福">王德福</option></select></div><div class="form-field"><label>服务项目</label><select class="ctrl" id="fService"><option value="中医推拿">中医推拿</option><option value="助浴服务">助浴服务</option><option value="陪同就医">陪同就医</option></select></div><div class="form-field"><label>预约时间<span class="req">*</span></label><input class="ctrl" id="fTime" placeholder="" /></div><div class="form-field"><label>金额</label><input class="ctrl" id="fAmount" type="number" value="98" /></div><div class="form-field"><label>支付</label><select class="ctrl" id="fPay"><option value="已支付">已支付</option><option value="未支付">未支付</option></select></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="待服务">待服务</option><option value="服务中">服务中</option><option value="已完成">已完成</option><option value="已取消">已取消</option></select></div><div class="form-field full"><label>备注</label><textarea class="ctrl" id="fNote" placeholder=""></textarea></div></div></div>
+        <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/admin-page-list.js"></script>
+    <script>
+      AdminPageList.mount({
+        addTitle: "\u4ee3\u5ba2\u4e0b\u5355",
+        editTitle: "编辑",
+        rows: [
+    {no:"VAS20260730001",elder:"张秀英",service:"中医推拿",time:"2026-07-30 14:00",amount:128,pay:"已支付",status:"待服务",note:""},
+    {no:"VAS20260729002",elder:"陈桂兰",service:"助浴服务",time:"2026-07-29 10:00",amount:98,pay:"已支付",status:"已完成",note:""},
+    {no:"VAS20260728003",elder:"王德福",service:"陪同就医",time:"2026-07-28 08:30",amount:200,pay:"未支付",status:"已取消",note:"家属自行陪同"},
+  ],
+        columns: [{ key: "no" }, { key: "elder" }, { key: "service" }, { key: "time" }, { key: "amount" }, { key: "pay" }, { key: "status", status: true }],
+        filters: [{ id: "qKeyword", match: (r,v) => !v || (String(r.elder||"").includes(v) || String(r.service||"").includes(v)) }, { id: "qStatus", match: (r,v) => !v || String(r.status) === v }, { id: "qPay", match: (r,v) => !v || String(r.pay) === v }],
+        formFields: [{ id: "fElder", key: "elder", type: "select", label: "长者", required: true }, { id: "fService", key: "service", type: "select", label: "服务项目" }, { id: "fTime", key: "time", type: "text", label: "预约时间", required: true }, { id: "fAmount", key: "amount", type: "number", label: "金额", default: 98 }, { id: "fPay", key: "pay", type: "select", label: "支付" }, { id: "fStatus", key: "status", type: "select", label: "状态" }, { id: "fNote", key: "note", type: "textarea", label: "备注" }],
+        stats: [{ id: "stTotal", html: false, value: (list)=>list.length }, { id: "stTodo", html: false, value: (list)=>list.filter(r=>r.status==="待服务").length }, { id: "stDone", html: false, value: (list)=>list.filter(r=>r.status==="已完成").length }, { id: "stAmt", html: true, value: (list)=>list.reduce((s,r)=>s+r.amount,0)+"<em>元</em>" }],
+        getStatus: (r)=>({text:r.status, cls:r.status==="已完成"?"status-on":r.status==="已取消"?"status-off":"status-busy"}),
+        rowActions: null,
+        onAction: null,
+      });
+    </script>
+  </body>
+</html>

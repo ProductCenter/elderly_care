@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>体检记录 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body data-primary="health" data-sub="checkup" data-tab="体检记录" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div><h1 class="page-title">体检记录</h1><p class="page-desc">管理院内长者的体检信息</p></div>
+        <div style="display:flex;gap:8px"><button type="button" class="btn btn-primary" id="btnAdd">+ 登记体检</button></div>
+      </div>
+      <div class="stat-row"><div class="stat-card"><div class="k">体检记录</div><div class="v" id="stTotal">0</div></div><div class="stat-card"><div class="k">本月体检</div><div class="v" id="stMonth">0</div></div><div class="stat-card"><div class="k">异常结论</div><div class="v" id="stAbn">0</div></div><div class="stat-card"><div class="k">待复查</div><div class="v" id="stPending">0</div></div></div>
+      
+      <div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>长者 / 机构</label><input class="ctrl" id="qKeyword" placeholder="" /></div><div class="filter-item"><label>结论</label><select class="ctrl" id="qConc"><option value="">全部</option><option value="正常">正常</option><option value="异常">异常</option></select></div><div class="filter-item"><label>随访</label><select class="ctrl" id="qFollow"><option value="">全部</option><option value="无需">无需</option><option value="需复查">需复查</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+      <div class="list-card">
+        <div class="table-wrap"><table class="data-table"><thead><tr><th>体检日期</th><th>长者</th><th>体检机构</th><th>项目</th><th>结论</th><th>随访</th><th>登记人</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+        <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div>
+      </div>
+      <div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+      <aside id="listDrawer" class="drawer">
+        <div class="drawer-head"><h3 id="drawerTitle">登记体检</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+        <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>长者<span class="req">*</span></label><select class="ctrl" id="fElder"><option value="张秀英">张秀英</option><option value="李建国">李建国</option><option value="陈桂兰">陈桂兰</option><option value="王德福">王德福</option></select></div><div class="form-field"><label>体检日期<span class="req">*</span></label><input class="ctrl" id="fDate" type="date" /></div><div class="form-field"><label>体检机构</label><input class="ctrl" id="fOrg" placeholder="" /></div><div class="form-field"><label>体检项目</label><input class="ctrl" id="fItems" placeholder="血常规、心电图…" /></div><div class="form-field"><label>结论</label><select class="ctrl" id="fConc"><option value="正常">正常</option><option value="异常">异常</option></select></div><div class="form-field"><label>随访</label><select class="ctrl" id="fFollow"><option value="无需">无需</option><option value="需复查">需复查</option></select></div><div class="form-field"><label>登记人</label><input class="ctrl" id="fBy" placeholder="" /></div><div class="form-field full"><label>结果摘要</label><textarea class="ctrl" id="fNote" placeholder=""></textarea></div></div></div>
+        <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/admin-page-list.js"></script>
+    <script>
+      AdminPageList.mount({
+        addTitle: "\u767b\u8bb0\u4f53\u68c0",
+        editTitle: "编辑",
+        rows: [
+    {date:"2026-07-15",elder:"张秀英",org:"天津市第一中心医院",items:"血常规、生化、心电图",conclusion:"正常",follow:"无需",by:"李护士",note:""},
+    {date:"2026-06-20",elder:"李建国",org:"本院体检",items:"血糖、血脂、冠脉评估",conclusion:"异常",follow:"需复查",by:"王护士",note:"血糖控制不佳"},
+    {date:"2026-05-08",elder:"王德福",org:"社区卫生中心",items:"常规体检",conclusion:"正常",follow:"无需",by:"刘护士",note:""},
+  ],
+        columns: [{ key: "date" }, { key: "elder" }, { key: "org" }, { key: "items" }, { key: "conclusion", status: true }, { key: "follow" }, { key: "by" }],
+        filters: [{ id: "qKeyword", match: (r,v) => !v || (String(r.elder||"").includes(v) || String(r.org||"").includes(v)) }, { id: "qConc", match: (r,v) => !v || String(r.conclusion) === v }, { id: "qFollow", match: (r,v) => !v || String(r.follow) === v }],
+        formFields: [{ id: "fElder", key: "elder", type: "select", label: "长者", required: true }, { id: "fDate", key: "date", type: "date", label: "体检日期", required: true }, { id: "fOrg", key: "org", type: "text", label: "体检机构" }, { id: "fItems", key: "items", type: "text", label: "体检项目" }, { id: "fConc", key: "conclusion", type: "select", label: "结论" }, { id: "fFollow", key: "follow", type: "select", label: "随访" }, { id: "fBy", key: "by", type: "text", label: "登记人" }, { id: "fNote", key: "note", type: "textarea", label: "结果摘要" }],
+        stats: [{ id: "stTotal", html: false, value: (list)=>list.length }, { id: "stMonth", html: false, value: (list)=>list.filter(r=>(r.date||"").startsWith("2026-07")).length }, { id: "stAbn", html: false, value: (list)=>list.filter(r=>r.conclusion==="异常").length }, { id: "stPending", html: false, value: (list)=>list.filter(r=>r.follow==="需复查").length }],
+        getStatus: (r)=>({text:r.conclusion, cls:r.conclusion==="异常"?"status-repair":"status-on"}),
+        rowActions: null,
+        onAction: null,
+      });
+    </script>
+  </body>
+</html>

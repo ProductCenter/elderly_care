@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <title>辅具租赁</title>
+    <link rel="stylesheet" href="./css/fulfill-c.css" />    <link rel="stylesheet" href="./css/app-shell.css?v=20260912-covers5" />
+
+  </head>
+  <body>
+    <div class="phone" id="app">
+      <div class="status-bar" aria-hidden="true">
+        <span class="status-time">10:25</span>
+        <div class="status-right"><span class="status-net">5G</span></div>
+      </div>
+      <header class="nav-bar">
+        <button class="nav-back" type="button" id="btnBack" aria-label="返回">‹</button>
+        <h1 class="nav-title">辅具租赁</h1>
+        <span class="nav-side"></span>
+      </header>
+      <main class="page-body">
+        <section class="card">
+          <p class="lead">浏览租赁项目，查看租金/押金/租期与服务区域；支持续租、归还申请与押金进度查询。</p>
+          <div class="chip-row" id="cats">
+            <button type="button" class="chip on" data-cat="全部">全部</button>
+            <button type="button" class="chip" data-cat="行动辅具">行动辅具</button>
+            <button type="button" class="chip" data-cat="护理床具">护理床具</button>
+            <button type="button" class="chip" data-cat="如厕洗浴">如厕洗浴</button>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>可租项目</h2>
+          <div id="catalog"></div>
+        </section>
+
+        <section class="card">
+          <h2>我的租赁</h2>
+          <div id="myRent"></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+            <button type="button" class="btn-ghost" id="btnRenew">申请续租</button>
+            <button type="button" class="btn-ghost" id="btnReturn">申请归还</button>
+            <a class="btn-ghost" href="./aftersale-apply.html">押金申诉</a>
+          </div>
+        </section>
+      </main>
+      <div class="wx-toast" id="toast" hidden></div>
+    </div>
+    <script>
+      const items = [
+        { name: "铝合金四脚拐杖", cat: "行动辅具", rent: 30, deposit: 100, period: 1, area: "朝阳/东城", stock: "充足" },
+        { name: "电动护理床", cat: "护理床具", rent: 380, deposit: 1500, period: 3, area: "城六区", stock: "紧张" },
+        { name: "防滑沐浴椅", cat: "如厕洗浴", rent: 45, deposit: 150, period: 1, area: "全市", stock: "无库存" },
+      ];
+      const toast = document.getElementById("toast");
+      let cat = "全部";
+      let my = JSON.parse(localStorage.getItem("c_aid_rent_v1") || "null") || {
+        name: "铝合金四脚拐杖",
+        end: "2026-08-05",
+        depositStatus: "已冻结",
+        status: "在租",
+      };
+
+      function showToast(msg) {
+        toast.hidden = false;
+        toast.textContent = msg;
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => (toast.hidden = true), 1800);
+      }
+
+      function renderCatalog() {
+        const list = items.filter((i) => cat === "全部" || i.cat === cat);
+        document.getElementById("catalog").innerHTML = list
+          .map(
+            (i) => `<div class="item-card">
+              <div class="thumb">${i.cat.slice(0, 2)}</div>
+              <div>
+                <h3>${i.name}</h3>
+                <p>押金 ¥${i.deposit} · ${i.period} 个月 · ${i.area}</p>
+                <p style="margin-top:4px"><span class="tag ${i.stock === "充足" ? "ok" : "warn"}">${i.stock}</span></p>
+              </div>
+              <div style="text-align:right">
+                <div class="price">¥${i.rent}/月</div>
+                <button type="button" class="btn-ghost" style="margin-top:8px" data-rent="${i.name}" ${
+              i.stock === "无库存" ? "disabled" : ""
+            }>租用</button>
+              </div>
+            </div>`
+          )
+          .join("");
+      }
+
+      function renderMy() {
+        document.getElementById("myRent").innerHTML = `
+          <div class="meta-row"><span>辅具</span><strong>${my.name}</strong></div>
+          <div class="meta-row"><span>状态</span><span class="tag ok">${my.status}</span></div>
+          <div class="meta-row"><span>到期日</span><strong>${my.end}</strong></div>
+          <div class="meta-row" style="margin:0"><span>押金</span><strong>${my.depositStatus}</strong></div>`;
+        localStorage.setItem("c_aid_rent_v1", JSON.stringify(my));
+      }
+
+      document.getElementById("btnBack").onclick = () => history.back();
+      document.getElementById("cats").onclick = (e) => {
+        const btn = e.target.closest(".chip");
+        if (!btn) return;
+        cat = btn.dataset.cat;
+        [...document.querySelectorAll("#cats .chip")].forEach((c) => c.classList.toggle("on", c === btn));
+        renderCatalog();
+      };
+      document.getElementById("catalog").onclick = (e) => {
+        const btn = e.target.closest("[data-rent]");
+        if (!btn || btn.disabled) return;
+        my = { name: btn.dataset.rent, end: "2026-08-28", depositStatus: "已冻结", status: "在租" };
+        renderMy();
+        showToast("已创建租赁订单（演示）");
+      };
+      document.getElementById("btnRenew").onclick = () => {
+        my.end = "2026-09-28";
+        my.status = "续租待支付";
+        renderMy();
+        showToast("已生成续租账单");
+      };
+      document.getElementById("btnReturn").onclick = () => {
+        my.status = "待上门归还";
+        renderMy();
+        showToast("归还申请已提交");
+      };
+
+      renderCatalog();
+      renderMy();
+    </script>    <script src="./js/app-shell.js?v=20260912-covers5"></script>
+
+  </body>
+</html>

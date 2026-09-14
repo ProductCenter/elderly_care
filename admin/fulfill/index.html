@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>履约总览 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+<style>
+  .hub-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 1100px) { .hub-grid { grid-template-columns: 1fr; } }
+  .hub-card {
+    background: #fff; border: 1px solid var(--line, #e5e6eb); border-radius: 12px;
+    padding: 16px 18px 14px; box-shadow: 0 6px 18px rgba(31,35,41,.04);
+  }
+  .hub-card h2 { margin: 0 0 6px; font-size: 16px; }
+  .hub-card p { margin: 0 0 12px; color: #646a73; font-size: 13px; line-height: 1.55; }
+  .hub-links { display: grid; gap: 8px; }
+  .hub-links a {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px; border: 1px solid #eef0f3; border-radius: 8px;
+    text-decoration: none; color: #1f2329; font-size: 13px; background: #fafbfc;
+  }
+  .hub-links a:hover { border-color: #c9d7ff; background: #f5f8ff; color: #2f6bff; }
+  .hub-links em { font-style: normal; color: #8f959e; font-size: 12px; }
+  .flow {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    margin: 0 0 16px; padding: 12px 14px; background: #f7f9fc; border-radius: 10px;
+    border: 1px solid #eef0f3; font-size: 13px; color: #646a73;
+  }
+  .flow b { color: #1f2329; font-weight: 600; }
+  .flow i { font-style: normal; color: #c0c4cc; }
+</style>
+</head>
+<body data-primary="fulfill" data-sub="overview" data-tab="履约总览" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">履约总览</h1>
+    <p class="page-desc">覆盖实物物流、辅具租赁、售后客服与第三方履约接口，串联「下单 → 履约 → 归还/核销 → 售后」全链路</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="../../fulfill-demo.html" target="_blank">C 端演示入口</a>
+  </div>
+</div>
+
+<div class="flow">
+  <b>推荐路径</b>
+  <span>发货 / 租赁交付</span><i>→</i>
+  <span>轨迹 / 服务回传</span><i>→</i>
+  <span>收货 / 归还验收</span><i>→</i>
+  <span>售后 / 押金退还</span><i>→</i>
+  <span>争议仲裁 / 整改台账</span>
+</div>
+
+<div class="hub-grid">
+  <section class="hub-card">
+    <h2>实物物流履约</h2>
+    <p>商户发货、轨迹查询、收货确认与异常监控</p>
+    <div class="hub-links">
+      <a href="./logistics-ship.html">商户订单发货 <em>F1</em></a>
+      <a href="./logistics-track.html">物流轨迹查询 <em>F2</em></a>
+      <a href="./logistics-receive.html">收货确认 <em>F3</em></a>
+      <a href="./logistics-exception.html">物流异常监控 <em>F4</em></a>
+    </div>
+  </section>
+
+  <section class="hub-card">
+    <h2>辅具租赁</h2>
+    <p>项目发布、库存、租金押金、续约、交付归还、验收赔付与押金申诉</p>
+    <div class="hub-links">
+      <a href="./aid-project.html">租赁项目发布 <em>F5</em></a>
+      <a href="./aid-stock.html">租赁库存与状态 <em>F6</em></a>
+      <a href="./aid-deposit.html">租期租金与押金 <em>F7</em></a>
+      <a href="./aid-renew.html">租赁续约 <em>F8</em></a>
+      <a href="./aid-delivery.html">租赁交付与归还 <em>F9</em></a>
+      <a href="./aid-inspect.html">归还验收与损坏赔付 <em>F10</em></a>
+      <a href="./aid-refund.html">押金退还与申诉 <em>F11</em></a>
+    </div>
+  </section>
+
+  <section class="hub-card">
+    <h2>售后客服与争议处理</h2>
+    <p>用户申请、商户处理、人工客服（含长者入口）、平台争议与整改统计</p>
+    <div class="hub-links">
+      <a href="./aftersale-apply.html">用户售后申请 <em>F12</em></a>
+      <a href="./aftersale-merchant.html">商户售后处理 <em>F13</em></a>
+      <a href="./aftersale-cs.html">人工客服工作台 <em>F14</em></a>
+      <a href="./aftersale-dispute.html">平台争议介入 <em>F15</em></a>
+      <a href="./aftersale-stat.html">售后统计与整改 <em>F16</em></a>
+    </div>
+  </section>
+
+  <section class="hub-card">
+    <h2>第三方履约接口</h2>
+    <p>任务下发查询、服务记录回传、核销交付同步、异常上报协同</p>
+    <div class="hub-links">
+      <a href="./api-dispatch.html">服务任务下发与查询 <em>F17</em></a>
+      <a href="./api-record.html">服务记录回传 <em>F18</em></a>
+      <a href="./api-sync.html">核销交付归还同步 <em>F19</em></a>
+      <a href="./api-exception.html">异常上报与协同 <em>F20</em></a>
+    </div>
+  </section>
+</div>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+</body>
+</html>

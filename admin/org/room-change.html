@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>房间变更 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body data-primary="org" data-sub="room-change" data-tab="房间变更" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">房间变更</h1>
+          <p class="page-desc">院内长者房间变更全流程：申请 → 审批 → 执行 → 归档</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="btnAdd">+ 发起变更</button>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="k">进行中</div><div class="v" id="stDoing">0</div></div>
+        <div class="stat-card"><div class="k">待审批</div><div class="v" id="stAppr">0</div></div>
+        <div class="stat-card"><div class="k">本月完成</div><div class="v" id="stDone">0</div></div>
+        <div class="stat-card"><div class="k">已驳回</div><div class="v" id="stReject">0</div></div>
+      </div>
+      <div class="filter-card">
+        <div class="filter-grid">
+          <div class="filter-item"><label>长者姓名</label><input class="ctrl" id="qKeyword" /></div>
+          <div class="filter-item"><label>流程状态</label>
+            <select class="ctrl" id="qStatus">
+              <option value="">全部</option>
+              <option value="draft">草稿</option>
+              <option value="approve">待审批</option>
+              <option value="exec">待执行</option>
+              <option value="done">已完成</option>
+              <option value="reject">已驳回</option>
+            </select>
+          </div>
+          <div class="filter-item"><label>变更原因</label>
+            <select class="ctrl" id="qReason">
+              <option value="">全部</option>
+              <option>护理等级调整</option>
+              <option>家属申请</option>
+              <option>床位优化</option>
+              <option>其他</option>
+            </select>
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
+            <button type="button" class="btn btn-default" id="btnReset">重置</button>
+          </div>
+        </div>
+      </div>
+      <div class="list-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>单号</th><th>长者</th><th>原床位</th><th>目标床位</th><th>原因</th>
+                <th>申请人</th><th>申请时间</th><th>状态</th><th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="body"></tbody>
+          </table>
+        </div>
+        <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button">上一页</button><button type="button" class="active">1</button><button type="button">下一页</button></div></div>
+      </div>
+
+      <div class="drawer-mask" data-drawer-mask="rcDrawer" data-close-drawer="rcDrawer"></div>
+      <aside class="drawer" id="rcDrawer">
+        <div class="drawer-head"><h3 id="drawerTitle">发起房间变更</h3><button type="button" class="drawer-close" data-close-drawer="rcDrawer">×</button></div>
+        <div class="drawer-body">
+          <div class="form-grid">
+            <div class="form-field"><label>长者<span class="req">*</span></label>
+              <select class="ctrl" id="rElder"><option>张秀英</option><option>李建国</option><option>陈桂兰</option><option>王德福</option></select>
+            </div>
+            <div class="form-field"><label>原床位</label><input class="ctrl" id="rFrom" readonly /></div>
+            <div class="form-field"><label>目标楼层<span class="req">*</span></label>
+              <select class="ctrl" id="rToFloor"><option>1F</option><option>2F</option><option>3F</option><option>4F</option><option>5F</option></select>
+            </div>
+            <div class="form-field"><label>目标床位<span class="req">*</span></label><input class="ctrl" id="rToBed" placeholder="如：315-A" /></div>
+            <div class="form-field"><label>变更原因<span class="req">*</span></label>
+              <select class="ctrl" id="rReason"><option>护理等级调整</option><option>家属申请</option><option>床位优化</option><option>其他</option></select>
+            </div>
+            <div class="form-field"><label>计划执行日</label><input class="ctrl" id="rPlan" type="date" /></div>
+            <div class="form-field full"><label>说明</label><textarea class="ctrl" id="rNote"></textarea></div>
+          </div>
+          <div style="margin-top:16px;padding:12px;border-radius:8px;background:#f5f9ff;border:1px solid #d6e4ff;font-size:12px;color:#595959;line-height:1.7">
+            <strong style="color:#1677ff">流程提示</strong><br />
+            1. 提交后进入「待审批」<br />
+            2. 审批通过后进入「待执行」<br />
+            3. 执行换床并同步长者居住信息后归档
+          </div>
+        </div>
+        <div class="drawer-foot">
+          <button type="button" class="btn btn-default" data-close-drawer="rcDrawer">取消</button>
+          <button type="button" class="btn btn-default" id="btnDraft">存草稿</button>
+          <button type="button" class="btn btn-primary" id="btnSubmit">提交审批</button>
+        </div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/org-room-change.js"></script>
+  </body>
+</html>

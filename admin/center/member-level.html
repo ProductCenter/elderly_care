@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>会员等级 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body
+    data-primary="center"
+    data-sub="member-level"
+    data-tab="会员等级"
+    data-asset-prefix="../../assets"
+    data-index-href="../index.html"
+  >
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">会员等级</h1>
+          <p class="page-desc">配置成长值门槛、折扣与积分倍率；C 端会员中心实时读取</p>
+        </div>
+        <div style="display: flex; gap: 8px">
+          <a class="btn btn-default" href="../center/member.html">会员列表</a>
+          <button type="button" class="btn btn-primary" id="btnSaveLevels">保存配置</button>
+        </div>
+      </div>
+      <div class="list-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>等级</th>
+                <th>成长值门槛</th>
+                <th>折扣（%）</th>
+                <th>积分倍率</th>
+                <th>权益说明（逗号分隔）</th>
+              </tr>
+            </thead>
+            <tbody id="levelBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <p style="margin-top: 12px; color: #8c8c8c; font-size: 13px">
+        说明：折扣 95 表示 9.5 折；积分倍率作用于下单实付金额换算积分。
+      </p>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../../js/member.js"></script>
+    <script src="../js/admin-member-level.js"></script>
+  </body>
+</html>

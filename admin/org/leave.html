@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>请假管理 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body data-primary="org" data-sub="leave" data-tab="请假管理" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div><h1 class="page-title">请假管理</h1><p class="page-desc">管理院内长者请销假信息</p></div>
+        <button type="button" class="btn btn-primary" id="btnAdd">+ 登记请假</button>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="k">请假中</div><div class="v" id="stOut">0</div></div>
+        <div class="stat-card"><div class="k">今日应归</div><div class="v" id="stToday">0</div></div>
+        <div class="stat-card"><div class="k">本月请假</div><div class="v" id="stMonth">0</div></div>
+        <div class="stat-card"><div class="k">逾期未归</div><div class="v" id="stLate">0</div></div>
+      </div>
+      <div class="filter-card">
+        <div class="filter-grid">
+          <div class="filter-item"><label>长者姓名</label><input class="ctrl" id="qKeyword" /></div>
+          <div class="filter-item"><label>状态</label>
+            <select class="ctrl" id="qStatus"><option value="">全部</option><option value="out">请假中</option><option value="back">已销假</option><option value="late">逾期未归</option></select>
+          </div>
+          <div class="filter-item"><label>请假类型</label>
+            <select class="ctrl" id="qType"><option value="">全部</option><option>探亲</option><option>就医</option><option>其他</option></select>
+          </div>
+          <div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div>
+        </div>
+      </div>
+      <div class="list-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>长者</th><th>床位</th><th>类型</th><th>离院时间</th><th>预计归院</th><th>陪同人</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody id="body"></tbody>
+          </table>
+        </div>
+        <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div>
+      </div>
+      <div class="drawer-mask" data-drawer-mask="leaveDrawer" data-close-drawer="leaveDrawer"></div>
+      <aside class="drawer" id="leaveDrawer">
+        <div class="drawer-head"><h3 id="drawerTitle">登记请假</h3><button type="button" class="drawer-close" data-close-drawer="leaveDrawer">×</button></div>
+        <div class="drawer-body">
+          <div class="form-grid">
+            <div class="form-field"><label>长者<span class="req">*</span></label><select class="ctrl" id="lElder"><option>张秀英</option><option>李建国</option><option>陈桂兰</option><option>王德福</option></select></div>
+            <div class="form-field"><label>类型</label><select class="ctrl" id="lType"><option>探亲</option><option>就医</option><option>其他</option></select></div>
+            <div class="form-field"><label>离院时间<span class="req">*</span></label><input class="ctrl" id="lOut" type="datetime-local" /></div>
+            <div class="form-field"><label>预计归院<span class="req">*</span></label><input class="ctrl" id="lBack" type="datetime-local" /></div>
+            <div class="form-field"><label>陪同人</label><input class="ctrl" id="lCompanion" /></div>
+            <div class="form-field"><label>联系电话</label><input class="ctrl" id="lPhone" /></div>
+            <div class="form-field full"><label>事由</label><textarea class="ctrl" id="lReason"></textarea></div>
+          </div>
+        </div>
+        <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="leaveDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script><script src="../js/admin-shell.js"></script><script src="../js/admin-ui.js"></script><script src="../js/org-leave.js"></script>
+  </body>
+</html>

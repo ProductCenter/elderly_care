@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>中心运营大屏 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/ops-screen.css" />
+  </head>
+  <body data-primary="center" data-sub="ops-screen" data-tab="中心运营大屏" data-flush="true" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="ops-screen">
+        <div class="ops-top">
+          <div>
+            <h1>中心运营综合大屏</h1>
+            <p>整合托养、食堂、便民、上门、团购、设备体验等核心运营指标</p>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <span class="ops-chip">数据时点 <strong id="opsClock">—</strong></span>
+            <button type="button" class="btn btn-primary" id="btnFs">全屏</button>
+          </div>
+        </div>
+        <div class="ops-kpi">
+          <div class="card"><div class="k">床位使用率</div><div class="v">86.4<em>%</em></div><div class="t">在住 328 / 总床 380</div></div>
+          <div class="card"><div class="k">今日食堂就餐</div><div class="v">412<em>人</em></div><div class="t">堂食 286 · 打包 126</div></div>
+          <div class="card"><div class="k">团购参与率</div><div class="v">63.2<em>%</em></div><div class="t">本周预订 208 人</div></div>
+          <div class="card"><div class="k">便民服务</div><div class="v">56<em>人次</em></div><div class="t">理发 34 · 修脚 22</div></div>
+          <div class="card"><div class="k">上门服务</div><div class="v">38<em>次</em></div><div class="t">家政 21 · 护理 17</div></div>
+          <div class="card"><div class="k">设备体验</div><div class="v">27<em>人次</em></div><div class="t">今日预约 9</div></div>
+        </div>
+        <div class="ops-grid">
+          <section class="ops-panel"><h2>近 7 日床位使用率 / 就餐人数</h2><div class="body" id="c1"></div></section>
+          <section class="ops-panel"><h2>服务结构占比</h2><div class="body" id="c2"></div></section>
+          <section class="ops-panel"><h2>热门服务 TOP5</h2><div class="body" id="c3"></div></section>
+          <section class="ops-panel"><h2>团购参与趋势</h2><div class="body" id="c4"></div></section>
+          <section class="ops-panel"><h2>上门服务区域分布</h2><div class="body" id="c5"></div></section>
+          <section class="ops-panel"><h2>设备体验人次</h2><div class="body" id="c6"></div></section>
+        </div>
+      </div>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/ops-screen.js"></script>
+  </body>
+</html>

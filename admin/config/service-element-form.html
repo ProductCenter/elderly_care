@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>服务要素详情 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+    <style>
+      .page-body.has-form-foot { padding-bottom: 72px; }
+      .form-detail {
+        display: grid;
+        grid-template-columns: 160px minmax(0, 1fr);
+        gap: 16px;
+        align-items: start;
+      }
+      .form-anchor {
+        position: sticky;
+        top: 12px;
+        background: #fff;
+        border-radius: 8px;
+        padding: 10px 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      }
+      .form-anchor .ttl {
+        padding: 4px 10px 10px;
+        font-size: 12px;
+        color: #8c8c8c;
+      }
+      .form-anchor a {
+        display: block;
+        padding: 8px 10px;
+        border-radius: 6px;
+        font-size: 13px;
+        color: #595959;
+        margin-bottom: 2px;
+      }
+      .form-anchor a:hover { background: #f5f9ff; color: #1677ff; }
+      .form-anchor a.active {
+        background: #e6f4ff;
+        color: #1677ff;
+        font-weight: 600;
+      }
+      .form-anchor a .n {
+        display: inline-block;
+        width: 18px;
+        color: #8c8c8c;
+        font-weight: 500;
+      }
+      .form-anchor a.active .n { color: #1677ff; }
+      .form-main { min-width: 0; }
+      .form-sec {
+        background: #fff;
+        border-radius: 8px;
+        padding: 18px 20px 20px;
+        margin-bottom: 12px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        scroll-margin-top: 12px;
+      }
+      .form-sec h3 {
+        margin: 0 0 4px;
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .form-sec .hint {
+        margin: 0 0 16px;
+        font-size: 12px;
+        color: #8c8c8c;
+        line-height: 1.55;
+      }
+      .check-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 14px;
+      }
+      .check-grid label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        cursor: pointer;
+        user-select: none;
+        padding: 4px 10px;
+        border: 1px solid #f0f0f0;
+        border-radius: 6px;
+        background: #fafafa;
+      }
+      .check-grid label:has(input:checked) {
+        border-color: #91caff;
+        background: #e6f4ff;
+        color: #1677ff;
+      }
+      .check-grid input {
+        width: 14px;
+        height: 14px;
+        accent-color: #1677ff;
+      }
+      .preset-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .preset-row .btn { height: 28px; padding: 0 10px; font-size: 12px; }
+      .unit-row {
+        display: grid;
+        grid-template-columns: 1fr 120px;
+        gap: 10px;
+      }
+      .radius-row {
+        display: grid;
+        grid-template-columns: 1fr 48px;
+        gap: 8px;
+        align-items: center;
+      }
+      .radius-row .unit {
+        font-size: 13px;
+        color: #8c8c8c;
+      }
+      .form-field label .ex {
+        font-weight: 400;
+        color: #bfbfbf;
+        margin-left: 6px;
+        font-size: 12px;
+      }
+      .form-foot {
+        position: fixed;
+        left: calc(var(--nav-w) + var(--sub-w));
+        right: 0;
+        bottom: 0;
+        z-index: 30;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 24px;
+        background: rgba(255, 255, 255, 0.96);
+        border-top: 1px solid #f0f0f0;
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.04);
+        backdrop-filter: blur(8px);
+      }
+      .form-foot .meta { font-size: 13px; color: #8c8c8c; }
+      .form-foot .actions { display: flex; gap: 8px; }
+      @media (max-width: 1100px) {
+        .form-detail { grid-template-columns: 1fr; }
+        .form-anchor {
+          position: static;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 4px;
+          padding: 10px;
+        }
+        .form-anchor .ttl { width: 100%; }
+        .form-foot { left: 0; }
+      }
+          .field-tip { margin:4px 0 0; font-size:12px; color:#8c8c8c; line-height:1.45; }
+    </style>
+  </head>
+  <body
+    data-primary="mall"
+    data-sub="service-element"
+    data-tab="服务要素详情"
+    data-asset-prefix="../../assets"
+    data-index-href="../index.html"
+  >
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title" id="pageTitle">新建服务要素</h1>
+          <p class="page-desc">按推荐最小 8 项配置服务要素，支撑推荐、排期、履约与套餐组合</p>
+        </div>
+        <div style="display: flex; gap: 8px">
+          <a class="btn btn-default" href="./service-element.html" style="text-decoration: none">返回列表</a>
+        </div>
+      </div>
+
+      <div class="form-detail">
+        <nav class="form-anchor" id="formAnchor" aria-label="最小字段导航"></nav>
+        <div class="form-main">
+          <!-- 1 名称与类别 -->
+          <section class="form-sec" id="sec-basic">
+            <h3>1. 要素名称与类别</h3>
+            <p class="hint" id="hint-basic"></p>
+            <div class="form-grid">
+              <div class="form-field">
+                <label>编码</label>
+                <input class="ctrl" id="fCode" placeholder="留空则保存时自动生成" />
+              </div>
+              <div class="form-field">
+                <label>状态</label>
+                <select class="ctrl" id="fStatus"></select>
+              </div>
+              <div class="form-field full">
+                <label>要素名称<span class="req">*</span><span class="ex">如：工作日午餐配送</span></label>
+                <input class="ctrl" id="fName" placeholder="请输入要素名称" />
+              </div>
+              <div class="form-field full">
+                <label>服务类别<span class="req">*</span></label>
+                <select class="ctrl" id="fCategory">
+                  <option value="">请选择类别</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <!-- 2 服务目标 -->
+          <section class="form-sec" id="sec-goal">
+            <h3>2. 服务目标</h3>
+            <p class="hint" id="hint-goal"></p>
+            <div class="form-grid">
+              <div class="form-field full">
+                <label>服务目标<span class="req">*</span><span class="ex">可多选</span></label>
+                <div class="check-grid" id="fGoals"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3 交付方式 -->
+          <section class="form-sec" id="sec-delivery">
+            <h3>3. 交付方式</h3>
+            <p class="hint">能力通道（到店/到家/线上/自主）。堂食、送餐请在套餐或订餐确认时选择，勿在要素层拆分。</p>
+            <p class="hint" id="hint-delivery"></p>
+            <div class="form-grid">
+              <div class="form-field">
+                <label>交付方式<span class="req">*</span></label>
+                <select class="ctrl" id="fDelivery">
+                  <option value="">请选择交付方式</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4 履约规则 -->
+          <section class="form-sec" id="sec-rule">
+            <h3>4. 履约规则</h3>
+            <p class="hint" id="hint-rule"></p>
+            <div class="form-grid">
+              <div class="form-field full">
+                <label>可服务日<span class="req">*</span></label>
+                <div class="preset-row" id="dayPresets"></div>
+                <div class="check-grid" id="fServiceDays"></div>
+              </div>
+              <div class="form-field">
+                <label>开始时段</label>
+                <input class="ctrl" id="fTimeStart" type="time" />
+              </div>
+              <div class="form-field">
+                <label>结束时段</label>
+                <input class="ctrl" id="fTimeEnd" type="time" />
+              </div>
+              <div class="form-field">
+                <label>餐次（餐饮）</label>
+                <select class="ctrl" id="fMealSlot">
+                  <option value="">非餐饮 / 不适用</option>
+                  <option value="早餐">早餐</option>
+                  <option value="午餐">午餐</option>
+                  <option value="晚餐">晚餐</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label>自动核销节点</label>
+                <input class="ctrl" id="fAutoVerifyAt" type="time" />
+                <p class="field-tip">过点未履约则系统扣次；默认午餐 13:00、晚餐 19:00。堂食/送餐不在要素配置。</p>
+              </div>
+              <div class="form-field">
+                <label>履约频次<span class="req">*</span></label>
+                <select class="ctrl" id="fFrequency">
+                  <option value="">请选择频次</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label>服务半径</label>
+                <div class="radius-row">
+                  <input class="ctrl" id="fServiceRadius" type="number" min="0" step="0.5" placeholder="0 表示不限/到店线上" />
+                  <span class="unit">公里</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 5 服务资源 -->
+          <section class="form-sec" id="sec-resource">
+            <h3>5. 服务资源</h3>
+            <p class="hint" id="hint-resource"></p>
+            <div class="form-grid">
+              <div class="form-field full">
+                <label>人员角色<span class="req">*</span><span class="ex">可多选</span></label>
+                <div class="check-grid" id="fRoles"></div>
+              </div>
+              <div class="form-field full">
+                <label>物料 / 设备</label>
+                <input class="ctrl" id="fMaterials" placeholder="如：冷链餐食、理疗仪、血压计" />
+              </div>
+            </div>
+          </section>
+
+          <!-- 6 服务标准 -->
+          <section class="form-sec" id="sec-standard">
+            <h3>6. 服务标准</h3>
+            <p class="hint" id="hint-standard"></p>
+            <div class="form-grid">
+              <div class="form-field full">
+                <label>服务时长</label>
+                <div class="unit-row">
+                  <input class="ctrl" id="fDurationValue" type="number" min="0" step="1" placeholder="时长数值" />
+                  <select class="ctrl" id="fDurationUnit"></select>
+                </div>
+              </div>
+              <div class="form-field full">
+                <label>关键动作<span class="req">*</span><span class="ex">可多选</span></label>
+                <div class="check-grid" id="fKeyActions"></div>
+              </div>
+              <div class="form-field">
+                <label>验收方式<span class="req">*</span></label>
+                <select class="ctrl" id="fAcceptance">
+                  <option value="">请选择验收方式</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <!-- 7 计价与额度 -->
+          <section class="form-sec" id="sec-price">
+            <h3>7. 计价与额度</h3>
+            <p class="hint" id="hint-price"></p>
+            <div class="form-grid">
+              <div class="form-field">
+                <label>单价（元）<span class="req">*</span></label>
+                <input class="ctrl" id="fUnitPrice" type="number" min="0" step="0.01" placeholder="0" />
+              </div>
+              <div class="form-field">
+                <label>套餐扣减次数</label>
+                <input class="ctrl" id="fDeductCount" type="number" min="0" step="1" placeholder="如：1" />
+              </div>
+              <div class="form-field">
+                <label>是否可加购<span class="req">*</span></label>
+                <select class="ctrl" id="fAllowAddon">
+                  <option value="">请选择</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <!-- 8 适用与风险 -->
+          <section class="form-sec" id="sec-risk">
+            <h3>8. 适用与风险规则</h3>
+            <p class="hint" id="hint-risk"></p>
+            <div class="form-grid">
+              <div class="form-field full">
+                <label>推荐条件</label>
+                <textarea class="ctrl" id="fRecommendCond" rows="2" placeholder="适合推荐给哪些用户"></textarea>
+              </div>
+              <div class="form-field full">
+                <label>禁忌条件</label>
+                <textarea class="ctrl" id="fContraindication" rows="2" placeholder="不可推荐或需规避的情形"></textarea>
+              </div>
+              <div class="form-field">
+                <label>是否需人工审核<span class="req">*</span></label>
+                <select class="ctrl" id="fNeedReview">
+                  <option value="">请选择</option>
+                </select>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="form-foot">
+        <div class="meta" id="footMeta">完成最小 8 项配置后保存</div>
+        <div class="actions">
+          <a class="btn btn-default" href="./service-element.html" style="text-decoration: none" id="btnCancel">取消</a>
+          <button type="button" class="btn btn-primary" id="btnSave">保存</button>
+        </div>
+      </div>
+    </template>
+
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/service-element-data.js?v=20260824"></script>
+    <script>
+      (function () {
+        const D = window.ServiceElementData;
+        const params = new URLSearchParams(location.search);
+        const mode = params.get("mode") || "add";
+        const codeParam = params.get("code") || "";
+        const viewMode = mode === "view";
+        const isEdit = mode === "edit";
+
+        const SELECT_IDS = {
+          fStatus: D.STATUS,
+          fCategory: D.CATEGORIES,
+          fDelivery: D.DELIVERIES,
+          fFrequency: D.FREQUENCIES,
+          fDurationUnit: D.DURATION_UNITS,
+          fAcceptance: D.ACCEPTANCES,
+          fAllowAddon: D.YES_NO,
+          fNeedReview: D.YES_NO,
+        };
+
+        const MULTI_IDS = {
+          fGoals: "goals",
+          fServiceDays: "serviceDays",
+          fRoles: "roles",
+          fKeyActions: "keyActions",
+        };
+
+        const TEXT_IDS = [
+          "fCode", "fName", "fMaterials", "fRecommendCond", "fContraindication",
+          "fTimeStart", "fTimeEnd", "fAutoVerifyAt",
+        ];
+        const EXTRA_SELECT_IDS = ["fMealSlot"];
+        const NUM_IDS = ["fServiceRadius", "fDurationValue", "fUnitPrice", "fDeductCount"];
+
+        const $ = (id) => document.getElementById(id);
+        let data = AdminStore.load(D.STORE_KEY, D.SEED);
+        let editIndex = -1;
+
+        function pad2(n) {
+          return String(n).padStart(2, "0");
+        }
+
+        function todayText() {
+          const d = new Date();
+          return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+        }
+
+        function nextCode() {
+          let max = 0;
+          data.forEach((r) => {
+            const m = String(r.code || "").match(/SE-[A-Z]+-(\d+)/i);
+            if (m) max = Math.max(max, Number(m[1]));
+          });
+          return "SE-GEN-" + String(max + 1).padStart(3, "0");
+        }
+
+        function fillSelect(id, options, placeholder) {
+          const el = $(id);
+          if (!el) return;
+          const ph = placeholder ? `<option value="">${placeholder}</option>` : "";
+          el.innerHTML = ph + options.map((o) => `<option value="${o}">${o}</option>`).join("");
+        }
+
+        function fillChecks(id, options) {
+          const el = $(id);
+          if (!el) return;
+          el.innerHTML = options
+            .map((o) => `<label><input type="checkbox" value="${o}" />${o}</label>`)
+            .join("");
+        }
+
+        function getChecked(id) {
+          return [...document.querySelectorAll(`#${id} input:checked`)].map((el) => el.value);
+        }
+
+        function setChecked(id, values) {
+          const set = new Set(values || []);
+          document.querySelectorAll(`#${id} input`).forEach((el) => {
+            el.checked = set.has(el.value);
+          });
+        }
+
+        function setReadonly(ro) {
+          [...TEXT_IDS, ...NUM_IDS, ...Object.keys(SELECT_IDS), "fMealSlot"].forEach((id) => {
+            const el = $(id);
+            if (el) el.disabled = !!ro;
+          });
+          Object.keys(MULTI_IDS).forEach((id) => {
+            document.querySelectorAll(`#${id} input`).forEach((el) => {
+              el.disabled = !!ro;
+            });
+          });
+          document.querySelectorAll("#dayPresets button").forEach((el) => {
+            el.disabled = !!ro;
+          });
+          const saveBtn = $("btnSave");
+          if (saveBtn) saveBtn.hidden = !!ro;
+          const cancel = $("btnCancel");
+          if (cancel) cancel.textContent = ro ? "返回列表" : "取消";
+                  ["fMealSlot"].forEach((id) => { const el = $(id); if (el) el.disabled = !!ro; });
+        }
+
+        function fillForm(r) {
+          $("fCode").value = r?.code || "";
+          $("fStatus").value = r?.status || "启用";
+          $("fName").value = r?.name || "";
+          $("fCategory").value = r?.category || "";
+          $("fDelivery").value = r?.delivery || "";
+          $("fTimeStart").value = r?.timeStart || "";
+          $("fTimeEnd").value = r?.timeEnd || "";
+          $("fMealSlot").value = r?.mealSlot || "";
+          $("fAutoVerifyAt").value = r?.autoVerifyAt || "";
+          $("fFrequency").value = r?.frequency || "";
+          $("fServiceRadius").value = r?.serviceRadius == null ? "" : r.serviceRadius;
+          $("fMaterials").value = r?.materials || "";
+          $("fDurationValue").value = r?.durationValue == null ? "" : r.durationValue;
+          $("fDurationUnit").value = r?.durationUnit || "分钟";
+          $("fAcceptance").value = r?.acceptance || "";
+          $("fUnitPrice").value = r?.unitPrice == null ? "" : r.unitPrice;
+          $("fDeductCount").value = r?.deductCount == null ? "" : r.deductCount;
+          $("fAllowAddon").value = r?.allowAddon || "";
+          $("fRecommendCond").value = r?.recommendCond || "";
+          $("fContraindication").value = r?.contraindication || "";
+          $("fNeedReview").value = r?.needReview || "";
+          setChecked("fGoals", r?.goals);
+          setChecked("fServiceDays", r?.serviceDays);
+          setChecked("fRoles", r?.roles);
+          setChecked("fKeyActions", r?.keyActions);
+        }
+
+        function readForm() {
+          return {
+            code: ($("fCode").value || "").trim(),
+            status: $("fStatus").value,
+            name: ($("fName").value || "").trim(),
+            category: $("fCategory").value,
+            goals: getChecked("fGoals"),
+            delivery: $("fDelivery").value,
+            serviceDays: getChecked("fServiceDays"),
+            timeStart: $("fTimeStart").value,
+            timeEnd: $("fTimeEnd").value,
+            mealSlot: $("fMealSlot").value,
+            autoVerifyAt: $("fAutoVerifyAt").value,
+            frequency: $("fFrequency").value,
+            serviceRadius: $("fServiceRadius").value === "" ? 0 : Number($("fServiceRadius").value),
+            roles: getChecked("fRoles"),
+            materials: ($("fMaterials").value || "").trim(),
+            durationValue: $("fDurationValue").value === "" ? 0 : Number($("fDurationValue").value),
+            durationUnit: $("fDurationUnit").value,
+            keyActions: getChecked("fKeyActions"),
+            acceptance: $("fAcceptance").value,
+            unitPrice: $("fUnitPrice").value === "" ? 0 : Number($("fUnitPrice").value),
+            deductCount: $("fDeductCount").value === "" ? 0 : Number($("fDeductCount").value),
+            allowAddon: $("fAllowAddon").value,
+            recommendCond: ($("fRecommendCond").value || "").trim(),
+            contraindication: ($("fContraindication").value || "").trim(),
+            needReview: $("fNeedReview").value,
+          };
+        }
+
+        function validate(next) {
+          const rules = [
+            [!next.name, "请填写要素名称", "basic", "fName"],
+            [!next.category, "请选择服务类别", "basic", "fCategory"],
+            [!next.goals.length, "请至少选择一个服务目标", "goal", null],
+            [!next.delivery, "请选择交付方式", "delivery", "fDelivery"],
+            [!next.serviceDays.length, "请至少选择一个可服务日", "rule", null],
+            [!next.frequency, "请选择履约频次", "rule", "fFrequency"],
+            [!next.roles.length, "请至少选择一个人员角色", "resource", null],
+            [!next.keyActions.length, "请至少选择一个关键动作", "standard", null],
+            [!next.acceptance, "请选择验收方式", "standard", "fAcceptance"],
+            [next.unitPrice === "" || Number.isNaN(next.unitPrice), "请填写单价", "price", "fUnitPrice"],
+            [!next.allowAddon, "请选择是否可加购", "price", "fAllowAddon"],
+            [!next.needReview, "请选择是否需人工审核", "risk", "fNeedReview"],
+          ];
+          for (const [bad, msg, sec, fid] of rules) {
+            if (!bad) continue;
+            AdminUI.toast(msg, "error");
+            document.getElementById("sec-" + sec)?.scrollIntoView({ behavior: "smooth", block: "start" });
+            if (fid) $(fid)?.focus();
+            return false;
+          }
+          return true;
+        }
+
+        function save() {
+          const next = readForm();
+          if (!validate(next)) return;
+          if (!next.code) next.code = nextCode();
+          next.updated = todayText();
+
+          if (editIndex < 0) {
+            if (data.some((r) => r.code === next.code)) {
+              AdminUI.toast("编码已存在，请更换", "error");
+              $("fCode")?.focus();
+              return;
+            }
+            data.unshift(next);
+            AdminUI.toast("新增成功");
+          } else {
+            if (data.some((r, i) => i !== editIndex && r.code === next.code)) {
+              AdminUI.toast("编码已存在，请更换", "error");
+              $("fCode")?.focus();
+              return;
+            }
+            data[editIndex] = { ...data[editIndex], ...next };
+            AdminUI.toast("保存成功");
+          }
+          AdminStore.save(D.STORE_KEY, data);
+          setTimeout(() => {
+            location.href = "./service-element.html";
+          }, 400);
+        }
+
+        function setupAnchor() {
+          const nav = $("formAnchor");
+          nav.innerHTML =
+            '<div class="ttl">最小 8 项</div>' +
+            D.SECTIONS.map(
+              (s, i) =>
+                `<a href="#sec-${s.id}" data-sec="${s.id}"><span class="n">${i + 1}</span>${s.label}</a>`
+            ).join("");
+          D.SECTIONS.forEach((s) => {
+            const hint = document.getElementById("hint-" + s.id);
+            if (hint) hint.textContent = s.hint;
+          });
+          const links = [...nav.querySelectorAll("a[data-sec]")];
+          const secs = D.SECTIONS.map((s) => document.getElementById("sec-" + s.id)).filter(Boolean);
+          const syncActive = () => {
+            let current = D.SECTIONS[0].id;
+            const y = window.scrollY + 80;
+            secs.forEach((el, i) => {
+              if (el.offsetTop <= y) current = D.SECTIONS[i].id;
+            });
+            links.forEach((a) => a.classList.toggle("active", a.dataset.sec === current));
+          };
+          window.addEventListener("scroll", syncActive, { passive: true });
+          nav.addEventListener("click", (e) => {
+            const a = e.target.closest("a[data-sec]");
+            if (!a) return;
+            e.preventDefault();
+            document.getElementById("sec-" + a.dataset.sec)?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          });
+          syncActive();
+        }
+
+        function boot() {
+          if (boot.done) return;
+          boot.done = true;
+          document.querySelector(".page-body")?.classList.add("has-form-foot");
+
+          fillSelect("fStatus", D.STATUS);
+          fillSelect("fCategory", D.CATEGORIES, "请选择类别");
+          fillSelect("fDelivery", D.DELIVERIES, "请选择交付方式");
+          fillSelect("fFrequency", D.FREQUENCIES, "请选择频次");
+          fillSelect("fDurationUnit", D.DURATION_UNITS);
+          fillSelect("fAcceptance", D.ACCEPTANCES, "请选择验收方式");
+          fillSelect("fAllowAddon", D.YES_NO, "请选择");
+          fillSelect("fNeedReview", D.YES_NO, "请选择");
+
+          fillChecks("fGoals", D.GOALS);
+          fillChecks("fServiceDays", D.SERVICE_DAYS);
+          fillChecks("fRoles", D.ROLES);
+          fillChecks("fKeyActions", D.KEY_ACTIONS);
+
+          $("dayPresets").innerHTML = D.DAY_PRESETS.map(
+            (p) => `<button type="button" class="btn btn-default" data-preset="${p.id}">${p.label}</button>`
+          ).join("");
+          $("dayPresets").addEventListener("click", (e) => {
+            const btn = e.target.closest("[data-preset]");
+            if (!btn || viewMode) return;
+            const preset = D.DAY_PRESETS.find((p) => p.id === btn.dataset.preset);
+            if (preset) setChecked("fServiceDays", preset.days);
+          });
+
+          setupAnchor();
+
+          if (viewMode) {
+            $("pageTitle").textContent = "查看服务要素";
+            document.body.dataset.tab = "查看服务要素";
+            $("footMeta").textContent = "当前为查看模式";
+          } else if (isEdit) {
+            $("pageTitle").textContent = "编辑服务要素";
+            document.body.dataset.tab = "编辑服务要素";
+            $("footMeta").textContent = codeParam ? `正在编辑：${codeParam}` : "编辑中";
+          } else {
+            $("pageTitle").textContent = "新建服务要素";
+            document.body.dataset.tab = "新建服务要素";
+          }
+
+          if (isEdit || viewMode) {
+            editIndex = data.findIndex((r) => String(r.code) === codeParam);
+            if (editIndex < 0) {
+              AdminUI.toast("未找到该服务要素", "error");
+              fillForm(null);
+            } else {
+              fillForm(data[editIndex]);
+            }
+          } else {
+            fillForm(null);
+          }
+
+          setReadonly(viewMode);
+          $("btnSave")?.addEventListener("click", save);
+          $("fMealSlot")?.addEventListener("change", () => {
+            const slot = $("fMealSlot").value;
+            const map = (window.ServiceElementData && ServiceElementData.MEAL_AUTO_VERIFY) || {};
+            if (slot && map[slot] && !$("fAutoVerifyAt").value) $("fAutoVerifyAt").value = map[slot];
+            if (!slot) $("fAutoVerifyAt").value = "";
+          });
+
+        }
+        AdminUI.onReady(boot);
+      })();
+    </script>
+  </body>
+</html>

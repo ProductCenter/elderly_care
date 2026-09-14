@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>功能清单 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="./css/admin-shell.css" />
+    <style>
+      .hub-page {
+        max-width: 1200px;
+      }
+      .hub-banner {
+        background: linear-gradient(120deg, #1677ff 0%, #236fe7 55%, #3b8cff 100%);
+        color: #fff;
+        border-radius: 10px;
+        padding: 22px 24px;
+        margin-bottom: 16px;
+        box-shadow: 0 8px 24px rgba(22, 119, 255, 0.22);
+      }
+      .hub-banner h1 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 650;
+      }
+      .hub-banner p {
+        margin: 8px 0 0;
+        opacity: 0.92;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      .hub-stats {
+        display: flex;
+        gap: 18px;
+        margin-top: 14px;
+        flex-wrap: wrap;
+      }
+      .hub-stat strong {
+        display: block;
+        font-size: 22px;
+        line-height: 1.2;
+      }
+      .hub-stat span {
+        font-size: 12px;
+        opacity: 0.85;
+      }
+      .mod-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 16px 18px 8px;
+        margin-bottom: 12px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      }
+      .mod-card h2 {
+        margin: 0 0 10px;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .mod-card h2 .count {
+        margin-left: auto;
+        font-size: 12px;
+        font-weight: 500;
+        color: #8c8c8c;
+      }
+      .feat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .feat-link {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 10px 12px;
+        border: 1px solid #f0f0f0;
+        border-radius: 8px;
+        transition: all 0.15s ease;
+        min-height: 56px;
+      }
+      .feat-link:hover {
+        border-color: #91caff;
+        background: #f5faff;
+      }
+      .feat-link.done {
+        border-color: #b7eb8f;
+        background: #f6ffed;
+      }
+      .feat-seq {
+        flex-shrink: 0;
+        min-width: 28px;
+        height: 20px;
+        padding: 0 6px;
+        border-radius: 4px;
+        background: #f5f5f5;
+        color: #8c8c8c;
+        font-size: 11px;
+        line-height: 20px;
+        text-align: center;
+      }
+      .feat-link.done .feat-seq {
+        background: #d9f7be;
+        color: #389e0d;
+      }
+      .feat-name {
+        font-size: 13px;
+        color: #262626;
+        font-weight: 500;
+        line-height: 1.35;
+      }
+      .feat-status {
+        display: block;
+        margin-top: 2px;
+        font-size: 11px;
+        color: #8c8c8c;
+      }
+      .feat-link.done .feat-status {
+        color: #52c41a;
+      }
+      .hub-note {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #8c8c8c;
+        line-height: 1.7;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="admin-app">
+      <header class="top-header">
+        <div class="brand">
+          <img class="brand-logo" src="../assets/clife-logo.png" alt="C-Life" width="28" height="28" />
+          <span class="brand-name">C-Life</span>
+          <span class="brand-title">天津康养运营平台</span>
+        </div>
+        <div class="header-right" style="gap:8px">
+          <a class="btn btn-default" href="./org/elder.html" style="background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.35);color:#fff">长者信息</a>
+          <a class="btn btn-primary" href="./org/room-change.html" style="background:#fff;color:#1677ff">房间变更</a>
+        </div>
+      </header>
+      <main class="page-body hub-page" style="margin:0 auto;width:100%">
+        <div class="hub-banner">
+          <h1>天津项目功能清单 · 静态页面设计进度</h1>
+          <p>
+            依据《天津项目需求表-评估20260708》拆页。页面框架对齐商品管理：顶栏 + 一级导航 + 二级菜单 + 标签栏 + 主内容区。
+            按清单顺序<strong>逐个高质量完成</strong>，已完成页可点击进入。
+          </p>
+          <div class="hub-stats">
+            <div class="hub-stat"><strong id="statDone">0</strong><span>已完成页面</span></div>
+            <div class="hub-stat"><strong id="statTodo">0</strong><span>待设计页面</span></div>
+            <div class="hub-stat"><strong id="statMods">0</strong><span>一级模块</span></div>
+          </div>
+        </div>
+        <div id="modList"></div>
+        <p class="hub-note">
+          范围说明：当前优先落地「管理员端（PC）」与「中心功能需求」。小程序端（楼长/护理员/护士、长者/家属）与支付对接将在 PC 管理端主体完成后推进。
+          管理员端 PC（序号 1–36 + 数据导出）与中心功能需求（运营大屏、托养、食堂、便民、上门、团购、智慧养老、活动/套餐/积分、租赁、合作商）均已全部完成，可从上方清单进入预览。
+        </p>
+      </main>
+    </div>
+    <script src="./js/admin-nav.js?v=20260821c"></script>
+    <script>
+      (() => {
+        const list = document.getElementById("modList");
+        let done = 0;
+        let todo = 0;
+        ADMIN_NAV.primary.forEach((mod) => {
+          const children = mod.children || [];
+          children.forEach((c) => (c.status === "done" ? done++ : todo++));
+          const card = document.createElement("section");
+          card.className = "mod-card";
+          card.innerHTML = `<h2><span class="nav-ico" style="color:var(--primary)">${ADMIN_ICONS[mod.icon] || ""}</span>${mod.label}<span class="count">${children.length} 项</span></h2>`;
+          const grid = document.createElement("div");
+          grid.className = "feat-grid";
+          children.forEach((c) => {
+            const a = document.createElement("a");
+            a.className = `feat-link${c.status === "done" ? " done" : ""}`;
+            a.href =
+              c.status === "done"
+                ? c.href.replace("../", "./")
+                : `./coming-soon.html?title=${encodeURIComponent(c.label)}&seq=${encodeURIComponent(c.seq)}&primary=${encodeURIComponent(mod.id)}`;
+            a.innerHTML = `<span class="feat-seq">${c.seq}</span><span><span class="feat-name">${c.label}</span><span class="feat-status">${c.status === "done" ? "已完成 · 可预览" : "待设计"}</span></span>`;
+            grid.appendChild(a);
+          });
+          card.appendChild(grid);
+          list.appendChild(card);
+        });
+        document.getElementById("statDone").textContent = done;
+        document.getElementById("statTodo").textContent = todo;
+        document.getElementById("statMods").textContent = ADMIN_NAV.primary.length;
+      })();
+    </script>
+  </body>
+</html>

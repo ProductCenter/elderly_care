@@ -44,16 +44,22 @@
     return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`;
   }
 
-  function setPageBg(color) {
+  const PAGE_BG = "#f6eee2";
+
+  function setPageBg() {
     const app = document.getElementById("app");
-    if (!app || !color) return;
-    app.style.setProperty("--wx-bg", color);
-    app.style.backgroundColor = color;
-    const rgb = hexToRgbCsv(color);
-    if (rgb) app.style.setProperty("--wx-bg-rgb", rgb);
+    if (!app) return;
+    app.style.setProperty("--wx-bg", PAGE_BG);
+    app.style.backgroundColor = PAGE_BG;
+    app.style.setProperty("--wx-bg-rgb", "246, 238, 226");
   }
 
   const FALLBACK_BANNER_BG = ["#ffe0cc", "#c6ebd8", "#c9ddf7"];
+  const DEFAULT_BANNER_LINKS = [
+    { linkType: "activity", linkId: "act_massage_trial" },
+    { linkType: "activity", linkId: "act_meal_month" },
+    { linkType: "activity", linkId: "act_free_check" },
+  ];
   const BG_BY_IMAGE = {
     "cover-ai-massage.png": "#ffe0cc",
     "cover-nutrition-meal.png": "#c6ebd8",
@@ -93,9 +99,21 @@
       .replace(/"/g, "&quot;");
   }
 
+  function upgradeLegacyBannerLink(b) {
+    if (!b) return b;
+    const file = String(b.image || "").split("/").pop();
+    if (file === "cover-ai-massage.png" && b.linkType === "product" && b.linkId === "ai_massage") {
+      return { ...b, linkType: "activity", linkId: "act_massage_trial" };
+    }
+    if (file === "cover-nutrition-meal.png" && b.linkType === "article" && b.linkId === "art_nutrition") {
+      return { ...b, linkType: "activity", linkId: "act_meal_month" };
+    }
+    return b;
+  }
+
   /** 上架 Banner；设计器内展示全部；前台若全下架则仍展示全部，避免无图 */
   function getActiveBanners(cfg) {
-    const all = Array.isArray(cfg?.banners) ? cfg.banners.filter(Boolean) : [];
+    const all = Array.isArray(cfg?.banners) ? cfg.banners.filter(Boolean).map(upgradeLegacyBannerLink) : [];
     if (!all.length) return [];
     if (isDesigner) return all;
     const on = all.filter((b) => (b.status || "上架") !== "下架");
@@ -112,9 +130,14 @@
       .map((b, i) => {
         const bg = resolveBannerBg(b, i, cfg);
         const titleHtml = escapeHtml(b.title || "").replace(/\n/g, "<br />");
-        const linkType = b.linkType || "";
-        const linkId = b.linkId || "";
-        const href = window.resolveMallLinkHref?.(linkType, linkId, base) || "";
+        const fallback = DEFAULT_BANNER_LINKS[i] || {};
+        const linkType = b.linkType || fallback.linkType || "";
+        const linkId = b.linkId || fallback.linkId || "";
+        const href =
+          window.resolveMallLinkHref?.(linkType, linkId, base) ||
+          (linkType === "activity" && linkId
+            ? `${base}activity.html?id=${encodeURIComponent(linkId)}`
+            : "");
         const clickable = href ? " is-link" : "";
         return `<article class="hero-slide${i === 0 ? " is-active" : ""}${clickable}" data-index="${i}" data-bg="${escapeHtml(bg)}" data-link-type="${escapeHtml(linkType)}" data-link-id="${escapeHtml(linkId)}" data-href="${escapeHtml(href)}" role="${href ? "link" : "group"}" ${href ? `tabindex="0"` : ""}>
           <img class="hero-img" src="${escapeHtml(resolveAsset(b.image))}" alt="" draggable="false" />
@@ -135,11 +158,9 @@
     if (!cfg) return;
 
     if (Array.isArray(cfg.banners)) {
-      const list = syncHeroSlides(cfg);
-      if (list.length) setPageBg(resolveBannerBg(list[0], 0, cfg));
-    } else if (cfg.pageBg) {
-      setPageBg(cfg.pageBg);
+      syncHeroSlides(cfg);
     }
+    setPageBg();
 
     if (cfg.location) {
       const el = document.querySelector(".loc-name");
@@ -246,7 +267,8 @@
 
   function distText(p) {
     const key = p.productAttr || p.serviceType || "";
-    if (key === "goods") {
+    const feedKey = window.getProductFeedKey ? window.getProductFeedKey(p) : "";
+    if (key === "goods" || feedKey === "mail") {
       if (p.freight === 0 || !p.distance || p.distance.includes("包邮")) return "包邮";
       if (p.distance.includes("运费")) return p.distance;
       return p.distance;
@@ -328,17 +350,12 @@
 
   let filterState = { cat: "all", feed: "instore" };
 
-  const FEED_ATTR_MAP = {
-    instore: ["instore", "package"],
-    home: ["home"],
-    goods: ["goods"],
-  };
+  const FEED_KEYS = ["instore", "home", "goods", "mail"];
 
-  function matchFeedAttr(attrKey) {
+  function matchFeedCard(card) {
     const feed = filterState.feed;
     if (!feed || feed === "all") return true;
-    const list = FEED_ATTR_MAP[feed] || [feed];
-    return list.includes(attrKey || "");
+    return (card.dataset.feed || "") === feed;
   }
 
   function syncFeedTabs() {
@@ -350,7 +367,7 @@
   }
 
   function setFeed(feedKey) {
-    if (!FEED_ATTR_MAP[feedKey]) return;
+    if (!FEED_KEYS.includes(feedKey)) return;
     if (filterState.feed === feedKey) return;
     filterState.feed = feedKey;
     syncFeedTabs();
@@ -417,10 +434,13 @@
         const ops = opsTag(p);
         const point = sellPoint(p);
         const meta = metaLine(p);
-        return `<article class="mt-card" data-cat="${p.cat || ""}" data-attr="${attr.key}" data-id="${p.id}" data-service="${attr.key}" role="link" tabindex="0">
+        const feedKey = window.getProductFeedKey ? window.getProductFeedKey(p) : attr.key;
+        const cornerClass = feedKey === "mail" ? "tag-mail" : attr.mtTagClass;
+        const cornerText = feedKey === "mail" ? "邮寄" : attr.short;
+        return `<article class="mt-card" data-cat="${p.cat || ""}" data-attr="${attr.key}" data-feed="${feedKey}" data-id="${p.id}" data-service="${attr.key}" role="link" tabindex="0">
             <div class="mt-pic">
               <img src="${resolveAsset(p.cover)}" alt="${p.name}" loading="lazy" />
-              <span class="mt-corner ${attr.mtTagClass}">${attr.short}</span>
+              <span class="mt-corner ${cornerClass}">${cornerText}</span>
             </div>
             <div class="mt-body">
               <h3 class="mt-title">${p.name}</h3>
@@ -457,18 +477,11 @@
   function syncKingkongHeight() {
     const grid = document.getElementById("kingkongGrid");
     if (!grid) return;
-    const pages = grid.querySelectorAll(".kk-page");
-    if (!pages.length) {
+    const page = grid.querySelector(".kk-page");
+    if (!page) {
       grid.style.height = "";
       return;
     }
-    const pageW = grid.clientWidth || 1;
-    const idx = Math.min(
-      Math.max(Math.round(grid.scrollLeft / pageW), 0),
-      pages.length - 1
-    );
-    const page = pages[idx];
-    // 子页自身高度不受容器裁剪影响，直接按行数实测
     const h = Math.ceil(page.getBoundingClientRect().height);
     if (h > 0) grid.style.height = `${h}px`;
   }
@@ -532,7 +545,8 @@
         ? " active"
         : "";
     const svg = KK_ICONS[item.icon] || KK_ICONS.care;
-    return `<button type="button" class="kk-item i-${item.icon}${active}" data-id="${item.id}" data-group="${item.group}" title="${item.fullName}">
+    const href = item.href ? ` data-href="${item.href}"` : "";
+    return `<button type="button" class="kk-item i-${item.icon}${active}" data-id="${item.id}" data-group="${item.group}"${href} title="${item.fullName}">
       <span class="kk-icon" aria-hidden="true">${svg}</span>
       <span class="kk-name">${item.name}</span>
     </button>`;
@@ -543,24 +557,24 @@
     const list = window.MALL_KINGKONG || [];
     if (!grid) return;
     const keepLeft = grid.scrollLeft;
-    const pages = getKingkongPageCount();
+    // 金刚区：一行横向翻页滚动，每页为一个 snap 目标
+    const perPage = 5;
+    const pages = Math.max(1, Math.ceil(list.length / perPage));
     const pageHtml = [];
     for (let p = 0; p < pages; p++) {
-      const slice = list.slice(p * KK_PER_PAGE, (p + 1) * KK_PER_PAGE);
-      const rows = Math.max(1, Math.ceil(slice.length / KK_COLS));
+      const slice = list.slice(p * perPage, (p + 1) * perPage);
       pageHtml.push(
-        `<div class="kk-page" data-page="${p}" data-rows="${rows}" style="--kk-rows:${rows}">${slice
+        `<div class="kk-page" data-page="${p}">${slice
           .map(renderKingkongItem)
           .join("")}</div>`
       );
     }
     grid.innerHTML = pageHtml.join("");
     grid.scrollLeft = keepLeft;
-    renderKingkongDots(kkPageIndex);
+    renderKingkongDots(0);
     // 等布局完成后再量高，保证下方模块跟随
     requestAnimationFrame(() => {
       syncKingkongHeight();
-      syncKingkongDotsFromScroll();
     });
   }
 
@@ -581,7 +595,7 @@
       const cardCat = card.dataset.cat || "";
       const cardAttr = card.dataset.attr || card.dataset.service || "";
       const showCat = cat === "all" || cardCat === cat;
-      const showFeed = matchFeedAttr(cardAttr);
+      const showFeed = matchFeedCard(card);
       card.classList.toggle("is-hidden", !(showCat && showFeed));
     });
     const visible = cards.filter((c) => !c.classList.contains("is-hidden"));
@@ -602,6 +616,10 @@
   function setCat(catId) {
     const item = (window.MALL_KINGKONG || []).find((i) => i.id === catId);
     if (!item) return;
+    if (item.href) {
+      location.href = item.href;
+      return;
+    }
     if (catId === "all") {
       filterState.cat = "all";
       renderKingkong();
@@ -636,7 +654,7 @@
   document.getElementById("kingkongGrid")?.addEventListener(
     "scroll",
     () => {
-      syncKingkongDotsFromScroll();
+      syncKingkongHeight();
     },
     { passive: true }
   );
@@ -684,81 +702,12 @@
     toast("超低折扣活动");
   });
 
-  /* ---------- 智伴卡片：首页风格 ---------- */
-  const AGENT_QUESTION_POOL = [
-    [
-      { q: "帮我推荐附近合适的上门照护服务", cat: "care", icon: "🏠", color: "#7b9e6c" },
-      { q: "预约下周的上门助浴", cat: "care", icon: "🛁", color: "#7b9e6c" },
-      { q: "居家照护和到店理疗怎么选？", cat: "care", icon: "🆚", color: "#7b9e6c" },
-    ],
-    [
-      { q: "我这一周血压控制得怎么样？", cat: "health", icon: "🩺", color: "#5a8fc7" },
-      { q: "帮我制定一个控糖饮食计划", cat: "health", icon: "🥗", color: "#5a8fc7" },
-      { q: "睡眠监测报告出来后怎么看？", cat: "health", icon: "😴", color: "#5a8fc7" },
-    ],
-    [
-      { q: "附近哪家食堂的控糖套餐更合适？", cat: "canteen", icon: "🍱", color: "#f08a2a" },
-      { q: "周末有没有适合长者的兴趣活动？", cat: "activity", icon: "🎨", color: "#c979d8" },
-      { q: "帮我安排下周的社区活动", cat: "activity", icon: "📅", color: "#c979d8" },
-    ],
-  ];
-  let agentQuestionIndex = 0;
-
-  function greetByHour(h) {
-    if (h >= 5 && h < 11) return "早上好";
-    if (h >= 11 && h < 13) return "中午好";
-    if (h >= 13 && h < 18) return "下午好";
-    return "晚上好";
-  }
-
-  function subByHour(h) {
-    if (h >= 5 && h < 11) return "食堂、照护、健康服务，想问什么直接点 👇";
-    if (h >= 11 && h < 13) return "看看附近食堂控糖套餐，或约个上门照护 👇";
-    if (h >= 13 && h < 18) return "下午放松一下？查查活动和健康数据 👇";
-    return "晚上好，食堂、照护、健康服务随时问 👇";
-  }
-
-  function renderAgentQuestions(batch) {
-    const list = document.getElementById("agentGuessList");
-    if (!list) return;
-    list.innerHTML = batch
-      .map((it) => {
-        const q = typeof it === "string" ? it : it.q;
-        const icon = typeof it === "string" ? "✨" : it.icon || "✨";
-        const color = typeof it === "string" ? "var(--agent-orange)" : it.color || "var(--agent-orange)";
-        const cat = typeof it === "string" ? "" : it.cat || "";
-        return `<button type="button" class="guess-item" role="listitem" data-q="${q.replace(/"/g, "&quot;")}" data-cat="${cat}" style="--guess-accent: ${color}">
-        <span class="guess-icon" aria-hidden="true">${icon}</span>
-        <span class="guess-text">${q}</span>
-      </button>`;
-      })
-      .join("");
-  }
-
-  function syncAgentClock() {
-    const now = new Date();
-    const lead = document.getElementById("agentGreetLead");
-    const sub = document.getElementById("agentSub");
-    if (lead) lead.textContent = greetByHour(now.getHours());
-    if (sub) sub.textContent = subByHour(now.getHours());
-  }
-
-  renderAgentQuestions(AGENT_QUESTION_POOL[0]);
-  syncAgentClock();
-
-  document.getElementById("agentGuessRefresh")?.addEventListener("click", (e) => {
-    e.stopPropagation();
-    agentQuestionIndex = (agentQuestionIndex + 1) % AGENT_QUESTION_POOL.length;
-    renderAgentQuestions(AGENT_QUESTION_POOL[agentQuestionIndex]);
+  document.getElementById("agentMainEntry")?.addEventListener("click", () => {
+    if (isDesigner) return;
+    location.href = "./agent.html";
   });
 
   document.getElementById("agentCard")?.addEventListener("click", (e) => {
-    const guess = e.target.closest("#agentGuessList .guess-item");
-    if (guess && !isDesigner) {
-      location.href = `./agent.html?q=${encodeURIComponent(guess.dataset.q || "")}`;
-      return;
-    }
-
     const btn = e.target.closest("[data-agent-act]");
     if (!btn || isDesigner) return;
     const act = btn.dataset.agentAct;
@@ -775,13 +724,8 @@
       return;
     }
     if (act === "consult") {
-      location.href = "./agent.html";
+      toast("健康咨询：控糖、血压与到店理疗都可以问我");
     }
-  });
-
-  document.getElementById("agentMainEntry")?.addEventListener("click", () => {
-    if (isDesigner) return;
-    location.href = "./agent.html";
   });
 
   function syncLocName(site) {
@@ -886,6 +830,62 @@
     });
   }
 
+  /* ---------- 广播站：金刚区与智伴卡片之间的一行轮播 ---------- */
+  function initBroadcast() {
+    const section = document.getElementById("broadcast");
+    const track = document.getElementById("broadcastTrack");
+    if (!track || !section) return;
+
+    const items = window.MALL_BROADCASTS || [];
+    if (!items.length) {
+      section.hidden = true;
+      return;
+    }
+
+    // 只保留一个 button，避免多个隐藏按钮干扰无障碍点击命中
+    track.innerHTML = `<button type="button" class="broadcast-item is-current" data-index="0" aria-label="${items[0].title.replace(/"/g, "&quot;")}">
+      <span class="broadcast-item-text">${items[0].title}</span>
+    </button>`;
+    section.dataset.broadcastCurrent = "0";
+
+    let current = 0;
+    const btn = track.querySelector(".broadcast-item");
+
+    function update() {
+      const it = items[current];
+      btn.dataset.index = String(current);
+      btn.setAttribute("aria-label", it.title);
+      btn.querySelector(".broadcast-item-text").textContent = it.title;
+      section.dataset.broadcastCurrent = String(current);
+    }
+
+    const timer = setInterval(() => {
+      current = (current + 1) % items.length;
+      update();
+    }, 3500);
+
+    const more = section.querySelector(".broadcast-more-wrap");
+    more?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (isDesigner) return;
+      location.href = "./broadcast.html";
+    });
+
+    // 点击当前轮播条目进入对应详情
+    section.addEventListener("click", () => {
+      if (isDesigner) return;
+      const it = items[current];
+      if (it?.id) {
+        location.href = `./broadcast-detail.html?id=${encodeURIComponent(it.id)}`;
+        return;
+      }
+      location.href = "./broadcast.html";
+    });
+
+    // 清理（单页应用重入时避免多个 timer）
+    window.addEventListener("beforeunload", () => clearInterval(timer));
+  }
+
   document.getElementById("btnSitePick")?.addEventListener("click", () => {
     openSiteSheet();
   });
@@ -914,12 +914,12 @@
       }
       if (label === "首页") {
         e.preventDefault();
-        location.href = `${base}index.html`;
+        location.href = `${base}home.html`;
         return;
       }
       if (label === "健康") {
         e.preventDefault();
-        location.href = `${base}sleep-todo.html`;
+        location.href = `${base}health-service/index.html`;
         return;
       }
       e.preventDefault();
@@ -982,11 +982,7 @@
       dotsWrap.querySelectorAll(".hero-dot").forEach((dot, i) => {
         dot.classList.toggle("active", i === index);
       });
-      const activeSlide = list[index];
-      const linkedBg =
-        activeSlide?.dataset?.bg ||
-        resolveBannerBg(homeCfg?.banners?.[index], index, homeCfg);
-      if (linkedBg) setPageBg(linkedBg);
+      setPageBg();
     }
 
     function pause() {
@@ -1012,20 +1008,27 @@
       track.style.transform = `translate3d(${pct}%, 0, 0)`;
     }
 
-    function openActiveBannerLink() {
+    function openActiveSlide() {
       if (isDesigner) return;
-      const list = slides();
-      const slide = list[index];
-      const href = slide?.dataset?.href;
+      const slide = slides()[index];
+      if (!slide) return;
+      const fallback = DEFAULT_BANNER_LINKS[index] || {};
+      const href =
+        slide.dataset.href ||
+        window.resolveMallLinkHref?.(
+          slide.dataset.linkType || fallback.linkType,
+          slide.dataset.linkId || fallback.linkId,
+          window.MALL_PAGE_BASE || "./"
+        );
       if (href) location.href = href;
     }
 
     function endDrag() {
       if (!drag.active) return;
       const wasHorizontal = drag.axis === "h";
+      const wasTap = !drag.moved && Math.abs(drag.dx) <= 8;
       const dx = drag.dx;
       const w = drag.width || stage.clientWidth || 1;
-      const wasTap = !drag.moved && Math.abs(dx) < 8 && drag.axis !== "h";
       swipeSurface.classList.remove("is-dragging");
       drag.active = false;
       drag.axis = null;
@@ -1033,8 +1036,8 @@
       track.style.transition = "";
       if (!wasHorizontal) {
         go(index);
-        if (wasTap) openActiveBannerLink();
         resume();
+        if (wasTap) openActiveSlide();
         return;
       }
       const threshold = Math.min(56, w * 0.18);
@@ -1108,6 +1111,27 @@
     swipeSurface.addEventListener("pointerup", onPointerUp);
     swipeSurface.addEventListener("pointercancel", onPointerUp);
 
+    swipeSurface.addEventListener("click", (e) => {
+      if (isDesigner) return;
+      if (e.target.closest(".hero-dot")) return;
+      if (drag.moved || Math.abs(drag.dx) > 8) return;
+      openActiveSlide();
+    });
+    track.addEventListener("click", (e) => {
+      if (isDesigner) return;
+      if (e.target.closest(".hero-dot")) return;
+      if (drag.moved || Math.abs(drag.dx) > 8) return;
+      openActiveSlide();
+    });
+    track.addEventListener("keydown", (e) => {
+      if (isDesigner) return;
+      if (e.key !== "Enter" && e.key !== " ") return;
+      const href = e.target.closest(".hero-slide")?.dataset?.href;
+      if (!href) return;
+      e.preventDefault();
+      location.href = href;
+    });
+
     dotsWrap.addEventListener("click", (e) => {
       const dot = e.target.closest("[data-dot]");
       if (!dot) return;
@@ -1153,6 +1177,7 @@
 
   let homeCfg = loadHomeConfig();
   applyHomeConfig(homeCfg);
+  setPageBg();
   renderCatalog();
   applyFeatureOverride(homeCfg);
   renderKingkong();
@@ -1161,6 +1186,7 @@
   const heroApi = initHeroStage();
   initFeedSticky();
   initSitePicker();
+  initBroadcast();
 
   function initFeedSticky() {
     const filter = document.getElementById("feedFilter");

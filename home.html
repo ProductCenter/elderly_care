@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#f6eee2" />
+    <title>春风康养</title>
+    <link rel="stylesheet" href="./css/home.css?v=20260912-home35" />
+    <link rel="stylesheet" href="./css/app-shell.css?v=20260912-home4" />
+  </head>
+  <body>
+    <div class="phone" id="app">
+      <div class="home-hero-art-wrap" aria-hidden="true">
+        <img class="home-hero-art" src="./assets/home/home-hero-crop.jpg?v=2" alt="" />
+      </div>
+      <div class="status-bar" aria-hidden="true">
+        <span class="status-time" id="statusTime">9:41</span>
+        <div class="status-right">
+          <svg class="status-signal" viewBox="0 0 18 12">
+            <rect x="0" y="8" width="3" height="4" rx="0.5" fill="currentColor" />
+            <rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="currentColor" />
+            <rect x="9" y="2.5" width="3" height="9.5" rx="0.5" fill="currentColor" />
+            <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="currentColor" />
+          </svg>
+          <svg class="status-wifi" viewBox="0 0 16 12">
+            <path
+              fill="currentColor"
+              d="M8 9.6a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8zm0-3.7c1.5 0 2.9.6 3.9 1.6l-1.3 1.3A3.3 3.3 0 0 0 8 8.1c-.9 0-1.7.3-2.4.8L4.3 7.6A5.3 5.3 0 0 1 8 5.9zm0-3.8c2.5 0 4.8 1 6.5 2.7L13.2 6A7.4 7.4 0 0 0 8 3.9 7.4 7.4 0 0 0 2.8 6L1.5 4.8A10.5 10.5 0 0 1 8 2.1z"
+            />
+          </svg>
+          <div class="status-battery"><span class="battery-level"></span></div>
+        </div>
+      </div>
+
+      <header class="home-top">
+        <button type="button" class="home-loc" id="btnSite" aria-label="切换站点">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"
+            />
+          </svg>
+          <span id="siteName">柳州市春风社区中心站</span>
+          <svg class="home-loc-caret" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M8 10l4 4 4-4"
+            />
+          </svg>
+        </button>
+        <div class="mp-capsule" aria-hidden="true">
+          <span class="capsule-more"><i></i><i></i><i></i></span>
+          <i class="capsule-divider"></i>
+          <span class="capsule-home"><i class="ring"></i></span>
+        </div>
+      </header>
+
+      <main class="home-body">
+        <section class="home-hero" aria-label="问候与今日健康">
+          <div class="home-hero-copy">
+            <h1 class="home-greet">早上好，<em>林阿姨</em></h1>
+            <p class="home-date">8月13日&nbsp;&nbsp;农历七月初十</p>
+            <article class="health-card" aria-label="今日健康">
+              <h2>今日健康</h2>
+              <ul>
+                <li>
+                  <div class="hc-top">
+                    <span class="hc-label">血压</span>
+                    <i class="hc-dot" aria-hidden="true"></i>
+                  </div>
+                  <p class="hc-val"><strong>128/76</strong><em>mmHg</em></p>
+                </li>
+                <li>
+                  <div class="hc-top">
+                    <span class="hc-label">心率</span>
+                    <i class="hc-dot" aria-hidden="true"></i>
+                  </div>
+                  <p class="hc-val"><strong>72</strong><em>次/分</em></p>
+                </li>
+                <li>
+                  <div class="hc-top">
+                    <span class="hc-label">步数</span>
+                    <i class="hc-dot is-warn" aria-hidden="true"></i>
+                  </div>
+                  <p class="hc-val"><strong>3,684</strong><em>步</em></p>
+                </li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <a class="ai-cta" href="./health-service/insight.html">
+          <span>AI研判</span>
+          <i class="ai-cta-go" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path fill="currentColor" d="M9 7.2v9.6L17.2 12 9 7.2z" />
+            </svg>
+          </i>
+        </a>
+
+        <a class="remind-card" href="./health-service/calendar.html">
+          <span class="remind-bell" aria-hidden="true">
+            <img src="./assets/home/home-remind-bell-v2.png" alt="" />
+          </span>
+          <span class="remind-copy">
+            <strong>提醒：小儿子李伟的生日</strong>
+            <em>还有5天·5月18日</em>
+          </span>
+        </a>
+
+        <section class="entry-grid" aria-label="快捷入口">
+          <a class="entry-card is-plan" href="./health-service/plan.html">
+            <h3>健康计划</h3>
+            <img src="./assets/home/home-entry-plan-v2.png" alt="" />
+            <span class="entry-go" aria-hidden="true">›</span>
+          </a>
+          <a class="entry-card is-med" href="./health-service/index.html">
+            <h3>用药管理</h3>
+            <img src="./assets/home/home-entry-med-v2.png" alt="" />
+            <span class="entry-go" aria-hidden="true">›</span>
+          </a>
+          <a class="entry-card is-cal" href="./health-service/calendar.html">
+            <h3>家庭日历</h3>
+            <img src="./assets/home/home-entry-calendar-v2.png" alt="" />
+            <span class="entry-go" aria-hidden="true">›</span>
+          </a>
+          <a class="entry-card is-fam" href="./mine.html">
+            <h3>家人时光</h3>
+            <img src="./assets/home/home-entry-family-v2.png" alt="" />
+            <span class="entry-go" aria-hidden="true">›</span>
+          </a>
+        </section>
+
+        <section class="feed-row">
+          <h2 class="feed-title"><i></i>今日动态</h2>
+          <p class="feed-bubble">今天的风<br />很舒服🌤️</p>
+          <a class="feed-more" href="./broadcast.html">全部 <span>›</span></a>
+        </section>
+      </main>
+
+      <nav class="home-tabbar" aria-label="主导航">
+        <a class="tab active" href="./home.html" aria-current="page">
+          <svg viewBox="0 0 24 24">
+            <path
+              fill="currentColor"
+              d="M12 3.4 3.6 10.6V21h5.4v-6.3h6V21h5.4V10.6L12 3.4z"
+            />
+          </svg>
+          <span>首页</span>
+        </a>
+        <a class="tab" href="./health-service/index.html">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 20.4S4.4 15.2 4.4 9.6A4.4 4.4 0 0 1 12 7.2a4.4 4.4 0 0 1 7.6 2.4c0 5.6-7.6 10.8-7.6 10.8z"
+            />
+          </svg>
+          <span>健康</span>
+        </a>
+        <a class="tab-mid" href="./agent.html" aria-label="打开智伴">
+          <span class="tab-avatar">
+            <img src="./assets/home/home-tab-avatar-v2.png" alt="" />
+          </span>
+        </a>
+        <a class="tab" href="./index.html">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linejoin="round"
+              d="M6.2 8.2h11.6l-.8 11.2H7z"
+            />
+            <path
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              d="M9 8.2V6.6a3 3 0 0 1 6 0v1.6"
+            />
+          </svg>
+          <span>商城</span>
+        </a>
+        <a class="tab" href="./mine.html">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="4.2" y="4.2" width="15.6" height="15.6" rx="4.6" stroke="currentColor" stroke-width="1.7" />
+            <circle cx="12" cy="10.1" r="2.15" stroke="currentColor" stroke-width="1.7" />
+            <path
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              d="M7.4 17.2c.8-1.8 2.3-2.7 4.6-2.7s3.8.9 4.6 2.7"
+            />
+          </svg>
+          <span>我的</span>
+        </a>
+      </nav>
+
+      <div class="wx-toast" id="toast" hidden></div>
+      <div class="site-mask" id="siteMask" hidden></div>
+      <div class="site-sheet" id="siteSheet" hidden role="dialog" aria-labelledby="siteSheetTitle">
+        <div class="site-sheet-hd">
+          <strong id="siteSheetTitle">选择服务站点</strong>
+          <button type="button" class="site-sheet-close" id="siteSheetClose">关闭</button>
+        </div>
+        <div class="site-sheet-bd" id="siteList"></div>
+      </div>
+    </div>
+
+    <script src="./js/home.js?v=20260912-home8"></script>
+    <script src="./js/app-shell.js?v=20260912-covers5"></script>
+  </body>
+</html>

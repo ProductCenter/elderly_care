@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>护理任务查询 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css" />
+<link rel="stylesheet" href="../css/admin-list.css" />
+</head>
+<body data-primary="care" data-sub="task" data-tab="护理任务查询" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+  <div class="page-head"><div><h1 class="page-title">护理任务查询</h1><p class="page-desc">查询护理员护理任务完成数据</p></div>
+  <div style="display:flex;gap:8px"><button type="button" class="btn btn-primary" id="btnAdd">+ 补录任务</button></div></div>
+  <div class="stat-row"><div class="stat-card"><div class="k">任务数</div><div class="v" id="stTotal">0</div></div><div class="stat-card"><div class="k">完成率</div><div class="v" id="stRate">0</div></div><div class="stat-card"><div class="k">超时</div><div class="v" id="stLate">0</div></div><div class="stat-card"><div class="k">今日</div><div class="v" id="stToday">0</div></div></div>
+  <div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>长者 / 护理员</label><input class="ctrl" id="qKeyword" placeholder="" /></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="已完成">已完成</option><option value="进行中">进行中</option><option value="超时">超时</option><option value="未开始">未开始</option></select></div><div class="filter-item"><label>楼层</label><select class="ctrl" id="qFloor"><option value="">全部</option><option value="1F">1F</option><option value="2F">2F</option><option value="3F">3F</option><option value="4F">4F</option><option value="5F">5F</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+  <div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>计划时间</th><th>长者</th><th>楼层</th><th>任务</th><th>护理员</th><th>完成时间</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+  <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+  <div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+  <aside class="drawer" id="listDrawer">
+    <div class="drawer-head"><h3 id="drawerTitle">补录任务</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+    <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>长者<span class="req">*</span></label><select class="ctrl" id="fElder"><option value="张秀英">张秀英</option><option value="李建国">李建国</option><option value="陈桂兰">陈桂兰</option><option value="王德福">王德福</option></select></div><div class="form-field"><label>楼层</label><select class="ctrl" id="fFloor"><option value="1F">1F</option><option value="2F">2F</option><option value="3F">3F</option><option value="4F">4F</option><option value="5F">5F</option></select></div><div class="form-field"><label>任务<span class="req">*</span></label><input class="ctrl" id="fTask" placeholder="" /></div><div class="form-field"><label>护理员</label><input class="ctrl" id="fNurse" placeholder="" /></div><div class="form-field"><label>计划时间<span class="req">*</span></label><input class="ctrl" id="fPlan" placeholder="" /></div><div class="form-field"><label>完成时间</label><input class="ctrl" id="fDone" placeholder="" /></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="未开始">未开始</option><option value="进行中">进行中</option><option value="已完成">已完成</option><option value="超时">超时</option></select></div></div></div>
+    <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+  </aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script><script src="../js/admin-shell.js"></script><script src="../js/admin-ui.js"></script><script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle:"\u8865\u5f55\u4efb\u52a1", editTitle:"编辑",
+  rows:[
+    {plan:"2026-07-30 08:00",elder:"李建国",floor:"3F",task:"翻身",nurse:"赵敏",done:"2026-07-30 08:05",status:"已完成"},
+    {plan:"2026-07-30 10:00",elder:"张秀英",floor:"3F",task:"测血压",nurse:"陈静",done:"",status:"进行中"},
+    {plan:"2026-07-29 22:00",elder:"王德福",floor:"1F",task:"夜巡",nurse:"刘芳",done:"2026-07-29 22:40",status:"超时"},
+    {plan:"2026-07-30 14:00",elder:"陈桂兰",floor:"2F",task:"协助活动",nurse:"孙丽",done:"",status:"未开始"},
+  ], columns:[{ key: "plan" },{ key: "elder" },{ key: "floor" },{ key: "task" },{ key: "nurse" },{ key: "done" },{ key: "status", status: true }], filters:[{ id: "qKeyword", match: (r,v) => !v || (String(r.elder||"").includes(v) || String(r.nurse||"").includes(v)) },{ id: "qStatus", match: (r,v) => !v || String(r.status) === v },{ id: "qFloor", match: (r,v) => !v || String(r.floor) === v }],
+  formFields:[{id:"fElder",key:"elder",type:"select",label:"长者",required:true},{id:"fFloor",key:"floor",type:"select",label:"楼层"},{id:"fTask",key:"task",type:"text",label:"任务",required:true},{id:"fNurse",key:"nurse",type:"text",label:"护理员"},{id:"fPlan",key:"plan",type:"text",label:"计划时间",required:true},{id:"fDone",key:"done",type:"text",label:"完成时间"},{id:"fStatus",key:"status",type:"select",label:"状态"}], stats:[{id:"stTotal",html:false,value:(l)=>l.length},{id:"stRate",html:true,value:(l)=>{const d=l.filter(r=>r.status==="已完成").length; return (l.length?Math.round(d/l.length*100):0)+"<em>%</em>";}},{id:"stLate",html:false,value:(l)=>l.filter(r=>r.status==="超时").length},{id:"stToday",html:false,value:(l)=>l.filter(r=>(r.plan||"").startsWith("2026-07-30")).length}],
+  getStatus:(r)=>({text:r.status,cls:r.status==="已完成"?"status-on":r.status==="超时"?"status-repair":"status-busy"}), rowActions:null, onAction:null,
+});
+
+</script>
+</body></html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>乐享活动 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body data-primary="org" data-sub="activity" data-tab="乐享活动" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div><h1 class="page-title">乐享活动</h1><p class="page-desc">管理养老院举办的文娱与主题活动</p></div>
+        <button type="button" class="btn btn-primary" id="btnAdd">+ 发布活动</button>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="k">本月活动</div><div class="v" id="stMonth">0</div></div>
+        <div class="stat-card"><div class="k">报名中</div><div class="v" id="stOpen">0</div></div>
+        <div class="stat-card"><div class="k">已结束</div><div class="v" id="stDone">0</div></div>
+        <div class="stat-card"><div class="k">累计参与</div><div class="v" id="stJoin">0<em>人次</em></div></div>
+      </div>
+      <div class="filter-card">
+        <div class="filter-grid">
+          <div class="filter-item"><label>活动名称</label><input class="ctrl" id="qKeyword" /></div>
+          <div class="filter-item"><label>状态</label>
+            <select class="ctrl" id="qStatus"><option value="">全部</option><option value="open">报名中</option><option value="doing">进行中</option><option value="done">已结束</option></select>
+          </div>
+          <div class="filter-item"><label>类型</label>
+            <select class="ctrl" id="qType"><option value="">全部</option><option>文娱</option><option>康体</option><option>节日</option><option>讲座</option></select>
+          </div>
+          <div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div>
+        </div>
+      </div>
+      <div class="list-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>活动名称</th><th>类型</th><th>时间</th><th>地点</th><th>名额</th><th>已报名</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody id="body"></tbody>
+          </table>
+        </div>
+        <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div>
+      </div>
+      <div class="drawer-mask" data-drawer-mask="actDrawer" data-close-drawer="actDrawer"></div>
+      <aside class="drawer" id="actDrawer">
+        <div class="drawer-head"><h3 id="drawerTitle">发布活动</h3><button type="button" class="drawer-close" data-close-drawer="actDrawer">×</button></div>
+        <div class="drawer-body">
+          <div class="form-grid">
+            <div class="form-field"><label>活动名称<span class="req">*</span></label><input class="ctrl" id="aName" /></div>
+            <div class="form-field"><label>类型</label><select class="ctrl" id="aType"><option>文娱</option><option>康体</option><option>节日</option><option>讲座</option></select></div>
+            <div class="form-field"><label>开始时间</label><input class="ctrl" id="aStart" type="datetime-local" /></div>
+            <div class="form-field"><label>地点</label><input class="ctrl" id="aPlace" /></div>
+            <div class="form-field"><label>名额</label><input class="ctrl" id="aQuota" type="number" value="40" /></div>
+            <div class="form-field"><label>状态</label><select class="ctrl" id="aStatus"><option value="open">报名中</option><option value="doing">进行中</option><option value="done">已结束</option></select></div>
+            <div class="form-field full"><label>活动说明</label><textarea class="ctrl" id="aDesc"></textarea></div>
+          </div>
+        </div>
+        <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="actDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script><script src="../js/admin-shell.js"></script><script src="../js/admin-ui.js"></script><script src="../js/org-activity.js"></script>
+  </body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>分组管理 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css" />
+<link rel="stylesheet" href="../css/admin-list.css" />
+</head>
+<body data-primary="hr" data-sub="group" data-tab="分组管理" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+  <div class="page-head"><div><h1 class="page-title">分组管理</h1><p class="page-desc">管理养老院内所有员工的分组信息</p></div>
+  <div style="display:flex;gap:8px"><button type="button" class="btn btn-primary" id="btnAdd">+ 新增分组</button></div></div>
+  <div class="stat-row"><div class="stat-card"><div class="k">分组数</div><div class="v" id="stTotal">0</div></div><div class="stat-card"><div class="k">启用</div><div class="v" id="stOn">0</div></div><div class="stat-card"><div class="k">覆盖人数</div><div class="v" id="stStaff">0</div></div><div class="stat-card"><div class="k">组长数</div><div class="v" id="stLeaders">0</div></div></div>
+  <div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>分组 / 组长</label><input class="ctrl" id="qKeyword" placeholder="" /></div><div class="filter-item"><label>类型</label><select class="ctrl" id="qType"><option value="">全部</option><option value="护理组">护理组</option><option value="医疗组">医疗组</option><option value="后勤组">后勤组</option><option value="行政组">行政组</option></select></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="启用">启用</option><option value="停用">停用</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+  <div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>分组名称</th><th>类型</th><th>组长</th><th>人数</th><th>负责楼层</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+  <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+  <div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+  <aside class="drawer" id="listDrawer">
+    <div class="drawer-head"><h3 id="drawerTitle">新增分组</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+    <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>分组名称<span class="req">*</span></label><input class="ctrl" id="fName" placeholder="" /></div><div class="form-field"><label>类型</label><select class="ctrl" id="fType"><option value="护理组">护理组</option><option value="医疗组">医疗组</option><option value="后勤组">后勤组</option><option value="行政组">行政组</option></select></div><div class="form-field"><label>组长<span class="req">*</span></label><input class="ctrl" id="fLeader" placeholder="" /></div><div class="form-field"><label>人数</label><input class="ctrl" id="fCount" type="number" value="0" /></div><div class="form-field"><label>负责楼层</label><input class="ctrl" id="fFloors" placeholder="如：3F/4F" /></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="启用">启用</option><option value="停用">停用</option></select></div><div class="form-field full"><label>备注</label><textarea class="ctrl" id="fNote" placeholder=""></textarea></div></div></div>
+    <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+  </aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script><script src="../js/admin-shell.js"></script><script src="../js/admin-ui.js"></script><script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle:"\u65b0\u589e\u5206\u7ec4", editTitle:"编辑",
+  rows:[
+    {name:"护理一组",type:"护理组",leader:"赵敏",count:18,floors:"3F",status:"启用",note:""},
+    {name:"护理二组",type:"护理组",leader:"陈静",count:16,floors:"1F/2F",status:"启用",note:""},
+    {name:"医疗组",type:"医疗组",leader:"李医生",count:8,floors:"全院",status:"启用",note:""},
+    {name:"后勤组",type:"后勤组",leader:"马超",count:14,floors:"全院",status:"启用",note:""},
+    {name:"行政组",type:"行政组",leader:"王悦",count:10,floors:"—",status:"启用",note:""},
+  ], columns:[{ key: "name" },{ key: "type" },{ key: "leader" },{ key: "count" },{ key: "floors" },{ key: "status", status: true }], filters:[{ id: "qKeyword", match: (r,v) => !v || (String(r.name||"").includes(v) || String(r.leader||"").includes(v)) },{ id: "qType", match: (r,v) => !v || String(r.type) === v },{ id: "qStatus", match: (r,v) => !v || String(r.status) === v }],
+  formFields:[{id:"fName",key:"name",type:"text",label:"分组名称",required:true},{id:"fType",key:"type",type:"select",label:"类型"},{id:"fLeader",key:"leader",type:"text",label:"组长",required:true},{id:"fCount",key:"count",type:"number",label:"人数",default:0},{id:"fFloors",key:"floors",type:"text",label:"负责楼层"},{id:"fStatus",key:"status",type:"select",label:"状态"},{id:"fNote",key:"note",type:"textarea",label:"备注"}], stats:[{id:"stTotal",html:false,value:(l)=>l.length},{id:"stOn",html:false,value:(l)=>l.filter(r=>r.status==="启用").length},{id:"stStaff",html:false,value:(l)=>l.reduce((s,r)=>s+r.count,0)},{id:"stLeaders",html:false,value:(l)=>new Set(l.map(r=>r.leader)).size}],
+  getStatus:(r)=>({text:r.status,cls:r.status==="启用"?"status-on":"status-off"}), rowActions:null, onAction:null,
+});
+
+</script>
+</body></html>

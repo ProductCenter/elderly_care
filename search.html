@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <title>搜索</title>
+    <link rel="stylesheet" href="./css/search.css?v=20260820-mp2" />    <link rel="stylesheet" href="./css/app-shell.css?v=20260912-covers5" />
+
+  </head>
+  <body>
+    <div class="phone" id="app">
+      <div class="status-bar" aria-hidden="true">
+        <span class="status-time">20:22</span>
+        <div class="status-right">
+          <svg class="status-signal" viewBox="0 0 18 12">
+            <rect x="0" y="8" width="3" height="4" rx="0.5" fill="currentColor" />
+            <rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="currentColor" />
+            <rect x="9" y="2.5" width="3" height="9.5" rx="0.5" fill="currentColor" />
+            <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="currentColor" opacity=".35" />
+          </svg>
+          <span class="status-net">5G</span>
+          <div class="status-battery"><span class="battery-level"></span></div>
+        </div>
+      </div>
+
+      <header class="mp-search-nav">
+        <label class="mp-search-field">
+          <svg class="mp-search-ico" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+            />
+          </svg>
+          <input
+            id="searchInput"
+            type="search"
+            enterkeyhint="search"
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+            placeholder="搜索服务、商品、套餐"
+          />
+          <button class="mp-clear" type="button" id="btnClear" hidden aria-label="清除">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+              />
+            </svg>
+          </button>
+        </label>
+        <button class="mp-cancel" type="button" id="btnCancel">取消</button>
+        <div class="mp-capsule" aria-hidden="true">
+          <span class="capsule-more"><i></i><i></i><i></i></span>
+          <i class="capsule-divider"></i>
+          <span class="capsule-home"><i class="ring"></i></span>
+        </div>
+      </header>
+
+      <main class="page-body">
+        <section class="panel" id="discoverPanel">
+          <div class="block" id="historyBlock" hidden>
+            <div class="block-hd">
+              <h2>历史搜索</h2>
+              <button type="button" class="icon-btn" id="btnClearHistory" aria-label="清空历史">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    fill="currentColor"
+                    d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div class="chip-row" id="historyChips"></div>
+          </div>
+
+          <div class="block">
+            <div class="block-hd">
+              <h2>热门搜索</h2>
+            </div>
+            <ol class="hot-rank" id="hotRank"></ol>
+          </div>
+
+          <div class="block">
+            <div class="block-hd">
+              <h2>猜你想搜</h2>
+            </div>
+            <div class="chip-row" id="guessChips"></div>
+          </div>
+        </section>
+
+        <section class="panel panel-flush" id="suggestPanel" hidden>
+          <ul class="suggest-list" id="suggestList"></ul>
+        </section>
+
+        <section class="panel panel-flush" id="resultPanel" hidden>
+          <div class="result-meta" id="resultMeta"></div>
+          <div class="result-list" id="resultList"></div>
+          <div class="empty" id="resultEmpty" hidden>
+            <div class="empty-ico" aria-hidden="true">○</div>
+            <p class="empty-title">未找到相关结果</p>
+            <p class="empty-sub">换个词试试，或看看热门搜索</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./js/products.js?v=20260912-covers5"></script>
+    <script src="./js/search.js?v=20260912-covers5"></script>
+    <script src="./js/app-shell.js?v=20260912-covers5"></script>
+
+  </body>
+</html>

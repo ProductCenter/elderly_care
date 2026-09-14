@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>商户售后处理 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="fulfill" data-sub="aftersale-merchant" data-tab="商户售后处理" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">商户售后处理</h1>
+    <p class="page-desc">商户审核售后：同意/拒绝、设置退款金额、退货地址，并跟踪退货进度</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">履约总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 处理售后</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">待处理</div><div class="v" id="stWait">0</div></div><div class="stat-card"><div class="k">待退货</div><div class="v" id="stReturn">0</div></div><div class="stat-card"><div class="k">已完结</div><div class="v" id="stDone">0</div></div><div class="stat-card"><div class="k">退款合计</div><div class="v" id="stAmt">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>申请/商户</label><input class="ctrl" id="qKeyword" placeholder=""/></div><div class="filter-item"><label>结论</label><select class="ctrl" id="qDecision"><option value="">全部</option><option value="同意退款">同意退款</option><option value="同意退货退款">同意退货退款</option><option value="拒绝">拒绝</option><option value="待处理">待处理</option></select></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="待处理">待处理</option><option value="待退货">待退货</option><option value="已完结">已完结</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>申请单</th><th>商户</th><th>处理结论</th><th>退款金额</th><th>退货地址</th><th>退货进度</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">处理售后</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>申请单<span class="req">*</span></label><input class="ctrl" id="fApplyId" type="text"  placeholder=""/></div><div class="form-field"><label>商户<span class="req">*</span></label><input class="ctrl" id="fMerchant" type="text"  placeholder=""/></div><div class="form-field"><label>处理结论</label><select class="ctrl" id="fDecision"><option value="同意退款">同意退款</option><option value="同意退货退款">同意退货退款</option><option value="拒绝">拒绝</option><option value="待处理">待处理</option></select></div><div class="form-field"><label>退款金额</label><input class="ctrl" id="fRefundAmt" type="number" value="0" placeholder=""/></div><div class="form-field"><label>退货地址</label><input class="ctrl" id="fReturnAddr" type="text"  placeholder=""/></div><div class="form-field"><label>退货进度</label><select class="ctrl" id="fProgress"><option value="—">—</option><option value="待寄回">待寄回</option><option value="运输中">运输中</option><option value="已收货">已收货</option><option value="已完结">已完结</option></select></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="待处理">待处理</option><option value="待退货">待退货</option><option value="已完结">已完结</option></select></div><div class="form-field"><label>拒绝原因</label><textarea class="ctrl" id="fReject" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "处理售后",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "fulfill:aftersale-merchant",
+  rows: [{"applyId":"AS26073101","merchant":"春风朝阳门店","decision":"待处理","refundAmt":0,"returnAddr":"—","progress":"—","status":"待处理","rejectReason":""},{"applyId":"AS26072803","merchant":"心相伴机构","decision":"同意退款","refundAmt":15,"returnAddr":"—","progress":"已完结","status":"已完结","rejectReason":""}],
+  columns: [{key:"applyId"},{key:"merchant"},{key:"decision"},{key:"refundAmt"},{key:"returnAddr"},{key:"progress"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.applyId||"").includes(v)||String(r.merchant||"").includes(v)},{id:"qDecision",match:(r,v)=>!v||String(r.decision)===v},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v}],
+  formFields: [{id:"fApplyId",key:"applyId",type:"text",label:"申请单",required:true},{id:"fMerchant",key:"merchant",type:"text",label:"商户",required:true},{id:"fDecision",key:"decision",type:"select",label:"处理结论",required:false},{id:"fRefundAmt",key:"refundAmt",type:"number",label:"退款金额",required:false,default:0},{id:"fReturnAddr",key:"returnAddr",type:"text",label:"退货地址",required:false},{id:"fProgress",key:"progress",type:"select",label:"退货进度",required:false},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fReject",key:"rejectReason",type:"text",label:"拒绝原因",required:false}],
+  stats: [{id:"stWait",html:false,value:(l)=>l.filter(r=>r.status==="待处理").length},{id:"stReturn",html:false,value:(l)=>l.filter(r=>r.status==="待退货").length},{id:"stDone",html:false,value:(l)=>l.filter(r=>r.status==="已完结").length},{id:"stAmt",html:false,value:(l)=>l.reduce((s,r)=>s+Number(r.refundAmt||0),0)}],
+  getStatus:(r)=>(r.status==="已完结"?{text:r.status,cls:"status-on"}:r.status==="待退货"?{text:r.status,cls:"status-warn"}:{text:r.status,cls:"status-off"})
+});
+</script>
+</body>
+</html>

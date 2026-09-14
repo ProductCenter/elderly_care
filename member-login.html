@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <title>会员登录</title>
+    <link rel="stylesheet" href="./css/member.css" />    <link rel="stylesheet" href="./css/app-shell.css?v=20260912-covers5" />
+
+  </head>
+  <body>
+    <div class="phone" id="app">
+      <div class="status-bar" aria-hidden="true">
+        <span class="status-time">11:48</span>
+        <div class="status-right"><span class="status-net">5G</span></div>
+      </div>
+      <header class="nav-bar">
+        <button class="nav-back" type="button" id="btnBack" aria-label="返回">‹</button>
+        <h1 class="nav-title">会员登录</h1>
+        <span class="nav-side"></span>
+      </header>
+      <main class="page-body login-body">
+        <section class="login-hero">
+          <div class="login-mark">康</div>
+          <h2>春风康养会员</h2>
+          <p>登录后享受等级折扣、积分与专属权益</p>
+        </section>
+        <section class="card login-card">
+          <label class="field">
+            <span>手机号</span>
+            <input id="phone" type="tel" maxlength="11" placeholder="请输入手机号" value="13800001234" />
+          </label>
+          <label class="field">
+            <span>昵称（新用户）</span>
+            <input id="name" type="text" maxlength="12" placeholder="可选，首次登录自动注册" />
+          </label>
+          <button type="button" class="btn-primary block" id="btnLogin">登录 / 注册</button>
+          <button type="button" class="btn-ghost block" id="btnDemo">一键演示账号</button>
+          <p class="hint">演示：13800001234 为金卡会员安辉；新号自动注册并送 50 积分。</p>
+        </section>
+      </main>
+      <div class="wx-toast" id="toast" hidden></div>
+    </div>
+    <script src="./js/member.js"></script>
+    <script src="./js/member-login.js"></script>    <script src="./js/app-shell.js?v=20260912-covers5"></script>
+
+  </body>
+</html>

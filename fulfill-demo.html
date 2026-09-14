@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+    <title>履约能力演示 · 物流 / 租赁 / 售后 / 接口</title>
+    <style>
+      :root {
+        --bg: #f3f5f8;
+        --card: #fff;
+        --text: #1f2329;
+        --muted: #646a73;
+        --line: #e5e6eb;
+        --brand: #2563eb;
+        --ok: #0f766e;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        background: linear-gradient(180deg, #e8efff 0%, var(--bg) 40%);
+        color: var(--text);
+        min-height: 100vh;
+      }
+      .wrap { max-width: 820px; margin: 0 auto; padding: 28px 20px 48px; }
+      h1 { margin: 0 0 8px; font-size: 24px; }
+      .lead { margin: 0 0 20px; color: var(--muted); line-height: 1.6; font-size: 14px; }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 18px;
+        margin-bottom: 14px;
+        box-shadow: 0 8px 24px rgba(31, 35, 41, 0.04);
+      }
+      .card h2 { margin: 0 0 8px; font-size: 16px; }
+      .card p { margin: 0 0 12px; color: var(--muted); font-size: 13px; line-height: 1.55; }
+      .links { display: grid; gap: 8px; }
+      .links a {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 11px 12px; border: 1px solid var(--line); border-radius: 10px;
+        text-decoration: none; color: var(--text); background: #fafbff; font-size: 13px;
+      }
+      .links a:hover { border-color: #93c5fd; color: var(--brand); }
+      .links em { font-style: normal; color: var(--muted); font-size: 12px; }
+      .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        height: 34px; padding: 0 12px; border-radius: 8px;
+        background: var(--brand); color: #fff; text-decoration: none; font-size: 13px;
+      }
+      .btn.ghost { background: #fff; color: var(--brand); border: 1px solid #c9d7ff; }
+      .btn.ok { background: var(--ok); }
+      .flow {
+        display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+        font-size: 13px; color: var(--muted); margin-bottom: 8px;
+      }
+      .flow b { color: var(--text); }
+      .flow i { font-style: normal; color: #c0c4cc; }
+    </style>    <link rel="stylesheet" href="./css/app-shell.css?v=20260912-covers5" />
+
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>履约能力演示</h1>
+      <p class="lead">按需求附件覆盖：实物物流履约、辅具租赁、售后客服与争议、第三方履约接口。管理端列表页 + C 端入口可联调演示。</p>
+
+      <div class="card">
+        <div class="flow">
+          <b>链路</b>
+          <span>下单发货/租赁</span><i>→</i>
+          <span>轨迹/服务回传</span><i>→</i>
+          <span>收货/归还验收</span><i>→</i>
+          <span>售后/押金</span>
+        </div>
+        <div class="row">
+          <a class="btn ok" href="./admin/fulfill/index.html">打开履约总览（B 端）</a>
+          <a class="btn ghost" href="./mine.html">我的（C 端入口）</a>
+          <a class="btn ghost" href="./package-demo.html">套餐权益演示</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>C 端页面</h2>
+        <p>用户侧：物流查询与收货、辅具租赁、售后申请。</p>
+        <div class="links">
+          <a href="./logistics-track.html">物流轨迹 / 收货确认 <em>C</em></a>
+          <a href="./aid-rental.html">辅具租赁（租用·续租·归还） <em>C</em></a>
+          <a href="./aftersale-apply.html">售后申请（含押金申诉） <em>C</em></a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>B 端 · 实物物流履约</h2>
+        <div class="links">
+          <a href="./admin/fulfill/logistics-ship.html">商户订单发货 <em>F1</em></a>
+          <a href="./admin/fulfill/logistics-track.html">物流轨迹查询 <em>F2</em></a>
+          <a href="./admin/fulfill/logistics-receive.html">收货确认 <em>F3</em></a>
+          <a href="./admin/fulfill/logistics-exception.html">物流异常监控 <em>F4</em></a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>B 端 · 辅具租赁</h2>
+        <div class="links">
+          <a href="./admin/fulfill/aid-project.html">租赁项目发布 <em>F5</em></a>
+          <a href="./admin/fulfill/aid-stock.html">租赁库存与状态 <em>F6</em></a>
+          <a href="./admin/fulfill/aid-deposit.html">租期租金与押金 <em>F7</em></a>
+          <a href="./admin/fulfill/aid-renew.html">租赁续约 <em>F8</em></a>
+          <a href="./admin/fulfill/aid-delivery.html">租赁交付与归还 <em>F9</em></a>
+          <a href="./admin/fulfill/aid-inspect.html">归还验收与损坏赔付 <em>F10</em></a>
+          <a href="./admin/fulfill/aid-refund.html">押金退还与申诉 <em>F11</em></a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>B 端 · 售后客服与争议</h2>
+        <div class="links">
+          <a href="./admin/fulfill/aftersale-apply.html">用户售后申请 <em>F12</em></a>
+          <a href="./admin/fulfill/aftersale-merchant.html">商户售后处理 <em>F13</em></a>
+          <a href="./admin/fulfill/aftersale-cs.html">人工客服工作台 <em>F14</em></a>
+          <a href="./admin/fulfill/aftersale-dispute.html">平台争议介入 <em>F15</em></a>
+          <a href="./admin/fulfill/aftersale-stat.html">售后统计与整改 <em>F16</em></a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>B 端 · 第三方履约接口</h2>
+        <div class="links">
+          <a href="./admin/fulfill/api-dispatch.html">服务任务下发与查询 <em>F17</em></a>
+          <a href="./admin/fulfill/api-record.html">服务记录回传 <em>F18</em></a>
+          <a href="./admin/fulfill/api-sync.html">核销交付归还同步 <em>F19</em></a>
+          <a href="./admin/fulfill/api-exception.html">异常上报与协同 <em>F20</em></a>
+        </div>
+      </div>
+    </div>    <script src="./js/app-shell.js?v=20260912-covers5"></script>
+
+  </body>
+</html>

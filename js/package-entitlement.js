@@ -75,6 +75,34 @@
     return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "").slice(0, 16);
   }
 
+  
+  const DEFAULT_MEAL_CUTOFF = { 早餐: "09:00", 午餐: "13:00", 晚餐: "19:00" };
+
+  function mealCutoffOf(line) {
+    if (line.autoVerifyAt) return line.autoVerifyAt;
+    const map =
+      (window.ServiceElementData && ServiceElementData.MEAL_AUTO_VERIFY) ||
+      (window.ServiceCatalog && typeof ServiceCatalog.mealAutoVerifyAt === "function"
+        ? null
+        : DEFAULT_MEAL_CUTOFF);
+    if (map) return map[line.mealType] || map[line.mealSlot] || "";
+    if (window.ServiceCatalog) return ServiceCatalog.mealAutoVerifyAt(line.mealType || line.mealSlot) || "";
+    return DEFAULT_MEAL_CUTOFF[line.mealType] || "";
+  }
+
+  function hmToMinutes(hm) {
+    const m = String(hm || "").match(/^(\d{1,2}):(\d{2})$/);
+    if (!m) return null;
+    return Number(m[1]) * 60 + Number(m[2]);
+  }
+
+  function isPastMealCutoff(line, now = new Date()) {
+    const hm = mealCutoffOf(line);
+    const mins = hmToMinutes(hm);
+    if (mins == null) return false;
+    return now.getHours() * 60 + now.getMinutes() >= mins;
+  }
+
   function todayKey(d = new Date()) {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   }
@@ -108,6 +136,8 @@
         {
           id: "item_1",
           name: "午餐正餐",
+          mealType: "午餐",
+          autoVerifyAt: "13:00",
           provider: "心相伴机构",
           mode: "station",
           verifyMode: "count",
@@ -120,6 +150,8 @@
         {
           id: "item_2",
           name: "午餐饮品",
+          mealType: "午餐",
+          autoVerifyAt: "13:00",
           provider: "心相伴机构",
           mode: "station",
           verifyMode: "count",
@@ -132,6 +164,8 @@
         {
           id: "item_3",
           name: "晚餐正餐",
+          mealType: "晚餐",
+          autoVerifyAt: "19:00",
           provider: "心相伴机构",
           mode: "station",
           verifyMode: "count",
@@ -144,6 +178,8 @@
         {
           id: "item_4",
           name: "晚餐饮品",
+          mealType: "晚餐",
+          autoVerifyAt: "19:00",
           provider: "心相伴机构",
           mode: "station",
           verifyMode: "count",
@@ -189,6 +225,9 @@
         totalQuota,
         usedQuota: 0,
         dailyUsed: {}, // { '2026-07-30': 1 }
+          mealType: it.mealType || it.mealSlot || "",
+        autoVerifyAt: it.autoVerifyAt || "",
+        canteenId: it.canteenId || packageDef.canteenId || "",
       };
     });
 
@@ -206,6 +245,12 @@
         salePrice: packageDef.salePrice ?? order.payAmount,
         intro: packageDef.intro,
         storeId: packageDef.storeId || order.storeId,
+        canteenId: packageDef.canteenId || "",
+        lockCanteen: packageDef.lockCanteen !== false,
+        allowCrossCanteen: packageDef.allowCrossCanteen === true,
+        recommendGroup: packageDef.recommendGroup || "",
+        saleChannels: packageDef.saleChannels || [],
+        fulfillMode: packageDef.fulfillMode || "",
       },
       entitlement: {
         validFrom: now,
@@ -304,6 +349,12 @@
     if (now < ent.validFrom) return { ok: false, message: "权益尚未生效" };
     if (now > ent.validTo) return { ok: false, message: "权益已过期" };
 
+    const lockedCanteen = order.package?.canteenId;
+    if (order.package?.lockCanteen !== false && lockedCanteen && opts.canteenId && opts.canteenId !== lockedCanteen) {
+      return { ok: false, message: "本权益已锁定供餐食堂，不支持跨食堂核销/消费" };
+    }
+
+
     // 幂等
     if (requestId && (ent.redeemLogs || []).some((l) => l.requestId === requestId)) {
       return { ok: true, message: "重复请求已忽略", order, duplicate: true };
@@ -393,6 +444,61 @@
     return issueEntitlement(order, pkg);
   }
 
+
+  /**
+   * 按餐次节点自动核销：到点未人工核销则扣减当日额度（记为系统缺席核销）
+   * 例：午餐过 13:00、晚餐过 19:00
+   */
+  function autoRedeemByMealCutoff(orderId, now = new Date()) {
+    const order = getOrder(orderId);
+    if (!order || order.fulfillment !== "package") return { ok: false, message: "订单不存在或非套餐" };
+    if (order.status === "refunded") return { ok: false, message: "已退款" };
+    const ent = order.entitlement;
+    if (!ent) return { ok: false, message: "无权益" };
+    const ts = now.getTime();
+    if (ts < ent.validFrom || ts > ent.validTo) return { ok: false, message: "不在有效期" };
+
+    const day = todayKey(now);
+    const wd = String(now.getDay());
+    const done = [];
+
+    for (const line of ent.lines || []) {
+      if (!isPastMealCutoff(line, now)) continue;
+      if (!(line.weekdays || []).map(String).includes(wd)) continue;
+      if (remainOf(line) <= 0) continue;
+      const usedToday = Number(line.dailyUsed?.[day] || 0);
+      if (usedToday >= (line.timesPerDay || 1)) continue;
+      // 已有人工核销则跳过
+      const manual = (ent.redeemLogs || []).some(
+        (l) => todayKey(new Date(l.at)) === day && (l.items || []).includes(line.itemId) && l.source !== "auto-cutoff"
+      );
+      if (manual) continue;
+
+      line.usedQuota = (line.usedQuota || 0) + 1;
+      line.dailyUsed = line.dailyUsed || {};
+      line.dailyUsed[day] = usedToday + 1;
+      done.push(line.itemId);
+    }
+
+    if (!done.length) return { ok: true, message: "无需自动核销", order, redeemed: [] };
+
+    ent.redeemLogs = ent.redeemLogs || [];
+    ent.redeemLogs.unshift({
+      requestId: `auto_${day}_${done.join("_")}`,
+      at: ts,
+      operator: "系统",
+      storeId: order.package?.storeId || order.storeId,
+      canteenId: order.package?.canteenId || "",
+      items: done,
+      source: "auto-cutoff",
+      note: "过餐次节点自动核销",
+    });
+    syncPackageStatus(order);
+    order.updatedAt = ts;
+    upsertOrder(order);
+    return { ok: true, message: `已按餐次节点自动核销 ${done.length} 项`, order, redeemed: done };
+  }
+
   global.PackageEntitlement = {
     DRAFT_KEY,
     getDraftPackage,
@@ -406,6 +512,9 @@
     totalRemain,
     remainOf,
     ensureDemoOrder,
+    autoRedeemByMealCutoff,
+    mealCutoffOf,
+    isPastMealCutoff,
     syncPackageStatus,
     todayKey,
     jsWeekday,

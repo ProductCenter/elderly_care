@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>用药记录 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body data-primary="health" data-sub="medication" data-tab="用药记录" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div><h1 class="page-title">用药记录</h1><p class="page-desc">管理院内长者的所有用药信息</p></div>
+        <div style="display:flex;gap:8px"><button type="button" class="btn btn-primary" id="btnAdd">+ 登记用药</button></div>
+      </div>
+      <div class="stat-row"><div class="stat-card"><div class="k">今日用药人次</div><div class="v" id="stToday">0</div></div><div class="stat-card"><div class="k">待执行</div><div class="v" id="stTodo">0</div></div><div class="stat-card"><div class="k">已执行</div><div class="v" id="stDone">0</div></div><div class="stat-card"><div class="k">拒服/漏服</div><div class="v" id="stSkip">0</div></div></div>
+      
+      <div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>长者 / 药品</label><input class="ctrl" id="qKeyword" placeholder="" /></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="待执行">待执行</option><option value="已执行">已执行</option><option value="拒服">拒服</option><option value="漏服">漏服</option></select></div><div class="filter-item"><label>给药途径</label><select class="ctrl" id="qRoute"><option value="">全部</option><option value="口服">口服</option><option value="外用">外用</option><option value="注射">注射</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+      <div class="list-card">
+        <div class="table-wrap"><table class="data-table"><thead><tr><th>计划时间</th><th>长者</th><th>药品</th><th>剂量</th><th>途径</th><th>状态</th><th>执行人</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+        <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div>
+      </div>
+      <div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+      <aside id="listDrawer" class="drawer">
+        <div class="drawer-head"><h3 id="drawerTitle">登记用药</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+        <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>长者<span class="req">*</span></label><select class="ctrl" id="fElder"><option value="张秀英">张秀英</option><option value="李建国">李建国</option><option value="陈桂兰">陈桂兰</option><option value="王德福">王德福</option></select></div><div class="form-field"><label>药品名称<span class="req">*</span></label><input class="ctrl" id="fDrug" placeholder="" /></div><div class="form-field"><label>剂量<span class="req">*</span></label><input class="ctrl" id="fDose" placeholder="" /></div><div class="form-field"><label>途径</label><select class="ctrl" id="fRoute"><option value="口服">口服</option><option value="外用">外用</option><option value="注射">注射</option></select></div><div class="form-field"><label>计划时间<span class="req">*</span></label><input class="ctrl" id="fTime" placeholder="" /></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="待执行">待执行</option><option value="已执行">已执行</option><option value="拒服">拒服</option><option value="漏服">漏服</option></select></div><div class="form-field"><label>执行人</label><input class="ctrl" id="fBy" placeholder="" /></div><div class="form-field full"><label>备注</label><textarea class="ctrl" id="fNote" placeholder=""></textarea></div></div></div>
+        <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/admin-page-list.js"></script>
+    <script>
+      AdminPageList.mount({
+        addTitle: "\u767b\u8bb0\u7528\u836f",
+        editTitle: "编辑",
+        rows: [
+    {time:"2026-07-30 08:00",elder:"张秀英",drug:"氨氯地平",dose:"5mg×1片",route:"口服",status:"已执行",by:"李护士",note:""},
+    {time:"2026-07-30 08:00",elder:"李建国",drug:"二甲双胍",dose:"0.5g×1片",route:"口服",status:"待执行",by:"",note:"餐中服"},
+    {time:"2026-07-30 12:00",elder:"李建国",drug:"阿司匹林肠溶片",dose:"100mg×1片",route:"口服",status:"待执行",by:"",note:""},
+    {time:"2026-07-29 20:00",elder:"王德福",drug:"阿托伐他汀",dose:"20mg×1片",route:"口服",status:"已执行",by:"刘护士",note:""},
+  ],
+        columns: [{ key: "time" }, { key: "elder" }, { key: "drug" }, { key: "dose" }, { key: "route" }, { key: "status", status: true }, { key: "by" }],
+        filters: [{ id: "qKeyword", match: (r,v) => !v || (String(r.elder||"").includes(v) || String(r.drug||"").includes(v)) }, { id: "qStatus", match: (r,v) => !v || String(r.status) === v }, { id: "qRoute", match: (r,v) => !v || String(r.route) === v }],
+        formFields: [{ id: "fElder", key: "elder", type: "select", label: "长者", required: true }, { id: "fDrug", key: "drug", type: "text", label: "药品名称", required: true }, { id: "fDose", key: "dose", type: "text", label: "剂量", required: true }, { id: "fRoute", key: "route", type: "select", label: "途径" }, { id: "fTime", key: "time", type: "text", label: "计划时间", required: true }, { id: "fStatus", key: "status", type: "select", label: "状态" }, { id: "fBy", key: "by", type: "text", label: "执行人" }, { id: "fNote", key: "note", type: "textarea", label: "备注" }],
+        stats: [{ id: "stToday", html: false, value: (list)=>list.filter(r=>(r.time||"").startsWith("2026-07-30")).length }, { id: "stTodo", html: false, value: (list)=>list.filter(r=>r.status==="待执行").length }, { id: "stDone", html: false, value: (list)=>list.filter(r=>r.status==="已执行").length }, { id: "stSkip", html: false, value: (list)=>list.filter(r=>r.status==="拒服"||r.status==="漏服").length }],
+        getStatus: (r)=>({text:r.status, cls:r.status==="已执行"?"status-on":r.status==="待执行"?"status-busy":"status-repair"}),
+        rowActions: (r,i)=> r.status==="待执行" ? `<button type="button" class="link" data-act="done" data-i="${i}">确认用药</button> <button type="button" class="link" data-edit="${i}">编辑</button>` : `<button type="button" class="link" data-edit="${i}">编辑</button>`,
+        onAction: (act,i,data,render)=>{ if(act==="done"){ data[i].status="已执行"; data[i].by=data[i].by||"值班护士"; render(); } },
+      });
+    </script>
+  </body>
+</html>

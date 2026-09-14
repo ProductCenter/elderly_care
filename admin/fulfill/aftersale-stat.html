@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>售后统计与整改 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="fulfill" data-sub="aftersale-stat" data-tab="售后统计与整改" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">售后统计与整改</h1>
+    <p class="page-desc">按商户/品类/服务类型统计退款率、投诉率、处理时效，生成整改台账</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">履约总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 新增台账</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">预警</div><div class="v" id="stWarn">0</div></div><div class="stat-card"><div class="k">整改中</div><div class="v" id="stFix">0</div></div><div class="stat-card"><div class="k">已验收</div><div class="v" id="stOk">0</div></div><div class="stat-card"><div class="k">均时效(h)</div><div class="v" id="stAvg">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>商户/品类</label><input class="ctrl" id="qKeyword" placeholder=""/></div><div class="filter-item"><label>整改状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="正常">正常</option><option value="预警">预警</option><option value="整改中">整改中</option><option value="已验收">已验收</option></select></div><div class="filter-item"><label>周期</label><input class="ctrl" id="q" placeholder=""/></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>周期</th><th>商户</th><th>品类/服务</th><th>退款率%</th><th>投诉率%</th><th>均处理(h)</th><th>整改状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">新增台账</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>周期<span class="req">*</span></label><input class="ctrl" id="fPeriod" type="text"  placeholder="2026-07"/></div><div class="form-field"><label>商户<span class="req">*</span></label><input class="ctrl" id="fMerchant" type="text"  placeholder=""/></div><div class="form-field"><label>品类/服务<span class="req">*</span></label><input class="ctrl" id="fCategory" type="text"  placeholder=""/></div><div class="form-field"><label>退款率%</label><input class="ctrl" id="fRefundRate" type="number" value="0" placeholder=""/></div><div class="form-field"><label>投诉率%</label><input class="ctrl" id="fComplaintRate" type="number" value="0" placeholder=""/></div><div class="form-field"><label>均处理(h)</label><input class="ctrl" id="fAvgHours" type="number" value="0" placeholder=""/></div><div class="form-field"><label>整改状态</label><select class="ctrl" id="fStatus"><option value="正常">正常</option><option value="预警">预警</option><option value="整改中">整改中</option><option value="已验收">已验收</option></select></div><div class="form-field"><label>整改措施</label><textarea class="ctrl" id="fAction" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "新增台账",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "fulfill:aftersale-stat",
+  rows: [{"period":"2026-07","merchant":"春风朝阳门店","category":"实物商品","refundRate":2.1,"complaintRate":0.8,"avgHours":18,"status":"正常","action":""},{"period":"2026-07","merchant":"心相伴机构","category":"服务套餐","refundRate":5.6,"complaintRate":2.4,"avgHours":36,"status":"预警","action":"加强核销培训"}],
+  columns: [{key:"period"},{key:"merchant"},{key:"category"},{key:"refundRate"},{key:"complaintRate"},{key:"avgHours"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.merchant||"").includes(v)||String(r.category||"").includes(v)},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v},{id:"q",field:"period"}],
+  formFields: [{id:"fPeriod",key:"period",type:"text",label:"周期",required:true},{id:"fMerchant",key:"merchant",type:"text",label:"商户",required:true},{id:"fCategory",key:"category",type:"text",label:"品类/服务",required:true},{id:"fRefundRate",key:"refundRate",type:"number",label:"退款率%",required:false,default:0},{id:"fComplaintRate",key:"complaintRate",type:"number",label:"投诉率%",required:false,default:0},{id:"fAvgHours",key:"avgHours",type:"number",label:"均处理(h)",required:false,default:0},{id:"fStatus",key:"status",type:"select",label:"整改状态",required:false},{id:"fAction",key:"action",type:"text",label:"整改措施",required:false}],
+  stats: [{id:"stWarn",html:false,value:(l)=>l.filter(r=>r.status==="预警").length},{id:"stFix",html:false,value:(l)=>l.filter(r=>r.status==="整改中").length},{id:"stOk",html:false,value:(l)=>l.filter(r=>r.status==="已验收").length},{id:"stAvg",html:false,value:(l)=>{const a=l.filter(r=>r.avgHours);return a.length?Math.round(a.reduce((s,r)=>s+Number(r.avgHours),0)/a.length):0}}],
+  getStatus:(r)=>(r.status==="正常"||r.status==="已验收"?{text:r.status,cls:"status-on"}:r.status==="整改中"?{text:r.status,cls:"status-warn"}:{text:r.status,cls:"status-off"})
+});
+</script>
+</body>
+</html>

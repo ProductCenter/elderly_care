@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#dcefe8" />
+    <title>健康洞察</title>
+    <link rel="stylesheet" href="./css/app.css?v=20260801split" />    <link rel="stylesheet" href="../css/app-shell.css?v=20260912-covers5" />
+
+  </head>
+  <body>
+    <div class="phone" id="app">
+      <div class="status-bar" aria-hidden="true">
+        <span class="status-time">20:35</span>
+        <div class="status-right">
+          <svg class="status-signal" viewBox="0 0 18 12">
+            <rect x="0" y="8" width="3" height="4" rx="0.5" fill="currentColor" />
+            <rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="currentColor" />
+            <rect x="9" y="2.5" width="3" height="9.5" rx="0.5" fill="currentColor" />
+            <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="currentColor" opacity=".35" />
+          </svg>
+          <span class="status-net">5G</span>
+          <div class="status-battery"><span class="battery-level"></span></div>
+        </div>
+      </div>
+
+      <header class="nav-bar">
+        <div class="nav-side">
+          <a class="nav-back" href="./index.html" aria-label="返回康养服务">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        </div>
+        <h1 class="nav-title">健康洞察</h1>
+        <div class="nav-side">
+          <div class="mp-capsule" aria-label="小程序菜单">
+            <button class="capsule-more" type="button" aria-label="更多">
+              <span></span><span></span><span></span>
+            </button>
+            <i class="capsule-divider" aria-hidden="true"></i>
+            <button class="capsule-home" type="button" aria-label="关闭">
+              <span class="ring"></span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="page-body has-cta">
+        <span class="chip"><i class="chip-dot"></i>演示长者已连接</span>
+
+        <section class="hero rise">
+          <div class="hero-kicker">Health Insight</div>
+          <h1 class="hero-title">看见一位活力老人的健康全貌，生成可落地的服务方案</h1>
+          <p class="hero-lead">
+            极简洞察，不做复杂分析。一键生成专属服务方案——以专业服务交付为主线，而非商品货架。
+          </p>
+          <div class="hero-visual" role="img" aria-label="活力长者健康画像">
+            <div class="hero-caption">
+              <strong id="elderPortrait">陈德福 · 活力长者健康画像</strong>
+              <span id="elderTags">晨练坚持 · 血压稳态 · 社区活跃</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="section rise rise-2">
+          <div class="section-head">
+            <h2 class="section-title">长者健康概览</h2>
+            <p class="section-desc">个人活力指标一览，支撑方案生成</p>
+          </div>
+          <div class="metric-grid" id="metrics"></div>
+        </section>
+
+        <section class="section rise rise-3">
+          <div class="section-head">
+            <h2 class="section-title">常见体征</h2>
+            <p class="section-desc">最新测量值 · 一眼看清当前状态</p>
+          </div>
+          <div class="vital-list" id="vitals"></div>
+        </section>
+
+        <section class="section rise rise-4">
+          <div class="section-head">
+            <h2 class="section-title">近 7 日趋势</h2>
+            <p class="section-desc">关键体征变化示意，不做复杂运算分析</p>
+          </div>
+          <div class="trend-list" id="trends"></div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <h2 class="section-title">活力画像维度</h2>
+            <p class="section-desc">运动 · 稳态 · 社交，刻画一位活力长者</p>
+          </div>
+          <div class="family-row" id="family"></div>
+        </section>
+
+        <section class="section">
+          <div class="panel">
+            <div class="panel-label">核心链路</div>
+            <h3>健康洞察 → 服务生成</h3>
+            <p>基于体征与趋势，直接生成结构化服务方案，体验方案交付闭环。</p>
+          </div>
+        </section>
+      </main>
+
+      <div class="cta-bar">
+        <div class="btn-row">
+          <a class="btn btn-ghost" href="./index.html">康养服务</a>
+          <button class="btn btn-primary" type="button" id="btnGenerate">
+            生成专属服务方案
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./js/data.js?v=20260801split"></script>
+    <script>
+      (function () {
+        const HS = window.HealthService || {};
+        const { ELDER = {}, VITALITY = [], METRICS = [], VITALS = [], TRENDS = [] } = HS;
+
+        if (ELDER.portrait) document.getElementById("elderPortrait").textContent = ELDER.portrait;
+        if (ELDER.tags) document.getElementById("elderTags").textContent = ELDER.tags;
+
+        document.getElementById("metrics").innerHTML = METRICS.map(
+          (m) => `
+          <article class="metric">
+            <div class="metric-label">${m.label}</div>
+            <div class="metric-value">${m.value}<em>${m.unit}</em></div>
+            <div class="metric-note">${m.note}</div>
+          </article>`
+        ).join("");
+
+        document.getElementById("vitals").innerHTML = VITALS.map(
+          (v) => `
+          <article class="vital-card">
+            <div>
+              <div class="vital-name">${v.name}</div>
+              <div class="vital-value">${v.value}<em>${v.unit}</em></div>
+              <div class="vital-time">${v.time}</div>
+            </div>
+            <span class="vital-status ${v.tone}">${v.status}</span>
+          </article>`
+        ).join("");
+
+        document.getElementById("trends").innerHTML = TRENDS.map((t) => {
+          const min = Math.min(...t.points);
+          const max = Math.max(...t.points);
+          const span = max - min || 1;
+          const warn = t.tone.includes("warn");
+          const bars = t.points
+            .map((p, i) => {
+              const h = 18 + ((p - min) / span) * 34;
+              const last = i === t.points.length - 1 ? "is-last" : "";
+              const w = warn ? "is-warn" : "";
+              return `
+                <div class="spark-bar ${last} ${w}">
+                  <i style="height:${h.toFixed(1)}px"></i>
+                  <span>${t.labels[i]}</span>
+                </div>`;
+            })
+            .join("");
+          const latest = t.points[t.points.length - 1];
+          return `
+            <article class="trend-card">
+              <div class="trend-hd">
+                <div>
+                  <strong>${t.name}</strong>
+                  <span>${t.range}</span>
+                </div>
+                <span class="trend-change ${t.tone}">${t.change}</span>
+              </div>
+              <div class="spark" aria-hidden="true">${bars}</div>
+              <div class="trend-foot">
+                <span>近 7 日</span>
+                <span>最新 <b>${latest}</b> ${t.unit}</span>
+              </div>
+            </article>`;
+        }).join("");
+
+        document.getElementById("family").innerHTML = VITALITY.map(
+          (m) => `
+          <article class="member">
+            <div class="member-avatar" style="background:${m.color}">${m.initial}</div>
+            <div class="member-name">${m.name}</div>
+            <div class="member-role">${m.role}</div>
+            <span class="member-tag">${m.tag}</span>
+          </article>`
+        ).join("");
+
+        document.getElementById("btnGenerate").addEventListener("click", () => {
+          const btn = document.getElementById("btnGenerate");
+          btn.disabled = true;
+          btn.textContent = "正在生成…";
+          setTimeout(() => {
+            location.href = "./plan.html";
+          }, 420);
+        });
+      })();
+    </script>    <script src="../js/app-shell.js?v=20260912-covers5"></script>
+
+  </body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>健康档案 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body data-primary="health" data-sub="archive" data-tab="健康档案" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">健康档案</h1>
+          <p class="page-desc">管理院内长者的健康信息档案</p>
+        </div>
+        <div style="display:flex;gap:8px"><button type="button" class="btn btn-primary" id="btnAdd">+ 新建档案</button></div>
+      </div>
+      <div class="stat-row"><div class="stat-card"><div class="k">档案总数</div><div class="v" id="stTotal">0</div></div><div class="stat-card"><div class="k">高风险</div><div class="v" id="stRisk">0</div></div><div class="stat-card"><div class="k">慢病管理</div><div class="v" id="stChronic">0</div></div><div class="stat-card"><div class="k">本月更新</div><div class="v" id="stUpdate">0</div></div></div>
+      
+      <div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>长者 / 床位</label><input class="ctrl" id="qKeyword" placeholder="" /></div><div class="filter-item"><label>风险等级</label><select class="ctrl" id="qRisk"><option value="">全部</option><option value="高">高</option><option value="中">中</option><option value="低">低</option></select></div><div class="filter-item"><label>血型</label><select class="ctrl" id="qBlood"><option value="">全部</option><option value="A">A</option><option value="B">B</option><option value="AB">AB</option><option value="O">O</option><option value="不详">不详</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+      <div class="list-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>长者</th><th>床位</th><th>血型</th><th>过敏史</th><th>慢性病</th><th>风险</th><th>责任护士</th><th>更新时间</th><th>操作</th></tr></thead>
+            <tbody id="body"></tbody>
+          </table>
+        </div>
+        <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div>
+      </div>
+      <div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+      <aside class="drawer" id="listDrawer">
+        <div class="drawer-head"><h3 id="drawerTitle">新建档案</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+        <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>长者<span class="req">*</span></label><select class="ctrl" id="fElder"><option value="张秀英">张秀英</option><option value="李建国">李建国</option><option value="陈桂兰">陈桂兰</option><option value="王德福">王德福</option></select></div><div class="form-field"><label>床位<span class="req">*</span></label><input class="ctrl" id="fBed" placeholder="如：3F 312-A" /></div><div class="form-field"><label>血型</label><select class="ctrl" id="fBlood"><option value="A">A</option><option value="B">B</option><option value="AB">AB</option><option value="O">O</option><option value="不详">不详</option></select></div><div class="form-field"><label>风险等级</label><select class="ctrl" id="fRisk"><option value="低">低</option><option value="中">中</option><option value="高">高</option></select></div><div class="form-field"><label>过敏史</label><input class="ctrl" id="fAllergy" placeholder="无则填无" /></div><div class="form-field"><label>慢性病</label><input class="ctrl" id="fChronic" placeholder="" /></div><div class="form-field"><label>责任护士</label><input class="ctrl" id="fNurse" placeholder="" /></div><div class="form-field full"><label>健康摘要</label><textarea class="ctrl" id="fNote" placeholder=""></textarea></div></div></div>
+        <div class="drawer-foot">
+          <button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button>
+          <button type="button" class="btn btn-primary" id="btnSave">保存</button>
+        </div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/admin-page-list.js"></script>
+    <script>
+      AdminPageList.mount({
+        addTitle: "\u65b0\u5efa\u6863\u6848",
+        editTitle: "编辑",
+        rows: [
+    {elder:"张秀英",bed:"3F 312-A",blood:"A",allergy:"青霉素",chronic:"高血压",risk:"中",nurse:"李护士",updated:"2026-07-28",note:"软食，夜间巡视"},
+    {elder:"李建国",bed:"3F 312-B",blood:"O",allergy:"无",chronic:"糖尿病、冠心病",risk:"高",nurse:"王护士",updated:"2026-07-29",note:"血糖监测"},
+    {elder:"陈桂兰",bed:"2F 215-A",blood:"不详",allergy:"无",chronic:"无",risk:"低",nurse:"赵护士",updated:"2026-07-05",note:""},
+    {elder:"王德福",bed:"1F 108-B",blood:"B",allergy:"无",chronic:"脑梗后遗症",risk:"高",nurse:"刘护士",updated:"2026-07-20",note:"助行"},
+  ],
+        columns: [{ key: "elder" }, { key: "bed" }, { key: "blood" }, { key: "allergy" }, { key: "chronic" }, { key: "risk", status: true }, { key: "nurse" }, { key: "updated" }],
+        filters: [{ id: "qKeyword", match: (r,v) => !v || (String(r.elder||"").includes(v) || String(r.bed||"").includes(v)) }, { id: "qRisk", match: (r,v) => !v || String(r.risk) === v }, { id: "qBlood", match: (r,v) => !v || String(r.blood) === v }],
+        formFields: [{ id: "fElder", key: "elder", type: "select", label: "长者", required: true }, { id: "fBed", key: "bed", type: "text", label: "床位", required: true }, { id: "fBlood", key: "blood", type: "select", label: "血型" }, { id: "fRisk", key: "risk", type: "select", label: "风险等级" }, { id: "fAllergy", key: "allergy", type: "text", label: "过敏史" }, { id: "fChronic", key: "chronic", type: "text", label: "慢性病" }, { id: "fNurse", key: "nurse", type: "text", label: "责任护士" }, { id: "fNote", key: "note", type: "textarea", label: "健康摘要" }],
+        stats: [{ id: "stTotal", html: false, value: (list)=>list.length }, { id: "stRisk", html: false, value: (list)=>list.filter(r=>r.risk==="高").length }, { id: "stChronic", html: false, value: (list)=>list.filter(r=>r.chronic && r.chronic!=="无").length }, { id: "stUpdate", html: false, value: (list)=>list.filter(r=>(r.updated||"").startsWith("2026-07")).length }],
+        getStatus: (r)=>({text:r.risk, cls:r.risk==="高"?"status-repair":r.risk==="中"?"status-busy":"status-on"}),
+        rowActions: null,
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>会员管理 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body
+    data-primary="center"
+    data-sub="member"
+    data-tab="会员管理"
+    data-asset-prefix="../../assets"
+    data-index-href="../index.html"
+  >
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">会员管理</h1>
+          <p class="page-desc">C 端注册会员与 B 端录入共用一套会员档案；可调整积分、停用账号</p>
+        </div>
+        <div style="display: flex; gap: 8px">
+          <a class="btn btn-default" href="../center/member-level.html">等级配置</a>
+          <button type="button" class="btn btn-primary" id="btnAdd">+ 新增会员</button>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="k">会员总数</div><div class="v" id="stTotal">0</div></div>
+        <div class="stat-card"><div class="k">有效会员</div><div class="v" id="stActive">0</div></div>
+        <div class="stat-card"><div class="k">金卡+</div><div class="v" id="stGoldPlus">0</div></div>
+        <div class="stat-card"><div class="k">积分余额合计</div><div class="v" id="stPoints">0</div></div>
+      </div>
+      <div class="filter-card">
+        <div class="filter-grid">
+          <div class="filter-item">
+            <label>姓名 / 手机号</label>
+            <input class="ctrl" id="qKeyword" placeholder="搜索" />
+          </div>
+          <div class="filter-item">
+            <label>等级</label>
+            <select class="ctrl" id="qLevel">
+              <option value="">全部</option>
+              <option value="normal">普通会员</option>
+              <option value="silver">银卡会员</option>
+              <option value="gold">金卡会员</option>
+              <option value="diamond">钻石会员</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label>状态</label>
+            <select class="ctrl" id="qStatus">
+              <option value="">全部</option>
+              <option value="active">有效</option>
+              <option value="disabled">停用</option>
+            </select>
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
+            <button type="button" class="btn btn-default" id="btnReset">重置</button>
+          </div>
+        </div>
+      </div>
+      <div class="list-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>会员编号</th>
+                <th>姓名</th>
+                <th>手机号</th>
+                <th>等级</th>
+                <th>成长值</th>
+                <th>积分</th>
+                <th>站点</th>
+                <th>状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="body"></tbody>
+          </table>
+        </div>
+        <div class="pager">
+          <span id="pagerInfo">共 0 条</span>
+          <div class="pager-btns"></div>
+        </div>
+      </div>
+
+      <div class="drawer-mask" data-drawer-mask="memberDrawer" data-close-drawer="memberDrawer"></div>
+      <aside class="drawer" id="memberDrawer">
+        <div class="drawer-head">
+          <h3 id="drawerTitle">新增会员</h3>
+          <button type="button" class="drawer-close" data-close-drawer="memberDrawer">×</button>
+        </div>
+        <div class="drawer-body">
+          <div class="form-grid">
+            <div class="form-field">
+              <label>姓名<span class="req">*</span></label>
+              <input class="ctrl" id="fName" />
+            </div>
+            <div class="form-field">
+              <label>手机号<span class="req">*</span></label>
+              <input class="ctrl" id="fPhone" maxlength="11" />
+            </div>
+            <div class="form-field">
+              <label>所属站点</label>
+              <input class="ctrl" id="fStation" placeholder="如：春风社区中心站 · 朝阳门店" />
+            </div>
+            <div class="form-field">
+              <label>成长值</label>
+              <input class="ctrl" id="fGrowth" type="number" min="0" value="0" />
+            </div>
+            <div class="form-field">
+              <label>积分余额</label>
+              <input class="ctrl" id="fPoints" type="number" min="0" value="0" />
+            </div>
+            <div class="form-field">
+              <label>状态</label>
+              <select class="ctrl" id="fStatus">
+                <option value="active">有效</option>
+                <option value="disabled">停用</option>
+              </select>
+            </div>
+            <div class="form-field" id="adjustWrap" hidden>
+              <label>积分调整（可正负）</label>
+              <input class="ctrl" id="fAdjust" type="number" value="0" />
+            </div>
+            <div class="form-field" id="adjustReasonWrap" hidden>
+              <label>调整事由</label>
+              <input class="ctrl" id="fAdjustReason" placeholder="如：活动补发" />
+            </div>
+          </div>
+        </div>
+        <div class="drawer-foot">
+          <button type="button" class="btn btn-default" data-close-drawer="memberDrawer">取消</button>
+          <button type="button" class="btn btn-primary" id="btnSave">保存</button>
+        </div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../../js/member.js"></script>
+    <script src="../js/admin-member.js"></script>
+  </body>
+</html>

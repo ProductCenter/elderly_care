@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>异常上报与协同 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="fulfill" data-sub="api-exception" data-tab="异常上报与协同" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">异常上报与协同</h1>
+    <p class="page-desc">第三方上报无法联系用户、地址错误、临时取消、设备损坏、突发情况等，协同商户/平台处理</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">履约总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 登记异常</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">待协同</div><div class="v" id="stWait">0</div></div><div class="stat-card"><div class="k">处理中</div><div class="v" id="stDoing">0</div></div><div class="stat-card"><div class="k">已闭环</div><div class="v" id="stDone">0</div></div><div class="stat-card"><div class="k">异常数</div><div class="v" id="stAll">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>异常/任务</label><input class="ctrl" id="qKeyword" placeholder=""/></div><div class="filter-item"><label>异常类型</label><select class="ctrl" id="qType"><option value="">全部</option><option value="无法联系用户">无法联系用户</option><option value="地址错误">地址错误</option><option value="临时取消">临时取消</option><option value="设备损坏">设备损坏</option><option value="突发情况">突发情况</option></select></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="待协同">待协同</option><option value="处理中">处理中</option><option value="已闭环">已闭环</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>异常号</th><th>任务号</th><th>第三方</th><th>异常类型</th><th>协同方</th><th>上报时间</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">登记异常</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>异常号<span class="req">*</span></label><input class="ctrl" id="fExId" type="text"  placeholder=""/></div><div class="form-field"><label>任务号<span class="req">*</span></label><input class="ctrl" id="fTaskId" type="text"  placeholder=""/></div><div class="form-field"><label>第三方<span class="req">*</span></label><input class="ctrl" id="fProvider" type="text"  placeholder=""/></div><div class="form-field"><label>异常类型<span class="req">*</span></label><select class="ctrl" id="fType"><option value="无法联系用户">无法联系用户</option><option value="地址错误">地址错误</option><option value="临时取消">临时取消</option><option value="设备损坏">设备损坏</option><option value="突发情况">突发情况</option></select></div><div class="form-field"><label>协同方</label><select class="ctrl" id="fOwner"><option value="商户">商户</option><option value="平台">平台</option><option value="商户+平台">商户+平台</option></select></div><div class="form-field"><label>上报时间<span class="req">*</span></label><input class="ctrl" id="fCreatedAt" type="date"  placeholder=""/></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="待协同">待协同</option><option value="处理中">处理中</option><option value="已闭环">已闭环</option></select></div><div class="form-field"><label>详情</label><textarea class="ctrl" id="fDetail" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "登记异常",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "fulfill:api-exception",
+  rows: [{"exId":"AX26073101","taskId":"TP26073101","provider":"安心到家","type":"无法联系用户","owner":"商户+平台","createdAt":"2026-07-31","status":"待协同","detail":"电话无人接听3次"},{"exId":"AX26072902","taskId":"TP26072811","provider":"康护通","type":"地址错误","owner":"商户","createdAt":"2026-07-29","status":"已闭环","detail":"已更正门牌号并改约"}],
+  columns: [{key:"exId"},{key:"taskId"},{key:"provider"},{key:"type"},{key:"owner"},{key:"createdAt"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.exId||"").includes(v)||String(r.taskId||"").includes(v)},{id:"qType",match:(r,v)=>!v||String(r.type)===v},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v}],
+  formFields: [{id:"fExId",key:"exId",type:"text",label:"异常号",required:true},{id:"fTaskId",key:"taskId",type:"text",label:"任务号",required:true},{id:"fProvider",key:"provider",type:"text",label:"第三方",required:true},{id:"fType",key:"type",type:"select",label:"异常类型",required:true},{id:"fOwner",key:"owner",type:"select",label:"协同方",required:false},{id:"fCreatedAt",key:"createdAt",type:"date",label:"上报时间",required:true},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fDetail",key:"detail",type:"text",label:"详情",required:false}],
+  stats: [{id:"stWait",html:false,value:(l)=>l.filter(r=>r.status==="待协同").length},{id:"stDoing",html:false,value:(l)=>l.filter(r=>r.status==="处理中").length},{id:"stDone",html:false,value:(l)=>l.filter(r=>r.status==="已闭环").length},{id:"stAll",html:false,value:(l)=>l.length}],
+  getStatus:(r)=>(r.status==="已闭环"?{text:r.status,cls:"status-on"}:r.status==="处理中"?{text:r.status,cls:"status-warn"}:{text:r.status,cls:"status-off"})
+});
+</script>
+</body>
+</html>

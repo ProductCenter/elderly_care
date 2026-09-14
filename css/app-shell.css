@@ -1,0 +1,118 @@
+/* 春风康养 · 全局 App 外壳统一（智伴暖橙主题） */
+:root {
+  --app-bg: #f6eee2;
+  --app-bg-2: #f3e6d4;
+  --app-text: #2b241c;
+  --app-text-2: #8a7a68;
+  --app-text-3: #b8a894;
+  --app-orange: #f08a2a;
+  --app-orange-deep: #e36a12;
+  --app-orange-light: #fff5eb;
+  --app-line: rgba(90, 62, 32, 0.08);
+  --app-safe-top: env(safe-area-inset-top, 0px);
+  --app-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* 仅对显式启用 App 主题的 phone 生效，避免污染后台页面 */
+.phone.app-theme {
+  background:
+    radial-gradient(120% 70% at 100% 8%, #ffe6c4 0%, transparent 52%),
+    linear-gradient(180deg, #f8f0e4 0%, #f3e6d4 38%, #f6eee2 100%);
+}
+
+.phone.app-theme .status-bar {
+  height: calc(44px + var(--app-safe-top));
+  padding: calc(12px + var(--app-safe-top)) 18px 0;
+  background: transparent;
+  color: var(--app-text);
+}
+
+.phone.app-theme .status-battery {
+  border-color: currentColor;
+}
+
+.phone.app-theme .status-battery::after {
+  background: currentColor;
+}
+
+.phone.app-theme .battery-level {
+  background: currentColor;
+}
+
+.phone.app-theme .nav-bar {
+  background: transparent;
+  border-bottom-color: var(--app-line);
+}
+
+.phone.app-theme .nav-back,
+.phone.app-theme .nav-title {
+  color: var(--app-text);
+}
+
+.phone.app-theme .mp-capsule {
+  width: 87px;
+  height: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(120, 80, 30, 0.08);
+}
+
+.phone.app-theme .capsule-more span,
+.phone.app-theme .capsule-more i {
+  background: #191919;
+}
+
+.phone.app-theme .capsule-home .ring,
+.phone.app-theme .capsule-home .ring::after {
+  border-color: #191919;
+}
+
+/* tabBar 统一为智伴暖橙主题 */
+.phone.app-theme .tabbar,
+.phone.app-theme nav.tabbar {
+  background: var(--app-bg);
+  border-top: 0.5px solid var(--app-line);
+}
+
+.phone.app-theme .tab,
+.phone.app-theme .tab-item {
+  color: var(--app-text-2);
+}
+
+.phone.app-theme .tab.active,
+.phone.app-theme .tab-item.active {
+  color: var(--app-orange);
+}
+
+/* 底部操作栏统一 */
+.phone.app-theme .bottom-bar {
+  background: rgba(255, 255, 255, 0.96);
+  border-top: 0.5px solid var(--app-line);
+  backdrop-filter: blur(8px);
+}
+
+/* 页面容器通用文字色兜底 */
+.phone.app-theme {
+  color: var(--app-text);
+}
+
+/* 桌面端手机框 */
+@media (min-width: 420px) {
+  body:has(.phone.app-theme) {
+    background: #111;
+    display: grid;
+    place-items: center;
+    padding: 24px 0;
+  }
+
+  .phone.app-theme {
+    height: min(844px, calc(100dvh - 48px));
+    min-height: 0;
+    border-radius: 28px;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.06),
+      0 24px 64px rgba(0, 0, 0, 0.45);
+  }
+}

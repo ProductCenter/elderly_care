@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>首页装修 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+    <link rel="stylesheet" href="../../css/mall.css?v=20260820-hd-bn1" />
+    <link rel="stylesheet" href="./css/home-designer.css?v=20260820-hd-bn1" />
+  </head>
+  <body
+    data-primary="mall"
+    data-sub="home-designer"
+    data-tab="首页装修"
+    data-flush="true"
+    data-designer="1"
+    data-asset-prefix="../../assets"
+    data-index-href="../index.html"
+  >
+    <div id="admin-root"></div>
+
+    <template id="page-content">
+      <div class="hd-page">
+        <div class="page-head hd-page-head">
+          <div>
+            <h1 class="page-title">首页装修</h1>
+            <p class="page-desc">所见即所得 · 点击模块或左侧结构进行编辑，保存后同步商城首页</p>
+          </div>
+          <div class="hd-actions">
+            <span class="hd-sync" id="hdSyncHint" title="保存后写入本机配置"><i></i>本机已同步</span>
+            <button type="button" class="btn btn-default" id="btnReset">恢复默认</button>
+            <a class="btn btn-default" id="btnOpenMall" href="../../index.html?from=designer" target="_blank" rel="noopener">打开预览</a>
+            <button type="button" class="btn btn-primary" id="btnSave">保存并同步</button>
+          </div>
+        </div>
+
+        <div class="hd-workspace">
+          <aside class="hd-rail" aria-label="页面结构">
+            <div class="hd-rail-head">
+              <h2>页面模块</h2>
+              <p>点选模块，右侧配置属性</p>
+            </div>
+            <nav class="hd-layers" id="hdLayerNav"></nav>
+            <div class="hd-rail-foot">
+              <p>预览与线上首页同源渲染</p>
+            </div>
+          </aside>
+
+          <section class="hd-canvas">
+            <div class="hd-stage-bar">
+              <div>
+                <h2>商城首页效果</h2>
+                <p>390 × 844 · 实时预览</p>
+              </div>
+              <span class="hd-chip"><i></i>实时预览</span>
+            </div>
+            <div class="hd-device-wrap">
+                <div class="phone" id="app">
+                <div class="hero-stage" id="heroStage" data-edit="banner" aria-roledescription="轮播" aria-label="首页背景">
+                  <div class="hero-track" id="heroTrack">
+                    <article class="hero-slide is-active" data-index="0" data-tone="warm" data-bg="#ffe0cc">
+                      <img class="hero-img" src="../../assets/cover-ai-massage.png" alt="" draggable="false" />
+                      <div class="hero-shade"></div>
+                      <div class="hero-promo">
+                        <p class="hero-eyebrow">春风优选 · 到店理疗</p>
+                        <h2 class="hero-title">AI 舒压<br />一键放松</h2>
+                        <p class="hero-sub">智能理疗 · 限时体验</p>
+                      </div>
+                    </article>
+                    <article class="hero-slide" data-index="1" data-tone="fresh" data-bg="#c6ebd8">
+                      <img class="hero-img" src="../../assets/cover-nutrition-meal.png" alt="" draggable="false" />
+                      <div class="hero-shade"></div>
+                      <div class="hero-promo">
+                        <p class="hero-eyebrow">营养配餐 · 社区直达</p>
+                        <h2 class="hero-title">暖心简餐<br />每日新鲜</h2>
+                        <p class="hero-sub">低盐少油 · 适合长者</p>
+                      </div>
+                    </article>
+                    <article class="hero-slide" data-index="2" data-tone="calm" data-bg="#c9ddf7">
+                      <img class="hero-img" src="../../assets/cover-health-check.png" alt="" draggable="false" />
+                      <div class="hero-shade"></div>
+                      <div class="hero-promo">
+                        <p class="hero-eyebrow">健康守护 · 上门服务</p>
+                        <h2 class="hero-title">体检套餐<br />安心守护</h2>
+                        <p class="hero-sub">专业评估 · 报告解读</p>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+
+                <div class="status-bar" aria-hidden="true">
+                  <span class="status-time">10:43</span>
+                  <div class="status-right">
+                    <svg class="status-signal" viewBox="0 0 18 12">
+                      <rect x="0" y="8" width="3" height="4" rx="0.5" fill="currentColor" />
+                      <rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="currentColor" />
+                      <rect x="9" y="2.5" width="3" height="9.5" rx="0.5" fill="currentColor" />
+                      <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="currentColor" opacity=".35" />
+                    </svg>
+                    <span class="status-net">5G</span>
+                    <div class="status-battery"><span class="battery-level"></span></div>
+                  </div>
+                </div>
+
+                <div class="nav-bar">
+                  <button class="nav-search" type="button" id="navSearch" aria-label="搜索">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                  </button>
+                  <div class="nav-left">
+                    <button class="location-btn" type="button">
+                      <svg class="pin" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/>
+                      </svg>
+                      <span class="loc-name">春风社区中心站</span>
+                      <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill="currentColor" d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
+                      </svg>
+                    </button>
+                    <div class="weather">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill="currentColor" d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/>
+                      </svg>
+                      <span>26°C</span>
+                    </div>
+                  </div>
+                  <div class="mp-capsule" aria-label="小程序菜单">
+                    <button class="capsule-more" type="button" aria-label="更多"><span></span><span></span><span></span></button>
+                    <i class="capsule-divider" aria-hidden="true"></i>
+                    <button class="capsule-home" type="button" aria-label="关闭"><span class="ring"></span></button>
+                  </div>
+                </div>
+
+                <main class="content" id="mainContent">
+                  <div class="hero-gap" id="heroGap">
+                    <div class="hero-swipe" id="heroSwipe" aria-hidden="true"></div>
+                    <div class="hero-dots" id="heroDots" role="tablist" aria-label="背景切换"></div>
+                  </div>
+
+                  <section class="kingkong" aria-label="业务分类" data-edit="kingkong">
+                    <div class="kk-grid" id="kingkongGrid"></div>
+                    <div class="kk-dots" id="kingkongDots" role="tablist" aria-label="分类翻页"></div>
+                  </section>
+
+                  <section class="hot-section" id="hotSection" aria-label="热门推荐">
+                    <div class="section-head">
+                      <h2 class="section-title">热门推荐</h2>
+                    </div>
+                    <div class="masonry">
+                      <article class="card feature-card" data-cat="elder" data-id="ai_massage" data-attr="instore" data-service="instore" data-edit="feature" role="link" tabindex="0">
+                        <div class="feature-head">
+                          <span class="svc-tag svc-instore">到店</span>
+                          <h2>AI舒压理疗服务</h2>
+                          <span class="hot-tag">最热</span>
+                        </div>
+                        <div class="feature-body">
+                          <img class="feature-img" src="../../assets/cover-ai-massage.png" alt="AI舒压理疗服务" />
+                          <div class="feature-aside">
+                            <p class="feature-sub">45 分钟 · 智能分区舒缓</p>
+                            <ul class="feature-list">
+                              <li>身律动按摩</li>
+                              <li>压递推按摩</li>
+                              <li>脊足底加热</li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="feature-foot">
+                          <span class="meta">月售236 · 距你 520m</span>
+                          <button class="cta-buy" type="button">去看看</button>
+                        </div>
+                      </article>
+
+                      <div class="right-stack">
+                        <article class="card coupon-card" data-edit="coupon">
+                          <div class="coupon-title">您有服务券限时可领</div>
+                          <div class="coupon-ticket">
+                            <div class="coupon-amount"><em>¥</em>5</div>
+                            <div class="coupon-info">
+                              <span>服务满减券</span>
+                              <button class="claim-btn" type="button">立即领取</button>
+                            </div>
+                          </div>
+                        </article>
+                        <article class="card discount-card" data-cat="food" data-edit="discount">
+                          <div class="discount-head">
+                            <span>超低折扣</span>
+                            <strong>9.9折</strong>
+                          </div>
+                          <img src="../../assets/discount-lifestyle.png" alt="超低折扣" />
+                          <div class="discount-banner">一个月服务免费领</div>
+                        </article>
+                      </div>
+                    </div>
+                  </section>
+
+                  <div class="feed-filter" id="feedFilter" role="tablist" aria-label="商品列表筛选">
+                    <button type="button" class="feed-tab on" role="tab" aria-selected="true" data-feed="instore">到店服务</button>
+                    <button type="button" class="feed-tab" role="tab" aria-selected="false" data-feed="home">到家服务</button>
+                    <button type="button" class="feed-tab" role="tab" aria-selected="false" data-feed="goods">辅具租赁</button>
+                    <button type="button" class="feed-tab" role="tab" aria-selected="false" data-feed="mail">邮寄到家</button>
+                    <button type="button" class="feed-tab" role="tab" aria-selected="false" data-feed="mail">邮寄到家</button>
+                  </div>
+
+                  <div class="goods-grid" id="goodsGrid" data-edit="goods"></div>
+                </main>
+
+                <nav class="tabbar" aria-label="主导航">
+                  <a class="tab" href="#home"><span>首页</span></a>
+                  <a class="tab" href="#health"><span>健康</span></a>
+                  <a class="tab active" href="#mall" aria-current="page"><span>商城</span></a>
+                  <a class="tab" href="#mine"><span>我的</span></a>
+                </nav>
+                <div class="wx-toast" id="toast" hidden></div>
+            </div>
+            </div>
+          </section>
+
+          <aside class="hd-inspector">
+            <div class="hd-insp-head">
+              <h3 id="inspTitle">属性配置</h3>
+              <p id="inspDesc">请选择预览区中的模块</p>
+            </div>
+            <div class="hd-insp-body" id="inspBody">
+              <div class="hd-empty">
+                <strong>选择一个模块开始编辑</strong>
+                <span>点击左侧结构，或预览机上的「编辑」按钮</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </template>
+
+    <div class="hd-toast" id="hdToast" hidden></div>
+
+    <script>
+      window.MALL_ASSET_PREFIX = "../../assets/";
+    </script>
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../../js/products.js?v=20260820-hd-bn1"></script>
+    <script src="../../js/mall-links.js?v=20260820-hd-bn1"></script>
+    <script src="../../js/mall.js?v=20260820-hd-bn1"></script>
+    <script src="./js/home-designer.js?v=20260820-hd-bn1"></script>
+  </body>
+</html>

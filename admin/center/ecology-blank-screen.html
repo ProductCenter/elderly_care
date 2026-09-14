@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>柳州数字康养生态运营平台</title>
+  <style>
+    :root {
+      --bg: #000b1d;
+      --cyan: #00e5ff;
+      --blue: #3b9eff;
+      --orange: #ff9a1a;
+      --pink: #c44dff;
+      --green: #3ddea8;
+      --violet: #8b7cff;
+      --red: #ff4d4f;
+      --text: #ffffff;
+      --muted: #7fa3c4;
+      --label: #9ec0de;
+      --font: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+      --header-h: clamp(56px, 7.2vh, 88px);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; font-family: var(--font); color: var(--text); background: var(--bg); }
+    body {
+      background:
+        linear-gradient(180deg, rgba(0, 10, 28, 0.28) 0%, transparent 16%),
+        url("./assets/screen-body.png") center center / cover no-repeat,
+        #000814;
+    }
+
+    .screen {
+      position: relative; z-index: 1; height: 100vh;
+      display: grid; grid-template-rows: var(--header-h) minmax(0, 1fr);
+      padding: 0 14px 10px; gap: 4px;
+      overflow: hidden;
+    }
+
+    /* ===== Header（素材顶栏） ===== */
+    .header {
+      position: relative; display: flex; align-items: center; justify-content: center;
+      isolation: isolate;
+    }
+    .header-bg {
+      position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background: url("./assets/screen-header.png") center bottom / 100% 100% no-repeat;
+    }
+    .header-bg::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 36%;
+      background: linear-gradient(180deg, transparent, rgba(0, 8, 20, 0.22));
+      pointer-events: none;
+    }
+    .title-box {
+      position: relative; z-index: 1;
+      padding: 0 48px 6px; text-align: center;
+      background: none; clip-path: none; box-shadow: none;
+    }
+    .title-box::before { content: none; }
+    .title-box h1 {
+      font-size: clamp(18px, 2vw, 32px); font-weight: 700;
+      letter-spacing: 0.22em; text-indent: 0.22em;
+      text-align: center; color: #fff; white-space: nowrap;
+      text-shadow:
+        0 0 18px rgba(0, 229, 255, 0.55),
+        0 0 40px rgba(40, 140, 255, 0.35),
+        0 2px 0 rgba(0, 30, 60, 0.45);
+    }
+
+    /* 机构切换 · 标题后图标触发弹出 */
+    .org-picker {
+      position: relative; z-index: 20; flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .org-picker-name {
+      font-size: 11px; color: rgba(180,220,255,.88);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      max-width: 100%;
+      letter-spacing: .3px;
+    }
+    .org-picker-btn {
+      appearance: none; border: 0; cursor: pointer;
+      width: 18px; height: 18px; padding: 0; flex-shrink: 0;
+      border-radius: 3px; color: #b8e8ff;
+      background: rgba(0,120,200,.28);
+      box-shadow: inset 0 0 0 1px rgba(0,220,255,.4);
+      display: inline-grid; place-items: center;
+      transition: background .15s, color .15s, box-shadow .15s, transform .15s;
+    }
+    .org-picker-btn:hover {
+      color: #fff; background: rgba(0,150,230,.42);
+      box-shadow: inset 0 0 0 1px rgba(0,240,255,.7);
+    }
+    .org-picker-btn svg { width: 11px; height: 11px; transition: transform .15s; }
+    .org-picker.open .org-picker-btn {
+      color: #fff; background: rgba(0,160,255,.45);
+    }
+    .org-picker.open .org-picker-btn svg { transform: rotate(180deg); }
+    .org-pop {
+      display: none; position: absolute; top: calc(100% + 6px); right: 0; left: auto; min-width: 220px;
+      max-height: 220px; overflow: auto; padding: 6px;
+      background: rgba(4, 18, 42, .96);
+      box-shadow: 0 12px 32px rgba(0,0,0,.45), inset 0 0 0 1px rgba(0,200,255,.28), 0 0 24px rgba(0,140,255,.15);
+      backdrop-filter: blur(10px); z-index: 40;
+    }
+    .org-picker.open .org-pop { display: block; }
+    .org-pop button {
+      appearance: none; border: 0; cursor: pointer; width: 100%;
+      text-align: left; padding: 8px 10px; margin-bottom: 2px;
+      font-size: 11px; color: rgba(200,220,240,.88); background: transparent;
+      border-radius: 3px; line-height: 1.35;
+    }
+    .org-pop button:hover { background: rgba(0,140,255,.16); color: #fff; }
+    .org-pop button.on {
+      background: linear-gradient(90deg, rgba(0,160,255,.35), rgba(0,100,180,.18));
+      color: #fff; box-shadow: inset 3px 0 0 #00d4ff;
+    }
+    .btn-exit {
+      height: 28px; padding: 0 12px; border-radius: 3px; cursor: pointer;
+      border: 1px solid rgba(0,229,255,.4); background: rgba(4,24,52,.55);
+      color: #b8e0ff; font-size: 12px; display: inline-flex; align-items: center; gap: 5px;
+      text-decoration: none; backdrop-filter: blur(4px);
+      transition: border-color .15s, background .15s, box-shadow .15s;
+    }
+    .btn-exit:hover {
+      border-color: rgba(0,229,255,.7);
+      background: rgba(8,40,80,.72);
+      box-shadow: 0 0 14px rgba(0,180,255,.25);
+    }
+    .btn-exit svg { width: 13px; height: 13px; }
+
+    /* 平台切换 */
+    .header-left,
+    .header-right {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      z-index: 2; display: flex; align-items: center; gap: 8px;
+    }
+    .header-left { left: 12px; max-width: min(42vw, 480px); }
+    .header-right { right: 12px; }
+    .platform-switch {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+      padding: 3px; border-radius: 4px;
+      border: 1px solid rgba(0,229,255,.35);
+      background: rgba(4, 20, 48, .72);
+      box-shadow: inset 0 0 20px rgba(0,80,160,.18), 0 0 16px rgba(0,140,255,.12);
+    }
+    .platform-switch button {
+      appearance: none; border: 0; cursor: pointer;
+      min-height: 30px; padding: 4px 14px;
+      background: transparent; color: rgba(180,210,235,.78);
+      font-size: 13px; font-weight: 650; letter-spacing: 1px; line-height: 1;
+      text-align: center; border-radius: 3px; white-space: nowrap;
+      transition: background .15s, color .15s, box-shadow .15s;
+    }
+    .platform-switch button:hover { color: #e8f6ff; background: rgba(0,140,255,.12); }
+    .platform-switch button.on {
+      color: #fff;
+      background: linear-gradient(180deg, rgba(0,190,255,.42), rgba(20,90,170,.72));
+      box-shadow: 0 0 14px rgba(0,200,255,.28), inset 0 0 0 1px rgba(0,229,255,.45);
+      text-shadow: 0 0 8px rgba(0,229,255,.45);
+    }
+
+    .body {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+      gap: 10px;
+      padding: 0 4px 4px;
+    }
+    .col { min-height: 0; min-width: 0; display: grid; gap: 8px; }
+    .col-left,
+    .col-right { grid-template-rows: minmax(0, 1.05fr) minmax(0, 1.12fr); }
+
+    /* soft panels — light tech border */
+    .panel {
+      min-height: 0; overflow: hidden;
+      display: flex; flex-direction: column;
+      background: linear-gradient(180deg, rgba(4,22,48,.28), rgba(2,12,32,.12));
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      position: relative;
+    }
+    .panel::before {
+      content: ""; position: absolute; left: 8px; right: 8px; top: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,220,255,.45), transparent);
+      opacity: .7; pointer-events: none;
+    }
+    .ph {
+      flex-shrink: 0; height: 30px; padding: 0 10px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px;
+    }
+    .ph .ph-actions {
+      display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
+      margin-left: auto;
+    }
+    .ph h3 {
+      font-size: 15px; font-weight: 700; letter-spacing: 2px; color: #fff;
+      display: flex; align-items: center; gap: 8px;
+      white-space: nowrap; min-width: 0;
+    }
+    .ph h3::before {
+      content: ""; width: 0; height: 0;
+      border-left: 7px solid var(--cyan);
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      filter: drop-shadow(0 0 5px rgba(0,229,255,.7));
+    }
+    .ph h3::after { content: none; }
+
+    .pb {
+      flex: 1; min-height: 0;
+      padding: 4px 8px 8px;
+      display: flex; flex-direction: column; gap: 8px;
+      overflow: hidden;
+    }
+
+    .panel.panel-biz { overflow: visible; }
+    .panel.panel-biz .pb { overflow: visible; }
+    .panel.panel-biz .biz-layout { overflow: visible; }
+    .panel.panel-biz .biz-top { overflow: visible; }
+    .panel.panel-biz .biz.c3 { overflow: visible; z-index: 5; }
+    /* —— 业态：上四卡 / 下三图+漏斗 —— */
+    .biz-layout {
+      flex: 1; min-height: 0;
+      display: grid;
+      grid-template-rows: 148px minmax(0, 1fr);
+      gap: 8px;
+    }
+    .biz-top {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      align-items: stretch;
+      min-height: 0;
+      height: 148px;
+    }
+    .biz-charts {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      min-height: 0;
+      align-items: stretch;
+    }
+    .biz-charts .chart-slot,
+    .biz-charts .funnel-h {
+      min-height: 0; height: 100%;
+      display: flex; flex-direction: column;
+      background: transparent;
+      border: 0; border-radius: 0;
+      padding: 4px 6px 2px;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .biz-charts .chart-slot::before,
+    .biz-charts .funnel-h::before {
+      content: ""; position: absolute; left: 0; top: 16px; bottom: 4px; width: 1px;
+      background: linear-gradient(180deg, rgba(0,200,255,.35), transparent);
+      opacity: .5;
+    }
+    .biz-charts .chart-slot .cap,
+    .biz-charts .funnel-h .fh-cap {
+      font-size: 10px; color: var(--muted); flex-shrink: 0;
+      height: 14px; line-height: 14px; margin-bottom: 4px;
+    }
+    .biz-charts .chart-slot .plot { flex: 1; min-height: 0; }
+    .biz-charts .funnel-h { justify-content: flex-start; gap: 5px; }
+
+    .biz {
+      display: flex; flex-direction: column; gap: 4px;
+      min-height: 0; min-width: 0; height: 100%;
+      padding: 6px 8px 6px;
+      background: linear-gradient(160deg, rgba(8,36,72,.35), rgba(4,16,40,.12));
+      border: 0;
+      border-radius: 0;
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+    }
+    .biz .tool-row {
+      height: 16px; flex-shrink: 0;
+      display: flex; align-items: center;
+      font-size: 11px; color: rgba(170,210,240,.78);
+      letter-spacing: .2px;
+    }
+    .biz.c3 { overflow: visible; z-index: 5; }
+    .biz.c3 .hd,
+    .biz.c3 .hd .name { overflow: visible; }
+    .biz::after {
+      content: ""; position: absolute; inset: auto 0 0 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,180,255,.28), transparent);
+    }
+    .biz .hd {
+      display: flex; align-items: center; gap: 6px;
+      height: 24px; flex-shrink: 0; overflow: hidden;
+    }
+    .biz .ico {
+      width: 22px; height: 22px; border-radius: 5px; flex-shrink: 0;
+      display: grid; place-items: center;
+    }
+    .biz .ico svg { width: 13px; height: 13px; color: #fff; }
+    .biz.c1 .ico { background: linear-gradient(145deg, #3b9eff, #1565c0); box-shadow: 0 0 10px rgba(59,158,255,.45); }
+    .biz.c2 .ico { background: linear-gradient(145deg, #2dd4bf, #0d9488); box-shadow: 0 0 10px rgba(45,212,191,.4); }
+    .biz.c3 .ico { background: linear-gradient(145deg, #4ade80, #16a34a); box-shadow: 0 0 10px rgba(74,222,128,.4); }
+    .biz.c4 .ico { background: linear-gradient(145deg, #a78bfa, #7c3aed); box-shadow: 0 0 10px rgba(167,139,250,.4); }
+    .biz .hd .name { flex: 1; min-width: 0; display: flex; flex-wrap: nowrap; align-items: center; gap: 4px; overflow: hidden; }
+    .biz .hd .pill {
+      display: inline-flex; align-items: center; gap: 2px;
+      max-width: 100%; padding: 2px 7px 2px; border-radius: 999px;
+      font-size: 11px; font-weight: 650; color: #fff; line-height: 1.25;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .biz .hd > a { display: none; } /* 窄卡隐藏列表链，避免挤换行 */
+    .biz .hd .pill small { font-size: 10px; font-weight: 500; opacity: .85; }
+    .biz.c1 .pill { background: linear-gradient(90deg, rgba(40,120,220,.75), rgba(30,90,180,.45)); box-shadow: inset 0 0 0 1px rgba(100,180,255,.35); }
+    .biz.c2 .pill { background: linear-gradient(90deg, rgba(20,140,130,.75), rgba(15,100,95,.45)); box-shadow: inset 0 0 0 1px rgba(80,220,200,.35); }
+    .biz.c3 .pill { background: linear-gradient(90deg, rgba(40,150,80,.7), rgba(20,110,60,.4)); box-shadow: inset 0 0 0 1px rgba(100,220,140,.35); }
+    .biz.c4 .pill { background: linear-gradient(90deg, rgba(110,80,200,.75), rgba(80,50,160,.45)); box-shadow: inset 0 0 0 1px rgba(180,150,255,.35); }
+    .biz .hd a { font-size: 10px; color: var(--cyan); text-decoration: none; white-space: nowrap; }
+    .biz .metrics {
+      flex: 1;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4px 8px; align-content: start;
+      min-height: 0;
+    }
+    .biz .m {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 0;
+      line-height: 1.2; min-width: 0; padding-left: 10px; position: relative;
+    }
+    .biz .m::before {
+      content: ""; position: absolute; left: 0; top: 4px;
+      width: 5px; height: 5px; border-radius: 50%;
+      border: 1.5px solid var(--cyan); box-shadow: 0 0 6px rgba(0,229,255,.7);
+    }
+    .biz .m .n { font-size: 12px; font-weight: 600; color: rgba(210,230,245,.82); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .biz .m .n em { font-style: normal; font-size: 9px; color: rgba(130,165,195,.72); margin-left: 2px; }
+    .biz .m .k {
+      font-size: 9px; color: rgba(130,165,195,.72); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .biz .m.key .n {
+      font-size: 19px; font-weight: 760; color: #fff;
+      letter-spacing: .2px;
+      text-shadow: 0 0 10px rgba(0,200,255,.28);
+    }
+    .biz .m.key .n em { font-size: 10px; color: rgba(190,220,245,.9); }
+    .biz .m.key .k { font-size: 10px; color: rgba(200,225,245,.92); }
+    .biz .m.key::before {
+      width: 6px; height: 6px; top: 6px;
+      border-color: #5ee7ff; box-shadow: 0 0 8px rgba(0,229,255,.85);
+    }
+    .m.flash .n, .sc .kpi-row .item.flash .n {
+      animation: metricFlash .55s ease;
+    }
+    @keyframes metricFlash {
+      0% { text-shadow: 0 0 0 transparent; }
+      35% { text-shadow: 0 0 12px rgba(0,229,255,.75); color: #e8fbff; }
+      100% { text-shadow: 0 0 0 transparent; }
+    }
+    .biz-charts .funnel-h {
+      justify-content: flex-start; gap: 2px;
+    }
+    .funnel-h {
+      min-height: 0; display: flex; flex-direction: column;
+      padding: 4px 6px;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+    }
+    .funnel-h .fh-cap {
+      font-size: 10px; color: var(--muted); margin-bottom: 2px; flex-shrink: 0;
+      height: 14px; line-height: 14px;
+    }
+    .funnel-h .fh-plot {
+      flex: 1; min-height: 0; width: 100%;
+    }
+
+    /* —— 场景 —— */
+    .scene-grid {
+      flex: 1; min-height: 0;
+      display: grid; grid-template-columns: 1.2fr 1fr; grid-template-rows: 1.45fr 1fr; gap: 8px;
+    }
+    .sc {
+      background: transparent;
+      border: 0; border-radius: 0;
+      padding: 2px 6px 4px;
+      display: flex; flex-direction: column; min-height: 0; overflow: hidden;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .sc::before {
+      content: ""; position: absolute; left: 0; top: 4px; bottom: 4px; width: 1px;
+      background: linear-gradient(180deg, rgba(0,210,255,.4), transparent 85%);
+      opacity: .55;
+    }
+    .sc .hd {
+      display: block; align-self: flex-start;
+      font-size: 13px; font-weight: 650; color: #fff;
+      margin-bottom: 4px; flex-shrink: 0; height: 18px; line-height: 18px;
+      padding: 0; border-radius: 0; background: none; box-shadow: none;
+    }
+    .sc .kpi-row {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2px 6px; margin-bottom: 2px; flex-shrink: 0;
+      min-height: 0; align-content: start;
+    }
+    .sc .kpi-row.kpi-1 { grid-template-columns: 1fr; }
+    .sc.sc-sleep .kpi-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .sc-health .plot,
+    .sc-sleep .plot {
+      flex: 1; min-height: 0;
+      background: linear-gradient(180deg, rgba(0,100,180,.12), rgba(0,40,90,.03) 65%, transparent);
+      box-shadow: inset 0 0 0 1px rgba(0,200,255,.12);
+      padding: 4px 4px 2px;
+    }
+    .sc-health .hd,
+    .sc-sleep .hd {
+      font-size: 14px; letter-spacing: 1px;
+    }
+    .sc .kpi-row .item {
+      display: flex; flex-direction: column; gap: 1px;
+    }
+    .sc .kpi-row .item .n {
+      font-size: 13px; font-weight: 650; color: rgba(235,245,255,.9);
+      display: flex; align-items: baseline; gap: 2px; white-space: nowrap;
+    }
+    .sc .kpi-row .item .k {
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 9px; color: rgba(140,175,205,.78); padding-left: 13px;
+    }
+    .sc .kpi-row .item.key .n {
+      font-size: 17px; font-weight: 760; color: #fff;
+      text-shadow: 0 0 10px rgba(0,200,255,.25);
+    }
+    .sc .kpi-row .item.key .n em { font-size: 11px; color: rgba(180,210,235,.88); }
+    .sc .kpi-row .item.key .k { font-size: 10px; color: rgba(190,220,245,.9); }
+    .sc .kpi-row .item.key .n::before {
+      width: 8px; height: 8px; border-color: #5ee7ff;
+      box-shadow: 0 0 8px rgba(0,229,255,.85);
+    }
+    .sc .kpi-row .item .n::before {
+      content: ""; width: 7px; height: 7px; border-radius: 50%;
+      border: 1.5px solid var(--cyan); box-shadow: 0 0 6px rgba(0,229,255,.75);
+      margin-right: 3px; align-self: center; background: transparent;
+    }
+    .sc .kpi-row .item .n em { font-style: normal; font-size: 10px; color: var(--muted); }
+    .sc .sub { font-size: 10px; color: var(--muted); margin-bottom: 2px; min-height: 16px; line-height: 16px; }
+    .sc .plot { flex: 1; min-height: 0; }
+    .sport-list {
+      display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(4, 1fr);
+      grid-auto-flow: column; gap: 2px 14px;
+      font-size: 11px; color: var(--muted); flex: 1; align-content: stretch; padding-top: 2px; min-height: 0;
+    }
+    .sport-list div { display: flex; justify-content: space-between; gap: 4px; line-height: 1.55; }
+    .sport-list b { color: #fff; font-weight: 650; }
+    .sport-list i {
+      display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+      border: 1.5px solid var(--cyan); background: transparent; margin-right: 4px; vertical-align: middle;
+      box-shadow: 0 0 5px rgba(0,229,255,.55);
+    }
+
+    /* —— 个人动态画像 —— */
+    .portrait {
+      flex: 1; min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(150px, 168px) 1px minmax(0, 1fr);
+      gap: 0 8px;
+      align-items: stretch;
+      position: relative;
+      overflow: hidden;
+    }
+    .dir-wrap { min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+    .dir-wrap .sec-label { justify-content: space-between; }
+    .dir-wrap .sec-label .gear { opacity: .55; font-size: 12px; }
+    .dir-foot {
+      flex-shrink: 0; padding: 6px 4px 0; text-align: right;
+    }
+    .dir-foot a { font-size: 11px; color: var(--cyan); text-decoration: none; }
+    .v-split {
+      width: 1px; background: linear-gradient(180deg, transparent, rgba(0,229,255,.65), transparent);
+      box-shadow: 0 0 10px rgba(0,229,255,.45); align-self: stretch;
+    }
+    .dir {
+      flex: 1; min-height: 0; overflow: auto;
+      border: none; border-radius: 2px;
+      background: transparent;
+    }
+    .dir::-webkit-scrollbar { width: 2px; }
+    .dir::-webkit-scrollbar-thumb { background: rgba(0,180,255,.3); }
+    .dir-item {
+      position: relative;
+      display: flex; align-items: baseline; justify-content: space-between; gap: 6px;
+      padding: 7px 8px 7px 10px; cursor: pointer; border-bottom: none;
+      transition: background .12s; border-radius: 2px; margin-bottom: 1px;
+      min-width: 0;
+    }
+    .dir-item:hover { background: rgba(30,100,180,.22); }
+    .dir-item.on {
+      background: linear-gradient(90deg, #1a6fd4 0%, #1e78e0 55%, rgba(30,120,220,.55) 100%);
+      box-shadow: 0 0 14px rgba(30,120,220,.4);
+    }
+    .dir-item.on::before {
+      content: ""; position: absolute; left: 0; top: 3px; bottom: 3px; width: 3px;
+      border-radius: 0 2px 2px 0; background: #5ec8ff;
+      box-shadow: 0 0 8px rgba(94,200,255,.8);
+    }
+    .dir-item .nm { font-size: 13px; font-weight: 600; color: #fff; flex-shrink: 0; }
+    .dir-item .tm {
+      font-size: 10px; color: rgba(180,210,235,.8); white-space: nowrap; text-align: right;
+      min-width: 0; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .profile {
+      min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 6px;
+      padding-right: 40px; /* 预留收起态侧栏，避免贴边裁切 */
+      position: relative; min-width: 0;
+      transition: padding-right .2s ease;
+    }
+    .portrait:not(.ai-collapsed) .profile { padding-right: 96px; }
+    .sec-label {
+      font-size: 13px; color: #e0f0ff; margin-bottom: 4px; min-height: 18px;
+      display: flex; align-items: center; gap: 6px; font-weight: 650; flex-shrink: 0;
+    }
+    .sec-label::before { content: none; }
+    .pinfo {
+      display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; color: var(--muted);
+    }
+    .pinfo b { color: #fff; font-weight: 650; margin-left: 2px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag {
+      font-size: 11px; padding: 2px 7px; border-radius: 2px;
+      background: rgba(20, 60, 110, 0.35); color: #c0d8f0;
+      box-shadow: inset 0 0 0 1px rgba(100,170,220,.18);
+      border: none; white-space: nowrap;
+    }
+    .judge-box {
+      border: 0; border-radius: 4px;
+      padding: 7px 10px; min-height: 0; color: #c8dff5; font-size: 12px;
+      background: linear-gradient(90deg, rgba(8,36,72,.4), rgba(4,18,40,.15));
+      box-shadow: inset 0 0 0 1px rgba(70,150,210,.18);
+      line-height: 1.5;
+    }
+    .vitals {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;
+      margin-top: 2px; align-content: start;
+    }
+    .vt {
+      background: linear-gradient(160deg, rgba(10,40,80,.45), rgba(4,16,40,.2));
+      border: 0; border-radius: 4px; padding: 6px 8px; min-height: 56px; height: auto;
+      box-sizing: border-box; min-width: 0;
+      box-shadow: inset 0 0 0 1px rgba(0,180,255,.12);
+    }
+    .vt .top {
+      display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--label);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .vt .top svg { width: 12px; height: 12px; color: var(--cyan); flex-shrink: 0; }
+    .vt .mid { margin-top: 4px; display: flex; align-items: baseline; gap: 5px; flex-wrap: wrap; }
+    .vt .mid .n { font-size: 18px; font-weight: 700; color: #fff; line-height: 1; }
+    .vt .mid .n.bad { color: var(--red); text-shadow: 0 0 10px rgba(255,77,79,.35); }
+    .vt .mid .st {
+      font-size: 11px; padding: 0; border-radius: 0;
+      background: transparent; color: #d8e8f8; white-space: nowrap;
+    }
+    .vt .mid .st.bad { background: transparent; color: var(--red); font-weight: 700; }
+    .vt .u { margin-top: 2px; font-size: 10px; color: var(--muted); }
+    .vt.empty .mid .n { color: var(--muted); font-size: 15px; }
+
+    /* 经营智助：绝对定位且始终落在面板内边距中，避免裁切 */
+    .ai-float {
+      position: absolute;
+      right: 8px; bottom: 8px; z-index: 9;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+      width: 72px; max-width: calc(100% - 16px); max-height: calc(100% - 16px);
+      pointer-events: auto; box-sizing: border-box;
+    }
+    .ai-float.collapsed {
+      width: 28px; right: 6px; bottom: auto; top: 50%;
+      transform: translateY(-50%);
+      justify-content: center;
+    }
+    .ai-float.collapsed .ai-body { display: none; }
+    .ai-float.collapsed .ai-toggle {
+      writing-mode: vertical-rl; letter-spacing: 2px;
+      height: auto; min-height: 96px; width: 26px;
+      padding: 10px 0; margin: 0; border-radius: 6px 0 0 6px;
+      justify-content: center;
+    }
+    .ai-toggle {
+      appearance: none; border: 0; cursor: pointer;
+      height: 20px; padding: 0 8px; margin: 0 0 4px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+      font-size: 10px; color: #b8e8ff;
+      background: rgba(4,24,52,.88); box-shadow: inset 0 0 0 1px rgba(0,220,255,.4);
+      border-radius: 3px; white-space: nowrap;
+    }
+    .ai-toggle:hover { color: #fff; box-shadow: inset 0 0 0 1px rgba(0,240,255,.7); }
+    .ai-body {
+      position: relative; width: 100%;
+      display: flex; flex-direction: column; align-items: center;
+      background: linear-gradient(180deg, rgba(4,20,48,.15), rgba(4,20,48,.55));
+      border-radius: 8px 8px 4px 4px;
+      padding: 2px 0 0;
+    }
+    .ai-float .ai-avatar {
+      width: 58px; height: 70px;
+      display: grid; place-items: end center;
+      overflow: hidden; background: transparent;
+    }
+    .ai-float img {
+      width: 58px; height: auto; display: block; margin: 0 auto;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,.5));
+    }
+    .ai-float .ai-label {
+      margin-top: 0; display: inline-block;
+      padding: 3px 8px 4px; font-size: 10px; color: #e8fbff; font-weight: 650;
+      background: linear-gradient(180deg, rgba(0,160,210,.5), rgba(0,70,140,.85));
+      box-shadow: inset 0 0 0 1px rgba(0,240,255,.4);
+      clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
+      text-shadow: 0 0 8px rgba(0,229,255,.45);
+      white-space: nowrap;
+    }
+    .drill, .ph-chev {
+      width: 22px; height: 22px; border-radius: 50%; border: none; cursor: pointer;
+      background: linear-gradient(145deg, #2eb8ff, #1565c0);
+      display: inline-grid; place-items: center; color: #fff; text-decoration: none;
+      box-shadow: 0 0 10px rgba(0,180,255,.35); flex-shrink: 0;
+      line-height: 1; font-size: 13px;
+    }
+    .drill svg { width: 12px; height: 12px; }
+    .btn-fs {
+      height: 28px; min-width: 28px; padding: 0 10px; border-radius: 3px; cursor: pointer;
+      border: 1px solid rgba(0,229,255,.4); background: rgba(4,24,52,.55);
+      color: #b8e0ff; font-size: 12px; display: inline-flex; align-items: center; gap: 5px;
+    }
+    .btn-fs:hover {
+      border-color: rgba(0,229,255,.7); background: rgba(8,40,80,.72);
+      box-shadow: 0 0 14px rgba(0,180,255,.25);
+    }
+    .btn-fs svg { width: 14px; height: 14px; }
+
+    /* —— 群体动态分析 —— */
+    .group-grid {
+      flex: 1; min-height: 0;
+      display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8px;
+    }
+    .gch {
+      background: transparent;
+      border: 0; border-radius: 0;
+      padding: 4px 6px;
+      display: flex; flex-direction: column; min-height: 0;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .gch::before {
+      content: ""; position: absolute; left: 0; top: 2px; bottom: 2px; width: 1px;
+      background: linear-gradient(180deg, rgba(0,210,255,.35), transparent);
+      opacity: .45;
+    }
+    .gch .cap {
+      font-size: 11px; color: #e0f0ff; margin-bottom: 4px; flex-shrink: 0;
+      min-height: 20px;
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 2px 8px;
+      line-height: 1.3;
+    }
+    .gch .cap .leg { display: flex; flex-wrap: wrap; gap: 6px 8px; font-size: 9px; color: var(--muted); justify-content: flex-end; }
+    .gch .cap .leg i {
+      display: inline-block; width: 8px; height: 3px; border-radius: 1px; margin-right: 3px;
+      vertical-align: middle;
+    }
+    .sc .sub .leg { display: inline-flex; flex-wrap: wrap; gap: 4px 8px; vertical-align: middle; }
+    .sc .sub .leg i {
+      display: inline-block; width: 7px; height: 7px; border-radius: 2px; margin-right: 2px; vertical-align: 0;
+    }
+    .gch .plot { flex: 1; min-height: 0; }
+
+    @media (max-width: 1280px) {
+      body { overflow: auto; }
+      .screen { height: auto; min-height: 100vh; }
+      .body { grid-template-columns: 1fr; }
+      .col { grid-template-rows: auto; }
+      .scene-grid, .group-grid { min-height: 320px; }
+      .portrait { min-height: 420px; }
+      .title-box h1 {
+        font-size: 16px; letter-spacing: 0.1em; text-indent: 0.1em; white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="header">
+      <div class="header-bg" aria-hidden="true"></div>
+      <div class="header-left">
+        <div class="platform-switch" role="tablist" aria-label="平台切换">
+          <button type="button" class="on" role="tab" aria-selected="true" data-platform="liuzhou">柳州</button>
+          <button type="button" role="tab" aria-selected="false" data-platform="clife">clife</button>
+        </div>
+      </div>
+      <div class="title-box"><h1 id="mainTitle">柳州数字康养生态运营平台</h1></div>
+      <div class="header-right">
+        <button class="btn-fs" type="button" id="btnFullscreen" title="全屏切换" aria-pressed="false">
+          <svg id="fsIconEnter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg>
+          <svg id="fsIconExit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M3 8h5V3M16 3v5h5M3 16h5v5M16 21v-5h5"/></svg>
+          <span id="fsLabel">全屏</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="body">
+      <!-- ===== 左：业态 + 场景 ===== -->
+      <div class="col col-left">
+        <section class="panel panel-biz">
+          <div class="ph"><h3>业态</h3></div>
+          <div class="pb">
+            <div class="biz-layout">
+              <div class="biz-top">
+                <div class="biz c1">
+                  <div class="hd">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z"/></svg></div>
+                    <div class="name"><span class="pill">数智养老机构<small id="orgCountBadge">(1)</small></span></div>
+                    <a href="javascript:;">机构列表 ›</a>
+                  </div>
+                  <div class="tool-row">机构运营概览</div>
+                  <div class="metrics">
+                    <div class="m"><span class="n" data-k="orgNum">103<em>个</em></span><span class="k">机构数</span></div>
+                    <div class="m key"><span class="n" data-k="elderNum">2132<em>人</em></span><span class="k">在住长者</span></div>
+                    <div class="m"><span class="n" data-k="bedNum">1.12<em>万个</em></span><span class="k">床位</span></div>
+                    <div class="m key"><span class="n" data-k="occRate">19<em>%</em></span><span class="k">入住率</span></div>
+                  </div>
+                </div>
+
+                <div class="biz c2">
+                  <div class="hd">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l9 6v12h-6v-7H9v7H3V9l9-6z"/></svg></div>
+                    <div class="name"><span class="pill">数智康养社区<small id="siteCountBadge">(4)</small></span></div>
+                    <a href="javascript:;">站点列表 ›</a>
+                  </div>
+                  <div class="tool-row">社区评估概览</div>
+                  <div class="metrics">
+                    <div class="m key"><span class="n" data-k="healthEval">7<em>人次</em></span><span class="k">健康评估</span></div>
+                    <div class="m"><span class="n" data-k="sportEval">26<em>人次</em></span><span class="k">运动评估</span></div>
+                    <div class="m"><span class="n" data-k="nutriEval">37<em>人次</em></span><span class="k">营养评估</span></div>
+                    <div class="m"><span class="n" data-k="sleepEval">6<em>人次</em></span><span class="k">睡眠评估</span></div>
+                  </div>
+                </div>
+
+                <div class="biz c4">
+                  <div class="hd">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
+                    <div class="name"><span class="pill">居家康养</span></div>
+                    <a href="javascript:;">人员列表 ›</a>
+                  </div>
+                  <div class="tool-row">居家服务概览</div>
+                  <div class="metrics">
+                    <div class="m key"><span class="n" data-k="homeSign">22<em>个</em></span><span class="k">累计签约</span></div>
+                    <div class="m key"><span class="n" data-k="homeWarn">64<em>次</em></span><span class="k">健康预警</span></div>
+                    <div class="m key"><span class="n" data-k="homeOrder">41<em>单</em></span><span class="k">服务工单</span></div>
+                    <div class="m"><span class="n" data-k="homeSvc">18<em>项</em></span><span class="k">服务项目</span></div>
+                  </div>
+                </div>
+
+                <div class="biz c3">
+                  <div class="hd">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.10.10.0.5.10.0.1.3.10.0.1.1 2 0 3.64-1.23 4.13-2.91l1.76.35C13.82 19.54 11.6 21 9 21c-.5 0-1-.05-1.48-.14l-.66 1.6 1.89.66C12.2 17.74 14.4 12.2 21 10.5V8h-4zM12 2a4 4 0 00-4 4c0 1.85 1.28 3.4 3 3.86V11h2V9.86A4.002 4.002 0 0012 2z"/></svg></div>
+                    <div class="name">
+                      <span class="pill">生态服务商</span>
+                      <div class="org-picker" id="ecoOrgPicker">
+                        <button type="button" class="org-picker-btn" id="ecoOrgBtn" title="切换服务站点" aria-label="切换服务站点" aria-haspopup="listbox" aria-expanded="false">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                        </button>
+                        <div class="org-pop" id="ecoOrgPop" role="listbox" aria-label="服务站点">
+                          <button type="button" class="on" data-org="jinsheng">金盛社区AI康养驿站</button>
+                          <button type="button" data-org="dexin">德心医养嵌入式医养中心</button>
+                          <button type="button" data-org="liunan">柳南智慧康养服务站</button>
+                          <button type="button" data-org="chengzhong">城中社区康养驿站</button>
+                          <button type="button" data-org="yufeng">鱼峰嵌入式医养服务点</button>
+                          <button type="button" data-org="liujiang">柳江长者照护中心</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tool-row">
+                    <span class="org-picker-name" id="ecoOrgName">金盛驿站</span>
+                  </div>
+                  <div class="metrics">
+                    <div class="m"><span class="n" data-k="partner">2<em>个</em></span><span class="k">合作方</span></div>
+                    <div class="m key"><span class="n" data-k="tradeCnt">84<em>笔</em></span><span class="k">交易量</span></div>
+                    <div class="m"><span class="n" data-k="tradeAmt">1<em>万元</em></span><span class="k">交易额</span></div>
+                    <div class="m key"><span class="n" data-k="verifyCnt">67<em>笔</em></span><span class="k">核销订单</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="biz-charts">
+                <div class="chart-slot">
+                  <div class="cap">评估人次（累计/月）</div>
+                  <div class="plot" id="chEval"></div>
+                </div>
+                <div class="chart-slot">
+                  <div class="cap">建档数（近30天/日）</div>
+                  <div class="plot" id="chArchive"></div>
+                </div>
+                <div class="chart-slot">
+                  <div class="cap">健康预警次数（累计/月）</div>
+                  <div class="plot" id="chWarn"></div>
+                </div>
+                <div class="funnel-h" id="ecoFunnel">
+                  <div class="fh-cap">服务商运营转化漏斗</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="ph"><h3>场景</h3></div>
+          <div class="pb">
+            <div class="scene-grid">
+              <div class="sc sc-health">
+                <div class="hd">健康监测</div>
+                <div class="kpi-row">
+                  <div class="item key"><div class="n" data-k="monitorCnt">135<em>次</em></div><div class="k">监测次数</div></div>
+                  <div class="item key"><div class="n" data-k="monitorAbn">28<em>次</em></div><div class="k">异常次数</div></div>
+                  <div class="item"><div class="n" data-k="monitorRpt">41<em>次</em></div><div class="k">报告次数</div></div>
+                </div>
+                <div class="sub">年龄段 · 监测/异常/报告
+                  <span class="leg" style="margin-left:6px">
+                    <span><i style="background:#3b9eff"></i>监测</span>
+                    <span><i style="background:#e85cff"></i>异常</span>
+                    <span><i style="background:#3ddea8"></i>报告</span>
+                  </span>
+                </div>
+                <div class="plot" id="chHealthAge"></div>
+              </div>
+              <div class="sc sc-sleep">
+                <div class="hd">睡眠</div>
+                <div class="kpi-row">
+                  <div class="item key"><div class="n" data-k="sleepHours">4.61<em>h</em></div><div class="k">平均时长</div></div>
+                  <div class="item"><div class="n" data-k="sleepWake">9.62<em>次</em></div><div class="k">平均夜醒</div></div>
+                  <div class="item"><div class="n" data-k="sleepUp">5.75<em>次</em></div><div class="k">平均夜起</div></div>
+                </div>
+                <div class="sub">年龄段 · 睡眠结构
+                  <span class="leg" style="margin-left:6px">
+                    <span><i style="background:#3b9eff"></i>深睡</span>
+                    <span><i style="background:#ff9a1a"></i>浅睡</span>
+                  </span>
+                </div>
+                <div class="plot" id="chSleepAge"></div>
+              </div>
+              <div class="sc">
+                <div class="hd">营养</div>
+                <div class="sub">风险分布</div>
+                <div class="plot" id="chNutri"></div>
+              </div>
+              <div class="sc">
+                <div class="hd">运动</div>
+                <div class="sub">运动情况</div>
+                <div class="sport-list">
+                  <div><span><i></i>握力评分</span><b>16分</b></div>
+                  <div><span><i></i>睁眼平衡</span><b>15秒</b></div>
+                  <div><span><i></i>五次坐站</span><b>11秒</b></div>
+                  <div><span><i></i>原地踏步</span><b>47次</b></div>
+                  <div><span><i></i>肺活量</span><b>3012ml</b></div>
+                  <div><span><i></i>功能性前伸</span><b>33cm</b></div>
+                  <div><span><i></i>站立行走</span><b>26秒</b></div>
+                  <div><span><i></i>2分钟踏步</span><b>47次</b></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===== 右：个人画像 + 群体分析 ===== -->
+      <div class="col col-right">
+        <section class="panel">
+          <div class="ph">
+            <h3>个体动态健康分析</h3>
+            <div class="ph-actions">
+              <a class="drill" id="drillLink" href="./elder-profile-detail.html?id=chen" title="下钻详情" aria-label="下钻">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="pb">
+            <div class="portrait ai-collapsed">
+              <div class="dir-wrap">
+                <div class="sec-label">长者数据目录<span class="gear">⚙</span></div>
+                <div class="dir" id="dirList"></div>
+                <div class="dir-foot"><a href="javascript:;">人员列表 ›</a></div>
+              </div>
+              <div class="v-split" aria-hidden="true"></div>
+              <div class="profile" id="profilePane">
+                <div>
+                  <div class="sec-label">基础信息</div>
+                  <div class="pinfo" id="pinfo"></div>
+                </div>
+                <div>
+                  <div class="sec-label">长者标签</div>
+                  <div class="tags" id="ptags"></div>
+                </div>
+                <div>
+                  <div class="sec-label">最新数据研判</div>
+                  <div class="judge-box" id="pjudge">—</div>
+                </div>
+                <div class="vitals" id="pvitals"></div>
+              </div>
+              <div class="ai-float collapsed" id="aiFloat">
+                <button type="button" class="ai-toggle" id="aiToggle" aria-expanded="false" title="打开经营智助">经营智助</button>
+                <div class="ai-body">
+                  <div class="ai-avatar">
+                    <img src="./assets/ai-assistant.png" alt="经营智助" />
+                  </div>
+                  <div class="ai-label">经营智助</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="ph">
+            <h3>群体动态健康分析</h3>
+            <div class="ph-actions">
+              <span class="ph-chev" aria-hidden="true">›</span>
+            </div>
+          </div>
+          <div class="pb">
+            <div class="group-grid">
+              <div class="gch">
+                <div class="cap">
+                  <span class="region-label">柳州市</span>老年人口总量与老龄化率变化曲线
+                  <span class="leg"><span><i style="background:#00d4ff"></i>总量(左轴)</span><span><i style="background:#e85cff"></i>老龄化率%(右轴)</span></span>
+                </div>
+                <div class="plot" id="gPop"></div>
+              </div>
+              <div class="gch">
+                <div class="cap">
+                  <span class="region-label">柳州市</span>老年人服务次数变化曲线
+                  <span class="leg"><span><i style="background:#ff9a1a"></i>服务次数</span></span>
+                </div>
+                <div class="plot" id="gSvc"></div>
+              </div>
+              <div class="gch">
+                <div class="cap">
+                  <span class="region-label">柳州市</span>老年人群体血压变化趋势
+                  <span class="leg"><span><i style="background:#e85cff"></i>高压</span><span><i style="background:#3ddea8"></i>低压</span><span><i style="background:rgba(255,255,255,.45)"></i>基准线</span></span>
+                </div>
+                <div class="plot" id="gBp"></div>
+              </div>
+              <div class="gch">
+                <div class="cap">
+                  <span class="region-label">柳州市</span>老年人评估次数变化曲线
+                  <span class="leg">
+                    <span><i style="background:#3b9eff"></i>运动</span>
+                    <span><i style="background:#ff9a1a"></i>营养</span>
+                    <span><i style="background:#3ddea8"></i>监测</span>
+                    <span><i style="background:#8b7cff"></i>睡眠</span>
+                  </span>
+                </div>
+                <div class="plot" id="gEval"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const C = {
+        cyan: "#00d4ff", blue: "#3b9eff", orange: "#ff9a1a",
+        pink: "#e85cff", green: "#3ddea8", violet: "#8b7cff", red: "#ff4d4f"
+      };
+
+      const svgPut = (el, html) => { if (el) el.innerHTML = html; };
+
+      function bars(el, data, color, labels) {
+        if (!el) return;
+        const w = el.clientWidth || 140, h = el.clientHeight || 78;
+        const max = Math.max(...data, 1);
+        const pad = { t: 22, r: 4, b: 16, l: 26 };
+        const n = data.length;
+        const slot = (w - pad.l - pad.r) / n;
+        const bw = Math.min(20, slot * 0.48);
+        let g = "";
+        for (let i = 0; i <= 4; i++) {
+          const y = pad.t + (i / 4) * (h - pad.t - pad.b);
+          const val = Math.round(max - (i / 4) * max);
+          g += `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="rgba(140,180,220,.16)" stroke-dasharray="2 3"/>`;
+          g += `<text x="${pad.l-3}" y="${y+3}" fill="rgba(142,176,208,.72)" font-size="8" text-anchor="end">${val}</text>`;
+        }
+        data.forEach((v, i) => {
+          const fullH = h - pad.t - pad.b;
+          const bh = Math.max(4, (v / max) * fullH);
+          const x = pad.l + i * slot + (slot - bw) / 2;
+          const y = h - pad.b - bh;
+          const r = bw / 2;
+          // ghost full-height glass bar
+          g += `<rect x="${x}" y="${pad.t}" width="${bw}" height="${fullH}" rx="${r}" fill="${color}" opacity=".08"/>`;
+          // value bar + cylindrical sheen
+          g += `<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="${r}" fill="url(#g${el.id})"/>`;
+          g += `<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="${r}" fill="url(#gs${el.id})"/>`;
+          // bright elliptical cap + soft glow
+          g += `<ellipse cx="${x+bw/2}" cy="${y}" rx="${bw/2+2}" ry="${Math.max(4, bw*0.36)}" fill="${color}" opacity=".28"/>`;
+          g += `<ellipse cx="${x+bw/2}" cy="${y}" rx="${bw/2}" ry="${Math.max(3.5, bw*0.3)}" fill="${color}" opacity=".98"/>`;
+          g += `<ellipse cx="${x+bw/2}" cy="${y}" rx="${bw/2-1.5}" ry="${Math.max(2, bw*0.18)}" fill="#fff" opacity=".5"/>`;
+          g += `<circle cx="${x+bw/2}" cy="${y-11}" r="9" fill="rgba(4,18,40,.72)" stroke="${color}" stroke-width="1" opacity=".95"/>`;
+          g += `<text x="${x+bw/2}" y="${y-8}" fill="#e8f4ff" font-size="8" text-anchor="middle">${v}</text>`;
+          if (labels?.[i]) {
+            g += `<text x="${x+bw/2}" y="${h-2}" fill="rgba(160,190,220,.85)" font-size="8" text-anchor="middle">${labels[i]}</text>`;
+          }
+        });
+        svgPut(el, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="g${el.id}" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="${color}" stop-opacity="1"/>
+              <stop offset="35%" stop-color="${color}" stop-opacity=".78"/>
+              <stop offset="100%" stop-color="${color}" stop-opacity=".18"/>
+            </linearGradient>
+            <linearGradient id="gs${el.id}" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#fff" stop-opacity=".22"/>
+              <stop offset="45%" stop-color="#fff" stop-opacity="0"/>
+              <stop offset="100%" stop-color="#000" stop-opacity=".18"/>
+            </linearGradient>
+          </defs>${g}</svg>`);
+      }
+
+      function line(el, series, opts = {}) {
+        if (!el) return;
+        const dual = !!opts.dualY && series.length > 1;
+        const w = el.clientWidth || 200, h = el.clientHeight || 90;
+        const pad = { t: 8, r: dual ? 30 : 8, b: 16, l: 28 };
+        const leftData = dual ? series[0].data : series.flatMap(s => s.data);
+        const max = opts.max ?? Math.max(...leftData, 1);
+        const min = opts.min ?? 0;
+        const max2 = opts.max2 ?? (dual ? Math.max(...series[1].data, 1) : max);
+        const min2 = opts.min2 ?? 0;
+        const n = series[0].data.length;
+        const xAt = i => pad.l + (i / Math.max(n - 1, 1)) * (w - pad.l - pad.r);
+        const yAt = (v, useRight) => {
+          const lo = useRight ? min2 : min, hi = useRight ? max2 : max;
+          return pad.t + (1 - (v - lo) / (hi - lo || 1)) * (h - pad.t - pad.b);
+        };
+        const smooth = pts => {
+          if (pts.length < 2) return "";
+          let d = `M${pts[0][0]},${pts[0][1]}`;
+          for (let i = 0; i < pts.length - 1; i++) {
+            const p0 = pts[i - 1] || pts[i];
+            const p1 = pts[i];
+            const p2 = pts[i + 1];
+            const p3 = pts[i + 2] || p2;
+            const cp1x = p1[0] + (p2[0] - p0[0]) / 6;
+            const cp1y = p1[1] + (p2[1] - p0[1]) / 6;
+            const cp2x = p2[0] - (p3[0] - p1[0]) / 6;
+            const cp2y = p2[1] - (p3[1] - p1[1]) / 6;
+            d += ` C${cp1x},${cp1y} ${cp2x},${cp2y} ${p2[0]},${p2[1]}`;
+          }
+          return d;
+        };
+        let g = "";
+        const ticks = 4;
+        for (let i = 0; i <= ticks; i++) {
+          const y = pad.t + (i / ticks) * (h - pad.t - pad.b);
+          const val = Math.round(max - (i / ticks) * (max - min));
+          g += `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="rgba(140,180,220,.14)" stroke-dasharray="2 3"/>`;
+          g += `<text x="${pad.l-4}" y="${y+3}" fill="rgba(142,176,208,.7)" font-size="9" text-anchor="end">${val}</text>`;
+          if (dual) {
+            const val2 = (max2 - (i / ticks) * (max2 - min2));
+            const txt = Number.isInteger(val2) ? val2 : val2.toFixed(1);
+            g += `<text x="${w-pad.r+4}" y="${y+3}" fill="rgba(232,92,255,.75)" font-size="9" text-anchor="start">${txt}</text>`;
+          }
+        }
+        for (let i = 0; i < n; i++) {
+          g += `<line x1="${xAt(i)}" y1="${pad.t}" x2="${xAt(i)}" y2="${h-pad.b}" stroke="rgba(140,180,220,.08)" stroke-dasharray="2 3"/>`;
+        }
+        (opts.refs || []).forEach(ref => {
+          const y = yAt(ref.value, !!ref.right);
+          g += `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="${ref.color || "rgba(255,255,255,.45)"}" stroke-width="1.2" stroke-dasharray="4 3" opacity=".85"/>`;
+          if (ref.label) {
+            g += `<text x="${w-pad.r-2}" y="${y-3}" fill="${ref.color || "rgba(255,255,255,.55)"}" font-size="8" text-anchor="end">${ref.label}</text>`;
+          }
+        });
+        series.forEach((s, si) => {
+          const useRight = dual && si > 0;
+          const pts = s.data.map((v, i) => [xAt(i), yAt(v, useRight)]);
+          const d = smooth(pts);
+          if (opts.area) {
+            const op = typeof opts.area === "number" ? opts.area : .18;
+            g += `<path d="${d} L${xAt(n-1)},${h-pad.b} L${xAt(0)},${h-pad.b} Z" fill="${s.color}" opacity="${op}"/>`;
+          }
+          const sw = opts.strokeWidth || 2;
+          g += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="${sw}" stroke-linejoin="round" filter="drop-shadow(0 0 3px ${s.color})"/>`;
+          const showDots = n <= 12 || opts.dots;
+          if (showDots) {
+            s.data.forEach((v, i) => {
+              g += `<circle cx="${xAt(i)}" cy="${yAt(v, useRight)}" r="2.8" fill="#000b1d" stroke="${s.color}" stroke-width="1.8"/>`;
+            });
+          }
+        });
+        (opts.labels || []).forEach((lb, i) => {
+          if (!lb) return;
+          g += `<text x="${xAt(i)}" y="${h-2}" fill="rgba(142,176,208,.85)" font-size="9" text-anchor="middle">${lb}</text>`;
+        });
+        if (opts.endLabel && series[0]) {
+          const last = series[0].data.length - 1;
+          g += `<text x="${Math.min(xAt(last)+2, w-48)}" y="${yAt(series[0].data[last])-8}" fill="#f0d080" font-size="10">${opts.endLabel}</text>`;
+        }
+        svgPut(el, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${g}</svg>`);
+      }
+
+      function groupBars(el, seriesList, cats, colors) {
+        if (!el) return;
+        const w = el.clientWidth || 200, h = el.clientHeight || 90;
+        const pad = { t: 10, r: 6, b: 16, l: 26 };
+        const n = cats.length;
+        const m = seriesList.length;
+        const max = Math.max(...seriesList.flat(), 1);
+        const slot = (w - pad.l - pad.r) / n;
+        const gap = 2;
+        const bw = Math.min(10, (slot * 0.72 - gap * (m - 1)) / m);
+        let g = "";
+        for (let i = 0; i <= 3; i++) {
+          const y = pad.t + (i / 3) * (h - pad.t - pad.b);
+          const val = Math.round(max - (i / 3) * max);
+          g += `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="rgba(140,180,220,.14)" stroke-dasharray="2 3"/>`;
+          g += `<text x="${pad.l-3}" y="${y+3}" fill="rgba(142,176,208,.7)" font-size="8" text-anchor="end">${val}</text>`;
+        }
+        cats.forEach((cat, i) => {
+          const groupW = m * bw + (m - 1) * gap;
+          const x0 = pad.l + i * slot + (slot - groupW) / 2;
+          seriesList.forEach((arr, j) => {
+            const v = arr[i] || 0;
+            const bh = Math.max(2, (v / max) * (h - pad.t - pad.b));
+            const x = x0 + j * (bw + gap);
+            const y = h - pad.b - bh;
+            const color = colors[j];
+            g += `<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="2" fill="${color}" opacity=".92"/>`;
+            g += `<rect x="${x}" y="${y}" width="${bw}" height="${Math.min(bh, 4)}" rx="2" fill="#fff" opacity=".22"/>`;
+          });
+          g += `<text x="${pad.l + i * slot + slot / 2}" y="${h-2}" fill="rgba(160,190,220,.85)" font-size="8" text-anchor="middle">${cat}</text>`;
+        });
+        svgPut(el, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${g}</svg>`);
+      }
+
+      function renderFunnel(el, values) {
+        if (!el) return;
+        const labels = ["到店", "体验", "付费下单", "订单核销", "复购"];
+        const colors = ["#3b9eff", "#00d4ff", "#3ddea8", "#ff9a1a", "#e85cff"];
+        const vals = (values || []).map((v) => Number(v) || 0);
+        const topVal = Math.max(vals[0] || 0, 1);
+        el.innerHTML = `<div class="fh-cap">服务商运营转化漏斗</div><div class="fh-plot"></div>`;
+        const plot = el.querySelector(".fh-plot");
+        const w = Math.max(plot.clientWidth || 220, 160);
+        const h = Math.max(plot.clientHeight || 200, 140);
+        const n = labels.length;
+        const leftPad = 52;
+        const rightPad = 42;
+        const topPad = 2;
+        const botPad = 2;
+        const gap = 2.5;
+        const rowH = (h - topPad - botPad - gap * (n - 1)) / n;
+        const cx = leftPad + (w - leftPad - rightPad) / 2;
+        const maxHalf = (w - leftPad - rightPad) * 0.48;
+        const minHalf = maxHalf * 0.22;
+        const halfOf = (v) => minHalf + (Math.sqrt(Math.max(v, 0) / topVal)) * (maxHalf - minHalf);
+        let g = "";
+        vals.forEach((v, i) => {
+          const y0 = topPad + i * (rowH + gap);
+          const y1 = y0 + rowH;
+          const topHalf = halfOf(v);
+          const next = i < n - 1 ? vals[i + 1] : v * 0.72;
+          const botHalf = halfOf(next);
+          const pts = [
+            [cx - topHalf, y0],
+            [cx + topHalf, y0],
+            [cx + botHalf, y1],
+            [cx - botHalf, y1]
+          ].map((p) => p.join(",")).join(" ");
+          const midY = (y0 + y1) / 2;
+          const rate = Math.round((v / topVal) * 100);
+          g += `<polygon points="${pts}" fill="${colors[i]}" opacity=".9"/>`;
+          g += `<polygon points="${pts}" fill="url(#fnGlow${i})"/>`;
+          g += `<line x1="${cx - topHalf}" y1="${y0 + 0.5}" x2="${cx + topHalf}" y2="${y0 + 0.5}" stroke="#fff" stroke-opacity=".3" stroke-width="1"/>`;
+          g += `<text x="${leftPad - 6}" y="${midY + 3.5}" fill="rgba(200,225,245,.92)" font-size="10" text-anchor="end">${labels[i]}</text>`;
+          g += `<text x="${w - 6}" y="${midY + 3.5}" fill="#fff" font-size="11" font-weight="700" text-anchor="end">${v}</text>`;
+          g += `<text x="${cx}" y="${midY + 3.5}" fill="rgba(255,255,255,.95)" font-size="9" font-weight="650" text-anchor="middle">${rate}%</text>`;
+        });
+        const defs = colors.map((c, i) =>
+          `<linearGradient id="fnGlow${i}" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fff" stop-opacity=".26"/>
+            <stop offset="70%" stop-color="${c}" stop-opacity="0"/>
+          </linearGradient>`
+        ).join("");
+        svgPut(plot, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><defs>${defs}</defs>${g}</svg>`);
+      }
+
+      function stackBars(el, groups, cats, colors) {
+        if (!el) return;
+        const w = el.clientWidth || 160, h = el.clientHeight || 70;
+        const pad = { t: 6, r: 4, b: 14, l: 22 };
+        const n = groups.length;
+        const slot = (w - pad.l - pad.r) / n;
+        const bw = Math.min(14, slot * 0.38);
+        const max = Math.max(...groups.map(g => g.reduce((a, b) => a + b, 0)), 1);
+        let g = "";
+        for (let i = 0; i <= 3; i++) {
+          const y = pad.t + (i / 3) * (h - pad.t - pad.b);
+          const val = Math.round(max - (i / 3) * max);
+          g += `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="rgba(140,180,220,.12)" stroke-dasharray="2 3"/>`;
+          g += `<text x="${pad.l-3}" y="${y+3}" fill="rgba(142,176,208,.7)" font-size="8" text-anchor="end">${val}</text>`;
+        }
+        groups.forEach((vals, i) => {
+          const total = vals.reduce((a, b) => a + b, 0);
+          const fullH = (total / max) * (h - pad.t - pad.b);
+          const x = pad.l + i * slot + (slot - bw) / 2;
+          const topY = h - pad.b - fullH;
+          // ghost capsule
+          g += `<rect x="${x}" y="${pad.t}" width="${bw}" height="${h-pad.t-pad.b}" rx="${bw/2}" fill="${colors[0]}" opacity=".07"/>`;
+          // clip stacked fill into capsule
+          const clipId = `sc${el.id}_${i}`;
+          g += `<defs><clipPath id="${clipId}"><rect x="${x}" y="${topY}" width="${bw}" height="${fullH}" rx="${bw/2}"/></clipPath></defs>`;
+          let y = h - pad.b;
+          vals.forEach((v, j) => {
+            const bh = (v / max) * (h - pad.t - pad.b);
+            y -= bh;
+            g += `<rect x="${x}" y="${y}" width="${bw}" height="${bh+0.5}" fill="${colors[j]}" opacity=".95" clip-path="url(#${clipId})"/>`;
+          });
+          g += `<ellipse cx="${x+bw/2}" cy="${topY}" rx="${bw/2}" ry="${Math.max(2.5, bw*0.28)}" fill="${colors[vals.length-1]}"/>`;
+          g += `<text x="${x+bw/2}" y="${h-2}" fill="rgba(142,176,208,.85)" font-size="8" text-anchor="middle">${cats[i]}</text>`;
+        });
+        svgPut(el, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${g}</svg>`);
+      }
+
+      function hBars(el, items, color) {
+        if (!el) return;
+        const w = el.clientWidth || 160, h = el.clientHeight || 80;
+        const max = Math.max(...items.map(i => i.v), 1);
+        const rowH = (h - 4) / items.length;
+        let g = "";
+        items.forEach((it, i) => {
+          const y = 4 + i * rowH;
+          const bh = Math.max(10, rowH - 12);
+          const trackX = 92, trackW = w - trackX - 8;
+          const bw = Math.max(bh, (it.v / max) * (trackW - bh * 0.2));
+          g += `<text x="0" y="${y+bh*.72}" fill="rgba(168,200,232,.9)" font-size="10">${it.l}</text>`;
+          g += `<rect x="${trackX}" y="${y}" width="${trackW}" height="${bh}" rx="${bh/2}" fill="rgba(120,160,200,.1)"/>`;
+          g += `<rect x="${trackX}" y="${y}" width="${bw}" height="${bh}" rx="${bh/2}" fill="url(#hg${el.id})"/>`;
+          const cx = trackX + bw - bh / 2;
+          g += `<circle cx="${cx}" cy="${y+bh/2}" r="${bh/2 - 0.5}" fill="${color}" stroke="rgba(255,255,255,.35)" stroke-width="1"/>`;
+          g += `<text x="${cx}" y="${y+bh*.72}" fill="#041428" font-size="9" font-weight="700" text-anchor="middle">${it.v}</text>`;
+        });
+        svgPut(el, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+          <defs><linearGradient id="hg${el.id}" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="${color}" stop-opacity=".3"/>
+            <stop offset="100%" stop-color="${color}" stop-opacity=".95"/>
+          </linearGradient></defs>${g}</svg>`);
+      }
+
+      /* —— 平台 / 机构演示数据（左侧随切换变化，右侧固定） —— */
+      const mkDays = (n, seed, base) => {
+        const out = [];
+        let v = base;
+        for (let i = 0; i < n; i++) {
+          v = Math.max(1, Math.round(v + Math.sin((i + seed) * 0.55) * 3 + ((i * 7 + seed) % 5) - 2));
+          out.push(v);
+        }
+        return out;
+      };
+      const dayLabels = (() => {
+        const lbs = Array(30).fill("");
+        for (let i = 0; i < 30; i += 5) {
+          const d = new Date(2026, 6, 10 + i); // 近30天示意
+          lbs[i] = `${d.getMonth() + 1}/${d.getDate()}`;
+        }
+        lbs[29] = "今";
+        return lbs;
+      })();
+
+      let platformKey = "liuzhou";
+      let ecoOrg = "jinsheng";
+
+      const ORG_META = {
+        jinsheng: { short: "金盛驿站", name: "金盛社区AI康养驿站" },
+        dexin: { short: "德心医养", name: "德心医养嵌入式医养中心" },
+        liunan: { short: "柳南康养站", name: "柳南智慧康养服务站" },
+        chengzhong: { short: "城中驿站", name: "城中社区康养驿站" },
+        yufeng: { short: "鱼峰服务点", name: "鱼峰嵌入式医养服务点" },
+        liujiang: { short: "柳江照护中心", name: "柳江长者照护中心" }
+      };
+
+      const PLATFORM = {
+        liuzhou: {
+          title: "柳州数字康养生态运营平台",
+          orgBadge: "(1)", siteBadge: "(4)",
+          metrics: {
+            orgNum: ["103", "个"], elderNum: ["2132", "人"], bedNum: ["1.12", "万个"], occRate: ["19", "%"],
+            healthEval: ["7", "人次"], sportEval: ["26", "人次"], nutriEval: ["37", "人次"], sleepEval: ["6", "人次"],
+            homeSign: ["22", "个"], homeWarn: ["64", "次"], homeOrder: ["41", "单"], homeSvc: ["18", "项"],
+            partner: ["2", "个"], tradeCnt: ["84", "笔"], tradeAmt: ["1", "万元"], verifyCnt: ["67", "笔"],
+            monitorCnt: ["135", "次"], monitorAbn: ["28", "次"], monitorRpt: ["41", "次"],
+            sleepHours: ["4.61", "小时"], sleepWake: ["9.62", "次"], sleepUp: ["5.75", "次"]
+          },
+          evalBars: [635, 477, 159],
+          archive: mkDays(30, 3, 8),
+          warnBars: [278, 210, 140],
+          healthAge: [[42, 58, 48, 22], [8, 14, 16, 9], [12, 18, 15, 7]],
+          funnel: {
+            jinsheng: [1280, 860, 420, 310, 95],
+            dexin: [640, 410, 180, 140, 42],
+            liunan: [520, 360, 150, 110, 36],
+            chengzhong: [410, 280, 120, 88, 28],
+            yufeng: [360, 240, 96, 70, 22],
+            liujiang: [290, 190, 78, 55, 18]
+          },
+          ecoByOrg: {
+            jinsheng: { partner: ["2", "个"], tradeCnt: ["84", "笔"], tradeAmt: ["1", "万元"], verifyCnt: ["67", "笔"] },
+            dexin: { partner: ["1", "个"], tradeCnt: ["51", "笔"], tradeAmt: ["0.6", "万元"], verifyCnt: ["39", "笔"] },
+            liunan: { partner: ["1", "个"], tradeCnt: ["38", "笔"], tradeAmt: ["0.4", "万元"], verifyCnt: ["29", "笔"] },
+            chengzhong: { partner: ["1", "个"], tradeCnt: ["32", "笔"], tradeAmt: ["0.3", "万元"], verifyCnt: ["24", "笔"] },
+            yufeng: { partner: ["1", "个"], tradeCnt: ["27", "笔"], tradeAmt: ["0.3", "万元"], verifyCnt: ["19", "笔"] },
+            liujiang: { partner: ["1", "个"], tradeCnt: ["21", "笔"], tradeAmt: ["0.2", "万元"], verifyCnt: ["15", "笔"] }
+          }
+        },
+        clife: {
+          title: "clife数字康养生态运营平台",
+          orgBadge: "(12)", siteBadge: "(86)",
+          metrics: {
+            orgNum: ["1286", "个"], elderNum: ["4.8", "万人"], bedNum: ["12.6", "万个"], occRate: ["63", "%"],
+            healthEval: ["1860", "人次"], sportEval: ["3240", "人次"], nutriEval: ["2980", "人次"], sleepEval: ["1520", "人次"],
+            homeSign: ["8650", "个"], homeWarn: ["4120", "次"], homeOrder: ["3580", "单"], homeSvc: ["1260", "项"],
+            partner: ["48", "个"], tradeCnt: ["1.2", "万笔"], tradeAmt: ["86", "万元"], verifyCnt: ["9800", "笔"],
+            monitorCnt: ["1.8", "万次"], monitorAbn: ["3260", "次"], monitorRpt: ["4820", "次"],
+            sleepHours: ["5.12", "小时"], sleepWake: ["7.40", "次"], sleepUp: ["4.20", "次"]
+          },
+          evalBars: [8420, 7650, 9120],
+          archive: mkDays(30, 11, 86),
+          warnBars: [4860, 5120, 4680],
+          healthAge: [[620, 880, 740, 310], [95, 160, 210, 120], [180, 260, 220, 95]],
+          funnel: {
+            jinsheng: [18600, 12400, 6800, 5200, 1680],
+            dexin: [9200, 6100, 2900, 2100, 640],
+            liunan: [7800, 5100, 2400, 1800, 520],
+            chengzhong: [6400, 4200, 1900, 1400, 410],
+            yufeng: [5100, 3400, 1500, 1100, 320],
+            liujiang: [4300, 2800, 1200, 860, 260]
+          },
+          ecoByOrg: {
+            jinsheng: { partner: ["28", "个"], tradeCnt: ["7800", "笔"], tradeAmt: ["52", "万元"], verifyCnt: ["6100", "笔"] },
+            dexin: { partner: ["20", "个"], tradeCnt: ["4200", "笔"], tradeAmt: ["34", "万元"], verifyCnt: ["3700", "笔"] },
+            liunan: { partner: ["12", "个"], tradeCnt: ["3100", "笔"], tradeAmt: ["22", "万元"], verifyCnt: ["2400", "笔"] },
+            chengzhong: { partner: ["10", "个"], tradeCnt: ["2600", "笔"], tradeAmt: ["18", "万元"], verifyCnt: ["1900", "笔"] },
+            yufeng: { partner: ["8", "个"], tradeCnt: ["2100", "笔"], tradeAmt: ["14", "万元"], verifyCnt: ["1500", "笔"] },
+            liujiang: { partner: ["6", "个"], tradeCnt: ["1600", "笔"], tradeAmt: ["11", "万元"], verifyCnt: ["1100", "笔"] }
+          }
+        }
+      };
+
+      const setMetric = (key, pair, flash) => {
+        const el = document.querySelector(`[data-k="${key}"]`);
+        if (!el || !pair) return;
+        const prev = el.dataset.v;
+        const next = String(pair[0]);
+        el.innerHTML = `${pair[0]}<em>${pair[1]}</em>`;
+        el.dataset.v = next;
+        if (flash && prev != null && prev !== next) {
+          const wrap = el.closest(".m, .item");
+          if (wrap) {
+            wrap.classList.remove("flash");
+            void wrap.offsetWidth;
+            wrap.classList.add("flash");
+          }
+        }
+      };
+
+      const applyLeftMetrics = (flash) => {
+        const p = PLATFORM[platformKey];
+        Object.entries(p.metrics).forEach(([k, v]) => setMetric(k, v, flash));
+        const eco = p.ecoByOrg[ecoOrg] || {};
+        Object.entries(eco).forEach(([k, v]) => {
+          if (!Array.isArray(v)) return;
+          setMetric(k, v, flash);
+        });
+        const ob = document.getElementById("orgCountBadge");
+        const sb = document.getElementById("siteCountBadge");
+        if (ob) ob.textContent = p.orgBadge;
+        if (sb) sb.textContent = p.siteBadge;
+      };
+
+      const drawLeftCharts = () => {
+        const p = PLATFORM[platformKey];
+        const months = ["2026-02", "2026-04", "2026-06"];
+        bars(document.getElementById("chEval"), p.evalBars, C.blue, months);
+        line(document.getElementById("chArchive"), [
+          { color: C.cyan, data: p.archive }
+        ], { labels: dayLabels, max: Math.max(...p.archive) * 1.15, area: true, strokeWidth: 2 });
+        bars(document.getElementById("chWarn"), p.warnBars, C.orange, months);
+        groupBars(
+          document.getElementById("chHealthAge"),
+          p.healthAge,
+          ["60-69", "70-79", "80-89", "90以上"],
+          [C.blue, C.pink, C.green]
+        );
+        renderFunnel(document.getElementById("ecoFunnel"), p.funnel[ecoOrg]);
+      };
+
+      const drawRightCharts = () => {
+        /* 右侧个体/群体分析固定，不随平台切换变化 */
+        line(document.getElementById("gPop"), [
+          { color: C.cyan, data: [72, 84, 92, 100, 111] },
+          { color: C.pink, data: [12.0, 13.5, 15.0, 16.5, 18.2] }
+        ], { labels: ["2020", "2021", "2022", "2023", "2024"], dualY: true, max: 120, max2: 25 });
+
+        line(document.getElementById("gSvc"), [
+          { color: C.orange, data: [280, 420, 510, 680, 816, 480] }
+        ], { labels: ["3月", "4月", "5月", "6月", "7月", "8月"], max: 1087, area: 0.28, strokeWidth: 2.4 });
+
+        line(document.getElementById("gBp"), [
+          { color: C.pink, data: [168, 150, 118, 130, 158, 152] },
+          { color: C.green, data: [96, 86, 68, 74, 90, 88] }
+        ], {
+          labels: ["3月", "4月", "5月", "6月", "7月", "8月"], max: 192,
+          refs: [
+            { value: 140, color: "rgba(255,154,26,.75)", label: "高压基准140" },
+            { value: 90, color: "rgba(61,222,168,.65)", label: "低压基准90" }
+          ]
+        });
+
+        line(document.getElementById("gEval"), [
+          { color: C.blue, data: [10, 14, 12] },
+          { color: C.orange, data: [16, 48, 20] },
+          { color: C.green, data: [8, 11, 9] },
+          { color: C.violet, data: [5, 7, 6] }
+        ], { labels: ["6月", "7月", "8月"], max: 51 });
+      };
+
+      const drawSceneRest = () => {
+        stackBars(document.getElementById("chSleepAge"), [
+          [2.2, 3.1], [2.4, 3.6], [2.6, 3.3], [2.8, 2.9]
+        ], ["60~69", "70~79", "80~89", "90以上"], [C.blue, C.orange]);
+
+        hBars(document.getElementById("chNutri"), [
+          { l: "肌力下降高风险", v: 28 },
+          { l: "营养不良风险", v: 41 },
+          { l: "营养不良高风险", v: 19 }
+        ], C.green);
+      };
+
+      const drawAll = () => {
+        applyLeftMetrics();
+        drawLeftCharts();
+        drawSceneRest();
+        drawRightCharts();
+      };
+
+      /* —— 个人画像数据 —— */
+      const elders = [
+        {
+          id: "chen", name: "陈*", gender: "男", age: 72, weight: "76.0kg", height: "171.5cm",
+          time: "2026-08-07 17:33:25",
+          tags: ["偶尔睡不好", "食欲良好", "体重稳定", "近一年无跌倒", "可独立行走"],
+          judge: "脉率偏低，建议复核监测设备并关注心律异常风险。",
+          vitals: [
+            { k: "收缩压", n: "105", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "72", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "35", u: "次/分", st: "偏低", bad: true, icon: "pulse" },
+            { k: "血氧", n: "99", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.4", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "7.1", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        {
+          id: "zhao", name: "赵*", gender: "女", age: 78, weight: "52.0kg", height: "156cm",
+          time: "2026-08-07 15:42:20",
+          tags: ["起夜偏多", "近一年跌倒", "食欲下降", "行动需辅助", "偶有困倦"],
+          judge: "血压偏高，建议复测并关注用药依从性。",
+          vitals: [
+            { k: "收缩压", n: "152", u: "mmHg", st: "偏高", bad: true, icon: "heart" },
+            { k: "舒张压", n: "90", u: "mmHg", st: "偏高", bad: true, icon: "heart" },
+            { k: "脉率", n: "82", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧", n: "95", u: "%", st: "关注", bad: true, icon: "o2" },
+            { k: "空腹血糖", n: "5.8", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "7.6", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        {
+          id: "wei", name: "韦*奇", gender: "男", age: 69, weight: "70kg", height: "168cm",
+          time: "2026-08-07 15:18:48",
+          tags: ["体重稳定", "食欲良好", "可独立行走", "睡眠良好"],
+          judge: "体征平稳，建议保持现有运动方案。",
+          vitals: [
+            { k: "收缩压", n: "128", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "78", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "68", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧", n: "98", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.1", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "6.8", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        { id: "peng", name: "彭*超", gender: "男", age: 72, weight: "65kg", height: "170cm", time: "2026-08-07 14:57:43",
+          tags: ["体重稳定", "吞咽正常", "可独立行走"], judge: "—",
+          vitals: [
+            { k: "收缩压", n: "132", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "80", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "72", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧", n: "97", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.6", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "7.2", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        { id: "cheng", name: "成*姣", gender: "女", age: 66, weight: "58kg", height: "160cm", time: "2026-08-07 10:28:08",
+          tags: ["食欲良好", "几乎不起夜", "可独立行走"], judge: "—",
+          vitals: [
+            { k: "收缩压", n: "118", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "74", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "70", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧", n: "99", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.0", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "6.4", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        { id: "hu", name: "胡*", gender: "男", age: 81, weight: "61kg", height: "165cm", time: "2026-08-07 10:22:16",
+          tags: ["偶有困倦", "起夜偏多", "行动能力一般"], judge: "夜间睡眠质量偏低，建议睡眠评估。",
+          vitals: [
+            { k: "收缩压", n: "140", u: "mmHg", st: "关注", bad: true, icon: "heart" },
+            { k: "舒张压", n: "85", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "64", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧", n: "96", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "6.0", u: "mmol/L", st: "关注", bad: true, icon: "drop" },
+            { k: "餐后血糖", n: "8.1", u: "mmol/L", st: "关注", bad: true, icon: "meal" }
+          ]
+        },
+        { id: "mo", name: "莫*钧", gender: "男", age: 74, weight: "68kg", height: "169cm", time: "2026-08-07 09:17:44",
+          tags: ["体重稳定", "近一年无跌倒", "可独立行走"], judge: "—",
+          vitals: [
+            { k: "收缩压", n: "126", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "76", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "66", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧", n: "98", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.3", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "6.9", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        { id: "shi", name: "史*珍", gender: "女", age: 83, weight: "48kg", height: "152cm", time: "2026-08-07 06:12:24",
+          tags: ["食欲下降", "近一年跌倒", "行动需辅助"], judge: "低体重风险，建议营养专项评估。",
+          vitals: [
+            { k: "收缩压", n: "136", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "82", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "78", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧", n: "95", u: "%", st: "关注", bad: true, icon: "o2" },
+            { k: "空腹血糖", n: "5.5", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "7.0", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        { id: "zheng", name: "郑*艳", gender: "女", age: 70, weight: "60kg", height: "158cm", time: "2026-08-06 18:23:10",
+          tags: ["体重稳定", "食欲良好", "可独立行走"], judge: "—",
+          vitals: [
+            { k: "收缩压", n: "122", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "75", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "71", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧", n: "99", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.2", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "6.6", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        { id: "fan", name: "范*", gender: "男", age: 67, weight: "73kg", height: "172cm", time: "2026-08-06 16:05:32",
+          tags: ["几乎不起夜", "吞咽正常", "可独立行走"], judge: "—",
+          vitals: [
+            { k: "收缩压", n: "130", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "79", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "69", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧", n: "98", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.4", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "7.1", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        }
+      ];
+
+      const icons = {
+        heart: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.35-9.5-8.5C.5 8.5 3 5 6.5 5c2 0 3.5 1.2 4.5 2.5C12 6.2 13.5 5 15.5 5 19 5 21.5 8.5 19.5 12.5 17 16.65 12 21 12 21z"/></svg>`,
+        pulse: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h3l2-5 3 10 2-5h8"/></svg>`,
+        o2: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14c2-4 4-6 8-6s6 2 8 6"/><circle cx="12" cy="16" r="2"/></svg>`,
+        drop: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2s6 7 6 12a6 6 0 11-12 0c0-5 6-12 6-12z"/></svg>`,
+        meal: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 2v9a3 3 0 01-3 3H4v2h1a5 5 0 005-5V2H8zm9 0c-1.5 3-2 5.5-2 8.5V22h2V12h2V2h-2z"/></svg>`
+      };
+
+      let active = 0;
+      const shortTime = (t) => {
+        const m = String(t || "").match(/(\d{2})-(\d{2})\s+(\d{2}:\d{2})/);
+        return m ? `${m[1]}-${m[2]} ${m[3]}` : t;
+      };
+      const renderDir = () => {
+        document.getElementById("dirList").innerHTML = elders.map((e, i) => `
+          <div class="dir-item ${i === active ? "on" : ""}" data-i="${i}">
+            <span class="nm">${e.name}</span>
+            <span class="tm" title="${e.time}">${shortTime(e.time)}</span>
+          </div>
+        `).join("");
+        document.querySelectorAll(".dir-item").forEach(el => {
+          el.onclick = () => { active = +el.dataset.i; renderDir(); renderProfile(); };
+        });
+      };
+
+      const renderProfile = () => {
+        const e = elders[active];
+        document.getElementById("pinfo").innerHTML = `
+          <span>姓名：<b>${e.name}</b></span>
+          <span>性别：<b>${e.gender}</b></span>
+          <span>年龄：<b>${e.age}岁</b></span>
+          <span>体重：<b>${e.weight}</b></span>
+          <span>身高：<b>${e.height}</b></span>
+        `;
+        document.getElementById("ptags").innerHTML = e.tags.map(t => `<span class="tag">${t}</span>`).join("");
+        document.getElementById("pjudge").textContent = e.judge || "--";
+        document.getElementById("pvitals").innerHTML = e.vitals.map(v => `
+          <div class="vt ${v.empty ? "empty" : ""}">
+            <div class="top">${icons[v.icon] || ""}${v.k}</div>
+            <div class="mid">
+              <span class="n ${v.bad ? "bad" : ""}">${v.empty ? "" : (v.n || "—")}</span>
+              ${v.st ? `<span class="st ${v.bad ? "bad" : ""}">${v.st}</span>` : ""}
+            </div>
+            <div class="u">${v.u}</div>
+          </div>
+        `).join("");
+        const drill = document.getElementById("drillLink");
+        if (drill) drill.href = `./elder-profile-detail.html?id=${e.id}`;
+      };
+
+      renderDir();
+      renderProfile();
+
+      /* 平台切换：柳州（机构/租户范围） / clife（全平台，忽略机构租户限制） */
+      const platformBtns = document.querySelectorAll(".platform-switch button");
+      const setPlatform = (key) => {
+        platformKey = key === "clife" ? "clife" : "liuzhou";
+        platformBtns.forEach((btn) => {
+          const on = btn.dataset.platform === platformKey;
+          btn.classList.toggle("on", on);
+          btn.setAttribute("aria-selected", on ? "true" : "false");
+        });
+        const title = PLATFORM[platformKey].title;
+        const mt = document.getElementById("mainTitle");
+        if (mt) mt.textContent = title;
+        document.title = title;
+        applyLeftMetrics(true);
+        drawLeftCharts();
+      };
+      platformBtns.forEach((btn) => {
+        btn.addEventListener("click", () => setPlatform(btn.dataset.platform));
+      });
+
+      /* 生态服务商 · 标题后图标触发下拉 */
+      const picker = document.getElementById("ecoOrgPicker");
+      const orgBtn = document.getElementById("ecoOrgBtn");
+      const orgPop = document.getElementById("ecoOrgPop");
+      const orgName = document.getElementById("ecoOrgName");
+      const setEcoOrg = (key) => {
+        ecoOrg = key;
+        const meta = ORG_META[key] || { short: key, name: key };
+        if (orgName) orgName.textContent = meta.short;
+        if (orgPop) {
+          orgPop.querySelectorAll("button").forEach((b) => {
+            b.classList.toggle("on", b.dataset.org === key);
+          });
+        }
+        applyLeftMetrics(true);
+        renderFunnel(document.getElementById("ecoFunnel"), PLATFORM[platformKey].funnel[key] || [0,0,0,0,0]);
+        picker?.classList.remove("open");
+        orgBtn?.setAttribute("aria-expanded", "false");
+      };
+      orgBtn?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const open = picker?.classList.toggle("open");
+        orgBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+      orgPop?.querySelectorAll("button").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          setEcoOrg(btn.dataset.org);
+        });
+      });
+      document.addEventListener("click", () => {
+        picker?.classList.remove("open");
+        orgBtn?.setAttribute("aria-expanded", "false");
+      });
+
+      /* 经营智助：默认收起，展开时仍限制在面板内 */
+      const aiFloat = document.getElementById("aiFloat");
+      const aiToggle = document.getElementById("aiToggle");
+      const portraitEl = document.querySelector(".portrait");
+      const syncAiDock = () => {
+        const collapsed = aiFloat?.classList.contains("collapsed");
+        portraitEl?.classList.toggle("ai-collapsed", !!collapsed);
+        if (aiToggle) {
+          aiToggle.textContent = collapsed ? "经营智助" : "收起";
+          aiToggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
+          aiToggle.title = collapsed ? "打开经营智助" : "收起经营智助";
+        }
+      };
+      aiFloat?.classList.add("collapsed");
+      aiToggle?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        aiFloat?.classList.toggle("collapsed");
+        syncAiDock();
+      });
+      syncAiDock();
+
+      /* 全屏切换 */
+      const btnFs = document.getElementById("btnFullscreen");
+      const syncFs = () => {
+        const on = !!document.fullscreenElement;
+        btnFs?.setAttribute("aria-pressed", on ? "true" : "false");
+        const enter = document.getElementById("fsIconEnter");
+        const exit = document.getElementById("fsIconExit");
+        const lab = document.getElementById("fsLabel");
+        if (enter) enter.style.display = on ? "none" : "block";
+        if (exit) exit.style.display = on ? "block" : "none";
+        if (lab) lab.textContent = on ? "退出全屏" : "全屏";
+      };
+      btnFs?.addEventListener("click", async () => {
+        try {
+          if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+          else await document.exitFullscreen();
+        } catch (err) { console.warn(err); }
+      });
+      document.addEventListener("fullscreenchange", () => {
+        syncFs();
+        setTimeout(drawAll, 120);
+      });
+
+      /* 数字人去白底 */
+      const cutWhiteBg = (img) => {
+        if (!img || img.dataset.cut === "1") return;
+        const run = () => {
+          try {
+            const c = document.createElement("canvas");
+            const w = img.naturalWidth || img.width;
+            const h = img.naturalHeight || img.height;
+            if (!w || !h) return;
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            const id = ctx.getImageData(0, 0, w, h);
+            const d = id.data;
+            for (let i = 0; i < d.length; i += 4) {
+              const r = d[i], g = d[i+1], b = d[i+2];
+              const mx = Math.max(r,g,b), mn = Math.min(r,g,b);
+              if (r > 208 && g > 208 && b > 208) d[i+3] = 0;
+              else if (r > 175 && g > 175 && b > 175 && (mx - mn) < 28) {
+                const t = (r + g + b) / 3;
+                d[i+3] = Math.max(0, Math.min(255, Math.round((220 - t) * 4.5)));
+              }
+            }
+            ctx.putImageData(id, 0, 0);
+            img.src = c.toDataURL("image/png");
+            img.dataset.cut = "1";
+          } catch (e) { console.warn(e); }
+        };
+        if (img.complete && img.naturalWidth) run();
+        else img.addEventListener("load", run, { once: true });
+      };
+      cutWhiteBg(document.querySelector("#aiFloat img"));
+
+      requestAnimationFrame(() => {
+        drawAll();
+        setTimeout(drawAll, 80);
+      });
+      let t;
+      window.addEventListener("resize", () => {
+        clearTimeout(t);
+        t = setTimeout(drawAll, 180);
+      });
+    })();
+  </script>
+</body>
+</html>

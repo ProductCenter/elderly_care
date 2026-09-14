@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>柳州数字康养生态运营平台</title>
+  <style>
+    :root {
+      --bg: #000b1d;
+      --cyan: #00e5ff;
+      --blue: #3b9eff;
+      --orange: #ff9a1a;
+      --pink: #c44dff;
+      --green: #3ddea8;
+      --violet: #8b7cff;
+      --red: #ff4d4f;
+      --text: #ffffff;
+      --muted: #7fa3c4;
+      --label: #9ec0de;
+      --font: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; font-family: var(--font); color: var(--text); background: var(--bg); }
+    body {
+      background:
+        radial-gradient(ellipse 100% 60% at 50% -5%, rgba(18, 70, 140, 0.4), transparent 50%),
+        radial-gradient(ellipse 45% 40% at 80% 55%, rgba(25, 60, 120, 0.22), transparent 55%),
+        radial-gradient(ellipse 40% 35% at 15% 70%, rgba(20, 50, 100, 0.18), transparent 50%),
+        linear-gradient(180deg, #000814 0%, #061428 45%, #030b18 100%);
+    }
+    body::before {
+      content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .72;
+      background-image:
+        radial-gradient(ellipse 55% 50% at 55% 48%, rgba(30,90,160,.18), transparent 70%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='900' viewBox='0 0 1400 900'%3E%3Cg fill='none' stroke='%231a5a9a' stroke-width='1.15'%3E%3Cpath d='M-20 480C90 400 180 450 280 370s160 50 260-10 170 70 270 20 190-50 290 40 180 30 320 70'/%3E%3Cpath d='M0 560C120 490 220 540 340 470s190 60 310 10 210 80 330 30 230-40 340 55'/%3E%3Cpath d='M40 340C160 270 260 320 380 250s210 70 330 20 230 60 350 10 210 50 300 85'/%3E%3Cpath d='M-10 680C130 610 230 660 360 590s220 70 360 30 250 50 370 95'/%3E%3Cpath d='M120 220C240 160 340 210 460 150s230 55 350 15'/%3E%3Cpath d='M700 300C820 250 920 290 1040 240s220 45 320 90'/%3E%3C/g%3E%3Cg fill='none' stroke='%23144878' stroke-width='.75'%3E%3Cpath d='M200 720C340 660 460 710 600 650s280 60 420 30'/%3E%3Cpath d='M500 180C620 130 740 170 860 120s240 40 340 85'/%3E%3Cpath d='M80 420C220 360 360 400 500 340s280 55 420 20'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: cover; background-position: center 42%;
+    }
+    body::after {
+      content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(ellipse 80% 75% at 50% 42%, transparent 25%, rgba(0,0,0,.55) 100%);
+    }
+
+    .screen {
+      position: relative; z-index: 1; height: 100vh;
+      display: grid; grid-template-rows: 78px minmax(0, 1fr);
+      padding: 0 16px 10px; gap: 6px;
+    }
+
+    /* ===== Header ===== */
+    .header {
+      position: relative; display: flex; align-items: center; justify-content: center;
+    }
+    .header-deco {
+      position: absolute; left: 0; right: 0; top: 58%; height: 1px;
+      background: linear-gradient(90deg,
+        transparent 0%, rgba(0,229,255,.08) 6%,
+        rgba(0,229,255,.45) 22%, rgba(0,229,255,.9) 50%,
+        rgba(0,229,255,.45) 78%, rgba(0,229,255,.08) 94%, transparent 100%);
+      box-shadow: 0 0 18px rgba(0,229,255,.55), 0 0 48px rgba(0,140,255,.22);
+    }
+    .header-deco::before, .header-deco::after {
+      content: ""; position: absolute; top: 50%;
+      width: min(28vw, 340px); height: 28px;
+      transform: translateY(-62%);
+      opacity: .9;
+      background:
+        linear-gradient(180deg, rgba(0,180,255,.18), transparent 70%),
+        repeating-linear-gradient(90deg, rgba(0,229,255,.55) 0 2px, transparent 2px 10px);
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+              mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+      border-bottom: 1px solid rgba(0,229,255,.35);
+    }
+    .header-deco::before {
+      left: 4%;
+      clip-path: polygon(0 55%, 8% 0, 100% 8%, 100% 100%, 6% 100%);
+    }
+    .header-deco::after {
+      right: 4%;
+      clip-path: polygon(0 8%, 92% 0, 100% 55%, 94% 100%, 0 100%);
+    }
+    .title-box {
+      position: relative; z-index: 1;
+      padding: 6px 96px 12px;
+      background:
+        linear-gradient(180deg, rgba(20,90,170,.72) 0%, rgba(8,40,90,.35) 55%, transparent 100%);
+      clip-path: polygon(8% 0, 92% 0, 100% 100%, 0 100%);
+      box-shadow: 0 10px 40px rgba(0,120,220,.18);
+    }
+    .title-box::before {
+      content: ""; position: absolute; left: 10%; right: 10%; bottom: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(0,229,255,.85), transparent);
+      box-shadow: 0 0 12px rgba(0,229,255,.7);
+    }
+    .title-box h1 {
+      font-size: clamp(18px, 1.7vw, 28px); font-weight: 700; letter-spacing: 4px; text-align: center; color: #fff;
+      text-shadow: 0 0 24px rgba(0,229,255,.55), 0 2px 0 rgba(0,40,80,.4);
+    }
+    .title-box { padding: 6px 36px 12px; clip-path: polygon(4% 0, 96% 0, 100% 100%, 0 100%); }
+
+    /* 机构切换 / 漏斗 */
+    .org-switch {
+      display: inline-flex; align-items: center; gap: 4px; margin-left: 6px;
+      padding: 1px; border-radius: 3px; border: 1px solid rgba(0,229,255,.3);
+      background: rgba(4,20,48,.55);
+    }
+    .org-switch button {
+      appearance: none; border: 0; cursor: pointer; height: 20px; padding: 0 8px;
+      font-size: 10px; color: rgba(180,210,235,.75); background: transparent; border-radius: 2px;
+    }
+    .org-switch button.on {
+      color: #fff; background: linear-gradient(145deg, rgba(0,180,255,.45), rgba(20,90,170,.7));
+    }
+    .funnel-h {
+      flex: 1; min-height: 70px; display: flex; flex-direction: column; gap: 3px; justify-content: center; padding: 2px 0;
+    }
+    .funnel-h .fh-row {
+      display: grid; grid-template-columns: 72px 1fr 36px; gap: 6px; align-items: center;
+      font-size: 10px; color: var(--muted);
+    }
+    .funnel-h .fh-row .nm { color: #d8e8f8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .funnel-h .fh-row .track {
+      height: 10px; border-radius: 5px; background: rgba(120,160,200,.1); overflow: hidden;
+    }
+    .funnel-h .fh-row .track > i {
+      display: block; height: 100%; border-radius: 5px;
+      background: linear-gradient(90deg, rgba(0,180,255,.25), var(--cyan));
+    }
+    .funnel-h .fh-row .val { color: #fff; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+    .funnel-h .fh-cap {
+      font-size: 10px; color: var(--muted); margin-bottom: 2px;
+    }
+    .btn-exit {
+      position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+      height: 28px; padding: 0 12px; border-radius: 3px; cursor: pointer;
+      border: 1px solid rgba(0,229,255,.4); background: rgba(4,24,52,.55);
+      color: #b8e0ff; font-size: 12px; display: inline-flex; align-items: center; gap: 5px;
+    }
+    .btn-exit svg { width: 13px; height: 13px; }
+
+    /* 平台切换 */
+    .header-left {
+      position: absolute; left: 8px; top: 50%; transform: translateY(-50%);
+      z-index: 2; max-width: min(42vw, 520px);
+    }
+    .platform-switch {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+      padding: 3px; border-radius: 4px;
+      border: 1px solid rgba(0,229,255,.35);
+      background: rgba(4, 20, 48, .72);
+      box-shadow: inset 0 0 20px rgba(0,80,160,.18), 0 0 16px rgba(0,140,255,.12);
+    }
+    .platform-switch button {
+      appearance: none; border: 0; cursor: pointer;
+      min-height: 34px; padding: 4px 10px;
+      background: transparent; color: rgba(180,210,235,.78);
+      font-size: 12px; font-weight: 650; letter-spacing: .5px; line-height: 1.25;
+      text-align: center; border-radius: 3px;
+      transition: background .15s, color .15s, box-shadow .15s;
+    }
+    .platform-switch button:hover { color: #e8f6ff; background: rgba(0,140,255,.12); }
+    .platform-switch button.on {
+      color: #fff;
+      background: linear-gradient(180deg, rgba(0,190,255,.42), rgba(20,90,170,.72));
+      box-shadow: 0 0 14px rgba(0,200,255,.28), inset 0 0 0 1px rgba(0,229,255,.45);
+      text-shadow: 0 0 8px rgba(0,229,255,.45);
+    }
+
+    .body {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 42% minmax(0, 1fr);
+      gap: 10px;
+    }
+    .col { min-height: 0; min-width: 0; display: grid; gap: 8px; }
+    .col-left { grid-template-rows: 1.15fr .85fr; }
+    .col-right { grid-template-rows: 1.1fr .9fr; }
+
+    /* soft panels — light tech border */
+    .panel {
+      min-height: 0; overflow: hidden;
+      display: flex; flex-direction: column;
+      background: rgba(3, 16, 38, 0.28);
+      border: 1px solid rgba(0, 170, 255, 0.12);
+      border-radius: 2px;
+      box-shadow: inset 0 0 40px rgba(0,40,90,.12);
+    }
+    .ph {
+      flex-shrink: 0; padding: 6px 10px 2px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .ph h3 {
+      font-size: 16px; font-weight: 700; letter-spacing: 4px; color: #fff;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .ph h3::before {
+      content: ""; width: 0; height: 0;
+      border-left: 7px solid var(--cyan);
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      filter: drop-shadow(0 0 5px rgba(0,229,255,.7));
+    }
+    .ph h3::after { content: none; }
+    .ph-chev {
+      width: 20px; height: 20px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: linear-gradient(145deg, #2eb8ff, #1565c0);
+      color: #fff; font-size: 14px; line-height: 1;
+      box-shadow: 0 0 10px rgba(0,180,255,.35);
+    }
+    .pb { flex: 1; min-height: 0; padding: 2px 8px 8px; display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
+
+    /* —— 业态：三列 —— */
+    .biz-cols {
+      flex: 1; min-height: 0;
+      display: grid; grid-template-columns: 1.15fr 1.15fr .9fr; gap: 8px;
+    }
+    .biz-col { min-height: 0; display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
+    .biz {
+      display: flex; flex-direction: column; gap: 4px; min-height: 0;
+    }
+    .biz .hd {
+      display: flex; align-items: center; gap: 6px; margin-bottom: 4px;
+    }
+    .biz .ico {
+      width: 22px; height: 22px; border-radius: 5px; flex-shrink: 0;
+      display: grid; place-items: center;
+    }
+    .biz .ico svg { width: 13px; height: 13px; color: #fff; }
+    .biz.c1 .ico { background: linear-gradient(145deg, #3b9eff, #1565c0); box-shadow: 0 0 10px rgba(59,158,255,.45); }
+    .biz.c2 .ico { background: linear-gradient(145deg, #2dd4bf, #0d9488); box-shadow: 0 0 10px rgba(45,212,191,.4); }
+    .biz.c3 .ico { background: linear-gradient(145deg, #4ade80, #16a34a); box-shadow: 0 0 10px rgba(74,222,128,.4); }
+    .biz.c4 .ico { background: linear-gradient(145deg, #a78bfa, #7c3aed); box-shadow: 0 0 10px rgba(167,139,250,.4); }
+    .biz .hd .name { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+    .biz .hd .pill {
+      display: inline-flex; align-items: center; gap: 2px;
+      max-width: 100%; padding: 2px 10px 3px; border-radius: 999px;
+      font-size: 12px; font-weight: 650; color: #fff; line-height: 1.3;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .biz .hd .pill small { font-size: 11px; font-weight: 500; opacity: .85; }
+    .biz.c1 .pill { background: linear-gradient(90deg, rgba(40,120,220,.75), rgba(30,90,180,.45)); box-shadow: inset 0 0 0 1px rgba(100,180,255,.35); }
+    .biz.c2 .pill { background: linear-gradient(90deg, rgba(20,140,130,.75), rgba(15,100,95,.45)); box-shadow: inset 0 0 0 1px rgba(80,220,200,.35); }
+    .biz.c3 .pill { background: linear-gradient(90deg, rgba(40,150,80,.7), rgba(20,110,60,.4)); box-shadow: inset 0 0 0 1px rgba(100,220,140,.35); }
+    .biz.c4 .pill { background: linear-gradient(90deg, rgba(110,80,200,.75), rgba(80,50,160,.45)); box-shadow: inset 0 0 0 1px rgba(180,150,255,.35); }
+    .biz .hd a { font-size: 11px; color: var(--cyan); text-decoration: none; white-space: nowrap; }
+    .biz .metrics {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2px 8px; align-content: flex-start;
+    }
+    .biz .metrics .m:last-child:nth-child(odd) { grid-column: 1 / -1; }
+    .biz .m {
+      display: flex; align-items: baseline; gap: 3px; line-height: 1.4;
+    }
+    .biz .m::before {
+      content: ""; width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+      border: 1.5px solid var(--cyan); box-shadow: 0 0 6px rgba(0,229,255,.7);
+      align-self: center; margin-right: 1px;
+    }
+    .biz .m .n { font-size: 15px; font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; }
+    .biz .m .n em { font-style: normal; font-size: 11px; color: var(--muted); margin-left: 1px; }
+    .biz .m .k { font-size: 11px; color: var(--muted); }
+    .biz-col .chart-slot {
+      flex: 1; min-height: 70px; display: flex; flex-direction: column;
+    }
+    .biz-col .chart-slot .cap {
+      font-size: 10px; color: var(--muted); margin-bottom: 2px;
+    }
+    .biz-col .chart-slot .plot { flex: 1; min-height: 0; }
+
+    /* —— 场景 —— */
+    .scene-grid {
+      flex: 1; min-height: 0;
+      display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 6px 12px;
+    }
+    .sc {
+      background: transparent; border: none; border-radius: 0; padding: 2px 2px;
+      display: flex; flex-direction: column; min-height: 0; overflow: hidden;
+    }
+    .sc .hd {
+      display: block; align-self: flex-start;
+      font-size: 13px; font-weight: 650; color: #fff; margin-bottom: 4px; flex-shrink: 0;
+      padding: 0; border-radius: 0; background: none; box-shadow: none;
+    }
+    .sc .kpi-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 3px; flex-shrink: 0; }
+    .sc .kpi-row .item {
+      display: flex; flex-direction: column; gap: 1px;
+    }
+    .sc .kpi-row .item .n {
+      font-size: 16px; font-weight: 700; color: #fff;
+      display: flex; align-items: baseline; gap: 2px;
+    }
+    .sc .kpi-row .item .n::before {
+      content: ""; width: 7px; height: 7px; border-radius: 50%;
+      border: 1.5px solid var(--cyan); box-shadow: 0 0 6px rgba(0,229,255,.75);
+      margin-right: 3px; align-self: center; background: transparent;
+    }
+    .sc .kpi-row .item .n em { font-style: normal; font-size: 11px; color: var(--muted); }
+    .sc .kpi-row .item .k { font-size: 10px; color: var(--muted); padding-left: 13px; }
+    .sc .sub { font-size: 10px; color: var(--muted); margin-bottom: 1px; }
+    .sc .plot { flex: 1; min-height: 0; }
+    .sport-list {
+      display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(4, auto);
+      grid-auto-flow: column; gap: 3px 18px;
+      font-size: 11px; color: var(--muted); flex: 1; align-content: start; padding-top: 2px;
+    }
+    .sport-list div { display: flex; justify-content: space-between; gap: 4px; line-height: 1.55; }
+    .sport-list b { color: #fff; font-weight: 650; }
+    .sport-list i {
+      display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+      border: 1.5px solid var(--cyan); background: transparent; margin-right: 4px; vertical-align: middle;
+      box-shadow: 0 0 5px rgba(0,229,255,.55);
+    }
+
+    /* —— 个人动态画像 —— */
+    .portrait {
+      flex: 1; min-height: 0;
+      display: grid; grid-template-columns: 210px 1px minmax(0, 1fr); gap: 0 12px;
+      position: relative;
+    }
+    .dir-wrap { min-height: 0; display: flex; flex-direction: column; }
+    .dir-wrap .sec-label { justify-content: space-between; }
+    .dir-wrap .sec-label .gear { opacity: .55; font-size: 12px; }
+    .dir-foot {
+      flex-shrink: 0; padding: 6px 4px 0; text-align: right;
+    }
+    .dir-foot a { font-size: 11px; color: var(--cyan); text-decoration: none; }
+    .v-split {
+      width: 1px; background: linear-gradient(180deg, transparent, rgba(0,229,255,.65), transparent);
+      box-shadow: 0 0 10px rgba(0,229,255,.45); align-self: stretch;
+    }
+    .dir {
+      flex: 1; min-height: 0; overflow: auto;
+      border: none; border-radius: 2px;
+      background: transparent;
+    }
+    .dir::-webkit-scrollbar { width: 2px; }
+    .dir::-webkit-scrollbar-thumb { background: rgba(0,180,255,.3); }
+    .dir-item {
+      position: relative;
+      display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+      padding: 7px 8px 7px 10px; cursor: pointer; border-bottom: none;
+      transition: background .12s; border-radius: 2px; margin-bottom: 1px;
+    }
+    .dir-item:hover { background: rgba(30,100,180,.22); }
+    .dir-item.on {
+      background: linear-gradient(90deg, #1a6fd4 0%, #1e78e0 55%, rgba(30,120,220,.55) 100%);
+      box-shadow: 0 0 14px rgba(30,120,220,.4);
+    }
+    .dir-item.on::before {
+      content: ""; position: absolute; left: 0; top: 3px; bottom: 3px; width: 3px;
+      border-radius: 0 2px 2px 0; background: #5ec8ff;
+      box-shadow: 0 0 8px rgba(94,200,255,.8);
+    }
+    .dir-item .nm { font-size: 13px; font-weight: 600; color: #fff; flex-shrink: 0; }
+    .dir-item .tm { font-size: 10px; color: rgba(180,210,235,.8); white-space: nowrap; text-align: right; }
+
+    .profile {
+      min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 8px;
+      padding-right: 108px; position: relative;
+    }
+    .sec-label {
+      font-size: 13px; color: #e0f0ff; margin-bottom: 5px;
+      display: flex; align-items: center; gap: 6px; font-weight: 650;
+    }
+    .sec-label::before { content: none; }
+    .pinfo {
+      display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted);
+    }
+    .pinfo b { color: #fff; font-weight: 650; margin-left: 2px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      font-size: 11px; padding: 4px 10px; border-radius: 3px;
+      background: rgba(28, 52, 88, 0.85); color: #c0d8f0;
+      border: none;
+    }
+    .judge-box {
+      border: 1px solid rgba(70,150,210,.28); border-radius: 10px;
+      padding: 14px 16px; min-height: 48px; color: var(--muted); font-size: 12px;
+      background: rgba(4,18,40,.5);
+      line-height: 1.6;
+    }
+    .vitals {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+      margin-top: 2px;
+    }
+    .vt {
+      background: rgba(6, 24, 52, 0.62);
+      border: 1px solid rgba(0,180,255,.2);
+      border-radius: 8px; padding: 8px 10px; min-height: 70px;
+      box-shadow: 0 0 16px rgba(0,100,180,.08), inset 0 -2px 8px rgba(0,229,255,.04);
+    }
+    .vt .top { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--label); }
+    .vt .top svg { width: 13px; height: 13px; color: var(--cyan); flex-shrink: 0; }
+    .vt .mid { margin-top: 6px; display: flex; align-items: baseline; gap: 6px; }
+    .vt .mid .n { font-size: 22px; font-weight: 700; color: #fff; line-height: 1; }
+    .vt .mid .n.bad { color: var(--red); text-shadow: 0 0 10px rgba(255,77,79,.35); }
+    .vt .mid .st {
+      font-size: 12px; padding: 0; border-radius: 0;
+      background: transparent; color: #d8e8f8;
+    }
+    .vt .mid .st.bad { background: transparent; color: var(--red); font-weight: 700; }
+    .vt .u { margin-top: 3px; font-size: 11px; color: var(--muted); }
+    .vt.empty .mid .n { color: var(--muted); font-size: 16px; }
+
+    .ai-float {
+      position: absolute; right: 2px; bottom: -2px; z-index: 3;
+      width: 118px; text-align: center; pointer-events: none;
+    }
+    .ai-float img {
+      width: 108px; height: auto; display: block; margin: 0 auto -8px;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,.55));
+      mask-image: linear-gradient(180deg, #000 72%, transparent 100%);
+      -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent 100%);
+    }
+    .ai-float .ai-label {
+      margin-top: 0; display: inline-block;
+      padding: 4px 16px 5px; font-size: 11px; color: #e8fbff; font-weight: 650;
+      background: linear-gradient(180deg, rgba(0,190,230,.55), rgba(0,90,160,.92));
+      border: 1px solid rgba(0,240,255,.65);
+      clip-path: polygon(12% 0, 88% 0, 100% 100%, 0 100%);
+      box-shadow: 0 0 18px rgba(0,229,255,.55), inset 0 0 12px rgba(0,229,255,.2);
+      text-shadow: 0 0 8px rgba(0,229,255,.5);
+    }
+    .drill {
+      width: 26px; height: 26px; border-radius: 50%; border: none; cursor: pointer;
+      background: linear-gradient(145deg, #2eb8ff, #1565c0);
+      display: grid; place-items: center; color: #fff; text-decoration: none;
+      box-shadow: 0 0 12px rgba(0,180,255,.4);
+    }
+    .drill svg { width: 13px; height: 13px; }
+
+    /* —— 群体动态分析 —— */
+    .group-grid {
+      flex: 1; min-height: 0;
+      display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 6px 10px;
+    }
+    .gch {
+      background: transparent; border: none;
+      border-radius: 0; padding: 2px 4px;
+      display: flex; flex-direction: column; min-height: 0;
+    }
+    .gch .cap {
+      font-size: 11px; color: #e0f0ff; margin-bottom: 2px; flex-shrink: 0;
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 8px;
+    }
+    .gch .cap .leg { display: flex; flex-wrap: wrap; gap: 6px 8px; font-size: 9px; color: var(--muted); justify-content: flex-end; }
+    .gch .cap .leg i {
+      display: inline-block; width: 8px; height: 3px; border-radius: 1px; margin-right: 3px;
+      vertical-align: middle;
+    }
+    .sc .sub .leg { display: inline-flex; flex-wrap: wrap; gap: 4px 8px; vertical-align: middle; }
+    .sc .sub .leg i {
+      display: inline-block; width: 7px; height: 7px; border-radius: 2px; margin-right: 2px; vertical-align: 0;
+    }
+    .gch .plot { flex: 1; min-height: 0; }
+
+    @media (max-width: 1280px) {
+      body { overflow: auto; }
+      .screen { height: auto; min-height: 100vh; }
+      .body { grid-template-columns: 1fr; }
+      .col { grid-template-rows: auto; }
+      .scene-grid, .group-grid { min-height: 320px; }
+      .portrait { min-height: 420px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="header">
+      <div class="header-deco"></div>
+      <div class="header-left">
+        <div class="platform-switch" role="tablist" aria-label="平台切换">
+          <button type="button" class="on" role="tab" aria-selected="true" data-platform="liuzhou">柳州数字康养<br>生态运营平台</button>
+          <button type="button" role="tab" aria-selected="false" data-platform="clife">clife数字康养<br>生态运营平台</button>
+        </div>
+      </div>
+      <div class="title-box"><h1 id="mainTitle">柳州数字康养生态运营平台</h1></div>
+      <a class="btn-exit" href="./ecology-blank-screen.html" style="right:168px;text-decoration:none">
+        空白大屏
+      </a>
+      <a class="btn-exit" href="./wellness-loop-screen.html" style="right:86px;text-decoration:none">
+        业务闭环
+      </a>
+      <button class="btn-exit" type="button" onclick="history.back()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        退出
+      </button>
+    </header>
+
+    <div class="body">
+      <!-- ===== 左：业态 + 场景 ===== -->
+      <div class="col col-left">
+        <section class="panel">
+          <div class="ph"><h3>业态</h3></div>
+          <div class="pb">
+            <div class="biz-cols">
+              <div class="biz-col">
+                <div class="biz c1">
+                  <div class="hd">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z"/></svg></div>
+                    <div class="name"><span class="pill">数智养老机构<small id="orgCountBadge">(1)</small></span></div>
+                    <a href="javascript:;">机构列表 ›</a>
+                  </div>
+                  <div class="metrics">
+                    <div class="m"><span class="n" data-k="orgNum">103<em>个</em></span><span class="k">机构数</span></div>
+                    <div class="m"><span class="n" data-k="elderNum">2132<em>人</em></span><span class="k">在住长者数</span></div>
+                    <div class="m"><span class="n" data-k="bedNum">1.12<em>万个</em></span><span class="k">床位</span></div>
+                    <div class="m"><span class="n" data-k="occRate">19<em>%</em></span><span class="k">入住率</span></div>
+                  </div>
+                </div>
+                <div class="chart-slot">
+                  <div class="cap">评估人次（累计/月）</div>
+                  <div class="plot" id="chEval"></div>
+                </div>
+              </div>
+
+              <div class="biz-col">
+                <div class="biz c2">
+                  <div class="hd">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l9 6v12h-6v-7H9v7H3V9l9-6z"/></svg></div>
+                    <div class="name"><span class="pill">数智康养社区<small id="siteCountBadge">(4)</small></span></div>
+                    <a href="javascript:;">站点列表 ›</a>
+                  </div>
+                  <div class="metrics">
+                    <div class="m"><span class="n" data-k="healthEval">7<em>人次</em></span><span class="k">健康监测评估</span></div>
+                    <div class="m"><span class="n" data-k="sportEval">26<em>人次</em></span><span class="k">运动专项评估</span></div>
+                    <div class="m"><span class="n" data-k="nutriEval">37<em>人次</em></span><span class="k">营养专项评估</span></div>
+                    <div class="m"><span class="n" data-k="sleepEval">6<em>人次</em></span><span class="k">睡眠综合总数</span></div>
+                    <div class="m"><span class="n" data-k="healthWarn">128<em>次</em></span><span class="k">健康预警次数</span></div>
+                    <div class="m"><span class="n" data-k="workOrder">86<em>单</em></span><span class="k">服务工单</span></div>
+                  </div>
+                </div>
+                <div class="chart-slot">
+                  <div class="cap">建档数（近30天/日）</div>
+                  <div class="plot" id="chArchive"></div>
+                </div>
+              </div>
+
+              <div class="biz-col">
+                <div class="biz c4">
+                  <div class="hd">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
+                    <div class="name"><span class="pill">居家康养</span></div>
+                    <a href="javascript:;">人员列表 ›</a>
+                  </div>
+                  <div class="metrics">
+                    <div class="m"><span class="n" data-k="homeSign">22<em>个</em></span><span class="k">累计签约</span></div>
+                    <div class="m"><span class="n" data-k="homeWarn">64<em>次</em></span><span class="k">健康预警次数</span></div>
+                    <div class="m"><span class="n" data-k="homeOrder">41<em>单</em></span><span class="k">服务工单</span></div>
+                  </div>
+                </div>
+                <div class="biz c3" style="margin-top:6px">
+                  <div class="hd">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.10.10.0.5.10.0.1.3.10.0.1.1 2 0 3.64-1.23 4.13-2.91l1.76.35C13.82 19.54 11.6 21 9 21c-.5 0-1-.05-1.48-.14l-.66 1.6 1.89.66C12.2 17.74 14.4 12.2 21 10.5V8h-4zM12 2a4 4 0 00-4 4c0 1.85 1.28 3.4 3 3.86V11h2V9.86A4.002 4.002 0 0012 2z"/></svg></div>
+                    <div class="name">
+                      <span class="pill">生态服务商</span>
+                      <span class="org-switch" id="ecoOrgSwitch" title="机构切换">
+                        <button type="button" class="on" data-org="jinsheng">金盛驿站</button>
+                        <button type="button" data-org="dexin">德心医养</button>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="metrics">
+                    <div class="m"><span class="n" data-k="partner">2<em>个</em></span><span class="k">合作方</span></div>
+                    <div class="m"><span class="n" data-k="tradeCnt">84<em>笔</em></span><span class="k">交易量</span></div>
+                    <div class="m"><span class="n" data-k="tradeAmt">1<em>万元</em></span><span class="k">交易金额</span></div>
+                    <div class="m"><span class="n" data-k="verifyCnt">67<em>笔</em></span><span class="k">核销订单数</span></div>
+                  </div>
+                </div>
+                <div class="funnel-h" id="ecoFunnel">
+                  <div class="fh-cap">服务商运营转化漏斗</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="ph"><h3>场景</h3></div>
+          <div class="pb">
+            <div class="scene-grid">
+              <div class="sc">
+                <div class="hd">健康监测</div>
+                <div class="kpi-row">
+                  <div class="item"><div class="n" data-k="monitorCnt">135<em>次/月</em></div><div class="k">健康监测次数</div></div>
+                </div>
+                <div class="sub">年龄段 · 监测 / 异常 / 报告
+                  <span class="leg" style="margin-left:6px">
+                    <span><i style="background:#3b9eff"></i>监测</span>
+                    <span><i style="background:#e85cff"></i>异常</span>
+                    <span><i style="background:#3ddea8"></i>报告</span>
+                  </span>
+                </div>
+                <div class="plot" id="chHealthAge"></div>
+              </div>
+              <div class="sc">
+                <div class="hd">睡眠</div>
+                <div class="kpi-row">
+                  <div class="item"><div class="n">4.61<em>小时</em></div><div class="k">平均睡眠时长</div></div>
+                  <div class="item"><div class="n">9.62<em>次</em></div><div class="k">平均夜醒</div></div>
+                  <div class="item"><div class="n">5.75<em>次</em></div><div class="k">平均夜起</div></div>
+                </div>
+                <div class="sub">睡眠情况</div>
+                <div class="plot" id="chSleepAge"></div>
+              </div>
+              <div class="sc">
+                <div class="hd">营养</div>
+                <div class="plot" id="chNutri"></div>
+              </div>
+              <div class="sc">
+                <div class="hd">运动</div>
+                <div class="sub">运动情况</div>
+                <div class="sport-list">
+                  <div><span><i></i>握力评分</span><b>16分</b></div>
+                  <div><span><i></i>睁眼平衡</span><b>15秒</b></div>
+                  <div><span><i></i>五次坐站</span><b>11秒</b></div>
+                  <div><span><i></i>原地踏步</span><b>47次</b></div>
+                  <div><span><i></i>肺活量</span><b>3012ml</b></div>
+                  <div><span><i></i>功能性前伸</span><b>33cm</b></div>
+                  <div><span><i></i>站立行走</span><b>26秒</b></div>
+                  <div><span><i></i>2分钟踏步</span><b>47次</b></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===== 右：个人画像 + 群体分析 ===== -->
+      <div class="col col-right">
+        <section class="panel">
+          <div class="ph">
+            <h3>个体动态健康分析</h3>
+            <a class="drill" href="./elder-profile-detail.html?id=chen" title="下钻详情" aria-label="下钻">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+            </a>
+          </div>
+          <div class="pb">
+            <div class="portrait">
+              <div class="dir-wrap">
+                <div class="sec-label">长者数据目录<span class="gear">⚙</span></div>
+                <div class="dir" id="dirList"></div>
+                <div class="dir-foot"><a href="javascript:;">人员列表 ›</a></div>
+              </div>
+              <div class="v-split" aria-hidden="true"></div>
+              <div class="profile" id="profilePane">
+                <div>
+                  <div class="sec-label">基础信息</div>
+                  <div class="pinfo" id="pinfo"></div>
+                </div>
+                <div>
+                  <div class="sec-label">长者标签</div>
+                  <div class="tags" id="ptags"></div>
+                </div>
+                <div>
+                  <div class="sec-label">最新数据研判</div>
+                  <div class="judge-box" id="pjudge">—</div>
+                </div>
+                <div class="vitals" id="pvitals"></div>
+              </div>
+              <div class="ai-float">
+                <img src="./assets/ai-assistant.png" alt="智慧AI小助手" />
+                <div class="ai-label">智慧AI小助手</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="ph">
+            <h3>群体动态健康分析</h3>
+            <span class="ph-chev" aria-hidden="true">›</span>
+          </div>
+          <div class="pb">
+            <div class="group-grid">
+              <div class="gch">
+                <div class="cap">
+                  <span class="region-label">柳州市</span>老年人口总量与老龄化率变化曲线
+                  <span class="leg"><span><i style="background:#00d4ff"></i>总量(左轴)</span><span><i style="background:#e85cff"></i>老龄化率%(右轴)</span></span>
+                </div>
+                <div class="plot" id="gPop"></div>
+              </div>
+              <div class="gch">
+                <div class="cap">
+                  <span class="region-label">柳州市</span>老年人服务次数变化曲线
+                  <span class="leg"><span><i style="background:#ff9a1a"></i>服务次数</span></span>
+                </div>
+                <div class="plot" id="gSvc"></div>
+              </div>
+              <div class="gch">
+                <div class="cap">
+                  <span class="region-label">柳州市</span>老年人群体血压变化趋势
+                  <span class="leg"><span><i style="background:#e85cff"></i>高压</span><span><i style="background:#3ddea8"></i>低压</span><span><i style="background:rgba(255,255,255,.45)"></i>基准线</span></span>
+                </div>
+                <div class="plot" id="gBp"></div>
+              </div>
+              <div class="gch">
+                <div class="cap">
+                  <span class="region-label">柳州市</span>老年人评估次数变化曲线
+                  <span class="leg">
+                    <span><i style="background:#3b9eff"></i>运动能力评估</span>
+                    <span><i style="background:#ff9a1a"></i>膳食营养评估</span>
+                    <span><i style="background:#3ddea8"></i>健康监测评估</span>
+                    <span><i style="background:#8b7cff"></i>睡眠综合评估</span>
+                  </span>
+                </div>
+                <div class="plot" id="gEval"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const C = {
+        cyan: "#00d4ff", blue: "#3b9eff", orange: "#ff9a1a",
+        pink: "#e85cff", green: "#3ddea8", violet: "#8b7cff", red: "#ff4d4f"
+      };
+
+      const svgPut = (el, html) => { if (el) el.innerHTML = html; };
+
+      function bars(el, data, color, labels) {
+        if (!el) return;
+        const w = el.clientWidth || 140, h = el.clientHeight || 78;
+        const max = Math.max(...data, 1);
+        const pad = { t: 22, r: 4, b: 16, l: 26 };
+        const n = data.length;
+        const slot = (w - pad.l - pad.r) / n;
+        const bw = Math.min(20, slot * 0.48);
+        let g = "";
+        for (let i = 0; i <= 4; i++) {
+          const y = pad.t + (i / 4) * (h - pad.t - pad.b);
+          const val = Math.round(max - (i / 4) * max);
+          g += `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="rgba(140,180,220,.16)" stroke-dasharray="2 3"/>`;
+          g += `<text x="${pad.l-3}" y="${y+3}" fill="rgba(142,176,208,.72)" font-size="8" text-anchor="end">${val}</text>`;
+        }
+        data.forEach((v, i) => {
+          const fullH = h - pad.t - pad.b;
+          const bh = Math.max(4, (v / max) * fullH);
+          const x = pad.l + i * slot + (slot - bw) / 2;
+          const y = h - pad.b - bh;
+          const r = bw / 2;
+          // ghost full-height glass bar
+          g += `<rect x="${x}" y="${pad.t}" width="${bw}" height="${fullH}" rx="${r}" fill="${color}" opacity=".08"/>`;
+          // value bar + cylindrical sheen
+          g += `<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="${r}" fill="url(#g${el.id})"/>`;
+          g += `<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="${r}" fill="url(#gs${el.id})"/>`;
+          // bright elliptical cap + soft glow
+          g += `<ellipse cx="${x+bw/2}" cy="${y}" rx="${bw/2+2}" ry="${Math.max(4, bw*0.36)}" fill="${color}" opacity=".28"/>`;
+          g += `<ellipse cx="${x+bw/2}" cy="${y}" rx="${bw/2}" ry="${Math.max(3.5, bw*0.3)}" fill="${color}" opacity=".98"/>`;
+          g += `<ellipse cx="${x+bw/2}" cy="${y}" rx="${bw/2-1.5}" ry="${Math.max(2, bw*0.18)}" fill="#fff" opacity=".5"/>`;
+          g += `<circle cx="${x+bw/2}" cy="${y-11}" r="9" fill="rgba(4,18,40,.72)" stroke="${color}" stroke-width="1" opacity=".95"/>`;
+          g += `<text x="${x+bw/2}" y="${y-8}" fill="#e8f4ff" font-size="8" text-anchor="middle">${v}</text>`;
+          if (labels?.[i]) {
+            g += `<text x="${x+bw/2}" y="${h-2}" fill="rgba(160,190,220,.85)" font-size="8" text-anchor="middle">${labels[i]}</text>`;
+          }
+        });
+        svgPut(el, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="g${el.id}" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="${color}" stop-opacity="1"/>
+              <stop offset="35%" stop-color="${color}" stop-opacity=".78"/>
+              <stop offset="100%" stop-color="${color}" stop-opacity=".18"/>
+            </linearGradient>
+            <linearGradient id="gs${el.id}" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#fff" stop-opacity=".22"/>
+              <stop offset="45%" stop-color="#fff" stop-opacity="0"/>
+              <stop offset="100%" stop-color="#000" stop-opacity=".18"/>
+            </linearGradient>
+          </defs>${g}</svg>`);
+      }
+
+      function line(el, series, opts = {}) {
+        if (!el) return;
+        const dual = !!opts.dualY && series.length > 1;
+        const w = el.clientWidth || 200, h = el.clientHeight || 90;
+        const pad = { t: 8, r: dual ? 30 : 8, b: 16, l: 28 };
+        const leftData = dual ? series[0].data : series.flatMap(s => s.data);
+        const max = opts.max ?? Math.max(...leftData, 1);
+        const min = opts.min ?? 0;
+        const max2 = opts.max2 ?? (dual ? Math.max(...series[1].data, 1) : max);
+        const min2 = opts.min2 ?? 0;
+        const n = series[0].data.length;
+        const xAt = i => pad.l + (i / Math.max(n - 1, 1)) * (w - pad.l - pad.r);
+        const yAt = (v, useRight) => {
+          const lo = useRight ? min2 : min, hi = useRight ? max2 : max;
+          return pad.t + (1 - (v - lo) / (hi - lo || 1)) * (h - pad.t - pad.b);
+        };
+        const smooth = pts => {
+          if (pts.length < 2) return "";
+          let d = `M${pts[0][0]},${pts[0][1]}`;
+          for (let i = 0; i < pts.length - 1; i++) {
+            const p0 = pts[i - 1] || pts[i];
+            const p1 = pts[i];
+            const p2 = pts[i + 1];
+            const p3 = pts[i + 2] || p2;
+            const cp1x = p1[0] + (p2[0] - p0[0]) / 6;
+            const cp1y = p1[1] + (p2[1] - p0[1]) / 6;
+            const cp2x = p2[0] - (p3[0] - p1[0]) / 6;
+            const cp2y = p2[1] - (p3[1] - p1[1]) / 6;
+            d += ` C${cp1x},${cp1y} ${cp2x},${cp2y} ${p2[0]},${p2[1]}`;
+          }
+          return d;
+        };
+        let g = "";
+        const ticks = 4;
+        for (let i = 0; i <= ticks; i++) {
+          const y = pad.t + (i / ticks) * (h - pad.t - pad.b);
+          const val = Math.round(max - (i / ticks) * (max - min));
+          g += `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="rgba(140,180,220,.14)" stroke-dasharray="2 3"/>`;
+          g += `<text x="${pad.l-4}" y="${y+3}" fill="rgba(142,176,208,.7)" font-size="9" text-anchor="end">${val}</text>`;
+          if (dual) {
+            const val2 = (max2 - (i / ticks) * (max2 - min2));
+            const txt = Number.isInteger(val2) ? val2 : val2.toFixed(1);
+            g += `<text x="${w-pad.r+4}" y="${y+3}" fill="rgba(232,92,255,.75)" font-size="9" text-anchor="start">${txt}</text>`;
+          }
+        }
+        for (let i = 0; i < n; i++) {
+          g += `<line x1="${xAt(i)}" y1="${pad.t}" x2="${xAt(i)}" y2="${h-pad.b}" stroke="rgba(140,180,220,.08)" stroke-dasharray="2 3"/>`;
+        }
+        (opts.refs || []).forEach(ref => {
+          const y = yAt(ref.value, !!ref.right);
+          g += `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="${ref.color || "rgba(255,255,255,.45)"}" stroke-width="1.2" stroke-dasharray="4 3" opacity=".85"/>`;
+          if (ref.label) {
+            g += `<text x="${w-pad.r-2}" y="${y-3}" fill="${ref.color || "rgba(255,255,255,.55)"}" font-size="8" text-anchor="end">${ref.label}</text>`;
+          }
+        });
+        series.forEach((s, si) => {
+          const useRight = dual && si > 0;
+          const pts = s.data.map((v, i) => [xAt(i), yAt(v, useRight)]);
+          const d = smooth(pts);
+          if (opts.area) {
+            const op = typeof opts.area === "number" ? opts.area : .18;
+            g += `<path d="${d} L${xAt(n-1)},${h-pad.b} L${xAt(0)},${h-pad.b} Z" fill="${s.color}" opacity="${op}"/>`;
+          }
+          const sw = opts.strokeWidth || 2;
+          g += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="${sw}" stroke-linejoin="round" filter="drop-shadow(0 0 3px ${s.color})"/>`;
+          const showDots = n <= 12 || opts.dots;
+          if (showDots) {
+            s.data.forEach((v, i) => {
+              g += `<circle cx="${xAt(i)}" cy="${yAt(v, useRight)}" r="2.8" fill="#000b1d" stroke="${s.color}" stroke-width="1.8"/>`;
+            });
+          }
+        });
+        (opts.labels || []).forEach((lb, i) => {
+          if (!lb) return;
+          g += `<text x="${xAt(i)}" y="${h-2}" fill="rgba(142,176,208,.85)" font-size="9" text-anchor="middle">${lb}</text>`;
+        });
+        if (opts.endLabel && series[0]) {
+          const last = series[0].data.length - 1;
+          g += `<text x="${Math.min(xAt(last)+2, w-48)}" y="${yAt(series[0].data[last])-8}" fill="#f0d080" font-size="10">${opts.endLabel}</text>`;
+        }
+        svgPut(el, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${g}</svg>`);
+      }
+
+      function groupBars(el, seriesList, cats, colors) {
+        if (!el) return;
+        const w = el.clientWidth || 200, h = el.clientHeight || 90;
+        const pad = { t: 10, r: 6, b: 16, l: 26 };
+        const n = cats.length;
+        const m = seriesList.length;
+        const max = Math.max(...seriesList.flat(), 1);
+        const slot = (w - pad.l - pad.r) / n;
+        const gap = 2;
+        const bw = Math.min(10, (slot * 0.72 - gap * (m - 1)) / m);
+        let g = "";
+        for (let i = 0; i <= 3; i++) {
+          const y = pad.t + (i / 3) * (h - pad.t - pad.b);
+          const val = Math.round(max - (i / 3) * max);
+          g += `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="rgba(140,180,220,.14)" stroke-dasharray="2 3"/>`;
+          g += `<text x="${pad.l-3}" y="${y+3}" fill="rgba(142,176,208,.7)" font-size="8" text-anchor="end">${val}</text>`;
+        }
+        cats.forEach((cat, i) => {
+          const groupW = m * bw + (m - 1) * gap;
+          const x0 = pad.l + i * slot + (slot - groupW) / 2;
+          seriesList.forEach((arr, j) => {
+            const v = arr[i] || 0;
+            const bh = Math.max(2, (v / max) * (h - pad.t - pad.b));
+            const x = x0 + j * (bw + gap);
+            const y = h - pad.b - bh;
+            const color = colors[j];
+            g += `<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="2" fill="${color}" opacity=".92"/>`;
+            g += `<rect x="${x}" y="${y}" width="${bw}" height="${Math.min(bh, 4)}" rx="2" fill="#fff" opacity=".22"/>`;
+          });
+          g += `<text x="${pad.l + i * slot + slot / 2}" y="${h-2}" fill="rgba(160,190,220,.85)" font-size="8" text-anchor="middle">${cat}</text>`;
+        });
+        svgPut(el, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${g}</svg>`);
+      }
+
+      function renderFunnel(el, values) {
+        if (!el) return;
+        const labels = ["到店人数", "体验人数", "付费下单人数", "订单核销人数", "复购人数"];
+        const max = Math.max(...values, 1);
+        const colors = ["#3b9eff", "#00d4ff", "#3ddea8", "#ff9a1a", "#e85cff"];
+        el.innerHTML = `<div class="fh-cap">服务商运营转化漏斗</div>` + labels.map((nm, i) => {
+          const pct = Math.max(8, (values[i] / max) * 100);
+          return `<div class="fh-row">
+            <span class="nm">${nm}</span>
+            <span class="track"><i style="width:${pct}%;background:linear-gradient(90deg,rgba(0,180,255,.2),${colors[i]})"></i></span>
+            <span class="val">${values[i]}</span>
+          </div>`;
+        }).join("");
+      }
+
+      function stackBars(el, groups, cats, colors) {
+        if (!el) return;
+        const w = el.clientWidth || 160, h = el.clientHeight || 70;
+        const pad = { t: 6, r: 4, b: 14, l: 22 };
+        const n = groups.length;
+        const slot = (w - pad.l - pad.r) / n;
+        const bw = Math.min(14, slot * 0.38);
+        const max = Math.max(...groups.map(g => g.reduce((a, b) => a + b, 0)), 1);
+        let g = "";
+        for (let i = 0; i <= 3; i++) {
+          const y = pad.t + (i / 3) * (h - pad.t - pad.b);
+          const val = Math.round(max - (i / 3) * max);
+          g += `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="rgba(140,180,220,.12)" stroke-dasharray="2 3"/>`;
+          g += `<text x="${pad.l-3}" y="${y+3}" fill="rgba(142,176,208,.7)" font-size="8" text-anchor="end">${val}</text>`;
+        }
+        groups.forEach((vals, i) => {
+          const total = vals.reduce((a, b) => a + b, 0);
+          const fullH = (total / max) * (h - pad.t - pad.b);
+          const x = pad.l + i * slot + (slot - bw) / 2;
+          const topY = h - pad.b - fullH;
+          // ghost capsule
+          g += `<rect x="${x}" y="${pad.t}" width="${bw}" height="${h-pad.t-pad.b}" rx="${bw/2}" fill="${colors[0]}" opacity=".07"/>`;
+          // clip stacked fill into capsule
+          const clipId = `sc${el.id}_${i}`;
+          g += `<defs><clipPath id="${clipId}"><rect x="${x}" y="${topY}" width="${bw}" height="${fullH}" rx="${bw/2}"/></clipPath></defs>`;
+          let y = h - pad.b;
+          vals.forEach((v, j) => {
+            const bh = (v / max) * (h - pad.t - pad.b);
+            y -= bh;
+            g += `<rect x="${x}" y="${y}" width="${bw}" height="${bh+0.5}" fill="${colors[j]}" opacity=".95" clip-path="url(#${clipId})"/>`;
+          });
+          g += `<ellipse cx="${x+bw/2}" cy="${topY}" rx="${bw/2}" ry="${Math.max(2.5, bw*0.28)}" fill="${colors[vals.length-1]}"/>`;
+          g += `<text x="${x+bw/2}" y="${h-2}" fill="rgba(142,176,208,.85)" font-size="8" text-anchor="middle">${cats[i]}</text>`;
+        });
+        svgPut(el, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${g}</svg>`);
+      }
+
+      function hBars(el, items, color) {
+        if (!el) return;
+        const w = el.clientWidth || 160, h = el.clientHeight || 80;
+        const max = Math.max(...items.map(i => i.v), 1);
+        const rowH = (h - 4) / items.length;
+        let g = "";
+        items.forEach((it, i) => {
+          const y = 4 + i * rowH;
+          const bh = Math.max(10, rowH - 12);
+          const trackX = 92, trackW = w - trackX - 8;
+          const bw = Math.max(bh, (it.v / max) * (trackW - bh * 0.2));
+          g += `<text x="0" y="${y+bh*.72}" fill="rgba(168,200,232,.9)" font-size="10">${it.l}</text>`;
+          g += `<rect x="${trackX}" y="${y}" width="${trackW}" height="${bh}" rx="${bh/2}" fill="rgba(120,160,200,.1)"/>`;
+          g += `<rect x="${trackX}" y="${y}" width="${bw}" height="${bh}" rx="${bh/2}" fill="url(#hg${el.id})"/>`;
+          const cx = trackX + bw - bh / 2;
+          g += `<circle cx="${cx}" cy="${y+bh/2}" r="${bh/2 - 0.5}" fill="${color}" stroke="rgba(255,255,255,.35)" stroke-width="1"/>`;
+          g += `<text x="${cx}" y="${y+bh*.72}" fill="#041428" font-size="9" font-weight="700" text-anchor="middle">${it.v}</text>`;
+        });
+        svgPut(el, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+          <defs><linearGradient id="hg${el.id}" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="${color}" stop-opacity=".3"/>
+            <stop offset="100%" stop-color="${color}" stop-opacity=".95"/>
+          </linearGradient></defs>${g}</svg>`);
+      }
+
+      /* —— 平台 / 机构演示数据（左侧随切换变化，右侧固定） —— */
+      const mkDays = (n, seed, base) => {
+        const out = [];
+        let v = base;
+        for (let i = 0; i < n; i++) {
+          v = Math.max(1, Math.round(v + Math.sin((i + seed) * 0.55) * 3 + ((i * 7 + seed) % 5) - 2));
+          out.push(v);
+        }
+        return out;
+      };
+      const dayLabels = (() => {
+        const lbs = Array(30).fill("");
+        for (let i = 0; i < 30; i += 5) {
+          const d = new Date(2026, 6, 10 + i); // 近30天示意
+          lbs[i] = `${d.getMonth() + 1}/${d.getDate()}`;
+        }
+        lbs[29] = "今";
+        return lbs;
+      })();
+
+      let platformKey = "liuzhou";
+      let ecoOrg = "jinsheng";
+
+      const PLATFORM = {
+        liuzhou: {
+          title: "柳州数字康养生态运营平台",
+          orgBadge: "(1)", siteBadge: "(4)",
+          metrics: {
+            orgNum: ["103", "个"], elderNum: ["2132", "人"], bedNum: ["1.12", "万个"], occRate: ["19", "%"],
+            healthEval: ["7", "人次"], sportEval: ["26", "人次"], nutriEval: ["37", "人次"], sleepEval: ["6", "人次"],
+            healthWarn: ["128", "次"], workOrder: ["86", "单"],
+            homeSign: ["22", "个"], homeWarn: ["64", "次"], homeOrder: ["41", "单"],
+            partner: ["2", "个"], tradeCnt: ["84", "笔"], tradeAmt: ["1", "万元"], verifyCnt: ["67", "笔"],
+            monitorCnt: ["135", "次/月"]
+          },
+          evalBars: [635, 477, 159],
+          archive: mkDays(30, 3, 8),
+          healthAge: [[42, 58, 48, 22], [8, 14, 16, 9], [12, 18, 15, 7]],
+          funnel: {
+            jinsheng: [1280, 860, 420, 310, 95],
+            dexin: [640, 410, 180, 140, 42]
+          },
+          ecoByOrg: {
+            jinsheng: { partner: ["2", "个"], tradeCnt: ["84", "笔"], tradeAmt: ["1", "万元"], verifyCnt: ["67", "笔"] },
+            dexin: { partner: ["1", "个"], tradeCnt: ["51", "笔"], tradeAmt: ["0.6", "万元"], verifyCnt: ["39", "笔"] }
+          }
+        },
+        clife: {
+          title: "clife数字康养生态运营平台",
+          orgBadge: "(12)", siteBadge: "(86)",
+          metrics: {
+            orgNum: ["1286", "个"], elderNum: ["4.8", "万人"], bedNum: ["12.6", "万个"], occRate: ["63", "%"],
+            healthEval: ["1860", "人次"], sportEval: ["3240", "人次"], nutriEval: ["2980", "人次"], sleepEval: ["1520", "人次"],
+            healthWarn: ["9860", "次"], workOrder: ["6420", "单"],
+            homeSign: ["8650", "个"], homeWarn: ["4120", "次"], homeOrder: ["3580", "单"],
+            partner: ["48", "个"], tradeCnt: ["1.2", "万笔"], tradeAmt: ["86", "万元"], verifyCnt: ["9800", "笔"],
+            monitorCnt: ["1.8", "万次/月"]
+          },
+          evalBars: [8420, 7650, 9120],
+          archive: mkDays(30, 11, 86),
+          healthAge: [[620, 880, 740, 310], [95, 160, 210, 120], [180, 260, 220, 95]],
+          funnel: {
+            jinsheng: [18600, 12400, 6800, 5200, 1680],
+            dexin: [9200, 6100, 2900, 2100, 640]
+          },
+          ecoByOrg: {
+            jinsheng: { partner: ["28", "个"], tradeCnt: ["7800", "笔"], tradeAmt: ["52", "万元"], verifyCnt: ["6100", "笔"] },
+            dexin: { partner: ["20", "个"], tradeCnt: ["4200", "笔"], tradeAmt: ["34", "万元"], verifyCnt: ["3700", "笔"] }
+          }
+        }
+      };
+
+      const setMetric = (key, pair) => {
+        const el = document.querySelector(`[data-k="${key}"]`);
+        if (!el || !pair) return;
+        el.innerHTML = `${pair[0]}<em>${pair[1]}</em>`;
+      };
+
+      const applyLeftMetrics = () => {
+        const p = PLATFORM[platformKey];
+        Object.entries(p.metrics).forEach(([k, v]) => setMetric(k, v));
+        Object.entries(p.ecoByOrg[ecoOrg] || {}).forEach(([k, v]) => setMetric(k, v));
+        const ob = document.getElementById("orgCountBadge");
+        const sb = document.getElementById("siteCountBadge");
+        if (ob) ob.textContent = p.orgBadge;
+        if (sb) sb.textContent = p.siteBadge;
+      };
+
+      const drawLeftCharts = () => {
+        const p = PLATFORM[platformKey];
+        const months = ["2026-02", "2026-04", "2026-06"];
+        bars(document.getElementById("chEval"), p.evalBars, C.blue, months);
+        line(document.getElementById("chArchive"), [
+          { color: C.cyan, data: p.archive }
+        ], { labels: dayLabels, max: Math.max(...p.archive) * 1.15, area: true, strokeWidth: 2 });
+        groupBars(
+          document.getElementById("chHealthAge"),
+          p.healthAge,
+          ["60-69", "70-79", "80-89", "90以上"],
+          [C.blue, C.pink, C.green]
+        );
+        renderFunnel(document.getElementById("ecoFunnel"), p.funnel[ecoOrg]);
+      };
+
+      const drawRightCharts = () => {
+        /* 右侧个体/群体分析固定，不随平台切换变化 */
+        line(document.getElementById("gPop"), [
+          { color: C.cyan, data: [72, 84, 92, 100, 111] },
+          { color: C.pink, data: [12.0, 13.5, 15.0, 16.5, 18.2] }
+        ], { labels: ["2020", "2021", "2022", "2023", "2024"], dualY: true, max: 120, max2: 25 });
+
+        line(document.getElementById("gSvc"), [
+          { color: C.orange, data: [280, 420, 510, 680, 816, 480] }
+        ], { labels: ["3月", "4月", "5月", "6月", "7月", "8月"], max: 1087, area: 0.28, strokeWidth: 2.4 });
+
+        line(document.getElementById("gBp"), [
+          { color: C.pink, data: [168, 150, 118, 130, 158, 152] },
+          { color: C.green, data: [96, 86, 68, 74, 90, 88] }
+        ], {
+          labels: ["3月", "4月", "5月", "6月", "7月", "8月"], max: 192,
+          refs: [
+            { value: 140, color: "rgba(255,154,26,.75)", label: "高压基准140" },
+            { value: 90, color: "rgba(61,222,168,.65)", label: "低压基准90" }
+          ]
+        });
+
+        line(document.getElementById("gEval"), [
+          { color: C.blue, data: [10, 14, 12] },
+          { color: C.orange, data: [16, 48, 20] },
+          { color: C.green, data: [8, 11, 9] },
+          { color: C.violet, data: [5, 7, 6] }
+        ], { labels: ["6月", "7月", "8月"], max: 51 });
+      };
+
+      const drawSceneRest = () => {
+        stackBars(document.getElementById("chSleepAge"), [
+          [2.2, 3.1], [2.4, 3.6], [2.6, 3.3], [2.8, 2.9]
+        ], ["60~69", "70~79", "80~89", "90以上"], [C.blue, C.orange]);
+
+        hBars(document.getElementById("chNutri"), [
+          { l: "肌力下降高风险", v: 28 },
+          { l: "营养不良风险", v: 41 },
+          { l: "营养不良高风险", v: 19 }
+        ], C.green);
+      };
+
+      const drawAll = () => {
+        applyLeftMetrics();
+        drawLeftCharts();
+        drawSceneRest();
+        drawRightCharts();
+      };
+
+      /* —— 个人画像数据 —— */
+      const elders = [
+        {
+          id: "chen", name: "陈*", gender: "男", age: 45, weight: "76.0kg", height: "171.5cm",
+          time: "2026-08-07 17:33:25",
+          tags: ["偶尔睡不好", "食欲良好", "体重稳定", "近一年无跌倒", "吞咽正常", "几乎不熬夜", "可独立行走", "偶有困倦"],
+          judge: "--",
+          vitals: [
+            { k: "收缩压", n: "105", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "72", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "35", u: "次/分", st: "偏低", bad: true, icon: "pulse" },
+            { k: "血氧饱和度", n: "99", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "", u: "mmol/L", st: "", empty: true, icon: "drop" },
+            { k: "餐后血糖", n: "", u: "mmol/L", st: "", empty: true, icon: "meal" }
+          ]
+        },
+        {
+          id: "zhao", name: "赵*", gender: "女", age: 78, weight: "52.0kg", height: "156cm",
+          time: "2026-08-07 15:42:20",
+          tags: ["起夜偏多", "近一年跌倒", "食欲下降", "行动需辅助", "偶有困倦"],
+          judge: "血压偏高，建议复测并关注用药依从性。",
+          vitals: [
+            { k: "收缩压", n: "152", u: "mmHg", st: "偏高", bad: true, icon: "heart" },
+            { k: "舒张压", n: "90", u: "mmHg", st: "偏高", bad: true, icon: "heart" },
+            { k: "脉率", n: "82", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧饱和度", n: "95", u: "%", st: "关注", bad: true, icon: "o2" },
+            { k: "空腹血糖", n: "5.8", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "7.6", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        {
+          id: "wei", name: "韦*奇", gender: "男", age: 69, weight: "70kg", height: "168cm",
+          time: "2026-08-07 15:18:48",
+          tags: ["体重稳定", "食欲良好", "可独立行走", "睡眠良好"],
+          judge: "体征平稳，建议保持现有运动方案。",
+          vitals: [
+            { k: "收缩压", n: "128", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "78", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "68", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧饱和度", n: "98", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.1", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "6.8", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        { id: "peng", name: "彭*超", gender: "男", age: 72, weight: "65kg", height: "170cm", time: "2026-08-07 14:57:43",
+          tags: ["体重稳定", "吞咽正常", "可独立行走"], judge: "—",
+          vitals: [
+            { k: "收缩压", n: "132", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "80", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "72", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧饱和度", n: "97", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.6", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "7.2", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        { id: "cheng", name: "成*姣", gender: "女", age: 66, weight: "58kg", height: "160cm", time: "2026-08-07 10:28:08",
+          tags: ["食欲良好", "几乎不起夜", "可独立行走"], judge: "—",
+          vitals: [
+            { k: "收缩压", n: "118", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "74", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "70", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧饱和度", n: "99", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.0", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "6.4", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        { id: "hu", name: "胡*", gender: "男", age: 81, weight: "61kg", height: "165cm", time: "2026-08-07 10:22:16",
+          tags: ["偶有困倦", "起夜偏多", "行动能力一般"], judge: "夜间睡眠质量偏低，建议睡眠评估。",
+          vitals: [
+            { k: "收缩压", n: "140", u: "mmHg", st: "关注", bad: true, icon: "heart" },
+            { k: "舒张压", n: "85", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "64", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧饱和度", n: "96", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "6.0", u: "mmol/L", st: "关注", bad: true, icon: "drop" },
+            { k: "餐后血糖", n: "8.1", u: "mmol/L", st: "关注", bad: true, icon: "meal" }
+          ]
+        },
+        { id: "mo", name: "莫*钧", gender: "男", age: 74, weight: "68kg", height: "169cm", time: "2026-08-07 09:17:44",
+          tags: ["体重稳定", "近一年无跌倒", "可独立行走"], judge: "—",
+          vitals: [
+            { k: "收缩压", n: "126", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "76", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "66", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧饱和度", n: "98", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.3", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "6.9", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        { id: "shi", name: "史*珍", gender: "女", age: 83, weight: "48kg", height: "152cm", time: "2026-08-07 06:12:24",
+          tags: ["食欲下降", "近一年跌倒", "行动需辅助"], judge: "低体重风险，建议营养专项评估。",
+          vitals: [
+            { k: "收缩压", n: "136", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "82", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "78", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧饱和度", n: "95", u: "%", st: "关注", bad: true, icon: "o2" },
+            { k: "空腹血糖", n: "5.5", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "7.0", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        { id: "zheng", name: "郑*艳", gender: "女", age: 70, weight: "60kg", height: "158cm", time: "2026-08-06 18:23:10",
+          tags: ["体重稳定", "食欲良好", "可独立行走"], judge: "—",
+          vitals: [
+            { k: "收缩压", n: "122", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "75", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "71", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧饱和度", n: "99", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.2", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "6.6", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        { id: "fan", name: "范*", gender: "男", age: 67, weight: "73kg", height: "172cm", time: "2026-08-06 16:05:32",
+          tags: ["几乎不起夜", "吞咽正常", "可独立行走"], judge: "—",
+          vitals: [
+            { k: "收缩压", n: "130", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "79", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "69", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧饱和度", n: "98", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.4", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "7.1", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        }
+      ];
+
+      const icons = {
+        heart: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.35-9.5-8.5C.5 8.5 3 5 6.5 5c2 0 3.5 1.2 4.5 2.5C12 6.2 13.5 5 15.5 5 19 5 21.5 8.5 19.5 12.5 17 16.65 12 21 12 21z"/></svg>`,
+        pulse: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h3l2-5 3 10 2-5h8"/></svg>`,
+        o2: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14c2-4 4-6 8-6s6 2 8 6"/><circle cx="12" cy="16" r="2"/></svg>`,
+        drop: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2s6 7 6 12a6 6 0 11-12 0c0-5 6-12 6-12z"/></svg>`,
+        meal: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 2v9a3 3 0 01-3 3H4v2h1a5 5 0 005-5V2H8zm9 0c-1.5 3-2 5.5-2 8.5V22h2V12h2V2h-2z"/></svg>`
+      };
+
+      let active = 0;
+      const renderDir = () => {
+        document.getElementById("dirList").innerHTML = elders.map((e, i) => `
+          <div class="dir-item ${i === active ? "on" : ""}" data-i="${i}">
+            <span class="nm">${e.name}</span>
+            <span class="tm">${e.time}</span>
+          </div>
+        `).join("");
+        document.querySelectorAll(".dir-item").forEach(el => {
+          el.onclick = () => { active = +el.dataset.i; renderDir(); renderProfile(); };
+        });
+      };
+
+      const renderProfile = () => {
+        const e = elders[active];
+        document.getElementById("pinfo").innerHTML = `
+          <span>姓名：<b>${e.name}</b></span>
+          <span>性别：<b>${e.gender}</b></span>
+          <span>年龄：<b>${e.age}岁</b></span>
+          <span>体重：<b>${e.weight}</b></span>
+          <span>身高：<b>${e.height}</b></span>
+        `;
+        document.getElementById("ptags").innerHTML = e.tags.map(t => `<span class="tag">${t}</span>`).join("");
+        document.getElementById("pjudge").textContent = e.judge || "--";
+        document.getElementById("pvitals").innerHTML = e.vitals.map(v => `
+          <div class="vt ${v.empty ? "empty" : ""}">
+            <div class="top">${icons[v.icon] || ""}${v.k}</div>
+            <div class="mid">
+              <span class="n ${v.bad ? "bad" : ""}">${v.empty ? "" : (v.n || "—")}</span>
+              ${v.st ? `<span class="st ${v.bad ? "bad" : ""}">${v.st}</span>` : ""}
+            </div>
+            <div class="u">${v.u}</div>
+          </div>
+        `).join("");
+        document.querySelector(".drill").href = `./elder-profile-detail.html?id=${e.id}`;
+      };
+
+      renderDir();
+      renderProfile();
+
+      /* 平台切换：柳州（机构/租户范围） / clife（全平台，忽略机构租户限制） */
+      const platformBtns = document.querySelectorAll(".platform-switch button");
+      const setPlatform = (key) => {
+        platformKey = key === "clife" ? "clife" : "liuzhou";
+        platformBtns.forEach((btn) => {
+          const on = btn.dataset.platform === platformKey;
+          btn.classList.toggle("on", on);
+          btn.setAttribute("aria-selected", on ? "true" : "false");
+        });
+        const title = PLATFORM[platformKey].title;
+        const mt = document.getElementById("mainTitle");
+        if (mt) mt.textContent = title;
+        document.title = title + " · 运营驾驶舱";
+        /* 右侧群体分析区域名称与数据保持不变 */
+        applyLeftMetrics();
+        drawLeftCharts();
+      };
+      platformBtns.forEach((btn) => {
+        btn.addEventListener("click", () => setPlatform(btn.dataset.platform));
+      });
+
+      document.querySelectorAll("#ecoOrgSwitch button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          ecoOrg = btn.dataset.org;
+          document.querySelectorAll("#ecoOrgSwitch button").forEach((b) => {
+            b.classList.toggle("on", b.dataset.org === ecoOrg);
+          });
+          applyLeftMetrics();
+          renderFunnel(document.getElementById("ecoFunnel"), PLATFORM[platformKey].funnel[ecoOrg]);
+        });
+      });
+
+      requestAnimationFrame(() => {
+        drawAll();
+        setTimeout(drawAll, 80);
+      });
+      let t;
+      window.addEventListener("resize", () => {
+        clearTimeout(t);
+        t = setTimeout(drawAll, 180);
+      });
+    })();
+  </script>
+</body>
+</html>

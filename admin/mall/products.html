@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>商品管理 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+    <style>
+      .kind-tabs {
+        display: flex;
+        gap: 0;
+        margin: -4px 0 14px;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      .kind-tab {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        padding: 10px 18px;
+        font-size: 14px;
+        color: #595959;
+        cursor: pointer;
+        position: relative;
+      }
+      .kind-tab.active {
+        color: #1677ff;
+        font-weight: 600;
+      }
+      .kind-tab.active::after {
+        content: "";
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: -1px;
+        height: 2px;
+        background: #1677ff;
+        border-radius: 1px;
+      }
+      .filter-extra {
+        display: none;
+      }
+      .filter-extra.show {
+        display: contents;
+      }
+      .date-range {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .date-range .ctrl {
+        flex: 1;
+        min-width: 0;
+      }
+      .date-range span {
+        color: #bfbfbf;
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body
+    data-primary="mall"
+    data-sub="products"
+    data-tab="商品管理"
+    data-asset-prefix="../../assets"
+    data-index-href="../index.html"
+  >
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">商品管理</h1>
+          <p class="page-desc">管理服务商品与实物商品的价格、分组、标签与上下架</p>
+        </div>
+      </div>
+
+      <div class="kind-tabs" role="tablist">
+        <button type="button" class="kind-tab active" data-kind="service" role="tab">服务商品</button>
+        <button type="button" class="kind-tab" data-kind="goods" role="tab">实物商品</button>
+      </div>
+
+      <div class="filter-card">
+        <div class="filter-grid">
+          <input type="hidden" id="qKind" value="service" />
+          <div class="filter-item">
+            <label>商品名称</label>
+            <input class="ctrl" id="qName" type="text" placeholder="请输入商品名称" />
+          </div>
+          <div class="filter-item">
+            <label>创建时间</label>
+            <div class="date-range">
+              <input class="ctrl" id="qFrom" type="date" />
+              <span>~</span>
+              <input class="ctrl" id="qTo" type="date" />
+            </div>
+          </div>
+          <div class="filter-item">
+            <label>商品分组</label>
+            <select class="ctrl" id="qGroup">
+              <option value="">请选择商品分组</option>
+              <option value="站点服务">站点服务</option>
+              <option value="热门推荐">热门推荐</option>
+              <option value="居家照护">居家照护</option>
+              <option value="适老辅具">适老辅具</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label>商品标签</label>
+            <select class="ctrl" id="qTag">
+              <option value="">请选择商品标签</option>
+              <option value="最热">最热</option>
+              <option value="推荐">推荐</option>
+              <option value="优惠">优惠</option>
+              <option value="最新">最新</option>
+            </select>
+          </div>
+          <div class="filter-extra" id="filterExtra">
+            <div class="filter-item">
+              <label>上架状态</label>
+              <select class="ctrl" id="qStatus">
+                <option value="">全部</option>
+                <option value="已上架">已上架</option>
+                <option value="已下架">已下架</option>
+              </select>
+            </div>
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn btn-default" id="btnReset">重置</button>
+            <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
+            <button type="button" class="btn btn-default" id="btnExpand">展开</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="list-card">
+        <div class="toolbar" style="padding: 14px 16px 0">
+          <div class="toolbar-left"><strong style="font-size:14px">列表</strong></div>
+          <div class="toolbar-right">
+            <a class="btn btn-primary" id="btnAddProduct" href="../../product-add.html?type=service" style="text-decoration:none">新增商品</a>
+            <button type="button" class="btn btn-primary" id="btnExport">导出</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>商品ID</th>
+                <th>商品名称</th>
+                <th>原价</th>
+                <th>销售价</th>
+                <th>商品分组</th>
+                <th>商品标签</th>
+                <th>排序权重</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="body"></tbody>
+          </table>
+        </div>
+        <div class="pager">
+          <span id="pagerInfo">共 0 条</span>
+          <div class="pager-btns"><button type="button" class="active">1</button></div>
+        </div>
+      </div>
+
+      <div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+      <aside id="listDrawer" class="drawer">
+        <div class="drawer-head">
+          <h3 id="drawerTitle">新增商品</h3>
+          <button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button>
+        </div>
+        <div class="drawer-body">
+          <div class="form-grid">
+            <div class="form-field full">
+              <label>商品名称<span class="req">*</span></label>
+              <input class="ctrl" id="fName" type="text" placeholder="请输入商品名称" />
+            </div>
+            <div class="form-field">
+              <label>原价<span class="req">*</span></label>
+              <input class="ctrl" id="fOriginPrice" type="number" min="0" step="0.1" placeholder="请输入原价" />
+            </div>
+            <div class="form-field">
+              <label>销售价<span class="req">*</span></label>
+              <input class="ctrl" id="fSalePrice" type="number" min="0" step="0.1" placeholder="请输入销售价" />
+            </div>
+            <div class="form-field">
+              <label>商品分组<span class="req">*</span></label>
+              <select class="ctrl" id="fGroup">
+                <option value="站点服务">站点服务</option>
+                <option value="热门推荐">热门推荐</option>
+                <option value="居家照护">居家照护</option>
+                <option value="适老辅具">适老辅具</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>商品标签</label>
+              <select class="ctrl" id="fTag">
+                <option value="">无</option>
+                <option value="最热">最热</option>
+                <option value="推荐">推荐</option>
+                <option value="优惠">优惠</option>
+                <option value="最新">最新</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>排序权重</label>
+              <input class="ctrl" id="fWeight" type="number" min="0" value="0" />
+            </div>
+            <div class="form-field">
+              <label>上架状态</label>
+              <select class="ctrl" id="fStatus">
+                <option value="已下架">已下架</option>
+                <option value="已上架">已上架</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="drawer-foot">
+          <button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button>
+          <button type="button" class="btn btn-primary" id="btnSave">确定</button>
+        </div>
+      </aside>
+    </template>
+
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/admin-page-list.js"></script>
+    <script>
+      function pad2(n) {
+        return String(n).padStart(2, "0");
+      }
+
+      function nowText() {
+        const d = new Date();
+        return (
+          d.getFullYear() +
+          "-" +
+          pad2(d.getMonth() + 1) +
+          "-" +
+          pad2(d.getDate()) +
+          " " +
+          pad2(d.getHours()) +
+          ":" +
+          pad2(d.getMinutes()) +
+          ":" +
+          pad2(d.getSeconds())
+        );
+      }
+
+      function nextProductId(rows) {
+        let max = 0;
+        rows.forEach((r) => {
+          const m = String(r.id || "").match(/^SP(\d+)$/i);
+          if (m) max = Math.max(max, Number(m[1]));
+        });
+        return "SP" + String(max + 1).padStart(6, "0");
+      }
+
+      function inDateRange(createdAt, from, to) {
+        if (!from && !to) return true;
+        const day = String(createdAt || "").slice(0, 10);
+        if (!day) return false;
+        if (from && day < from) return false;
+        if (to && day > to) return false;
+        return true;
+      }
+
+      const seedRows = [
+        {
+          id: "SP000023",
+          kind: "service",
+          name: "康复理疗",
+          originPrice: 99,
+          salePrice: 29.9,
+          group: "站点服务",
+          tag: "最热",
+          weight: 99,
+          status: "已下架",
+          createdAt: "2025-07-17 17:59:38",
+        },
+        {
+          id: "SP000022",
+          kind: "service",
+          name: "AI脊柱理疗",
+          originPrice: 199,
+          salePrice: 99,
+          group: "站点服务",
+          tag: "推荐",
+          weight: 90,
+          status: "已上架",
+          createdAt: "2025-07-16 10:20:11",
+        },
+        {
+          id: "SP000021",
+          kind: "service",
+          name: "中医推拿",
+          originPrice: 168,
+          salePrice: 128,
+          group: "热门推荐",
+          tag: "优惠",
+          weight: 88,
+          status: "已上架",
+          createdAt: "2025-07-15 14:08:22",
+        },
+        {
+          id: "SP000020",
+          kind: "service",
+          name: "睡眠评估",
+          originPrice: 0,
+          salePrice: 0,
+          group: "站点服务",
+          tag: "最新",
+          weight: 80,
+          status: "已上架",
+          createdAt: "2025-07-12 09:30:00",
+        },
+        {
+          id: "SP000019",
+          kind: "service",
+          name: "居家照护上门",
+          originPrice: 260,
+          salePrice: 198,
+          group: "居家照护",
+          tag: "推荐",
+          weight: 76,
+          status: "已下架",
+          createdAt: "2025-07-10 16:45:09",
+        },
+        {
+          id: "SP000018",
+          kind: "goods",
+          name: "智能床垫",
+          originPrice: 3999,
+          salePrice: 3299,
+          group: "适老辅具",
+          tag: "最热",
+          weight: 95,
+          status: "已上架",
+          createdAt: "2025-07-18 11:12:33",
+        },
+        {
+          id: "SP000017",
+          kind: "goods",
+          name: "跌倒雷达",
+          originPrice: 1299,
+          salePrice: 999,
+          group: "适老辅具",
+          tag: "推荐",
+          weight: 86,
+          status: "已上架",
+          createdAt: "2025-07-14 08:55:41",
+        },
+        {
+          id: "SP000016",
+          kind: "goods",
+          name: "血压手表",
+          originPrice: 699,
+          salePrice: 499,
+          group: "热门推荐",
+          tag: "优惠",
+          weight: 70,
+          status: "已下架",
+          createdAt: "2025-07-08 19:21:05",
+        },
+      ];
+
+      let currentKind = "service";
+      let listApi;
+
+      listApi = AdminPageList.mount({
+        storageKey: "mall:products",
+        addTitle: "新增商品",
+        editTitle: "编辑商品",
+        enableView: false,
+        enableEdit: false,
+        enableDelete: false,
+        replaceActions: true,
+        deleteConfirm: "确定删除该商品？",
+        rows: seedRows,
+        columns: [
+          { key: "id" },
+          { key: "name" },
+          { key: "originPrice" },
+          { key: "salePrice" },
+          { key: "group" },
+          { key: "tag" },
+          { key: "weight" },
+        ],
+        filters: [
+          {
+            id: "qKind",
+            always: true,
+            match: (r) => String(r.kind) === String(currentKind),
+          },
+          {
+            id: "qName",
+            match: (r, v) => !v || String(r.name || "").includes(v),
+          },
+          {
+            id: "qFrom",
+            match: (r, v) => {
+              const to = document.getElementById("qTo")?.value || "";
+              return inDateRange(r.createdAt, v, to);
+            },
+          },
+          {
+            id: "qTo",
+            match: (r, v) => {
+              if (!v) return true;
+              const from = document.getElementById("qFrom")?.value || "";
+              return inDateRange(r.createdAt, from, v);
+            },
+          },
+          {
+            id: "qGroup",
+            match: (r, v) => !v || String(r.group) === v,
+          },
+          {
+            id: "qTag",
+            match: (r, v) => !v || String(r.tag) === v,
+          },
+          {
+            id: "qStatus",
+            match: (r, v) => !v || String(r.status) === v,
+          },
+        ],
+        formFields: [
+          { id: "fName", key: "name", type: "text", label: "商品名称", required: true },
+          { id: "fOriginPrice", key: "originPrice", type: "number", label: "原价", required: true, default: 0 },
+          { id: "fSalePrice", key: "salePrice", type: "number", label: "销售价", required: true, default: 0 },
+          { id: "fGroup", key: "group", type: "select", label: "商品分组", required: true },
+          { id: "fTag", key: "tag", type: "select", label: "商品标签" },
+          { id: "fWeight", key: "weight", type: "number", label: "排序权重", default: 0 },
+          { id: "fStatus", key: "status", type: "select", label: "上架状态", default: "已下架" },
+        ],
+        rowActions(r, i) {
+          const shelfLabel = r.status === "已上架" ? "下架" : "上架";
+          return [
+            `<button type="button" class="link" data-act="preview" data-i="${i}">预览</button>`,
+            `<button type="button" class="link" data-edit="${i}">编辑</button>`,
+            `<button type="button" class="link danger" data-del="${i}">删除</button>`,
+            `<button type="button" class="link" data-act="shelf" data-i="${i}">${shelfLabel}</button>`,
+            `<button type="button" class="link" data-act="qrcode" data-i="${i}">二维码</button>`,
+          ].join("");
+        },
+        onSave(next, prev) {
+          if (!prev) {
+            return {
+              id: nextProductId(listApi ? listApi.data : seedRows),
+              kind: currentKind,
+              createdAt: nowText(),
+            };
+          }
+          return {
+            id: prev.id,
+            kind: prev.kind,
+            createdAt: prev.createdAt,
+          };
+        },
+        onAction(act, i, data, done) {
+          const row = data[i];
+          if (!row) return;
+          if (act === "preview") {
+            AdminUI.toast(`预览：${row.name}（${row.id}）`);
+            return;
+          }
+          if (act === "qrcode") {
+            AdminUI.toast(`已生成商品二维码：${row.id}`);
+            return;
+          }
+          if (act === "shelf") {
+            row.status = row.status === "已上架" ? "已下架" : "已上架";
+            AdminUI.toast(row.status === "已上架" ? "已上架" : "已下架");
+            done();
+          }
+        },
+      });
+
+      AdminUI.onReady(() => {
+        const addBtn = document.getElementById("btnAddProduct");
+        function syncAddHref() {
+          if (!addBtn) return;
+          const type = currentKind === "goods" ? "physical" : "service";
+          addBtn.href = `../../product-add.html?type=${type}`;
+        }
+        syncAddHref();
+
+        document.querySelector(".kind-tabs")?.addEventListener("click", (e) => {
+          const tab = e.target.closest("[data-kind]");
+          if (!tab) return;
+          currentKind = tab.dataset.kind;
+          const kindInput = document.getElementById("qKind");
+          if (kindInput) kindInput.value = currentKind;
+          document.querySelectorAll(".kind-tab").forEach((el) => {
+            el.classList.toggle("active", el === tab);
+          });
+          syncAddHref();
+          document.getElementById("btnSearch")?.click();
+        });
+
+        document.getElementById("btnExpand")?.addEventListener("click", () => {
+          const box = document.getElementById("filterExtra");
+          const btn = document.getElementById("btnExpand");
+          const open = box?.classList.toggle("show");
+          if (btn) btn.textContent = open ? "收起" : "展开";
+        });
+
+        document.getElementById("btnExport")?.addEventListener("click", () => {
+          const count = listApi.data.filter((r) => r.kind === currentKind).length;
+          AdminUI.toast(`已导出 ${count} 条${currentKind === "service" ? "服务" : "实物"}商品（演示）`);
+        });
+      });
+    </script>
+  </body>
+</html>

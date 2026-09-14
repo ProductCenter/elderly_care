@@ -301,21 +301,136 @@
     },
   ];
 
+  /** 演示「今天」：2026-08-04（周二） */
+  const DEMO_TODAY = "2026-08-04";
+
   const DEMO_CALENDAR = [
-    { date: "08-04", weekday: "周二", items: [{ time: "全天", name: "步数 5000", type: "sport", status: "scheduled" }, { time: "21:30", name: "呼吸训练", type: "home", status: "scheduled" }] },
-    { date: "08-05", weekday: "周三", items: [{ time: "18:30", name: "助眠餐", type: "food", status: "scheduled" }, { time: "21:30", name: "呼吸训练", type: "home", status: "scheduled" }] },
-    { date: "08-06", weekday: "周四", items: [{ time: "21:30", name: "呼吸训练", type: "home", status: "scheduled" }] },
-    { date: "08-07", weekday: "周五", items: [{ time: "18:30", name: "助眠餐", type: "food", status: "scheduled" }, { time: "21:30", name: "呼吸训练", type: "home", status: "scheduled" }] },
+    {
+      date: "08-01",
+      weekday: "周六",
+      items: [
+        { time: "19:00", name: "到店 · 头部疗愈 60min", type: "store", status: "done" },
+        { time: "21:30", name: "呼吸训练", type: "home", status: "done" },
+      ],
+    },
+    {
+      date: "08-02",
+      weekday: "周日",
+      items: [
+        { time: "全天", name: "步数 5000", type: "sport", status: "done" },
+        { time: "21:30", name: "呼吸训练", type: "home", status: "done" },
+      ],
+    },
+    {
+      date: "08-03",
+      weekday: "周一",
+      items: [
+        { time: "18:30", name: "助眠餐", type: "food", status: "done" },
+        { time: "全天", name: "步数 5000", type: "sport", status: "missed" },
+        { time: "21:30", name: "呼吸训练", type: "home", status: "done" },
+      ],
+    },
+    {
+      date: "08-04",
+      weekday: "周二",
+      items: [
+        { time: "全天", name: "咖啡因宵禁", type: "home", status: "done" },
+        { time: "全天", name: "步数 5000", type: "sport", status: "doing" },
+        { time: "18:30", name: "助眠餐打卡", type: "food", status: "scheduled" },
+        { time: "21:30", name: "呼吸训练", type: "home", status: "scheduled" },
+      ],
+    },
+    {
+      date: "08-05",
+      weekday: "周三",
+      items: [
+        { time: "全天", name: "步数 5000", type: "sport", status: "scheduled" },
+        { time: "18:30", name: "助眠餐", type: "food", status: "scheduled" },
+        { time: "21:30", name: "呼吸训练", type: "home", status: "scheduled" },
+      ],
+    },
+    {
+      date: "08-06",
+      weekday: "周四",
+      items: [
+        { time: "全天", name: "步数 5000", type: "sport", status: "scheduled" },
+        { time: "21:30", name: "呼吸训练", type: "home", status: "scheduled" },
+      ],
+    },
+    {
+      date: "08-07",
+      weekday: "周五",
+      items: [
+        { time: "全天", name: "步数 5000", type: "sport", status: "scheduled" },
+        { time: "18:30", name: "助眠餐", type: "food", status: "scheduled" },
+        { time: "21:30", name: "呼吸训练", type: "home", status: "scheduled" },
+      ],
+    },
     {
       date: "08-08",
       weekday: "周六",
       items: [
-        { time: "19:00", name: "到店 · 头部疗愈 60min", type: "store", status: "pending_confirm", reason: "你选择的可到店时段 + 与上次疗愈间隔 6 天 + 门店该时段有位" },
+        {
+          time: "19:00",
+          name: "到店 · 头部疗愈 60min",
+          type: "store",
+          status: "pending_confirm",
+          reason: "你选择的可到店时段 + 与上次疗愈间隔 6 天 + 门店该时段有位",
+        },
         { time: "21:30", name: "呼吸训练", type: "home", status: "scheduled" },
       ],
     },
-    { date: "08-09", weekday: "周日", items: [{ time: "21:30", name: "呼吸训练", type: "home", status: "scheduled" }] },
-    { date: "08-10", weekday: "周一", items: [{ time: "18:30", name: "助眠餐", type: "food", status: "scheduled" }, { time: "21:30", name: "呼吸训练", type: "home", status: "scheduled" }] },
+    {
+      date: "08-09",
+      weekday: "周日",
+      items: [
+        { time: "全天", name: "步数 5000", type: "sport", status: "scheduled" },
+        { time: "21:30", name: "呼吸训练", type: "home", status: "scheduled" },
+      ],
+    },
+    {
+      date: "08-10",
+      weekday: "周一",
+      items: [
+        { time: "全天", name: "步数 5000", type: "sport", status: "scheduled" },
+        { time: "18:30", name: "助眠餐", type: "food", status: "scheduled" },
+        { time: "21:30", name: "呼吸训练", type: "home", status: "scheduled" },
+      ],
+    },
+    {
+      date: "08-11",
+      weekday: "周二",
+      items: [
+        { time: "全天", name: "步数 5000", type: "sport", status: "scheduled" },
+        { time: "21:30", name: "呼吸训练", type: "home", status: "scheduled" },
+      ],
+    },
+    {
+      date: "08-12",
+      weekday: "周三",
+      items: [
+        { time: "18:30", name: "助眠餐", type: "food", status: "scheduled" },
+        { time: "21:30", name: "呼吸训练", type: "home", status: "scheduled" },
+      ],
+    },
+    {
+      date: "08-15",
+      weekday: "周六",
+      items: [
+        { time: "19:00", name: "到店 · 足浴 30min", type: "store", status: "scheduled" },
+        { time: "21:30", name: "呼吸训练", type: "home", status: "scheduled" },
+      ],
+    },
+    {
+      date: "08-22",
+      weekday: "周六",
+      items: [{ time: "19:00", name: "到店 · 头部疗愈 60min", type: "store", status: "scheduled" }],
+    },
+    {
+      date: "08-29",
+      weekday: "周六",
+      items: [{ time: "19:00", name: "到店 · 头部疗愈 60min", type: "store", status: "scheduled" }],
+    },
   ];
 
   const DEMO_FORECAST = {
@@ -389,6 +504,7 @@
     ELEMENTS,
     PACKAGES,
     REPORT_EXTRAS,
+    DEMO_TODAY,
     DEMO_TODOS,
     DEMO_CALENDAR,
     DEMO_FORECAST,

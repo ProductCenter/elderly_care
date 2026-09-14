@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>床位管理 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body
+    data-primary="org"
+    data-sub="bed"
+    data-tab="床位管理"
+    data-asset-prefix="../../assets"
+    data-index-href="../index.html"
+  >
+    <div id="admin-root"></div>
+
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">床位管理</h1>
+          <p class="page-desc">管理房间与床位状态，维护床位标准、类型与收费标准</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="btnAddBed">+ 新增床位</button>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-card"><div class="k">床位总数</div><div class="v" id="stTotal">0</div></div>
+        <div class="stat-card"><div class="k">空闲</div><div class="v" id="stIdle">0</div></div>
+        <div class="stat-card"><div class="k">在住</div><div class="v" id="stBusy">0</div></div>
+        <div class="stat-card"><div class="k">预订 / 维修</div><div class="v" id="stOther">0</div></div>
+      </div>
+
+      <div class="filter-card">
+        <div class="filter-grid">
+          <div class="filter-item">
+            <label>楼层</label>
+            <select class="ctrl" id="qFloor">
+              <option value="">全部楼层</option>
+              <option>1F</option>
+              <option>2F</option>
+              <option>3F</option>
+              <option>4F</option>
+              <option>5F</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label>房间 / 床位号</label>
+            <input class="ctrl" id="qKeyword" placeholder="如：312 / A" />
+          </div>
+          <div class="filter-item">
+            <label>状态</label>
+            <select class="ctrl" id="qStatus">
+              <option value="">全部</option>
+              <option value="idle">空闲</option>
+              <option value="busy">在住</option>
+              <option value="book">预订</option>
+              <option value="repair">维修</option>
+            </select>
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
+            <button type="button" class="btn btn-default" id="btnReset">重置</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="view-toggle" id="viewToggle">
+            <button type="button" class="active" data-view="map">房态图</button>
+            <button type="button" data-view="table">列表</button>
+          </div>
+          <div class="bed-legend">
+            <span><i class="bed-dot" style="background:#1677ff"></i>空闲</span>
+            <span><i class="bed-dot" style="background:#faad14"></i>在住</span>
+            <span><i class="bed-dot" style="background:#722ed1"></i>预订</span>
+            <span><i class="bed-dot" style="background:#ff4d4f"></i>维修</span>
+          </div>
+        </div>
+        <div class="toolbar-right">
+          <select class="ctrl" id="mapFloor" style="width:120px">
+            <option>1F</option>
+            <option>2F</option>
+            <option selected>3F</option>
+            <option>4F</option>
+            <option>5F</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="list-card" id="mapPanel">
+        <div class="bed-map" id="bedMap"></div>
+      </div>
+
+      <div class="list-card" id="tablePanel" hidden>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>楼层</th>
+                <th>房间号</th>
+                <th>床位号</th>
+                <th>床位标准</th>
+                <th>类型</th>
+                <th>收费标准(元/月)</th>
+                <th>状态</th>
+                <th>在住长者</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="bedBody"></tbody>
+          </table>
+        </div>
+        <div class="pager">
+          <span id="pagerInfo">共 0 条</span>
+          <div class="pager-btns">
+            <button type="button">上一页</button>
+            <button type="button" class="active">1</button>
+            <button type="button">下一页</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-mask" data-drawer-mask="bedDrawer" data-close-drawer="bedDrawer"></div>
+      <aside class="drawer" id="bedDrawer">
+        <div class="drawer-head">
+          <h3 id="drawerTitle">新增床位</h3>
+          <button type="button" class="drawer-close" data-close-drawer="bedDrawer">×</button>
+        </div>
+        <div class="drawer-body">
+          <div class="form-grid">
+            <div class="form-field">
+              <label>楼层<span class="req">*</span></label>
+              <select class="ctrl" id="bFloor">
+                <option>1F</option><option>2F</option><option>3F</option><option>4F</option><option>5F</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>房间号<span class="req">*</span></label>
+              <input class="ctrl" id="bRoom" placeholder="如：312" />
+            </div>
+            <div class="form-field">
+              <label>床位号<span class="req">*</span></label>
+              <input class="ctrl" id="bSlot" placeholder="如：A / B" />
+            </div>
+            <div class="form-field">
+              <label>床位标准</label>
+              <select class="ctrl" id="bStandard">
+                <option>标准间</option>
+                <option>精品间</option>
+                <option>特护间</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>类型</label>
+              <select class="ctrl" id="bType">
+                <option>双人间</option>
+                <option>单人间</option>
+                <option>三人间</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>收费标准(元/月)</label>
+              <input class="ctrl" id="bFee" type="number" value="3800" />
+            </div>
+            <div class="form-field">
+              <label>状态</label>
+              <select class="ctrl" id="bStatus">
+                <option value="idle">空闲</option>
+                <option value="busy">在住</option>
+                <option value="book">预订</option>
+                <option value="repair">维修</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>在住长者</label>
+              <input class="ctrl" id="bElder" placeholder="在住时填写" />
+            </div>
+          </div>
+        </div>
+        <div class="drawer-foot">
+          <button type="button" class="btn btn-default" data-close-drawer="bedDrawer">取消</button>
+          <button type="button" class="btn btn-primary" id="btnSaveBed">保存</button>
+        </div>
+      </aside>
+    </template>
+
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/org-bed.js"></script>
+  </body>
+</html>

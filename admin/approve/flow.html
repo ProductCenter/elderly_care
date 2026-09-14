@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>审批流设置 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+    <style>
+      .flow-steps { display:flex; flex-direction:column; gap:10px; }
+      .flow-step { display:grid; grid-template-columns:40px 1fr auto; gap:10px; align-items:center; padding:12px; border:1px solid #f0f0f0; border-radius:8px; background:#fafafa; }
+      .flow-step .n { width:28px; height:28px; border-radius:50%; background:#e6f4ff; color:#1677ff; display:grid; place-items:center; font-weight:600; font-size:13px; }
+    </style>
+  </head>
+  <body data-primary="approve" data-sub="flow" data-tab="审批流设置" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div><h1 class="page-title">审批流设置</h1><p class="page-desc">新增与维护各类业务审批流</p></div>
+        <button type="button" class="btn btn-primary" id="btnAdd">+ 新增审批流</button>
+      </div>
+      <div class="list-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>流程名称</th><th>适用业务</th><th>节点数</th><th>状态</th><th>更新时间</th><th>操作</th></tr></thead>
+            <tbody id="body"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="drawer-mask" data-drawer-mask="flowDrawer" data-close-drawer="flowDrawer"></div>
+      <aside class="drawer" id="flowDrawer">
+        <div class="drawer-head"><h3 id="drawerTitle">新增审批流</h3><button type="button" class="drawer-close" data-close-drawer="flowDrawer">×</button></div>
+        <div class="drawer-body">
+          <div class="form-grid">
+            <div class="form-field"><label>流程名称<span class="req">*</span></label><input class="ctrl" id="fName" /></div>
+            <div class="form-field"><label>适用业务</label>
+              <select class="ctrl" id="fBiz"><option>合同审批</option><option>房间变更审批</option><option>请假审批</option><option>采购审批</option></select>
+            </div>
+            <div class="form-field"><label>状态</label>
+              <select class="ctrl" id="fStatus"><option value="on">启用</option><option value="off">停用</option></select>
+            </div>
+          </div>
+          <h4 style="margin:18px 0 10px;font-size:14px">审批节点</h4>
+          <div class="flow-steps" id="steps"></div>
+          <button type="button" class="btn btn-default" id="btnAddStep" style="margin-top:10px">+ 添加节点</button>
+        </div>
+        <div class="drawer-foot">
+          <button type="button" class="btn btn-default" data-close-drawer="flowDrawer">取消</button>
+          <button type="button" class="btn btn-primary" id="btnSave">保存</button>
+        </div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script><script src="../js/admin-shell.js"></script><script src="../js/admin-ui.js"></script>
+    <script>
+      (() => {
+        const SEED = [
+          { name: "标准合同审批流", biz: "合同审批", nodes: ["楼长初审", "财务复核", "院长审批"], status: "on", updated: "2026-07-12" },
+          { name: "房间变更审批流", biz: "房间变更审批", nodes: ["护理组长", "楼长确认"], status: "on", updated: "2026-06-20" },
+          { name: "采购简易流", biz: "采购审批", nodes: ["部门负责人", "院长"], status: "off", updated: "2026-05-08" },
+        ];
+        let rows = AdminStore.load("approve-flow", SEED);
+        function persist() { AdminStore.save("approve-flow", rows); }
+        let editIndex = -1;
+        let draftNodes = [];
+        function renderSteps() {
+          steps.innerHTML = draftNodes.map((n, i) => `<div class="flow-step">
+            <div class="n">${i + 1}</div>
+            <input class="ctrl" data-i="${i}" value="${n}" />
+            <button type="button" class="link danger" data-del-node="${i}">删除</button>
+          </div>`).join("") || `<p style="color:#8c8c8c;font-size:13px">请添加审批节点</p>`;
+        }
+        function collect() {
+          steps.querySelectorAll("input[data-i]").forEach((el) => {
+            draftNodes[Number(el.dataset.i)] = el.value.trim();
+          });
+        }
+        function render() {
+          body.innerHTML = rows.map((r, i) => `<tr>
+            <td>${r.name}</td><td>${r.biz}</td><td>${r.nodes.length}</td>
+            <td><span class="status ${r.status === "on" ? "status-on" : "status-off"}">${r.status === "on" ? "启用" : "停用"}</span></td>
+            <td>${r.updated}</td>
+            <td>
+              <button type="button" class="link" data-edit="${i}">编辑</button>
+              <button type="button" class="link danger" data-del="${i}">删除</button>
+            </td>
+          </tr>`).join("") || `<tr class="empty-row"><td colspan="6"><div class="empty-state">暂无审批流，请点击新增</div></td></tr>`;
+        }
+        function openEdit(i) {
+          editIndex = i;
+          const r = i < 0 ? null : rows[i];
+          drawerTitle.textContent = i < 0 ? "新增审批流" : "编辑审批流";
+          fName.value = r?.name || "";
+          fBiz.value = r?.biz || "合同审批";
+          fStatus.value = r?.status || "on";
+          draftNodes = [...(r?.nodes || ["发起人提交", "主管审批"])];
+          renderSteps();
+          AdminUI.openDrawer("flowDrawer");
+        }
+        AdminUI.onReady(() => {
+          AdminUI.bindDrawer("flowDrawer");
+          btnAdd.onclick = () => openEdit(-1);
+          btnAddStep.onclick = () => { collect(); draftNodes.push("新节点"); renderSteps(); };
+          steps.onclick = (e) => {
+            const del = e.target.closest("[data-del-node]");
+            if (!del) return;
+            collect();
+            draftNodes.splice(Number(del.dataset.delNode), 1);
+            renderSteps();
+          };
+          btnSave.onclick = () => {
+            collect();
+            if (!fName.value.trim() || !draftNodes.filter(Boolean).length) {
+              AdminUI.toast("请填写流程名称与节点", "error");
+              return;
+            }
+            const next = {
+              name: fName.value.trim(),
+              biz: fBiz.value,
+              status: fStatus.value,
+              nodes: draftNodes.filter(Boolean),
+              updated: new Date().toISOString().slice(0, 10),
+            };
+            if (editIndex < 0) {
+              rows.unshift(next);
+              AdminUI.toast("新增成功");
+            } else {
+              rows[editIndex] = next;
+              AdminUI.toast("保存成功");
+            }
+            persist();
+            AdminUI.closeDrawer("flowDrawer");
+            render();
+          };
+          body.onclick = async (e) => {
+            const el = e.target.closest("[data-edit]");
+            const del = e.target.closest("[data-del]");
+            if (el) openEdit(Number(el.dataset.edit));
+            if (del) {
+              const ok = await AdminUI.confirm("确定删除该审批流？", { title: "删除确认", okText: "删除" });
+              if (!ok) return;
+              rows.splice(Number(del.dataset.del), 1);
+              persist();
+              AdminUI.toast("已删除");
+              render();
+            }
+          };
+          render();
+        });
+      })();
+    </script>
+  </body>
+</html>

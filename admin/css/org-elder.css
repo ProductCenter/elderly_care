@@ -1,0 +1,92 @@
+/* 长者信息专属 */
+.elder-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid #f0f0f0;
+  margin: -4px 0 16px;
+  overflow-x: auto;
+}
+
+.elder-tabs button {
+  height: 40px;
+  padding: 0 16px;
+  font-size: 14px;
+  color: #595959;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+}
+
+.elder-tabs button.active {
+  color: #1677ff;
+  font-weight: 500;
+  border-bottom-color: #1677ff;
+}
+
+.elder-panel[hidden] {
+  display: none !important;
+}
+
+.avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed #f0f0f0;
+}
+
+.elder-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e6f4ff, #bae0ff);
+  color: #1677ff;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  font-weight: 650;
+  flex-shrink: 0;
+}
+
+.avatar-meta .name {
+  font-size: 18px;
+  font-weight: 650;
+  color: #1f1f1f;
+}
+
+.avatar-meta .sub {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #8c8c8c;
+}
+
+.family-block,
+.change-block {
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: #fafafa;
+}
+
+.family-block .head,
+.change-block .head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.import-hint {
+  font-size: 12px;
+  color: #8c8c8c;
+  margin-left: 8px;
+}
+
+.drawer.wide {
+  width: min(720px, 100vw);
+}

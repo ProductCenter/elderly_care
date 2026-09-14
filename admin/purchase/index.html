@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>采购管理 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css" />
+<link rel="stylesheet" href="../css/admin-list.css" />
+</head>
+<body data-primary="purchase" data-sub="flow" data-tab="采购管理" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+  <div class="page-head"><div><h1 class="page-title">采购管理</h1><p class="page-desc">采购申请单、申请汇总等线上流程</p></div>
+  <div style="display:flex;gap:8px"><button type="button" class="btn btn-primary" id="btnAdd">+ 采购申请</button></div></div>
+  <div class="stat-row"><div class="stat-card"><div class="k">申请单</div><div class="v" id="stTotal">0</div></div><div class="stat-card"><div class="k">审批中</div><div class="v" id="stAppr">0</div></div><div class="stat-card"><div class="k">采购中</div><div class="v" id="stBuy">0</div></div><div class="stat-card"><div class="k">本月金额</div><div class="v" id="stAmt">0</div></div></div>
+  <div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>单号 / 物资</label><input class="ctrl" id="qKeyword" placeholder="" /></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="草稿">草稿</option><option value="审批中">审批中</option><option value="采购中">采购中</option><option value="已入库">已入库</option><option value="已驳回">已驳回</option></select></div><div class="filter-item"><label>申请部门</label><select class="ctrl" id="qDept"><option value="">全部</option><option value="护理部">护理部</option><option value="后勤部">后勤部</option><option value="医务室">医务室</option><option value="行政">行政</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+  <div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>申请单号</th><th>物资</th><th>数量</th><th>预算金额</th><th>部门</th><th>申请人</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+  <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+  <div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+  <aside class="drawer" id="listDrawer">
+    <div class="drawer-head"><h3 id="drawerTitle">采购申请</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+    <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>物资名称<span class="req">*</span></label><input class="ctrl" id="fItem" placeholder="" /></div><div class="form-field"><label>数量<span class="req">*</span></label><input class="ctrl" id="fQty" placeholder="" /></div><div class="form-field"><label>预算金额</label><input class="ctrl" id="fAmount" type="number" value="0" /></div><div class="form-field"><label>申请部门</label><select class="ctrl" id="fDept"><option value="护理部">护理部</option><option value="后勤部">后勤部</option><option value="医务室">医务室</option><option value="行政">行政</option></select></div><div class="form-field"><label>申请人</label><input class="ctrl" id="fBy" placeholder="" /></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="草稿">草稿</option><option value="审批中">审批中</option><option value="采购中">采购中</option><option value="已入库">已入库</option><option value="已驳回">已驳回</option></select></div><div class="form-field full"><label>用途说明</label><textarea class="ctrl" id="fNote" placeholder=""></textarea></div></div></div>
+    <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+  </aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script><script src="../js/admin-shell.js"></script><script src="../js/admin-ui.js"></script><script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle:"\u91c7\u8d2d\u7533\u8bf7", editTitle:"编辑",
+  rows:[
+    {no:"CG20260729001",item:"一次性护理垫",qty:"20 箱",amount:3600,dept:"护理部",by:"赵敏",status:"审批中",note:""},
+    {no:"CG20260725002",item:"消毒液 / 手套",qty:"一批",amount:1800,dept:"后勤部",by:"马超",status:"采购中",note:""},
+    {no:"CG20260720003",item:"血糖试纸",qty:"10 盒",amount:1200,dept:"医务室",by:"李医生",status:"已入库",note:""},
+    {no:"CG20260718004",item:"办公耗材",qty:"1 批",amount:560,dept:"行政",by:"王悦",status:"已驳回",note:"超预算"},
+  ], columns:[{ key: "no" },{ key: "item" },{ key: "qty" },{ key: "amount" },{ key: "dept" },{ key: "by" },{ key: "status", status: true }], filters:[{ id: "qKeyword", match: (r,v) => !v || (String(r.no||"").includes(v) || String(r.item||"").includes(v)) },{ id: "qStatus", match: (r,v) => !v || String(r.status) === v },{ id: "qDept", match: (r,v) => !v || String(r.dept) === v }],
+  formFields:[{id:"fItem",key:"item",type:"text",label:"物资名称",required:true},{id:"fQty",key:"qty",type:"text",label:"数量",required:true},{id:"fAmount",key:"amount",type:"number",label:"预算金额",default:0},{id:"fDept",key:"dept",type:"select",label:"申请部门"},{id:"fBy",key:"by",type:"text",label:"申请人"},{id:"fStatus",key:"status",type:"select",label:"状态"},{id:"fNote",key:"note",type:"textarea",label:"用途说明"}], stats:[{id:"stTotal",html:false,value:(l)=>l.length},{id:"stAppr",html:false,value:(l)=>l.filter(r=>r.status==="审批中").length},{id:"stBuy",html:false,value:(l)=>l.filter(r=>r.status==="采购中").length},{id:"stAmt",html:true,value:(l)=>l.reduce((s,r)=>s+r.amount,0)+"<em>元</em>"}],
+  getStatus:(r)=>({text:r.status,cls:r.status==="已入库"?"status-on":r.status==="已驳回"?"status-repair":r.status==="草稿"?"status-off":"status-busy"}), rowActions:null, onAction:null,
+});
+
+</script>
+</body></html>

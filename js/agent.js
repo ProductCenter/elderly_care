@@ -1,27 +1,46 @@
 (() => {
   const AGENT_NAME = "康小护";
+  // 商城与智伴统一端口：页面与 /api 同源
   const API_BASE = "";
 
-  const QUESTION_POOL = [
-    // 居家照护
-    [
-      { q: "帮我推荐附近合适的上门照护服务", cat: "care", icon: "🏠", color: "#7b9e6c" },
-      { q: "预约下周的上门助浴", cat: "care", icon: "🛁", color: "#7b9e6c" },
-      { q: "居家照护和到店理疗怎么选？", cat: "care", icon: "🆚", color: "#7b9e6c" },
-    ],
-    // 智慧健康 / 慢病管理
-    [
-      { q: "我这一周血压控制得怎么样？", cat: "health", icon: "🩺", color: "#5a8fc7" },
-      { q: "帮我制定一个控糖饮食计划", cat: "health", icon: "🥗", color: "#5a8fc7" },
-      { q: "睡眠监测报告出来后怎么看？", cat: "health", icon: "😴", color: "#5a8fc7" },
-    ],
-    // 社区嵌入式康养
-    [
-      { q: "附近哪家食堂的控糖套餐更合适？", cat: "canteen", icon: "🍱", color: "#f08a2a" },
-      { q: "周末有没有适合长者的兴趣活动？", cat: "activity", icon: "🎨", color: "#c979d8" },
-      { q: "帮我安排下周的社区活动", cat: "activity", icon: "📅", color: "#c979d8" },
-    ],
+  const familyQs = window.AgentFamilyDemo?.QUESTIONS || [];
+  const healthBatch = familyQs.filter((q) => q.cat === "health");
+  const bizBatch = familyQs.filter((q) => q.cat === "biz");
+  const familyBatch = familyQs.filter((q) => q.cat === "family");
+  const QUESTION_FLAT = [
+    ...(healthBatch.length
+      ? healthBatch
+      : [
+          { q: "打开爸妈的健康档案", cat: "health", icon: "📋", color: "#5a8fc7" },
+          { q: "我这一周血压控制得怎么样？", cat: "health", icon: "🩺", color: "#5a8fc7" },
+          { q: "睡眠监测报告出来后怎么看？", cat: "health", icon: "😴", color: "#5a8fc7" },
+        ]),
+    ...(bizBatch.length
+      ? bizBatch
+      : [
+          { q: "林家这周有哪些关键业务节点？", cat: "biz", icon: "📌", color: "#6b8f71" },
+          { q: "爸妈的能力评估结果是什么？", cat: "biz", icon: "📝", color: "#6b8f71" },
+          { q: "本周护理计划和任务执行得怎么样？", cat: "biz", icon: "🗓️", color: "#6b8f71" },
+        ]),
+    ...(familyBatch.length
+      ? familyBatch
+      : [
+          { q: "帮我看看爸妈现在最需要什么照护？", cat: "family", icon: "👨‍👩‍👧", color: "#e36a12" },
+          { q: "针对爸妈这种情况，平台要准备哪些供给？", cat: "family", icon: "🧺", color: "#e36a12" },
+          { q: "怎么把爸妈的需求和供给对上？", cat: "family", icon: "🔗", color: "#e36a12" },
+        ]),
+    { q: "帮我推荐附近合适的上门照护服务", cat: "care", icon: "🏠", color: "#7b9e6c" },
+    { q: "预约下周的上门助浴", cat: "care", icon: "🛁", color: "#7b9e6c" },
+    { q: "居家照护和到店理疗怎么选？", cat: "care", icon: "🆚", color: "#7b9e6c" },
+    { q: "附近哪家食堂的控糖套餐更合适？", cat: "canteen", icon: "🍱", color: "#f08a2a" },
+    { q: "周末有没有适合长者的兴趣活动？", cat: "activity", icon: "🎨", color: "#c979d8" },
+    { q: "帮我安排下周的社区活动", cat: "activity", icon: "📅", color: "#c979d8" },
   ];
+  const PAGE_SIZE = 3;
+  const QUESTION_POOL = [];
+  for (let i = 0; i < QUESTION_FLAT.length; i += PAGE_SIZE) {
+    QUESTION_POOL.push(QUESTION_FLAT.slice(i, i + PAGE_SIZE));
+  }
 
   let toastTimer = 0;
   let questionIndex = 0;
@@ -55,15 +74,15 @@
 
   function subByHour(h) {
     if (h >= 5 && h < 11) {
-      return "食堂、照护、健康服务，想问什么直接点 👇";
+      return "先看爸妈的体征、睡眠和病程档案 👇";
     }
     if (h >= 11 && h < 13) {
-      return "看看附近食堂控糖套餐，或约个上门照护 👇";
+      return "血糖、血压、营养、运动，点下面就能摊开 👇";
     }
     if (h >= 13 && h < 18) {
-      return "下午放松一下？查查活动和健康数据 👇";
+      return "林家健康档案已固化，先看数据再讲匹配 👇";
     }
-    return "晚上好，食堂、照护、健康服务随时问 👇";
+    return "晚上好。两位老人的睡眠和晨测都在小护这 👇";
   }
 
   function syncClock() {
@@ -154,6 +173,34 @@
     }
   }
 
+  function clearFollowups() {
+    document.querySelectorAll("#chatStream .followups").forEach((el) => el.remove());
+  }
+
+  function appendFollowups(row, items) {
+    if (!row || !items?.length) return;
+    const col = row.querySelector(".msg-col") || row;
+    col.querySelector(".followups")?.remove();
+    const box = document.createElement("div");
+    box.className = "followups";
+    box.innerHTML =
+      `<p class="followups-hd">根据刚才的档案，你可以继续问</p>` +
+      items
+        .slice(0, 3)
+        .map((it) => {
+          const text = typeof it === "string" ? it : it.q;
+          const icon = typeof it === "string" ? "✨" : it.icon || "✨";
+          const color = typeof it === "string" ? "var(--orange)" : it.color || "var(--orange)";
+          const cat = typeof it === "string" ? "" : it.cat || "";
+          return `<button type="button" class="followup-item" data-q="${text.replace(/"/g, "&quot;")}" data-cat="${cat}" style="--guess-accent: ${color}">
+            <span class="guess-icon" aria-hidden="true">${icon}</span>
+            <span class="guess-text">${text}</span>
+          </button>`;
+        })
+        .join("");
+    col.appendChild(box);
+  }
+
   function appendUser(text) {
     const stream = $("chatStream");
     const row = document.createElement("div");
@@ -209,7 +256,7 @@
       return data;
     } catch {
       banner.hidden = false;
-      text.textContent = "请用 scripts/llm_server.py 启动（当前静态服务无 /api）";
+      text.textContent = "大模型服务未就绪：请用 scripts/llm_server.py 启动本站（商城与智伴同端口）";
       return { configured: false, offline: true };
     }
   }
@@ -219,7 +266,11 @@
       .filter((m) => m.role === "user" || m.role === "assistant")
       .map((m) => ({ role: m.role, content: String(m.content || "").trim() }))
       .filter((m) => m.content);
-    const messages = context.concat([{ role: "user", content: userText }]);
+    const familyCtx = window.AgentFamilyDemo?.SYSTEM_CONTEXT;
+    const messages = (familyCtx
+      ? [{ role: "system", content: familyCtx }]
+      : []
+    ).concat(context, [{ role: "user", content: userText }]);
 
     const abort = new AbortController();
     const id = setTimeout(() => abort.abort(), 70000);
@@ -374,9 +425,36 @@
     lockInput();
     console.log("[send] locked busy=", busy);
 
+    clearFollowups();
     appendUser(content);
     history.push({ role: "user", content });
     const ui = appendAssistantShell();
+
+    const canned =
+      window.AgentFamilyDemo &&
+      (typeof window.AgentFamilyDemo.matchReply === "function"
+        ? window.AgentFamilyDemo.matchReply(content)
+        : (() => {
+            const raw = window.AgentFamilyDemo.match(content);
+            return raw ? { content: raw, followups: [] } : null;
+          })());
+    if (canned) {
+      try {
+        await new Promise((r) => setTimeout(r, 240));
+        ui.row.classList.remove("is-loading");
+        ui.bubble.classList.remove("is-empty");
+        renderAnswer(ui.bubble, canned.content);
+        history.push({ role: "assistant", content: canned.content });
+        appendFollowups(ui.row, canned.followups);
+        scrollChat();
+      } finally {
+        const input = $("textInput");
+        if (input) input.value = "";
+        unlockInput();
+        if (input && document.activeElement === input) input.focus();
+      }
+      return;
+    }
 
     try {
       const result = await streamChat(content, ui);
@@ -437,6 +515,10 @@
     const btn = e.target.closest("[data-act]");
     if (!btn) return;
     const act = btn.dataset.act;
+    if (act === "family") {
+      sendMessage("帮我看看爸妈现在最需要什么照护？");
+      return;
+    }
     if (act === "canteen") {
       sendMessage("附近哪家食堂的控糖套餐更合适？");
       return;
@@ -446,7 +528,7 @@
       return;
     }
     if (act === "health") {
-      sendMessage("我这一周血压控制得怎么样？");
+      sendMessage("打开爸妈的健康档案");
       return;
     }
     if (act === "activity") {
@@ -469,6 +551,14 @@
         return;
       }
       sendMessage(`我想了解：${a.textContent.trim() || href}`);
+      return;
+    }
+    const follow = e.target.closest(".followup-item");
+    if (follow) {
+      e.preventDefault();
+      e.stopPropagation();
+      const q = follow.dataset.q || follow.textContent.trim();
+      if (q) sendMessage(q);
       return;
     }
     const btn = e.target.closest(".cui-btn");

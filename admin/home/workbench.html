@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>工作台 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/workbench.css" />
+  </head>
+  <body
+    data-primary="home"
+    data-sub="workbench"
+    data-tab="工作台"
+    data-asset-prefix="../../assets"
+    data-index-href="../index.html"
+  >
+    <div id="admin-root"></div>
+
+    <template id="page-content">
+      <div class="wb-welcome">
+        <div>
+          <h1 id="greetTitle">早上好，管理员</h1>
+          <p>今日待办与运营概览，便于一线工作人员快速掌握院内动态</p>
+        </div>
+        <div class="wb-date">
+          <strong id="todayLabel">—</strong>
+          <span id="weekLabel">—</span>
+        </div>
+      </div>
+
+      <div class="wb-kpi">
+        <div class="wb-kpi-card" style="--accent:#1677ff">
+          <div class="label">今日待办</div>
+          <div class="value">12<em>项</em></div>
+          <div class="foot">含审批 3 · 护理任务 6 · 预警 3</div>
+        </div>
+        <div class="wb-kpi-card" style="--accent:#52c41a">
+          <div class="label">在院长者</div>
+          <div class="value">328<em>人</em></div>
+          <div class="foot"><span class="up">入住率 86.4%</span> · 空床 52</div>
+        </div>
+        <div class="wb-kpi-card" style="--accent:#faad14">
+          <div class="label">今日出入院</div>
+          <div class="value">5<em>人</em></div>
+          <div class="foot">入院 3 · 出院 2</div>
+        </div>
+        <div class="wb-kpi-card" style="--accent:#722ed1">
+          <div class="label">护理任务完成率</div>
+          <div class="value">92<em>%</em></div>
+          <div class="foot"><span class="up">较昨日 +3%</span> · 未完成 8</div>
+        </div>
+      </div>
+
+      <div class="wb-main">
+        <section class="wb-card">
+          <div class="wb-card-head">
+            <h2>近 7 日运营简图</h2>
+            <a class="more" href="./dashboard-screen.html">查看综合大屏 →</a>
+          </div>
+          <div class="wb-card-body">
+            <div class="wb-chart" id="wbTrend"></div>
+            <div class="wb-legend">
+              <span><i style="background:#1677ff"></i>入住率%</span>
+              <span><i style="background:#36cfc9"></i>护理完成率%</span>
+              <span><i style="background:#ff7a45"></i>来访人次</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="wb-card">
+          <div class="wb-card-head">
+            <h2>待我处理</h2>
+            <button type="button" class="more" id="btnRefreshTodo">刷新</button>
+          </div>
+          <div class="wb-card-body">
+            <ul class="wb-todo" id="todoList"></ul>
+          </div>
+        </section>
+      </div>
+
+      <div class="wb-bottom">
+        <section class="wb-card" style="min-height:auto">
+          <div class="wb-card-head">
+            <h2>快捷入口</h2>
+          </div>
+          <div class="wb-card-body">
+            <div class="wb-quick">
+              <a href="#" data-tip="长者信息">
+                <span class="ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><circle cx="12" cy="8" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M5 19c1.5-3 4-4.5 7-4.5S17.5 16 19 19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                </span>
+                长者信息
+              </a>
+              <a href="#" data-tip="床位管理">
+                <span class="ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M4 16V8h16v8M4 12h16M4 19h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                </span>
+                床位管理
+              </a>
+              <a href="#" data-tip="合同审批">
+                <span class="ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M7 3h7l4 4v14H7V3z" stroke="currentColor" stroke-width="1.6"/><path d="M9.5 13.5 11.2 15l3.3-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                </span>
+                合同审批
+              </a>
+              <a href="#" data-tip="健康检测">
+                <span class="ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M4 12h4l2-5 3 10 2-5h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                健康检测
+              </a>
+              <a href="#" data-tip="护理计划">
+                <span class="ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><rect x="5" y="4" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M9 9h6M9 13h6M9 17h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                </span>
+                护理计划
+              </a>
+              <a href="#" data-tip="费用对账">
+                <span class="ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M5 6h14v12H5V6z" stroke="currentColor" stroke-width="1.6"/><path d="M8 10h8M8 14h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                </span>
+                费用对账
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <section class="wb-card" style="min-height:auto">
+          <div class="wb-card-head">
+            <h2>今日日程</h2>
+          </div>
+          <div class="wb-card-body">
+            <ul class="wb-schedule">
+              <li>
+                <div class="hm">09:00</div>
+                <div class="txt">晨间交班会<span>多功能厅 · 护理组 / 楼长</span></div>
+              </li>
+              <li>
+                <div class="hm">10:30</div>
+                <div class="txt">新院长者入住评估<span>3F 评估室 · 张秀英</span></div>
+              </li>
+              <li>
+                <div class="hm">14:00</div>
+                <div class="txt">合同会签<span>《养老机构服务合同》· 李建国</span></div>
+              </li>
+              <li>
+                <div class="hm">16:00</div>
+                <div class="txt">安全巡查复核<span>1F–5F 公共区域</span></div>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="wb-card" style="min-height:auto">
+          <div class="wb-card-head">
+            <h2>楼层床位速览</h2>
+          </div>
+          <div class="wb-card-body">
+            <table class="wb-mini-table">
+              <thead>
+                <tr>
+                  <th>楼层</th>
+                  <th>在住/总床</th>
+                  <th>使用率</th>
+                  <th>状态</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1F</td>
+                  <td>66 / 72</td>
+                  <td>91.7%</td>
+                  <td><span class="wb-badge mid">紧张</span></td>
+                </tr>
+                <tr>
+                  <td>2F</td>
+                  <td>70 / 78</td>
+                  <td>89.7%</td>
+                  <td><span class="wb-badge on">正常</span></td>
+                </tr>
+                <tr>
+                  <td>3F</td>
+                  <td>68 / 80</td>
+                  <td>85.0%</td>
+                  <td><span class="wb-badge on">正常</span></td>
+                </tr>
+                <tr>
+                  <td>4F</td>
+                  <td>62 / 76</td>
+                  <td>81.6%</td>
+                  <td><span class="wb-badge on">正常</span></td>
+                </tr>
+                <tr>
+                  <td>5F</td>
+                  <td>62 / 74</td>
+                  <td>83.8%</td>
+                  <td><span class="wb-badge off">特护满</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </template>
+
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/workbench.js"></script>
+  </body>
+</html>

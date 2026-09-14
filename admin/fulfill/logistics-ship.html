@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>商户订单发货 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="fulfill" data-sub="logistics-ship" data-tab="商户订单发货" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">商户订单发货</h1>
+    <p class="page-desc">商户查看待发货订单并确认发货，填写物流公司、运单号与发货备注；支持物流信息更正</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">履约总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 登记发货</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">待发货</div><div class="v" id="stPend">0</div></div><div class="stat-card"><div class="k">已发货</div><div class="v" id="stShip">0</div></div><div class="stat-card"><div class="k">已更正</div><div class="v" id="stFix">0</div></div><div class="stat-card"><div class="k">全部</div><div class="v" id="stAll">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>订单/用户</label><input class="ctrl" id="qKeyword" placeholder=""/></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="待发货">待发货</option><option value="已发货">已发货</option><option value="已更正">已更正</option></select></div><div class="filter-item"><label>物流公司</label><input class="ctrl" id="qCompany" placeholder=""/></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>订单号</th><th>商品</th><th>用户</th><th>物流公司</th><th>运单号</th><th>发货时间</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">登记发货</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>订单号<span class="req">*</span></label><input class="ctrl" id="fOrderId" type="text"  placeholder=""/></div><div class="form-field"><label>商品<span class="req">*</span></label><input class="ctrl" id="fGoods" type="text"  placeholder=""/></div><div class="form-field"><label>用户<span class="req">*</span></label><input class="ctrl" id="fUser" type="text"  placeholder=""/></div><div class="form-field"><label>物流公司<span class="req">*</span></label><select class="ctrl" id="fCompany"><option value="顺丰速运">顺丰速运</option><option value="京东物流">京东物流</option><option value="中通快递">中通快递</option><option value="圆通速递">圆通速递</option></select></div><div class="form-field"><label>运单号<span class="req">*</span></label><input class="ctrl" id="fTracking" type="text"  placeholder=""/></div><div class="form-field"><label>发货时间<span class="req">*</span></label><input class="ctrl" id="fShipAt" type="date"  placeholder=""/></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="待发货">待发货</option><option value="已发货">已发货</option><option value="已更正">已更正</option></select></div><div class="form-field"><label>发货备注</label><textarea class="ctrl" id="fNote" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "登记发货",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "fulfill:logistics-ship",
+  rows: [{"orderId":"O20260731001","goods":"智能紧急呼叫器","user":"安辉","company":"—","trackingNo":"—","shipAt":"—","status":"待发货","note":""},{"orderId":"O20260730088","goods":"防跌倒感应夜灯","user":"张伟","company":"顺丰速运","trackingNo":"SF1234567890","shipAt":"2026-07-30","status":"已发货","note":"已验货出库"},{"orderId":"O20260729012","goods":"适老化扶手套装","user":"李娜","company":"京东物流","trackingNo":"JD9988776655","shipAt":"2026-07-29","status":"已更正","note":"运单号纠错"}],
+  columns: [{key:"orderId"},{key:"goods"},{key:"user"},{key:"company"},{key:"trackingNo"},{key:"shipAt"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.orderId||"").includes(v)||String(r.user||"").includes(v)||String(r.goods||"").includes(v)},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v},{id:"qCompany",field:"company"}],
+  formFields: [{id:"fOrderId",key:"orderId",type:"text",label:"订单号",required:true},{id:"fGoods",key:"goods",type:"text",label:"商品",required:true},{id:"fUser",key:"user",type:"text",label:"用户",required:true},{id:"fCompany",key:"company",type:"select",label:"物流公司",required:true},{id:"fTracking",key:"trackingNo",type:"text",label:"运单号",required:true},{id:"fShipAt",key:"shipAt",type:"date",label:"发货时间",required:true},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fNote",key:"note",type:"text",label:"发货备注",required:false}],
+  stats: [{id:"stPend",html:false,value:(l)=>l.filter(r=>r.status==="待发货").length},{id:"stShip",html:false,value:(l)=>l.filter(r=>r.status==="已发货").length},{id:"stFix",html:false,value:(l)=>l.filter(r=>r.status==="已更正").length},{id:"stAll",html:false,value:(l)=>l.length}],
+  getStatus:(r)=>(r.status==="待发货"?{text:r.status,cls:"status-warn"}:r.status==="已发货"?{text:r.status,cls:"status-on"}:{text:r.status,cls:"status-off"})
+});
+</script>
+</body>
+</html>

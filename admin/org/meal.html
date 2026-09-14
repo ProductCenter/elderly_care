@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>膳食服务 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+    <style>
+      .menu-week { display:grid; grid-template-columns: repeat(7, minmax(0,1fr)); gap:8px; }
+      .menu-day { background:#fff; border:1px solid #f0f0f0; border-radius:8px; padding:10px; min-height:180px; }
+      .menu-day h3 { margin:0 0 8px; font-size:13px; color:#1677ff; }
+      .menu-day .meal { margin-bottom:8px; }
+      .menu-day .meal .t { font-size:12px; color:#8c8c8c; margin-bottom:2px; }
+      .menu-day .meal .d { font-size:13px; color:#262626; line-height:1.45; }
+    </style>
+  </head>
+  <body data-primary="org" data-sub="meal" data-tab="膳食服务" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div><h1 class="page-title">膳食服务</h1><p class="page-desc">管理每周菜谱信息，按早/午/晚发布</p></div>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn btn-default" id="btnPrev">上一周</button>
+          <button type="button" class="btn btn-default" id="btnNext">下一周</button>
+          <button type="button" class="btn btn-primary" id="btnEdit">编辑本周菜谱</button>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="k">当前周次</div><div class="v" id="stWeek" style="font-size:18px">—</div></div>
+        <div class="stat-card"><div class="k">已排餐天数</div><div class="v" id="stDays">0<em>天</em></div></div>
+        <div class="stat-card"><div class="k">特殊饮食长者</div><div class="v">46<em>人</em></div></div>
+        <div class="stat-card"><div class="k">发布状态</div><div class="v" style="font-size:18px;color:#389e0d">已发布</div></div>
+      </div>
+      <div class="list-card" style="padding:14px">
+        <div class="menu-week" id="menuWeek"></div>
+      </div>
+      <div class="drawer-mask" data-drawer-mask="mealDrawer" data-close-drawer="mealDrawer"></div>
+      <aside class="drawer" id="mealDrawer">
+        <div class="drawer-head"><h3>编辑菜谱</h3><button type="button" class="drawer-close" data-close-drawer="mealDrawer">×</button></div>
+        <div class="drawer-body">
+          <div class="form-grid">
+            <div class="form-field"><label>日期</label><select class="ctrl" id="mDay"></select></div>
+            <div class="form-field"><label>餐次</label><select class="ctrl" id="mMeal"><option>早餐</option><option>午餐</option><option>晚餐</option></select></div>
+            <div class="form-field full"><label>菜品</label><textarea class="ctrl" id="mDishes" placeholder="逗号分隔，如：小米粥,鸡蛋,酱菜"></textarea></div>
+          </div>
+        </div>
+        <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="mealDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script><script src="../js/admin-shell.js"></script><script src="../js/admin-ui.js"></script><script src="../js/org-meal.js"></script>
+  </body>
+</html>

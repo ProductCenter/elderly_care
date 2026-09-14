@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>服务项目详情 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+    <style>
+      .page-body.has-form-foot { padding-bottom: 72px; }
+      .form-sec {
+        background: #fff;
+        border-radius: 8px;
+        padding: 18px 20px 20px;
+        margin-bottom: 12px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      }
+      .form-sec h3 { margin: 0 0 4px; font-size: 15px; font-weight: 600; }
+      .form-sec .hint { margin: 0 0 16px; font-size: 12px; color: #8c8c8c; line-height: 1.55; }
+      .inherit-box {
+        margin-top: 10px;
+        padding: 10px 12px;
+        border-radius: 6px;
+        background: #fafafa;
+        border: 1px dashed #e8e8e8;
+        font-size: 12px;
+        color: #595959;
+        line-height: 1.6;
+        display: none;
+      }
+      .inherit-box.show { display: block; }
+      .inherit-box b { color: #1677ff; font-weight: 600; }
+      .form-foot {
+        position: fixed;
+        left: calc(var(--nav-w) + var(--sub-w));
+        right: 0;
+        bottom: 0;
+        z-index: 30;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 24px;
+        background: rgba(255, 255, 255, 0.96);
+        border-top: 1px solid #f0f0f0;
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.04);
+      }
+      .form-foot .meta { font-size: 13px; color: #8c8c8c; }
+      .form-foot .actions { display: flex; gap: 8px; }
+      @media (max-width: 1100px) { .form-foot { left: 0; } }
+    </style>
+  </head>
+  <body
+    data-primary="mall"
+    data-sub="service-items"
+    data-tab="服务项目详情"
+    data-asset-prefix="../../assets"
+    data-index-href="../index.html"
+  >
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title" id="pageTitle">新建服务项目</h1>
+          <p class="page-desc">引用服务要素模板，绑定服务商 / 站点 / 食堂与餐次，形成可售卖履约单元</p>
+        </div>
+        <a class="btn btn-default" href="./service-items.html" style="text-decoration: none">返回列表</a>
+      </div>
+
+      <section class="form-sec">
+        <h3>1. 引用服务要素</h3>
+        <p class="hint">必选一个启用中的要素；目标、交付、标准等规则继承自要素，本页只填供给差异。</p>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>项目 ID</label>
+            <input class="ctrl" id="fId" placeholder="留空则自动生成" />
+          </div>
+          <div class="form-field">
+            <label>状态</label>
+            <select class="ctrl" id="fStatus"></select>
+          </div>
+          <div class="form-field full">
+            <label>引用要素<span class="req">*</span></label>
+            <select class="ctrl" id="fElement">
+              <option value="">请选择服务要素</option>
+            </select>
+            <div class="inherit-box" id="inheritBox"></div>
+          </div>
+          <div class="form-field full">
+            <label>项目名称<span class="req">*</span></label>
+            <input class="ctrl" id="fName" placeholder="建议：站点·食堂·餐次·方式，如 柳南站·一食堂·午餐到家" />
+          </div>
+        </div>
+      </section>
+
+      <section class="form-sec">
+        <h3>2. 供给方</h3>
+        <p class="hint">区分不同服务商 / 站点 / 食堂做同一项服务。</p>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>服务商<span class="req">*</span></label>
+            <select class="ctrl" id="fProvider"><option value="">请选择</option></select>
+          </div>
+          <div class="form-field">
+            <label>站点<span class="req">*</span></label>
+            <select class="ctrl" id="fSite"><option value="">请选择</option></select>
+          </div>
+          <div class="form-field">
+            <label>食堂 / 供给点</label>
+            <select class="ctrl" id="fCanteen"><option value="">无 / 不适用</option></select>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-sec">
+        <h3>3. 业务扩展</h3>
+        <p class="hint">订餐场景必选餐次。堂食/送餐请在套餐选择；本页供餐方式仅作履约参考。填写推荐组可将附近多食堂项目聚合推荐。</p>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>餐次<span class="req">*</span></label>
+            <select class="ctrl" id="fMeal"><option value="">请选择</option></select>
+          </div>
+          <div class="form-field">
+            <label>供餐 / 履约方式<span class="req">*</span></label>
+            <select class="ctrl" id="fFulfill"><option value="">请选择</option></select>
+          </div>
+          <div class="form-field">
+            <label>参考单价（元）</label>
+            <input class="ctrl" id="fPrice" type="number" min="0" step="0.01" />
+          </div>
+          <div class="form-field">
+            <label>单位</label>
+            <select class="ctrl" id="fUnit">
+              <option value="份">份</option>
+              <option value="次">次</option>
+              <option value="课时">课时</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>推荐组（同类聚合）</label>
+            <input class="ctrl" id="fRecommendGroup" placeholder="如：控糖午餐包月；同组多食堂一起推荐" />
+          </div>
+          <div class="form-field full">
+            <label>备注</label>
+            <textarea class="ctrl" id="fNote" rows="2" placeholder="供给差异说明；食堂为独立结算主体"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <div class="form-foot">
+        <div class="meta" id="footMeta">保存后可被服务套餐与商品引用</div>
+        <div class="actions">
+          <a class="btn btn-default" href="./service-items.html" style="text-decoration: none" id="btnCancel">取消</a>
+          <button type="button" class="btn btn-primary" id="btnSave">保存</button>
+        </div>
+      </div>
+    </template>
+
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/service-element-data.js?v=20260824"></script>
+    <script src="../js/service-catalog.js?v=20260824"></script>
+    <script>
+      (function () {
+        const C = window.ServiceCatalog;
+        const params = new URLSearchParams(location.search);
+        const mode = params.get("mode") || "add";
+        const idParam = params.get("id") || "";
+        const viewMode = mode === "view";
+        const isEdit = mode === "edit";
+        const $ = (id) => document.getElementById(id);
+
+        let data = C.loadItems();
+        let editIndex = -1;
+
+        function pad2(n) {
+          return String(n).padStart(2, "0");
+        }
+        function todayText() {
+          const d = new Date();
+          return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+        }
+        function nextId() {
+          let max = 200000;
+          data.forEach((r) => {
+            const m = String(r.id || "").match(/^FW(\d+)$/i);
+            if (m) max = Math.max(max, Number(m[1]));
+          });
+          return "FW" + (max + 1);
+        }
+
+        function fillSelect(el, options, placeholder, valueKey, labelFn) {
+          const ph = placeholder ? `<option value="">${placeholder}</option>` : "";
+          el.innerHTML =
+            ph +
+            options
+              .map((o) => {
+                const v = valueKey ? o[valueKey] : o;
+                const label = labelFn ? labelFn(o) : o;
+                return `<option value="${v}">${label}</option>`;
+              })
+              .join("");
+        }
+
+        function refreshSites(providerId, keep) {
+          fillSelect($("fSite"), C.sitesOf(providerId), "请选择", "id", (s) => s.name);
+          if (keep) $("fSite").value = keep;
+          refreshCanteens($("fSite").value, keep && $("fCanteen").value);
+        }
+
+        function refreshCanteens(siteId, keep) {
+          const list = C.canteensOf(siteId);
+          fillSelect($("fCanteen"), list, "无 / 不适用", "id", (c) => c.name);
+          if (keep) $("fCanteen").value = keep;
+        }
+
+        function showInherit(code) {
+          const box = $("inheritBox");
+          const el = C.loadElements().find((e) => e.code === code);
+          if (!el) {
+            box.classList.remove("show");
+            box.innerHTML = "";
+            return;
+          }
+          box.classList.add("show");
+          box.innerHTML = `继承要素规则：<b>${el.name}</b> · 类别 ${el.category} · 默认交付 <b>${el.delivery}</b> · 单价参考 ${el.unitPrice} 元/${el.durationUnit || "次"} · 审核 ${el.needReview}`;
+        }
+
+        function setReadonly(ro) {
+          ["fId", "fStatus", "fElement", "fName", "fProvider", "fSite", "fCanteen", "fMeal", "fFulfill", "fPrice", "fUnit", "fRecommendGroup", "fNote"].forEach(
+            (id) => {
+              if ($(id)) $(id).disabled = !!ro;
+            }
+          );
+          $("btnSave").hidden = !!ro;
+          $("btnCancel").textContent = ro ? "返回列表" : "取消";
+        }
+
+        function fillForm(r) {
+          $("fId").value = r?.id || "";
+          $("fStatus").value = r?.status || "启用";
+          $("fElement").value = r?.elementCode || "";
+          $("fName").value = r?.name || "";
+          $("fProvider").value = r?.providerId || "";
+          refreshSites(r?.providerId || "", r?.siteId || "");
+          $("fSite").value = r?.siteId || "";
+          refreshCanteens(r?.siteId || "", r?.canteenId || "");
+          $("fCanteen").value = r?.canteenId || "";
+          $("fMeal").value = r?.mealType || "";
+          $("fFulfill").value = r?.fulfillMode || "";
+          $("fPrice").value = r?.price == null ? "" : r.price;
+          $("fUnit").value = r?.unit || "份";
+          $("fRecommendGroup").value = r?.recommendGroup || "";
+          $("fNote").value = r?.note || "";
+          showInherit(r?.elementCode);
+        }
+
+        function readForm() {
+          return {
+            id: ($("fId").value || "").trim(),
+            status: $("fStatus").value,
+            elementCode: $("fElement").value,
+            name: ($("fName").value || "").trim(),
+            providerId: $("fProvider").value,
+            siteId: $("fSite").value,
+            canteenId: $("fCanteen").value,
+            mealType: $("fMeal").value,
+            fulfillMode: $("fFulfill").value,
+            price: $("fPrice").value === "" ? 0 : Number($("fPrice").value),
+            unit: $("fUnit").value,
+            recommendGroup: ($("fRecommendGroup").value || "").trim(),
+            note: ($("fNote").value || "").trim(),
+          };
+        }
+
+        function save() {
+          const next = readForm();
+          if (!next.elementCode) return void AdminUI.toast("请选择引用要素", "error");
+          if (!next.name) return void AdminUI.toast("请填写项目名称", "error");
+          if (!next.providerId) return void AdminUI.toast("请选择服务商", "error");
+          if (!next.siteId) return void AdminUI.toast("请选择站点", "error");
+          if (!next.mealType) return void AdminUI.toast("请选择餐次", "error");
+          if (!next.fulfillMode) return void AdminUI.toast("请选择供餐/履约方式", "error");
+          if (!next.id) next.id = nextId();
+          next.updated = todayText();
+
+          if (editIndex < 0) {
+            if (data.some((r) => r.id === next.id)) return void AdminUI.toast("项目 ID 已存在", "error");
+            next.productCount = 0;
+            data.unshift(next);
+            AdminUI.toast("新增成功");
+          } else {
+            if (data.some((r, i) => i !== editIndex && r.id === next.id))
+              return void AdminUI.toast("项目 ID 已存在", "error");
+            data[editIndex] = {
+              ...data[editIndex],
+              ...next,
+              productCount: data[editIndex].productCount ?? 0,
+            };
+            AdminUI.toast("保存成功");
+          }
+          AdminStore.save(C.ITEM_STORE, data);
+          setTimeout(() => (location.href = "./service-items.html"), 400);
+        }
+
+        function boot() {
+          if (boot.done) return;
+          boot.done = true;
+          document.querySelector(".page-body")?.classList.add("has-form-foot");
+
+          fillSelect($("fStatus"), C.STATUS);
+          fillSelect(
+            $("fElement"),
+            C.loadElements().filter((e) => e.status === "启用"),
+            "请选择服务要素",
+            "code",
+            (e) => `${e.code} · ${e.name}`
+          );
+          fillSelect($("fProvider"), C.PROVIDERS, "请选择", "id", (p) => p.name);
+          fillSelect($("fMeal"), C.MEAL_TYPES, "请选择");
+          fillSelect($("fFulfill"), C.FULFILL_MODES, "请选择");
+          refreshSites("", "");
+
+          $("fProvider").addEventListener("change", () => refreshSites($("fProvider").value, ""));
+          $("fSite").addEventListener("change", () => refreshCanteens($("fSite").value, ""));
+          $("fElement").addEventListener("change", () => {
+            showInherit($("fElement").value);
+            const el = C.loadElements().find((e) => e.code === $("fElement").value);
+            if (el && !$("fFulfill").value) $("fFulfill").value = el.delivery === "到家" ? "到家" : el.delivery;
+            if (el && ($("fPrice").value === "" || $("fPrice").value === "0")) $("fPrice").value = el.unitPrice ?? "";
+            if (el && el.durationUnit) $("fUnit").value = el.durationUnit === "份" ? "份" : el.durationUnit === "次" ? "次" : "次";
+          });
+
+          if (viewMode) {
+            $("pageTitle").textContent = "查看服务项目";
+            $("footMeta").textContent = "当前为查看模式";
+          } else if (isEdit) {
+            $("pageTitle").textContent = "编辑服务项目";
+            $("footMeta").textContent = idParam ? `正在编辑：${idParam}` : "编辑中";
+          }
+
+          if (isEdit || viewMode) {
+            editIndex = data.findIndex((r) => r.id === idParam);
+            if (editIndex < 0) {
+              AdminUI.toast("未找到该服务项目", "error");
+              fillForm(null);
+            } else fillForm(data[editIndex]);
+          } else fillForm(null);
+
+          setReadonly(viewMode);
+          $("btnSave")?.addEventListener("click", save);
+        }
+
+        AdminUI.onReady(boot);
+      })();
+    </script>
+  </body>
+</html>

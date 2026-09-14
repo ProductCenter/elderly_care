@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>监管驾驶舱 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/dashboard-screen.css"/>
+<style>
+  .filter-bar {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+    margin-bottom: 12px; padding: 10px 14px;
+    background: rgba(15, 40, 70, 0.55); border: 1px solid rgba(110, 160, 220, 0.28);
+    border-radius: 10px;
+  }
+  .filter-bar label { font-size: 12px; color: #8fb0d9; margin-right: 4px; }
+  .filter-bar select {
+    height: 30px; padding: 0 10px; border-radius: 6px;
+    border: 1px solid rgba(110, 160, 220, 0.35); background: rgba(10, 30, 55, 0.8);
+    color: #e8f1ff; font-size: 12px;
+  }
+  .alert-strip {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;
+  }
+  .alert-chip {
+    padding: 8px 12px; border-radius: 8px; font-size: 12px;
+    border: 1px solid rgba(248, 113, 113, 0.4); background: rgba(127, 29, 29, 0.35); color: #fecaca;
+  }
+  .alert-chip strong { color: #fff; margin-right: 4px; }
+  .rank-list { list-style: none; margin: 0; padding: 0; }
+  .rank-list li {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid rgba(110, 160, 220, 0.15); font-size: 13px;
+  }
+  .rank-list li:last-child { border-bottom: none; }
+  .rank-list .idx { color: #6ea0dc; width: 24px; }
+  .rank-list .val { color: #9ec5ff; font-weight: 600; }
+  .table-mini { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .table-mini th, .table-mini td {
+    padding: 8px 10px; text-align: left; border-bottom: 1px solid rgba(110, 160, 220, 0.15);
+  }
+  .table-mini th { color: #8fb0d9; font-weight: 500; }
+  .table-mini td { color: #c7dbf5; }
+  .badge-warn { color: #fbbf24; }
+  .badge-ok { color: #34d399; }
+  .badge-err { color: #f87171; }
+</style>
+</head>
+<body data-primary="supervise" data-sub="cockpit" data-tab="监管驾驶舱" data-flush="true" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="screen-page">
+  <div class="screen-top">
+    <div class="screen-brand">
+      <h1>运营监管驾驶舱</h1>
+      <p>全市康养平台监管总览 · 用户 / 商户 / 供给 / 订单 / 履约 / 补贴 / 投诉 / 评价</p>
+    </div>
+    <div class="screen-meta">
+      <span class="meta-chip">数据时点 <strong id="clockNow">—</strong></span>
+      <span class="meta-chip">统计周期 <strong>2026-07 ~ 2026-08</strong></span>
+      <a class="btn btn-default" href="./index.html" style="height:30px;font-size:12px;line-height:28px">监管总览</a>
+      <button type="button" class="btn btn-primary" id="btnFullscreen">全屏展示</button>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <div><label>区域</label><select id="fRegion"><option>全市</option><option>河西区</option><option>南开区</option><option>和平区</option><option>河东区</option></select></div>
+    <div><label>品类</label><select id="fCategory"><option>全部品类</option><option>上门护理</option><option>辅具租赁</option><option>助餐服务</option><option>团购套餐</option></select></div>
+    <div><label>时间</label><select id="fTime"><option>近30天</option><option>近7天</option><option>2026-07</option><option>2026-08</option><option>自定义</option></select></div>
+  </div>
+
+  <div class="alert-strip">
+    <span class="alert-chip"><strong>待审商户</strong> 12 家</span>
+    <span class="alert-chip"><strong>履约预警</strong> 8 单</span>
+    <span class="alert-chip"><strong>补贴异常</strong> 3 笔</span>
+    <span class="alert-chip"><strong>升级投诉</strong> 2 件</span>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-label">注册用户</div>
+      <div class="kpi-value">18.6<em>万</em></div>
+      <div class="kpi-trend">较上月 +4.2%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">活跃商户</div>
+      <div class="kpi-value">286<em>家</em></div>
+      <div class="kpi-trend">新准入 18 家</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">供给 SKU</div>
+      <div class="kpi-value">1,842<em>项</em></div>
+      <div class="kpi-trend">待审 24 项</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">订单总量</div>
+      <div class="kpi-value">12.4<em>万</em></div>
+      <div class="kpi-trend">较上月 +8.6%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">履约达标率</div>
+      <div class="kpi-value">93.8<em>%</em></div>
+      <div class="kpi-trend">目标 95%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">补贴核销</div>
+      <div class="kpi-value">862<em>万</em></div>
+      <div class="kpi-trend down">异常 3 笔</div>
+    </div>
+  </div>
+
+  <div class="kpi-row" style="grid-template-columns: repeat(4, minmax(0, 1fr));">
+    <div class="kpi-card">
+      <div class="kpi-label">投诉量</div>
+      <div class="kpi-value">186<em>件</em></div>
+      <div class="kpi-trend down">较上月 -12%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">投诉结案率</div>
+      <div class="kpi-value">94.6<em>%</em></div>
+      <div class="kpi-trend">平均 2.3 天</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">综合满意度</div>
+      <div class="kpi-value">96.1<em>%</em></div>
+      <div class="kpi-trend">较上月 +0.4%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">区域最低分</div>
+      <div class="kpi-value">92.1<em>%</em></div>
+      <div class="kpi-trend">南开区</div>
+    </div>
+  </div>
+
+  <div class="screen-grid">
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">区域订单分布 <span class="tag">A</span></h2>
+      </div>
+      <div class="panel-body" id="chartRegion"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">品类供给结构 <span class="tag">B</span></h2>
+      </div>
+      <div class="panel-body" id="chartCategory"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">履约质量趋势 <span class="tag">C</span></h2>
+      </div>
+      <div class="panel-body" id="chartFulfill"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">补贴资金走势 <span class="tag">D</span></h2>
+      </div>
+      <div class="panel-body" id="chartSubsidy"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">投诉类型分布 <span class="tag">E</span></h2>
+      </div>
+      <div class="panel-body" id="chartComplaint"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">区域满意度 TOP5 <span class="tag">F</span></h2>
+      </div>
+      <div class="panel-body">
+        <ul class="rank-list">
+          <li><span><span class="idx">1</span> 河西区</span><span class="val">96.2%</span></li>
+          <li><span><span class="idx">2</span> 和平区</span><span class="val">95.8%</span></li>
+          <li><span><span class="idx">3</span> 河东区</span><span class="val">94.5%</span></li>
+          <li><span><span class="idx">4</span> 河北区</span><span class="val">93.6%</span></li>
+          <li><span><span class="idx">5</span> 南开区</span><span class="val">92.1%</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="panel span-2">
+      <div class="panel-head">
+        <h2 class="panel-title">监管预警台账 <span class="tag">G</span></h2>
+        <div class="panel-tools">
+          <button type="button" class="seg active">全部</button>
+          <button type="button" class="seg">商户</button>
+          <button type="button" class="seg">履约</button>
+          <button type="button" class="seg">补贴</button>
+        </div>
+      </div>
+      <div class="panel-body" style="overflow:auto">
+        <table class="table-mini">
+          <thead>
+            <tr><th>预警编号</th><th>类型</th><th>对象</th><th>区域</th><th>发现时间</th><th>级别</th><th>状态</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>WA202608001</td><td>商户准入</td><td>某商户B</td><td>和平区</td><td>2026-08-01</td><td class="badge-warn">中</td><td class="badge-warn">待审</td></tr>
+            <tr><td>WA202607902</td><td>履约延迟</td><td>夕阳红辅具</td><td>南开区</td><td>2026-07-31</td><td class="badge-warn">中</td><td class="badge-warn">整改中</td></tr>
+            <tr><td>WA202608003</td><td>补贴超核销</td><td>某机构E</td><td>河西区</td><td>2026-08-01</td><td class="badge-err">高</td><td class="badge-err">督办</td></tr>
+            <tr><td>WA202607801</td><td>价格异常</td><td>某商户C</td><td>河东区</td><td>2026-07-28</td><td class="badge-err">高</td><td class="badge-warn">下架</td></tr>
+            <tr><td>WA202607650</td><td>投诉升级</td><td>康护到家</td><td>河西区</td><td>2026-07-25</td><td class="badge-warn">中</td><td class="badge-ok">已结案</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">商户评级分布 <span class="tag">H</span></h2>
+      </div>
+      <div class="panel-body" id="chartMerchant"></div>
+    </section>
+  </div>
+</div>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script>
+(function () {
+  function tick() {
+    var el = document.getElementById("clockNow");
+    if (el) el.textContent = new Date().toLocaleString("zh-CN", { hour12: false });
+  }
+  tick();
+  setInterval(tick, 1000);
+  var btn = document.getElementById("btnFullscreen");
+  if (btn) {
+    btn.addEventListener("click", function () {
+      var el = document.documentElement;
+      if (el.requestFullscreen) el.requestFullscreen();
+    });
+  }
+  /* lightweight placeholder charts */
+  var charts = [
+    { id: "chartRegion", bars: [82, 68, 54, 48, 36], labels: ["河西", "南开", "和平", "河东", "河北"] },
+    { id: "chartCategory", bars: [35, 28, 22, 15], labels: ["护理", "租赁", "助餐", "团购"] },
+    { id: "chartFulfill", bars: [91, 92, 93, 94, 93, 94, 94], labels: ["W1","W2","W3","W4","W5","W6","W7"] },
+    { id: "chartSubsidy", bars: [120, 135, 128, 142, 138, 156, 148], labels: ["7/1","7/8","7/15","7/22","7/29","8/5","8/12"] },
+    { id: "chartComplaint", bars: [42, 28, 18, 12], labels: ["服务", "押金", "质量", "其他"] },
+    { id: "chartMerchant", bars: [120, 98, 48, 20], labels: ["A", "B", "C", "D"] },
+  ];
+  charts.forEach(function (c) {
+    var box = document.getElementById(c.id);
+    if (!box) return;
+    var max = Math.max.apply(null, c.bars);
+    box.innerHTML = '<div style="display:flex;align-items:flex-end;gap:6px;height:160px;padding:8px 0">' +
+      c.bars.map(function (v, i) {
+        var h = Math.round((v / max) * 130);
+        return '<div style="flex:1;text-align:center"><div style="height:' + h + 'px;background:linear-gradient(180deg,#3b82f6,#1d4ed8);border-radius:4px 4px 0 0;margin:0 auto;width:70%"></div><div style="font-size:10px;color:#8fb0d9;margin-top:4px">' + c.labels[i] + '</div></div>';
+      }).join("") + '</div>';
+  });
+})();
+</script>
+</body>
+</html>

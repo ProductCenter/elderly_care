@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <title>售后申请</title>
+    <link rel="stylesheet" href="./css/fulfill-c.css" />    <link rel="stylesheet" href="./css/app-shell.css?v=20260912-covers5" />
+
+  </head>
+  <body>
+    <div class="phone" id="app">
+      <div class="status-bar" aria-hidden="true">
+        <span class="status-time">10:20</span>
+        <div class="status-right"><span class="status-net">5G</span></div>
+      </div>
+      <header class="nav-bar">
+        <button class="nav-back" type="button" id="btnBack" aria-label="返回">‹</button>
+        <h1 class="nav-title">售后申请</h1>
+        <span class="nav-side"></span>
+      </header>
+      <main class="page-body">
+        <section class="card">
+          <p class="lead">支持仅退款、退货退款、换货、服务取消、投诉与押金申诉，可上传图片凭证。</p>
+          <div class="field">
+            <label>关联订单<span class="req">*</span></label>
+            <input class="ctrl" id="fOrderId" placeholder="如 O20260730088" value="O20260730088" />
+          </div>
+          <div class="field">
+            <label>申请类型<span class="req">*</span></label>
+            <div class="chip-row" id="typeChips">
+              <button type="button" class="chip on" data-type="仅退款">仅退款</button>
+              <button type="button" class="chip" data-type="退货退款">退货退款</button>
+              <button type="button" class="chip" data-type="换货">换货</button>
+              <button type="button" class="chip" data-type="服务取消">服务取消</button>
+              <button type="button" class="chip" data-type="投诉">投诉</button>
+              <button type="button" class="chip" data-type="押金申诉">押金申诉</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>问题描述<span class="req">*</span></label>
+            <textarea class="ctrl" id="fReason" placeholder="请说明原因，便于商户与客服处理">开箱发现配件缺失</textarea>
+          </div>
+          <div class="field">
+            <label>图片凭证</label>
+            <div class="upload-box" id="uploadBox">点击模拟上传（演示）· 已选 0 张</div>
+          </div>
+          <button type="button" class="btn-primary" id="btnSubmit">提交申请</button>
+        </section>
+
+        <section class="card">
+          <h2>我的售后单</h2>
+          <div id="list"></div>
+        </section>
+      </main>
+      <div class="wx-toast" id="toast" hidden></div>
+    </div>
+    <script>
+      const KEY = "c_aftersale_apply_v1";
+      const toast = document.getElementById("toast");
+      let type = "仅退款";
+      let photos = 0;
+
+      function showToast(msg) {
+        toast.hidden = false;
+        toast.textContent = msg;
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => (toast.hidden = true), 1800);
+      }
+
+      function load() {
+        try {
+          return JSON.parse(localStorage.getItem(KEY) || "[]");
+        } catch {
+          return [];
+        }
+      }
+
+      function save(list) {
+        localStorage.setItem(KEY, JSON.stringify(list));
+      }
+
+      function render() {
+        const list = load();
+        const el = document.getElementById("list");
+        if (!list.length) {
+          el.innerHTML = '<p class="lead" style="margin:0">暂无申请记录</p>';
+          return;
+        }
+        el.innerHTML = list
+          .map(
+            (r) => `<div class="item-card" style="grid-template-columns:1fr auto">
+              <div>
+                <h3>${r.type} · ${r.orderId}</h3>
+                <p>${r.reason}</p>
+                <p style="margin-top:4px">${r.createdAt} · 凭证 ${r.photos} 张</p>
+              </div>
+              <span class="tag warn">${r.status}</span>
+            </div>`
+          )
+          .join("");
+      }
+
+      document.getElementById("btnBack").onclick = () => history.back();
+      document.getElementById("typeChips").onclick = (e) => {
+        const btn = e.target.closest(".chip");
+        if (!btn) return;
+        type = btn.dataset.type;
+        [...document.querySelectorAll("#typeChips .chip")].forEach((c) => c.classList.toggle("on", c === btn));
+      };
+      document.getElementById("uploadBox").onclick = () => {
+        photos = Math.min(photos + 1, 6);
+        document.getElementById("uploadBox").textContent = `点击模拟上传（演示）· 已选 ${photos} 张`;
+      };
+      document.getElementById("btnSubmit").onclick = () => {
+        const orderId = document.getElementById("fOrderId").value.trim();
+        const reason = document.getElementById("fReason").value.trim();
+        if (!orderId || !reason) return showToast("请填写订单与问题描述");
+        const list = load();
+        list.unshift({
+          applyId: "AS" + Date.now().toString().slice(-8),
+          orderId,
+          type,
+          reason,
+          photos,
+          status: "待审核",
+          createdAt: new Date().toISOString().slice(0, 10),
+        });
+        save(list);
+        photos = 0;
+        document.getElementById("uploadBox").textContent = "点击模拟上传（演示）· 已选 0 张";
+        showToast("已提交，等待商户审核");
+        render();
+      };
+      const qOrder = new URLSearchParams(location.search).get("orderId");
+      if (qOrder) document.getElementById("fOrderId").value = qOrder;
+      render();
+    </script>    <script src="./js/app-shell.js?v=20260912-covers5"></script>
+
+  </body>
+</html>

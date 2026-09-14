@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>第三方结算系统对接 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="finance" data-sub="settle-channel" data-tab="第三方结算系统对接" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">第三方结算系统对接</h1>
+    <p class="page-desc">对接银行、支付机构与清分平台，管理通道密钥、回调地址与健康状态</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">收益分享总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 新增结算通道</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">正常</div><div class="v" id="stOk">0</div></div><div class="stat-card"><div class="k">异常</div><div class="v" id="stErr">0</div></div><div class="stat-card"><div class="k">维护中</div><div class="v" id="stMaint">0</div></div><div class="stat-card"><div class="k">全部</div><div class="v" id="stAll">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>关键词</label><input class="ctrl" id="qKeyword" placeholder="名称/编号"/></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="正常">正常</option><option value="异常">异常</option><option value="维护中">维护中</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>通道编号</th><th>通道名称</th><th>对接机构</th><th>清分模式</th><th>最近同步</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">新增结算通道</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>名称<span class="req">*</span></label><input class="ctrl" id="fName" type="text"  placeholder=""/></div><div class="form-field"><label>编号<span class="req">*</span></label><input class="ctrl" id="fCode" type="text"  placeholder=""/></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="正常">正常</option><option value="异常">异常</option><option value="维护中">维护中</option></select></div><div class="form-field"><label>备注</label><textarea class="ctrl" id="fNote" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "新增结算通道",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "finance:settle-channel",
+  rows: [{"code":"CH20260701","name":"工行清分主通道","channel":"工商银行","mode":"实时清分","lastSync":"2026-08-01 09:12","status":"正常","note":""},{"code":"CH20260702","name":"微信支付分账","channel":"微信支付","mode":"延迟分账","lastSync":"2026-08-01 08:55","status":"正常","note":""},{"code":"CH20260615","name":"银联备通道","channel":"银联","mode":"批量清分","lastSync":"2026-07-28 14:20","status":"维护中","note":"证书更新中"}],
+  columns: [{key:"code"},{key:"name"},{key:"channel"},{key:"mode"},{key:"lastSync"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.name||"").includes(v)||String(r.code||"").includes(v)||String(r.channel||"").includes(v)},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v}],
+  formFields: [{id:"fName",key:"name",type:"text",label:"名称",required:true},{id:"fCode",key:"code",type:"text",label:"编号",required:true},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fNote",key:"note",type:"text",label:"备注",required:false}],
+  stats: [{id:"stOk",html:false,value:(l)=>l.filter(r=>r.status==="正常").length},{id:"stErr",html:false,value:(l)=>l.filter(r=>r.status==="异常").length},{id:"stMaint",html:false,value:(l)=>l.filter(r=>r.status==="维护中").length},{id:"stAll",html:false,value:(l)=>l.length}],
+  getStatus:(r)=>(r.status==="正常"?{text:r.status,cls:"status-on"}:r.status==="维护中"?{text:r.status,cls:"status-warn"}:{text:r.status,cls:"status-off"})
+});
+</script>
+</body>
+</html>

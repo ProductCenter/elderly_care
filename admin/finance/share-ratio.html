@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>多方分账比例配置 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="finance" data-sub="share-ratio" data-tab="多方分账比例配置" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">多方分账比例配置</h1>
+    <p class="page-desc">配置平台、商户、服务商、渠道等多方分账比例，支持按品类与区域差异化策略</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">收益分享总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 新增分账方案</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">启用</div><div class="v" id="stOn">0</div></div><div class="stat-card"><div class="k">停用</div><div class="v" id="stOff">0</div></div><div class="stat-card"><div class="k">草稿</div><div class="v" id="stDraft">0</div></div><div class="stat-card"><div class="k">全部</div><div class="v" id="stAll">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>关键词</label><input class="ctrl" id="qKeyword" placeholder="名称/编号"/></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="启用">启用</option><option value="停用">停用</option><option value="草稿">草稿</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>方案编号</th><th>方案名称</th><th>适用场景</th><th>平台(%)</th><th>商户(%)</th><th>服务商(%)</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">新增分账方案</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>方案编号<span class="req">*</span></label><input class="ctrl" id="fCode" type="text"  placeholder=""/></div><div class="form-field"><label>方案名称<span class="req">*</span></label><input class="ctrl" id="fName" type="text"  placeholder=""/></div><div class="form-field"><label>适用场景</label><select class="ctrl" id="fScene"><option value="实物商品">实物商品</option><option value="上门服务">上门服务</option><option value="辅具租赁">辅具租赁</option><option value="团购套餐">团购套餐</option></select></div><div class="form-field"><label>平台比例(%)</label><input class="ctrl" id="fPlatform" type="number" value="5" placeholder=""/></div><div class="form-field"><label>商户比例(%)</label><input class="ctrl" id="fMerchant" type="number" value="70" placeholder=""/></div><div class="form-field"><label>服务商比例(%)</label><input class="ctrl" id="fPartner" type="number" value="25" placeholder=""/></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="启用">启用</option><option value="停用">停用</option><option value="草稿">草稿</option></select></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "新增分账方案",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "finance:share-ratio",
+  rows: [{"code":"SR20260701","name":"上门服务标准分账","scene":"上门服务","platform":"5","merchant":"65","partner":"30","status":"启用","note":"含补贴抵扣"},{"code":"SR20260715","name":"辅具租赁分账","scene":"辅具租赁","platform":"8","merchant":"72","partner":"20","status":"启用","note":""},{"code":"SR20260802","name":"团购试点方案","scene":"团购套餐","platform":"6","merchant":"74","partner":"20","status":"草稿","note":"待评审"}],
+  columns: [{key:"code"},{key:"name"},{key:"scene"},{key:"platform"},{key:"merchant"},{key:"partner"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.name||"").includes(v)||String(r.code||"").includes(v)||String(r.scene||"").includes(v)},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v}],
+  formFields: [{id:"fCode",key:"code",type:"text",label:"方案编号",required:true},{id:"fName",key:"name",type:"text",label:"方案名称",required:true},{id:"fScene",key:"scene",type:"select",label:"适用场景",required:false},{id:"fPlatform",key:"platform",type:"number",label:"平台比例(%)",required:false,default:5},{id:"fMerchant",key:"merchant",type:"number",label:"商户比例(%)",required:false,default:70},{id:"fPartner",key:"partner",type:"number",label:"服务商比例(%)",required:false,default:25},{id:"fStatus",key:"status",type:"select",label:"状态",required:false}],
+  stats: [{id:"stOn",html:false,value:(l)=>l.filter(r=>r.status==="启用").length},{id:"stOff",html:false,value:(l)=>l.filter(r=>r.status==="停用").length},{id:"stDraft",html:false,value:(l)=>l.filter(r=>r.status==="草稿").length},{id:"stAll",html:false,value:(l)=>l.length}],
+  getStatus:(r)=>(r.status==="启用"?{text:r.status,cls:"status-on"}:r.status==="草稿"?{text:r.status,cls:"status-warn"}:{text:r.status,cls:"status-off"})
+});
+</script>
+</body>
+</html>

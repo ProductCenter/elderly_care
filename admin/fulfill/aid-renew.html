@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>租赁续约 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="fulfill" data-sub="aid-renew" data-tab="租赁续约" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">租赁续约</h1>
+    <p class="page-desc">到期前用户可续租；系统重算租期与租金，并同步订单、库存与提醒</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">履约总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 办理续约</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">待支付</div><div class="v" id="stPay">0</div></div><div class="stat-card"><div class="k">已生效</div><div class="v" id="stOk">0</div></div><div class="stat-card"><div class="k">已取消</div><div class="v" id="stCancel">0</div></div><div class="stat-card"><div class="k">续租金额</div><div class="v" id="stAmt">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>单号/用户</label><input class="ctrl" id="qKeyword" placeholder=""/></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="待支付">待支付</option><option value="已生效">已生效</option><option value="已取消">已取消</option></select></div><div class="filter-item"><label>辅具</label><input class="ctrl" id="q" placeholder=""/></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>续约单号</th><th>用户</th><th>辅具</th><th>原到期日</th><th>新到期日</th><th>续租金</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">办理续约</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>续约单号<span class="req">*</span></label><input class="ctrl" id="fRenewId" type="text"  placeholder=""/></div><div class="form-field"><label>用户<span class="req">*</span></label><input class="ctrl" id="fUser" type="text"  placeholder=""/></div><div class="form-field"><label>辅具<span class="req">*</span></label><input class="ctrl" id="fItem" type="text"  placeholder=""/></div><div class="form-field"><label>原到期日<span class="req">*</span></label><input class="ctrl" id="fOldEnd" type="date"  placeholder=""/></div><div class="form-field"><label>新到期日<span class="req">*</span></label><input class="ctrl" id="fNewEnd" type="date"  placeholder=""/></div><div class="form-field"><label>续租金</label><input class="ctrl" id="fAddRent" type="number" value="0" placeholder=""/></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="待支付">待支付</option><option value="已生效">已生效</option><option value="已取消">已取消</option></select></div><div class="form-field"><label>同步说明</label><textarea class="ctrl" id="fSync" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "办理续约",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "fulfill:aid-renew",
+  rows: [{"renewId":"RN26073101","user":"安辉","item":"铝合金四脚拐杖","oldEnd":"2026-08-05","newEnd":"2026-09-05","addRent":30,"status":"待支付","syncNote":""},{"renewId":"RN26072002","user":"王敏","item":"电动护理床","oldEnd":"2026-07-20","newEnd":"2026-10-20","addRent":1140,"status":"已生效","syncNote":"库存占用已延长"}],
+  columns: [{key:"renewId"},{key:"user"},{key:"item"},{key:"oldEnd"},{key:"newEnd"},{key:"addRent"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.renewId||"").includes(v)||String(r.user||"").includes(v)},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v},{id:"q",field:"item"}],
+  formFields: [{id:"fRenewId",key:"renewId",type:"text",label:"续约单号",required:true},{id:"fUser",key:"user",type:"text",label:"用户",required:true},{id:"fItem",key:"item",type:"text",label:"辅具",required:true},{id:"fOldEnd",key:"oldEnd",type:"date",label:"原到期日",required:true},{id:"fNewEnd",key:"newEnd",type:"date",label:"新到期日",required:true},{id:"fAddRent",key:"addRent",type:"number",label:"续租金",required:false,default:0},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fSync",key:"syncNote",type:"text",label:"同步说明",required:false}],
+  stats: [{id:"stPay",html:false,value:(l)=>l.filter(r=>r.status==="待支付").length},{id:"stOk",html:false,value:(l)=>l.filter(r=>r.status==="已生效").length},{id:"stCancel",html:false,value:(l)=>l.filter(r=>r.status==="已取消").length},{id:"stAmt",html:false,value:(l)=>l.filter(r=>r.status==="已生效").reduce((s,r)=>s+Number(r.addRent||0),0)}],
+  getStatus:(r)=>(r.status==="已生效"?{text:r.status,cls:"status-on"}:r.status==="待支付"?{text:r.status,cls:"status-warn"}:{text:r.status,cls:"status-off"})
+});
+</script>
+</body>
+</html>

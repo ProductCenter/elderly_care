@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>收益分享总览 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+<style>
+  .hub-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 1100px) { .hub-grid { grid-template-columns: 1fr; } }
+  .hub-card {
+    background: #fff; border: 1px solid var(--line, #e5e6eb); border-radius: 12px;
+    padding: 16px 18px 14px; box-shadow: 0 6px 18px rgba(31,35,41,.04);
+  }
+  .hub-card h2 { margin: 0 0 6px; font-size: 16px; }
+  .hub-card p { margin: 0 0 12px; color: #646a73; font-size: 13px; line-height: 1.55; }
+  .hub-links { display: grid; gap: 8px; }
+  .hub-links a {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px; border: 1px solid #eef0f3; border-radius: 8px;
+    text-decoration: none; color: #1f2329; font-size: 13px; background: #fafbfc;
+  }
+  .hub-links a:hover { border-color: #c9d7ff; background: #f5f8ff; color: #2f6bff; }
+  .hub-links em { font-style: normal; color: #8f959e; font-size: 12px; }
+  .flow {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    margin: 0 0 16px; padding: 12px 14px; background: #f7f9fc; border-radius: 10px;
+    border: 1px solid #eef0f3; font-size: 13px; color: #646a73;
+  }
+  .flow b { color: #1f2329; font-weight: 600; }
+  .flow i { font-style: normal; color: #c0c4cc; }
+</style>
+</head>
+<body data-primary="finance" data-sub="overview" data-tab="收益分享总览" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">收益分享总览</h1>
+    <p class="page-desc">覆盖多方分账、结算引擎、虚拟账户、提现打款与对账导出全链路，支撑平台收益分享与清分结算</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="../../biz-demo.html" target="_blank">B 端演示入口</a>
+  </div>
+</div>
+
+<div class="flow">
+  <b>推荐路径</b>
+  <span>分账配置</span><i>→</i>
+  <span>规则引擎执行</span><i>→</i>
+  <span>虚拟账户 / 提现</span><i>→</i>
+  <span>对账核对 / 报表导出</span>
+</div>
+
+<div class="hub-grid">
+  <section class="hub-card">
+    <h2>多方分账</h2>
+    <p>分账比例、会员核销、结算周期与履约奖惩机制</p>
+    <div class="hub-links">
+      <a href="./share-ratio.html">多方分账比例配置 <em>R1</em></a>
+      <a href="./share-member.html">会员权益核销分账计算 <em>R2</em></a>
+      <a href="./share-cycle.html">结算时间节点管理 <em>R3</em></a>
+      <a href="./share-reward.html">履约质量奖惩机制 <em>R4</em></a>
+    </div>
+  </section>
+
+  <section class="hub-card">
+    <h2>结算执行</h2>
+    <p>第三方通道对接、规则引擎、虚拟账户与提现审核打款</p>
+    <div class="hub-links">
+      <a href="./settle-channel.html">第三方结算系统对接 <em>R5</em></a>
+      <a href="./settle-engine.html">结算规则引擎执行 <em>R6</em></a>
+      <a href="./settle-account.html">虚拟账户管理 <em>R7</em></a>
+      <a href="./settle-withdraw.html">提现审核与打款 <em>R8</em></a>
+    </div>
+  </section>
+
+  <section class="hub-card">
+    <h2>对账管理</h2>
+    <p>多方对账单生成、差异核对与报表导出</p>
+    <div class="hub-links">
+      <a href="./recon-statement.html">多方对账单生成 <em>R9</em></a>
+      <a href="./recon-diff.html">对账差异核对 <em>R10</em></a>
+      <a href="./recon-export.html">对账报表导出 <em>R11</em></a>
+    </div>
+  </section>
+</div>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+</body>
+</html>

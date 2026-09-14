@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>楼层信息 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body
+    data-primary="org"
+    data-sub="floor"
+    data-tab="楼层信息"
+    data-asset-prefix="../../assets"
+    data-index-href="../index.html"
+  >
+    <div id="admin-root"></div>
+
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">楼层信息</h1>
+          <p class="page-desc">管理养老院全部楼层基础信息、负责人与启用状态</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="btnAddFloor">+ 新增楼层</button>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-card"><div class="k">楼层总数</div><div class="v" id="stFloors">0</div></div>
+        <div class="stat-card"><div class="k">房间合计</div><div class="v" id="stRooms">0<em>间</em></div></div>
+        <div class="stat-card"><div class="k">床位合计</div><div class="v" id="stBeds">0<em>张</em></div></div>
+        <div class="stat-card"><div class="k">启用中</div><div class="v" id="stOn">0</div></div>
+      </div>
+
+      <div class="filter-card">
+        <div class="filter-grid">
+          <div class="filter-item">
+            <label>楼层名称 / 编号</label>
+            <input class="ctrl" id="qKeyword" placeholder="如：3F / 护理三层" />
+          </div>
+          <div class="filter-item">
+            <label>楼层类型</label>
+            <select class="ctrl" id="qType">
+              <option value="">全部</option>
+              <option>护理楼层</option>
+              <option>医疗配套</option>
+              <option>公共活动</option>
+              <option>行政后勤</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label>状态</label>
+            <select class="ctrl" id="qStatus">
+              <option value="">全部</option>
+              <option value="on">启用</option>
+              <option value="off">停用</option>
+            </select>
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
+            <button type="button" class="btn btn-default" id="btnReset">重置</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="list-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>楼层编号</th>
+                <th>楼层名称</th>
+                <th>类型</th>
+                <th>房间数</th>
+                <th>床位数</th>
+                <th>负责人</th>
+                <th>联系电话</th>
+                <th>状态</th>
+                <th>更新时间</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="floorBody"></tbody>
+          </table>
+        </div>
+        <div class="pager">
+          <span id="pagerInfo">共 0 条</span>
+          <div class="pager-btns">
+            <button type="button">上一页</button>
+            <button type="button" class="active">1</button>
+            <button type="button">下一页</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-mask" data-drawer-mask="floorDrawer" data-close-drawer="floorDrawer"></div>
+      <aside class="drawer" id="floorDrawer" aria-label="楼层编辑">
+        <div class="drawer-head">
+          <h3 id="drawerTitle">新增楼层</h3>
+          <button type="button" class="drawer-close" data-close-drawer="floorDrawer">×</button>
+        </div>
+        <div class="drawer-body">
+          <div class="form-grid">
+            <div class="form-field">
+              <label>楼层编号<span class="req">*</span></label>
+              <input class="ctrl" id="fCode" placeholder="如：3F" />
+            </div>
+            <div class="form-field">
+              <label>楼层名称<span class="req">*</span></label>
+              <input class="ctrl" id="fName" placeholder="如：护理三层" />
+            </div>
+            <div class="form-field">
+              <label>楼层类型<span class="req">*</span></label>
+              <select class="ctrl" id="fType">
+                <option>护理楼层</option>
+                <option>医疗配套</option>
+                <option>公共活动</option>
+                <option>行政后勤</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>状态</label>
+              <select class="ctrl" id="fStatus">
+                <option value="on">启用</option>
+                <option value="off">停用</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>房间数</label>
+              <input class="ctrl" id="fRooms" type="number" min="0" value="0" />
+            </div>
+            <div class="form-field">
+              <label>床位数</label>
+              <input class="ctrl" id="fBeds" type="number" min="0" value="0" />
+            </div>
+            <div class="form-field">
+              <label>负责人</label>
+              <input class="ctrl" id="fOwner" placeholder="楼长姓名" />
+            </div>
+            <div class="form-field">
+              <label>联系电话</label>
+              <input class="ctrl" id="fPhone" placeholder="手机号" />
+            </div>
+            <div class="form-field full">
+              <label>备注</label>
+              <textarea class="ctrl" id="fRemark" placeholder="楼层说明、特殊分区等"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="drawer-foot">
+          <button type="button" class="btn btn-default" data-close-drawer="floorDrawer">取消</button>
+          <button type="button" class="btn btn-primary" id="btnSaveFloor">保存</button>
+        </div>
+      </aside>
+    </template>
+
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/org-floor.js"></script>
+  </body>
+</html>

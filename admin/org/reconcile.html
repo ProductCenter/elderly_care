@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>对账 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body data-primary="org" data-sub="reconcile" data-tab="对账" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">对账</h1>
+          <p class="page-desc">财务对账：支持自动对账，也可导出表格后手工核对</p>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn btn-default" id="btnExport">导出对账表</button>
+          <button type="button" class="btn btn-primary" id="btnAuto">自动对账</button>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="k">账单笔数</div><div class="v" id="stTotal">0</div></div>
+        <div class="stat-card"><div class="k">已对齐</div><div class="v" id="stMatch">0</div></div>
+        <div class="stat-card"><div class="k">差异待查</div><div class="v" id="stDiff">0</div></div>
+        <div class="stat-card"><div class="k">差异金额</div><div class="v" id="stAmount">0<em>元</em></div></div>
+      </div>
+      <div class="filter-card">
+        <div class="filter-grid">
+          <div class="filter-item"><label>账期</label><input class="ctrl" id="qMonth" type="month" value="2026-07" /></div>
+          <div class="filter-item"><label>对账结果</label>
+            <select class="ctrl" id="qResult"><option value="">全部</option><option value="match">已对齐</option><option value="diff">有差异</option><option value="pending">未对账</option></select>
+          </div>
+          <div class="filter-item"><label>长者 / 流水号</label><input class="ctrl" id="qKeyword" /></div>
+          <div class="filter-actions">
+            <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
+            <button type="button" class="btn btn-default" id="btnReset">重置</button>
+          </div>
+        </div>
+      </div>
+      <div class="list-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>账期</th><th>长者</th><th>系统应收</th><th>银行实收</th><th>差异</th><th>流水号</th><th>对账结果</th><th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="body"></tbody>
+          </table>
+        </div>
+        <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div>
+      </div>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/org-reconcile.js"></script>
+  </body>
+</html>

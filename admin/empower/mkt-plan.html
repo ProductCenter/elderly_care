@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>营销活动策划助手 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="empower" data-sub="mkt-plan" data-tab="营销活动策划助手" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">营销活动策划助手</h1>
+    <p class="page-desc">活动目标、预算、渠道与权益组合的智能策划方案生成与版本管理</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">经营赋能总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 新建活动方案</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">启用</div><div class="v" id="stOn">0</div></div><div class="stat-card"><div class="k">停用</div><div class="v" id="stOff">0</div></div><div class="stat-card"><div class="k">草稿</div><div class="v" id="stDraft">0</div></div><div class="stat-card"><div class="k">全部</div><div class="v" id="stAll">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>关键词</label><input class="ctrl" id="qKeyword" placeholder="名称/编号"/></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="启用">启用</option><option value="停用">停用</option><option value="草稿">草稿</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>方案编号</th><th>活动名称</th><th>活动类型</th><th>预算</th><th>活动周期</th><th>负责人</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">新建活动方案</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>名称<span class="req">*</span></label><input class="ctrl" id="fName" type="text"  placeholder=""/></div><div class="form-field"><label>编号<span class="req">*</span></label><input class="ctrl" id="fCode" type="text"  placeholder=""/></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="启用">启用</option><option value="停用">停用</option><option value="草稿">草稿</option></select></div><div class="form-field"><label>备注</label><textarea class="ctrl" id="fNote" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "新建活动方案",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "empower:mkt-plan",
+  rows: [{"planId":"MP202608","name":"八月居家关怀季","type":"权益组合","budget":"¥50,000","period":"2026-08-01~31","owner":"王运营","status":"启用","note":""},{"planId":"MP202607","name":"辅具体验周","type":"线下体验","budget":"¥12,000","period":"2026-07-15~21","owner":"李策划","status":"停用","note":"已结束"},{"planId":"MP202609","name":"重阳敬老专场","type":"节庆营销","budget":"—","period":"2026-09","owner":"—","status":"草稿","note":""}],
+  columns: [{key:"planId"},{key:"name"},{key:"type"},{key:"budget"},{key:"period"},{key:"owner"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.planId||"").includes(v)||String(r.name||"").includes(v)||String(r.type||"").includes(v)},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v}],
+  formFields: [{id:"fName",key:"name",type:"text",label:"名称",required:true},{id:"fCode",key:"code",type:"text",label:"编号",required:true},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fNote",key:"note",type:"text",label:"备注",required:false}],
+  stats: [{id:"stOn",html:false,value:(l)=>l.filter(r=>r.status==="启用").length},{id:"stOff",html:false,value:(l)=>l.filter(r=>r.status==="停用").length},{id:"stDraft",html:false,value:(l)=>l.filter(r=>r.status==="草稿").length},{id:"stAll",html:false,value:(l)=>l.length}],
+  getStatus:(r)=>(r.status==="启用"?{text:r.status,cls:"status-on"}:r.status==="草稿"?{text:r.status,cls:"status-warn"}:{text:r.status,cls:"status-off"})
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>结算规则引擎执行 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="finance" data-sub="settle-engine" data-tab="结算规则引擎执行" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">结算规则引擎执行</h1>
+    <p class="page-desc">执行分账、扣款、补差等结算规则，查看批次执行日志与失败重试</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">收益分享总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 手动触发批次</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">成功</div><div class="v" id="stOk">0</div></div><div class="stat-card"><div class="k">部分失败</div><div class="v" id="stPart">0</div></div><div class="stat-card"><div class="k">执行中</div><div class="v" id="stRun">0</div></div><div class="stat-card"><div class="k">全部</div><div class="v" id="stAll">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>关键词</label><input class="ctrl" id="qKeyword" placeholder="名称/编号"/></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="成功">成功</option><option value="部分失败">部分失败</option><option value="执行中">执行中</option><option value="失败">失败</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>批次号</th><th>规则集</th><th>业务场景</th><th>处理笔数</th><th>结算总额</th><th>执行时间</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">手动触发批次</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>名称<span class="req">*</span></label><input class="ctrl" id="fName" type="text"  placeholder=""/></div><div class="form-field"><label>编号<span class="req">*</span></label><input class="ctrl" id="fCode" type="text"  placeholder=""/></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="成功">成功</option><option value="部分失败">部分失败</option><option value="执行中">执行中</option><option value="失败">失败</option></select></div><div class="form-field"><label>备注</label><textarea class="ctrl" id="fNote" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "手动触发批次",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "finance:settle-engine",
+  rows: [{"batchId":"B20260801001","rule":"标准分账V3","scene":"上门服务","count":"128","amount":"¥86,420","runAt":"2026-08-01 02:05","status":"成功","note":""},{"batchId":"B20260731002","rule":"租赁周结","scene":"辅具租赁","count":"34","amount":"¥12,680","runAt":"2026-07-31 03:30","status":"部分失败","note":"2笔账户异常"},{"batchId":"B20260801003","rule":"补贴补差","scene":"团购套餐","count":"56","amount":"—","runAt":"2026-08-01 10:20","status":"执行中","note":""}],
+  columns: [{key:"batchId"},{key:"rule"},{key:"scene"},{key:"count"},{key:"amount"},{key:"runAt"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.batchId||"").includes(v)||String(r.rule||"").includes(v)||String(r.scene||"").includes(v)},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v}],
+  formFields: [{id:"fName",key:"name",type:"text",label:"名称",required:true},{id:"fCode",key:"code",type:"text",label:"编号",required:true},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fNote",key:"note",type:"text",label:"备注",required:false}],
+  stats: [{id:"stOk",html:false,value:(l)=>l.filter(r=>r.status==="成功").length},{id:"stPart",html:false,value:(l)=>l.filter(r=>r.status==="部分失败").length},{id:"stRun",html:false,value:(l)=>l.filter(r=>r.status==="执行中").length},{id:"stAll",html:false,value:(l)=>l.length}],
+  getStatus:(r)=>(r.status==="成功"?{text:r.status,cls:"status-on"}:r.status==="执行中"?{text:r.status,cls:"status-warn"}:{text:r.status,cls:"status-off"})
+});
+</script>
+</body>
+</html>

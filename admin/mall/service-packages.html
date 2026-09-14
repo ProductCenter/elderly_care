@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>服务套餐 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+    <style>
+      .intro-card {
+        background: linear-gradient(135deg, #f0f7ff 0%, #fff 55%);
+        border: 1px solid #e6f0ff;
+        border-radius: 8px;
+        padding: 14px 18px;
+        margin-bottom: 12px;
+      }
+      .intro-card h2 { margin: 0 0 6px; font-size: 14px; font-weight: 600; color: #1677ff; }
+      .intro-card p { margin: 0; font-size: 13px; color: #595959; line-height: 1.6; }
+      .rel-flow {
+        display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+        margin-top: 10px; font-size: 12px;
+      }
+      .rel-flow .box {
+        padding: 4px 10px; border-radius: 4px; background: #e6f4ff; color: #1677ff;
+      }
+      .rel-flow .box.on { background: #1677ff; color: #fff; font-weight: 600; }
+      .rel-flow .arrow { color: #8c8c8c; }
+      .tag {
+        display: inline-block; margin: 0 4px 0 0; padding: 1px 6px;
+        border-radius: 4px; background: #f5f5f5; color: #595959; font-size: 12px;
+      }
+    </style>
+  </head>
+  <body
+    data-primary="mall"
+    data-sub="service-packages"
+    data-tab="服务套餐"
+    data-asset-prefix="../../assets"
+    data-index-href="../index.html"
+  >
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">服务套餐</h1>
+          <p class="page-desc">预设包月/次卡：锁食堂结算；堂食/送餐在本层；支持不上架商城的销售渠道</p>
+        </div>
+        <div style="display: flex; gap: 8px">
+          <a class="btn btn-default" href="./service-items.html" style="text-decoration: none">服务项目</a>
+          <a class="btn btn-primary" href="./service-package-form.html?mode=add" style="text-decoration: none">+ 新建套餐</a>
+        </div>
+      </div>
+
+      <div class="intro-card">
+        <h2>关系说明 · 本页为可售预设包</h2>
+        <p>
+          套餐绑定具体服务项目（已含食堂），并预设天数、总价、<strong>供餐方式（堂食/送餐/自提）</strong>与<strong>销售渠道</strong>。
+          不上架商城货架仍可通过运营下单、机构内购、外部小程序购买。同 recommendGroup 的多食堂套餐可一起推荐，成交锁一家。
+        </p>
+        <div class="rel-flow">
+          <span class="box">服务要素</span>
+          <span class="arrow">→</span>
+          <span class="box">服务项目</span>
+          <span class="arrow">→</span>
+          <span class="box on">服务套餐（本页）</span>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-card"><div class="k">套餐数</div><div class="v" id="stTotal">0</div></div>
+        <div class="stat-card"><div class="k">启用</div><div class="v" id="stOn">0</div></div>
+        <div class="stat-card"><div class="k">包月类</div><div class="v" id="stMonth">0</div></div>
+        <div class="stat-card"><div class="k">含项目行</div><div class="v" id="stLines">0</div></div>
+      </div>
+
+      <div class="filter-card">
+        <div class="filter-grid">
+          <div class="filter-item">
+            <label>名称 / 编码</label>
+            <input class="ctrl" id="qKeyword" placeholder="套餐名称或 ID" />
+          </div>
+          <div class="filter-item">
+            <label>套餐类型</label>
+            <select class="ctrl" id="qType"><option value="">全部</option></select>
+          </div>
+          <div class="filter-item">
+            <label>状态</label>
+            <select class="ctrl" id="qStatus"><option value="">全部</option></select>
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
+            <button type="button" class="btn btn-default" id="btnReset">重置</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="list-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>套餐 ID</th>
+                <th>名称</th>
+                <th>类型</th>
+                <th>天数</th>
+                <th>总价</th>
+                <th>供餐食堂</th>
+                <th>供餐方式</th>
+                <th>推荐组</th>
+                <th>销售渠道</th>
+                <th>包含项目</th>
+                <th>状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="body"></tbody>
+          </table>
+        </div>
+        <div class="pager">
+          <span id="pagerInfo">共 0 条</span>
+          <div class="pager-btns"></div>
+        </div>
+      </div>
+    </template>
+
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/service-element-data.js?v=20260824"></script>
+    <script src="../js/service-catalog.js?v=20260824"></script>
+    <script>
+      (function () {
+        const C = window.ServiceCatalog;
+        let data = C.loadPackages();
+        let page = 1;
+        const pageSize = 10;
+        const $ = (id) => document.getElementById(id);
+
+        function formUrl(mode, id) {
+          const q = new URLSearchParams({ mode });
+          if (id) q.set("id", id);
+          return `./service-package-form.html?${q.toString()}`;
+        }
+
+        function itemsText(r) {
+          const lines = r.items || [];
+          if (!lines.length) return "—";
+          return lines
+            .map((l) => {
+              const it = C.loadItems().find((i) => i.id === l.itemId);
+              const name = it ? it.name : l.itemId;
+              return `${name} ×${l.times}`;
+            })
+            .join("；");
+        }
+
+        function filtered() {
+          const kw = ($("qKeyword")?.value || "").trim();
+          const type = $("qType")?.value || "";
+          const st = $("qStatus")?.value || "";
+          return data.filter((r) => {
+            if (kw && !(String(r.name || "").includes(kw) || String(r.id || "").includes(kw))) return false;
+            if (type && r.type !== type) return false;
+            if (st && r.status !== st) return false;
+            return true;
+          });
+        }
+
+        function renderStats(list) {
+          $("stTotal").textContent = list.length;
+          $("stOn").textContent = list.filter((r) => r.status === "启用").length;
+          $("stMonth").textContent = list.filter((r) => r.type === "一次性包月").length;
+          $("stLines").textContent = list.reduce((s, r) => s + (r.items || []).length, 0);
+        }
+
+        function renderPager(total) {
+          const box = document.querySelector(".pager-btns");
+          const info = $("pagerInfo");
+          const pages = Math.max(1, Math.ceil(total / pageSize));
+          if (page > pages) page = pages;
+          if (info) info.textContent = `共 ${total} 条 · 第 ${page}/${pages} 页`;
+          if (!box) return;
+          const btns = [];
+          btns.push(`<button type="button" data-page="prev" ${page <= 1 ? "disabled" : ""}>上一页</button>`);
+          const start = Math.max(1, page - 2);
+          const end = Math.min(pages, start + 4);
+          for (let p = start; p <= end; p++) {
+            btns.push(`<button type="button" data-page="${p}" class="${p === page ? "active" : ""}">${p}</button>`);
+          }
+          btns.push(`<button type="button" data-page="next" ${page >= pages ? "disabled" : ""}>下一页</button>`);
+          box.innerHTML = btns.join("");
+        }
+
+        function render() {
+          data = C.loadPackages();
+          const list = filtered();
+          renderStats(list);
+          renderPager(list.length);
+          const body = $("body");
+          if (!list.length) {
+            body.innerHTML =
+              '<tr class="empty-row"><td colspan="12"><div class="empty-state">暂无套餐，请先有服务项目后再新建</div></td></tr>';
+            return;
+          }
+          const start = (page - 1) * pageSize;
+          body.innerHTML = list
+            .slice(start, start + pageSize)
+            .map((r) => {
+              const i = data.indexOf(r);
+              const stCls = r.status === "启用" ? "status-on" : "status-off";
+              const canteen = r.canteenId ? C.canteenName(r.canteenId) : "—";
+              return `<tr>
+                <td>${r.id}</td>
+                <td>${r.name || "—"}</td>
+                <td><span class="tag">${r.type || "—"}</span></td>
+                <td>${r.days || "—"}</td>
+                <td>${r.totalPrice ?? "—"} 元</td>
+                <td>${canteen}</td>
+                <td>${r.fulfillMode || "—"}</td>
+                <td>${r.recommendGroup || "—"}</td>
+                <td>${(r.saleChannels || []).join("、") || "—"}</td>
+                <td title="${itemsText(r)}">${itemsText(r)}</td>
+                <td><span class="status ${stCls}">${r.status || "—"}</span></td>
+                <td class="col-actions">
+                  <a class="link" href="${formUrl("view", r.id)}">查看</a>
+                  <a class="link" href="${formUrl("edit", r.id)}">编辑</a>
+                  <button type="button" class="link danger" data-del="${i}">删除</button>
+                </td>
+              </tr>`;
+            })
+            .join("");
+        }
+
+        async function removeAt(i) {
+          const ok = await AdminUI.confirm("确定删除该服务套餐？", {
+            title: "删除确认",
+            okText: "删除",
+            danger: true,
+          });
+          if (!ok) return;
+          data.splice(i, 1);
+          AdminStore.save(C.PACKAGE_STORE, data);
+          AdminUI.toast("已删除");
+          render();
+        }
+
+        function boot() {
+          if (boot.done) return;
+          boot.done = true;
+          $("qType").innerHTML =
+            '<option value="">全部</option>' +
+            C.PACKAGE_TYPES.map((t) => `<option value="${t}">${t}</option>`).join("");
+          $("qStatus").innerHTML =
+            '<option value="">全部</option>' + C.STATUS.map((s) => `<option value="${s}">${s}</option>`).join("");
+
+          $("btnSearch")?.addEventListener("click", () => {
+            page = 1;
+            render();
+          });
+          $("btnReset")?.addEventListener("click", () => {
+            ["qKeyword", "qType", "qStatus"].forEach((id) => {
+              if ($(id)) $(id).value = "";
+            });
+            page = 1;
+            render();
+          });
+          document.querySelector(".pager-btns")?.addEventListener("click", (e) => {
+            const btn = e.target.closest("[data-page]");
+            if (!btn || btn.disabled) return;
+            const list = filtered();
+            const pages = Math.max(1, Math.ceil(list.length / pageSize));
+            const p = btn.dataset.page;
+            if (p === "prev") page = Math.max(1, page - 1);
+            else if (p === "next") page = Math.min(pages, page + 1);
+            else page = Number(p) || 1;
+            render();
+          });
+          $("body")?.addEventListener("click", (e) => {
+            const del = e.target.closest("[data-del]");
+            if (del) removeAt(Number(del.dataset.del));
+          });
+          render();
+        }
+
+        AdminUI.onReady(boot);
+      })();
+    </script>
+  </body>
+</html>

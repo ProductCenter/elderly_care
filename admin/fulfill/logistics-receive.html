@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>收货确认 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="fulfill" data-sub="logistics-receive" data-tab="收货确认" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">收货确认</h1>
+    <p class="page-desc">用户手动确认收货或系统按规则自动确认；记录签收时间、状态与异常说明</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">履约总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 确认收货</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">待确认</div><div class="v" id="stWait">0</div></div><div class="stat-card"><div class="k">已签收</div><div class="v" id="stOk">0</div></div><div class="stat-card"><div class="k">异常签收</div><div class="v" id="stEx">0</div></div><div class="stat-card"><div class="k">系统自动</div><div class="v" id="stAuto">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>订单/用户</label><input class="ctrl" id="qKeyword" placeholder=""/></div><div class="filter-item"><label>确认方式</label><select class="ctrl" id="qMode"><option value="">全部</option><option value="用户确认">用户确认</option><option value="系统自动">系统自动</option></select></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="待确认">待确认</option><option value="已签收">已签收</option><option value="异常签收">异常签收</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>订单号</th><th>用户</th><th>确认方式</th><th>签收时间</th><th>状态</th><th>异常说明</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">确认收货</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>订单号<span class="req">*</span></label><input class="ctrl" id="fOrderId" type="text"  placeholder=""/></div><div class="form-field"><label>用户<span class="req">*</span></label><input class="ctrl" id="fUser" type="text"  placeholder=""/></div><div class="form-field"><label>确认方式</label><select class="ctrl" id="fMode"><option value="用户确认">用户确认</option><option value="系统自动">系统自动</option></select></div><div class="form-field"><label>签收时间<span class="req">*</span></label><input class="ctrl" id="fReceiveAt" type="date"  placeholder=""/></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="待确认">待确认</option><option value="已签收">已签收</option><option value="异常签收">异常签收</option></select></div><div class="form-field"><label>异常说明</label><textarea class="ctrl" id="fException" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "确认收货",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "fulfill:logistics-receive",
+  rows: [{"orderId":"O20260730088","user":"张伟","mode":"用户确认","receiveAt":"—","status":"待确认","exception":""},{"orderId":"O20260729012","user":"李娜","mode":"用户确认","receiveAt":"2026-07-30","status":"已签收","exception":""},{"orderId":"O20260727055","user":"王敏","mode":"系统自动","receiveAt":"2026-07-30","status":"异常签收","exception":"外包装破损，待售后"}],
+  columns: [{key:"orderId"},{key:"user"},{key:"mode"},{key:"receiveAt"},{key:"status",status:true},{key:"exception"}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.orderId||"").includes(v)||String(r.user||"").includes(v)},{id:"qMode",match:(r,v)=>!v||String(r.mode)===v},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v}],
+  formFields: [{id:"fOrderId",key:"orderId",type:"text",label:"订单号",required:true},{id:"fUser",key:"user",type:"text",label:"用户",required:true},{id:"fMode",key:"mode",type:"select",label:"确认方式",required:false},{id:"fReceiveAt",key:"receiveAt",type:"date",label:"签收时间",required:true},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fException",key:"exception",type:"text",label:"异常说明",required:false}],
+  stats: [{id:"stWait",html:false,value:(l)=>l.filter(r=>r.status==="待确认").length},{id:"stOk",html:false,value:(l)=>l.filter(r=>r.status==="已签收").length},{id:"stEx",html:false,value:(l)=>l.filter(r=>r.status==="异常签收").length},{id:"stAuto",html:false,value:(l)=>l.filter(r=>r.mode==="系统自动").length}],
+  getStatus:(r)=>(r.status==="已签收"?{text:r.status,cls:"status-on"}:r.status==="待确认"?{text:r.status,cls:"status-warn"}:{text:r.status,cls:"status-off"})
+});
+</script>
+</body>
+</html>

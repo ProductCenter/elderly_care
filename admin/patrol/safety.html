@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>安全巡查 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css" />
+<link rel="stylesheet" href="../css/admin-list.css" />
+</head>
+<body data-primary="patrol" data-sub="safety" data-tab="安全巡查" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+  <div class="page-head"><div><h1 class="page-title">安全巡查</h1><p class="page-desc">管理对应人员的安全巡查任务完成情况</p></div>
+  <div style="display:flex;gap:8px"><button type="button" class="btn btn-primary" id="btnAdd">+ 新建巡查任务</button></div></div>
+  <div class="stat-row"><div class="stat-card"><div class="k">巡查任务</div><div class="v" id="stTotal">0</div></div><div class="stat-card"><div class="k">待巡查</div><div class="v" id="stTodo">0</div></div><div class="stat-card"><div class="k">已完成</div><div class="v" id="stDone">0</div></div><div class="stat-card"><div class="k">发现问题</div><div class="v" id="stIssue">0</div></div></div>
+  <div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>区域 / 责任人</label><input class="ctrl" id="qKeyword" placeholder="" /></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="待巡查">待巡查</option><option value="已完成">已完成</option><option value="逾期">逾期</option></select></div><div class="filter-item"><label>隐患</label><select class="ctrl" id="qIssue"><option value="">全部</option><option value="是">有隐患</option><option value="否">无隐患</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+  <div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>计划日期</th><th>巡查区域</th><th>责任人</th><th>班次</th><th>隐患</th><th>完成时间</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+  <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+  <div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+  <aside class="drawer" id="listDrawer">
+    <div class="drawer-head"><h3 id="drawerTitle">新建巡查任务</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+    <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>计划日期<span class="req">*</span></label><input class="ctrl" id="fDate" type="date" /></div><div class="form-field"><label>巡查区域<span class="req">*</span></label><input class="ctrl" id="fArea" placeholder="如：3F 走廊/消防通道" /></div><div class="form-field"><label>责任人<span class="req">*</span></label><input class="ctrl" id="fOwner" placeholder="" /></div><div class="form-field"><label>班次</label><select class="ctrl" id="fShift"><option value="早班">早班</option><option value="中班">中班</option><option value="晚班">晚班</option></select></div><div class="form-field"><label>发现隐患</label><select class="ctrl" id="fIssue"><option value="否">否</option><option value="是">是</option></select></div><div class="form-field"><label>完成时间</label><input class="ctrl" id="fDone" placeholder="" /></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="待巡查">待巡查</option><option value="已完成">已完成</option><option value="逾期">逾期</option></select></div><div class="form-field full"><label>情况说明</label><textarea class="ctrl" id="fNote" placeholder=""></textarea></div></div></div>
+    <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+  </aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script><script src="../js/admin-shell.js"></script><script src="../js/admin-ui.js"></script><script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle:"\u65b0\u5efa\u5de1\u67e5\u4efb\u52a1", editTitle:"编辑",
+  rows:[
+    {date:"2026-07-30",area:"1F-5F 消防通道",owner:"周强",shift:"早班",issue:"否",done:"",status:"待巡查",note:""},
+    {date:"2026-07-29",area:"厨房燃气与用电",owner:"马超",shift:"中班",issue:"是",done:"2026-07-29 15:20",status:"已完成",note:"线路老化已报修"},
+    {date:"2026-07-28",area:"电梯机房",owner:"刘芳",shift:"晚班",issue:"否",done:"2026-07-28 21:10",status:"已完成",note:""},
+    {date:"2026-07-27",area:"地下车库",owner:"马超",shift:"早班",issue:"否",done:"",status:"逾期",note:""},
+  ], columns:[{ key: "date" },{ key: "area" },{ key: "owner" },{ key: "shift" },{ key: "issue" },{ key: "done" },{ key: "status", status: true }], filters:[{ id: "qKeyword", match: (r,v) => !v || (String(r.area||"").includes(v) || String(r.owner||"").includes(v)) },{ id: "qStatus", match: (r,v) => !v || String(r.status) === v },{ id: "qIssue", match: (r,v) => !v || String(r.issue) === v }],
+  formFields:[{id:"fDate",key:"date",type:"date",label:"计划日期",required:true},{id:"fArea",key:"area",type:"text",label:"巡查区域",required:true},{id:"fOwner",key:"owner",type:"text",label:"责任人",required:true},{id:"fShift",key:"shift",type:"select",label:"班次"},{id:"fIssue",key:"issue",type:"select",label:"发现隐患"},{id:"fDone",key:"done",type:"text",label:"完成时间"},{id:"fStatus",key:"status",type:"select",label:"状态"},{id:"fNote",key:"note",type:"textarea",label:"情况说明"}], stats:[{id:"stTotal",html:false,value:(l)=>l.length},{id:"stTodo",html:false,value:(l)=>l.filter(r=>r.status==="待巡查").length},{id:"stDone",html:false,value:(l)=>l.filter(r=>r.status==="已完成").length},{id:"stIssue",html:false,value:(l)=>l.filter(r=>r.issue==="是").length}],
+  getStatus:(r)=>({text:r.status,cls:r.status==="已完成"?"status-on":r.status==="逾期"?"status-repair":"status-busy"}), rowActions:(r,i)=> r.status==="待巡查"?`<button type="button" class="link" data-act="done" data-i="${i}">完成巡查</button> <button type="button" class="link" data-edit="${i}">编辑</button>`:`<button type="button" class="link" data-edit="${i}">编辑</button>`, onAction:(act,i,data,render)=>{ if(act==="done"){ data[i].status="已完成"; data[i].done=new Date().toISOString().slice(0,16).replace("T"," "); render(); }},
+});
+
+</script>
+</body></html>

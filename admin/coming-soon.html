@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>页面待设计 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="./css/admin-shell.css" />
+  </head>
+  <body
+    data-primary="home"
+    data-sub=""
+    data-tab="待设计"
+    data-asset-prefix="../assets"
+    data-index-href="./index.html"
+  >
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="placeholder-page" style="max-width:640px;margin:48px auto">
+        <h2 id="soonTitle">页面待设计</h2>
+        <p id="soonDesc">该功能已在清单中规划，静态页尚未落地。请从功能清单查看进度，或返回已完成页面。</p>
+        <p style="margin-top:18px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+          <a class="btn btn-primary" href="./index.html">返回功能清单</a>
+          <a class="btn btn-default" href="./home/workbench.html">工作台</a>
+          <a class="btn btn-default" href="./org/floor.html">楼层信息</a>
+        </p>
+      </div>
+    </template>
+    <script src="./js/admin-nav.js?v=20260821c"></script>
+    <script>
+      (() => {
+        const params = new URLSearchParams(location.search);
+        const title = params.get("title") || "页面待设计";
+        const seq = params.get("seq") || "";
+        const primary = params.get("primary") || "home";
+        document.body.dataset.primary = primary;
+        document.body.dataset.tab = title;
+        document.title = `${title} · 待设计`;
+        AdminUI.onReady(() => {
+          const h = document.getElementById("soonTitle");
+          const d = document.getElementById("soonDesc");
+          if (h) h.textContent = title;
+          if (d) {
+            d.textContent = seq
+              ? `清单序号 ${seq}「${title}」尚未完成静态页设计，因此不会再出现 404。完成后将替换为正式页面。`
+              : `「${title}」尚未完成静态页设计，因此不会再出现 404。完成后将替换为正式页面。`;
+          }
+        });
+      })();
+    </script>
+    <script src="./js/admin-shell.js"></script>
+  </body>
+</html>

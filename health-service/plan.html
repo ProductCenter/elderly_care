@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#dcefe8" />
+    <title>专属服务方案</title>
+    <link rel="stylesheet" href="./css/app.css?v=20260801pay" />    <link rel="stylesheet" href="../css/app-shell.css?v=20260912-covers5" />
+
+  </head>
+  <body>
+    <div class="phone" id="app">
+      <div class="status-bar" aria-hidden="true">
+        <span class="status-time">20:35</span>
+        <div class="status-right">
+          <svg class="status-signal" viewBox="0 0 18 12">
+            <rect x="0" y="8" width="3" height="4" rx="0.5" fill="currentColor" />
+            <rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="currentColor" />
+            <rect x="9" y="2.5" width="3" height="9.5" rx="0.5" fill="currentColor" />
+            <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="currentColor" opacity=".35" />
+          </svg>
+          <span class="status-net">5G</span>
+          <div class="status-battery"><span class="battery-level"></span></div>
+        </div>
+      </div>
+
+      <header class="nav-bar">
+        <div class="nav-side">
+          <a class="nav-back" href="./insight.html" aria-label="返回">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        </div>
+        <h1 class="nav-title">专属服务方案</h1>
+        <div class="nav-side">
+          <div class="mp-capsule" aria-label="小程序菜单">
+            <button class="capsule-more" type="button" aria-label="更多">
+              <span></span><span></span><span></span>
+            </button>
+            <i class="capsule-divider" aria-hidden="true"></i>
+            <button class="capsule-home" type="button" aria-label="关闭">
+              <span class="ring"></span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="page-body has-cta">
+        <section class="plan-banner rise" id="planBanner"></section>
+        <section class="block rise rise-2" id="blockValue"></section>
+        <section class="block rise rise-3" id="blockFramework"></section>
+        <section class="block rise rise-4" id="blockHighlights"></section>
+        <section class="block" id="blockPlan"></section>
+        <aside class="trade" id="tradePanel" aria-label="交易明细"></aside>
+        <p class="footer-note">用户端仅感知完整方案；底层商品在交易明细中显性展示。</p>
+      </main>
+
+      <div class="cta-bar">
+        <div class="btn-row">
+          <button class="btn btn-ghost" type="button" id="btnExpandAll">展开全部</button>
+          <button class="btn btn-primary" type="button" id="btnAccept">确认并去支付</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./js/data.js?v=20260801pay"></script>
+    <script>
+      (function () {
+        const { PLAN, tradeTotal, money, acceptPlan, ensureState, toast } = HealthService;
+
+        document.getElementById("planBanner").innerHTML = `
+          <span class="plan-badge">已生成 · ${PLAN.generatedAt}</span>
+          <h1 class="plan-title">${PLAN.name}</h1>
+          <div class="plan-meta">
+            <span>周期 <strong>${PLAN.cycle}</strong></span>
+            <span>场景 <strong>${PLAN.scene}</strong></span>
+          </div>
+        `;
+
+        document.getElementById("blockValue").innerHTML = `
+          <div class="block-hd">
+            <span class="block-index">01</span>
+            <h2>方案价值</h2>
+          </div>
+          <div class="block-bd">
+            <p style="margin:0 0 10px;font-size:13px;line-height:1.65;color:var(--ink-2)">${PLAN.value.summary}</p>
+            <div class="value-points">
+              ${PLAN.value.points
+                .map(
+                  (p, i) => `
+                <div class="value-point">
+                  <i>${i + 1}</i>
+                  <div>
+                    <strong>${p.title}</strong>
+                    <span>${p.desc}</span>
+                  </div>
+                </div>`
+                )
+                .join("")}
+            </div>
+          </div>
+        `;
+
+        document.getElementById("blockFramework").innerHTML = `
+          <div class="block-hd">
+            <span class="block-index">02</span>
+            <h2>方案核心内容</h2>
+          </div>
+          <div class="block-bd">
+            <p style="margin:0 0 10px;font-size:12px;color:var(--muted);line-height:1.55">
+              顶层是服务方案，底层是可打包服务商品；隐性要素全部封装进方案。
+            </p>
+            <div class="framework">
+              ${PLAN.framework
+                .map(
+                  (f) => `
+                <div class="framework-item">
+                  <div class="lvl">${f.level}</div>
+                  <strong>${f.title}</strong>
+                  <span>${f.desc}</span>
+                </div>`
+                )
+                .join("")}
+            </div>
+          </div>
+        `;
+
+        document.getElementById("blockHighlights").innerHTML = `
+          <div class="block-hd">
+            <span class="block-index">03</span>
+            <h2>方案亮点</h2>
+          </div>
+          <div class="block-bd">
+            <div class="highlights">
+              ${PLAN.highlights
+                .map(
+                  (h) => `
+                <div class="highlight">
+                  <div class="ico">${h.ico}</div>
+                  <strong>${h.title}</strong>
+                  <span>${h.desc}</span>
+                </div>`
+                )
+                .join("")}
+            </div>
+          </div>
+        `;
+
+        document.getElementById("blockPlan").innerHTML = `
+          <div class="block-hd">
+            <span class="block-index">04</span>
+            <h2>服务执行计划</h2>
+          </div>
+          <div class="block-bd">
+            <p style="margin:0 0 10px;font-size:12px;color:var(--muted);line-height:1.55">
+              点击展开底层服务要素。价格为 0 的项为已封装隐性要素。
+            </p>
+            <div class="timeline" id="timeline">
+              ${PLAN.weeks
+                .map(
+                  (w, idx) => `
+                <div class="week${idx === 0 ? " is-open" : ""}" data-week="${w.id}">
+                  <button class="week-hd" type="button" aria-expanded="${idx === 0}">
+                    <div class="left">
+                      <strong>${w.title}</strong>
+                      <span>${w.subtitle}</span>
+                    </div>
+                    <svg class="chev" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                  <div class="week-bd">
+                    ${w.items
+                      .map(
+                        (it) => `
+                      <div class="service-item">
+                        <div>
+                          <strong>${it.name}</strong>
+                          <span>${it.detail}</span>
+                          <span class="tag-soft">${it.tag}</span>
+                        </div>
+                        <div class="price">${it.price > 0 ? "¥" + money(it.price) : "已封装"}</div>
+                      </div>`
+                      )
+                      .join("")}
+                  </div>
+                </div>`
+                )
+                .join("")}
+            </div>
+          </div>
+        `;
+
+        const total = tradeTotal(PLAN.trade);
+        document.getElementById("tradePanel").innerHTML = `
+          <h2>交易明细</h2>
+          <p class="hint">模拟订单视图：显性展示方案内含服务商品与单项价格。</p>
+          ${PLAN.trade
+            .map(
+              (l) => `
+            <div class="trade-line">
+              <div>
+                <div class="name">${l.name}</div>
+                <span class="sub">${l.sub}</span>
+              </div>
+              <div class="amt">¥${money(l.price)}</div>
+            </div>`
+            )
+            .join("")}
+          <div class="trade-total">
+            <span>方案合计</span>
+            <strong><em>¥</em>${money(total)}</strong>
+          </div>
+          <div class="steps-mini">
+            <span>方案生成</span>
+            <span>明细透明</span>
+            <span>支付确认</span>
+            <span>日历执行</span>
+          </div>
+        `;
+
+        const st = ensureState();
+        if (st.paid && st.payment) {
+          document.getElementById("btnAccept").textContent = "已支付 · 查看日历";
+        }
+
+        document.getElementById("timeline").addEventListener("click", (e) => {
+          const btn = e.target.closest(".week-hd");
+          if (!btn) return;
+          const week = btn.closest(".week");
+          const open = week.classList.toggle("is-open");
+          btn.setAttribute("aria-expanded", open ? "true" : "false");
+        });
+
+        let allOpen = false;
+        document.getElementById("btnExpandAll").addEventListener("click", () => {
+          allOpen = !allOpen;
+          document.querySelectorAll(".week").forEach((w) => {
+            w.classList.toggle("is-open", allOpen);
+            const btn = w.querySelector(".week-hd");
+            if (btn) btn.setAttribute("aria-expanded", allOpen ? "true" : "false");
+          });
+          document.getElementById("btnExpandAll").textContent = allOpen ? "收起" : "展开全部";
+        });
+
+        document.getElementById("btnAccept").addEventListener("click", () => {
+          const cur = ensureState();
+          if (cur.paid && cur.payment) {
+            location.href = "./calendar.html";
+            return;
+          }
+          acceptPlan();
+          toast("方案已确认，请完成支付");
+          setTimeout(() => {
+            location.href = "./pay.html";
+          }, 380);
+        });
+      })();
+    </script>    <script src="../js/app-shell.js?v=20260912-covers5"></script>
+
+  </body>
+</html>

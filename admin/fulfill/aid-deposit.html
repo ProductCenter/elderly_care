@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>租期租金与押金 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="fulfill" data-sub="aid-deposit" data-tab="租期租金与押金" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">租期租金与押金</h1>
+    <p class="page-desc">按租期自动计算租金与押金；支持押金支付、冻结、扣减、退还与进度查询</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">履约总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 新建账单</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">待支付</div><div class="v" id="stPay">0</div></div><div class="stat-card"><div class="k">已冻结</div><div class="v" id="stFreeze">0</div></div><div class="stat-card"><div class="k">已扣减</div><div class="v" id="stCut">0</div></div><div class="stat-card"><div class="k">已退还</div><div class="v" id="stBack">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>账单/用户</label><input class="ctrl" id="qKeyword" placeholder=""/></div><div class="filter-item"><label>押金状态</label><select class="ctrl" id="qDep"><option value="">全部</option><option value="待支付">待支付</option><option value="已冻结">已冻结</option><option value="已扣减">已扣减</option><option value="已退还">已退还</option></select></div><div class="filter-item"><label>辅具</label><input class="ctrl" id="q" placeholder=""/></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>账单号</th><th>用户</th><th>辅具</th><th>租期</th><th>租金</th><th>押金</th><th>押金状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">新建账单</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>账单号<span class="req">*</span></label><input class="ctrl" id="fBillId" type="text"  placeholder=""/></div><div class="form-field"><label>用户<span class="req">*</span></label><input class="ctrl" id="fUser" type="text"  placeholder=""/></div><div class="form-field"><label>辅具<span class="req">*</span></label><input class="ctrl" id="fItem" type="text"  placeholder=""/></div><div class="form-field"><label>租期(月)</label><input class="ctrl" id="fMonths" type="number" value="1" placeholder=""/></div><div class="form-field"><label>租金</label><input class="ctrl" id="fRent" type="number" value="0" placeholder=""/></div><div class="form-field"><label>押金</label><input class="ctrl" id="fDeposit" type="number" value="0" placeholder=""/></div><div class="form-field"><label>押金状态</label><select class="ctrl" id="fDepStatus"><option value="待支付">待支付</option><option value="已冻结">已冻结</option><option value="已扣减">已扣减</option><option value="已退还">已退还</option></select></div><div class="form-field"><label>进度说明</label><textarea class="ctrl" id="fProgress" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "新建账单",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "fulfill:aid-deposit",
+  rows: [{"billId":"RB26073101","user":"安辉","item":"铝合金四脚拐杖","months":1,"rent":30,"deposit":100,"depStatus":"已冻结","progress":"租期进行中"},{"billId":"RB26072008","user":"张伟","item":"电动护理床","months":3,"rent":1140,"deposit":1500,"depStatus":"待支付","progress":"待支付押金"},{"billId":"RB26061003","user":"李娜","item":"防滑沐浴椅","months":1,"rent":45,"deposit":150,"depStatus":"已退还","progress":"验收完好全额退还"}],
+  columns: [{key:"billId"},{key:"user"},{key:"item"},{key:"months"},{key:"rent"},{key:"deposit"},{key:"depStatus",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.billId||"").includes(v)||String(r.user||"").includes(v)||String(r.item||"").includes(v)},{id:"qDep",match:(r,v)=>!v||String(r.depStatus)===v},{id:"q",field:"item"}],
+  formFields: [{id:"fBillId",key:"billId",type:"text",label:"账单号",required:true},{id:"fUser",key:"user",type:"text",label:"用户",required:true},{id:"fItem",key:"item",type:"text",label:"辅具",required:true},{id:"fMonths",key:"months",type:"number",label:"租期(月)",required:false,default:1},{id:"fRent",key:"rent",type:"number",label:"租金",required:false,default:0},{id:"fDeposit",key:"deposit",type:"number",label:"押金",required:false,default:0},{id:"fDepStatus",key:"depStatus",type:"select",label:"押金状态",required:false},{id:"fProgress",key:"progress",type:"text",label:"进度说明",required:false}],
+  stats: [{id:"stPay",html:false,value:(l)=>l.filter(r=>r.depStatus==="待支付").length},{id:"stFreeze",html:false,value:(l)=>l.filter(r=>r.depStatus==="已冻结").length},{id:"stCut",html:false,value:(l)=>l.filter(r=>r.depStatus==="已扣减").length},{id:"stBack",html:false,value:(l)=>l.filter(r=>r.depStatus==="已退还").length}],
+  getStatus:(r)=>(r.depStatus==="已退还"?{text:r.depStatus,cls:"status-on"}:r.depStatus==="已冻结"?{text:r.depStatus,cls:"status-warn"}:r.depStatus==="已扣减"?{text:r.depStatus,cls:"status-off"}:{text:r.depStatus,cls:"status-warn"})
+});
+</script>
+</body>
+</html>

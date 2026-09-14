@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>服务套餐详情 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+    <style>
+      .page-body.has-form-foot { padding-bottom: 72px; }
+      .form-sec {
+        background: #fff; border-radius: 8px; padding: 18px 20px 20px;
+        margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      }
+      .form-sec h3 { margin: 0 0 4px; font-size: 15px; font-weight: 600; }
+      .form-sec .hint { margin: 0 0 16px; font-size: 12px; color: #8c8c8c; line-height: 1.55; }
+      .item-rows { display: flex; flex-direction: column; gap: 8px; }
+      .item-row {
+        display: grid;
+        grid-template-columns: 1fr 100px 36px;
+        gap: 8px;
+        align-items: center;
+      }
+      .form-foot {
+        position: fixed; left: calc(var(--nav-w) + var(--sub-w)); right: 0; bottom: 0; z-index: 30;
+        display: flex; align-items: center; justify-content: space-between; gap: 12px;
+        padding: 12px 24px; background: rgba(255, 255, 255, 0.96);
+        border-top: 1px solid #f0f0f0; box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.04);
+      }
+      .form-foot .meta { font-size: 13px; color: #8c8c8c; }
+      .form-foot .actions { display: flex; gap: 8px; }
+      @media (max-width: 1100px) { .form-foot { left: 0; } }
+          .check-grid { display:flex; flex-wrap:wrap; gap:10px 16px; }
+      .check-grid label { font-size:13px; color:#262626; display:inline-flex; align-items:center; gap:6px; }
+      .field-tip { margin:4px 0 0; font-size:12px; color:#8c8c8c; line-height:1.4; }
+    </style>
+  </head>
+  <body
+    data-primary="mall"
+    data-sub="service-packages"
+    data-tab="服务套餐详情"
+    data-asset-prefix="../../assets"
+    data-index-href="../index.html"
+  >
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title" id="pageTitle">新建服务套餐</h1>
+          <p class="page-desc">预设天数、价格、食堂与供餐方式（堂食/送餐）；组合服务项目。销售渠道可含不上架商城。</p>
+        </div>
+        <a class="btn btn-default" href="./service-packages.html" style="text-decoration: none">返回列表</a>
+      </div>
+
+      <section class="form-sec">
+        <h3>1. 套餐基本信息</h3>
+        <p class="hint">一次性包月优先：天数与总价写死，不做高个性化动态计价。</p>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>套餐 ID</label>
+            <input class="ctrl" id="fId" placeholder="留空则自动生成" />
+          </div>
+          <div class="form-field">
+            <label>状态</label>
+            <select class="ctrl" id="fStatus"></select>
+          </div>
+          <div class="form-field full">
+            <label>套餐名称<span class="req">*</span></label>
+            <input class="ctrl" id="fName" placeholder="如：营养午餐包月 22 天" />
+          </div>
+          <div class="form-field">
+            <label>套餐类型<span class="req">*</span></label>
+            <select class="ctrl" id="fType"><option value="">请选择</option></select>
+          </div>
+          <div class="form-field">
+            <label>预设天数</label>
+            <input class="ctrl" id="fDays" type="number" min="0" step="1" placeholder="包月天数，次卡可填 0" />
+          </div>
+          <div class="form-field">
+            <label>预设总价（元）<span class="req">*</span></label>
+            <input class="ctrl" id="fTotalPrice" type="number" min="0" step="0.01" />
+          </div>
+          <div class="form-field">
+            <label>餐次</label>
+            <select class="ctrl" id="fMeal"><option value="">请选择</option></select>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-sec">
+        <h3>2. 供餐预设（固定）</h3>
+        <p class="hint">服务商/站点/食堂固定且成交锁定食堂（独立结算，禁止跨食堂核销）。堂食/送餐在本层选择，不进要素。</p>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>服务商<span class="req">*</span></label>
+            <select class="ctrl" id="fProvider"><option value="">请选择</option></select>
+          </div>
+          <div class="form-field">
+            <label>站点<span class="req">*</span></label>
+            <select class="ctrl" id="fSite"><option value="">请选择</option></select>
+          </div>
+          <div class="form-field">
+            <label>供餐食堂</label>
+            <select class="ctrl" id="fCanteen"><option value="">无 / 不适用</option></select>
+          </div>
+          <div class="form-field">
+            <label>供餐方式<span class="req">*</span></label>
+            <select class="ctrl" id="fFulfill"><option value="">请选择</option></select>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-sec">
+        <h3>3. 推荐、渠道与结算约束</h3>
+        <p class="hint">同推荐组多食堂可一起推荐；购买锁定一家食堂。商城货架非购买前置条件。</p>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>推荐组</label>
+            <input class="ctrl" id="fRecommendGroup" placeholder="如：控糖午餐包月" />
+          </div>
+          <div class="form-field">
+            <label>锁定食堂结算</label>
+            <select class="ctrl" id="fLockCanteen">
+              <option value="是">是（推荐）</option>
+              <option value="否">否</option>
+            </select>
+          </div>
+          <div class="form-field full">
+            <label>销售渠道（可多选）</label>
+            <div class="check-grid" id="fSaleChannels"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-sec">
+        <h3>4. 包含服务项目</h3>
+        <p class="hint">每行 = 1 个服务项目 × 次数；履约时对应 1 餐次订单（绑定该项目实例）。</p>
+        <div class="item-rows" id="itemRows"></div>
+        <div style="margin-top: 10px">
+          <button type="button" class="btn btn-default" id="btnAddLine">+ 添加项目行</button>
+        </div>
+        <div class="form-grid" style="margin-top: 14px">
+          <div class="form-field full">
+            <label>说明</label>
+            <textarea class="ctrl" id="fNote" rows="2" placeholder="套餐规则说明"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <div class="form-foot">
+        <div class="meta" id="footMeta">保存后可上架商城，或仅用于运营/机构/外部渠道下单</div>
+        <div class="actions">
+          <a class="btn btn-default" href="./service-packages.html" style="text-decoration: none" id="btnCancel">取消</a>
+          <button type="button" class="btn btn-primary" id="btnSave">保存</button>
+        </div>
+      </div>
+    </template>
+
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/service-element-data.js?v=20260824"></script>
+    <script src="../js/service-catalog.js?v=20260824"></script>
+    <script>
+      (function () {
+        const C = window.ServiceCatalog;
+        const params = new URLSearchParams(location.search);
+        const mode = params.get("mode") || "add";
+        const idParam = params.get("id") || "";
+        const viewMode = mode === "view";
+        const isEdit = mode === "edit";
+        const $ = (id) => document.getElementById(id);
+
+        let data = C.loadPackages();
+        let editIndex = -1;
+        let lines = [{ itemId: "", times: 1 }];
+
+        function pad2(n) {
+          return String(n).padStart(2, "0");
+        }
+        function todayText() {
+          const d = new Date();
+          return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+        }
+        function nextId() {
+          let max = 0;
+          data.forEach((r) => {
+            const m = String(r.id || "").match(/PKG.*?(\d+)$/i);
+            if (m) max = Math.max(max, Number(m[1]));
+          });
+          return "PKG-GEN-" + String(max + 1).padStart(3, "0");
+        }
+
+        
+        function renderSaleChannels(selected) {
+          const box = $("fSaleChannels");
+          if (!box) return;
+          const sel = new Set(selected || []);
+          box.innerHTML = (C.SALE_CHANNELS || []).map((c) =>
+            `<label><input type="checkbox" value="${c}" ${sel.has(c) ? "checked" : ""}/>${c}</label>`
+          ).join("");
+        }
+        function readSaleChannels() {
+          return [...document.querySelectorAll("#fSaleChannels input:checked")].map((el) => el.value);
+        }
+
+        function fillSelect(el, options, placeholder, valueKey, labelFn) {
+          const ph = placeholder ? `<option value="">${placeholder}</option>` : "";
+          el.innerHTML =
+            ph +
+            options
+              .map((o) => {
+                const v = valueKey ? o[valueKey] : o;
+                const label = labelFn ? labelFn(o) : o;
+                return `<option value="${v}">${label}</option>`;
+              })
+              .join("");
+        }
+
+        function refreshSites(providerId, keep) {
+          fillSelect($("fSite"), C.sitesOf(providerId), "请选择", "id", (s) => s.name);
+          if (keep) $("fSite").value = keep;
+          refreshCanteens($("fSite").value, keep && $("fCanteen")?.value);
+        }
+
+        function refreshCanteens(siteId, keep) {
+          fillSelect($("fCanteen"), C.canteensOf(siteId), "无 / 不适用", "id", (c) => c.name);
+          if (keep) $("fCanteen").value = keep;
+        }
+
+        function itemOptionsHtml(selected) {
+          const items = C.loadItems().filter((i) => i.status === "启用");
+          return (
+            '<option value="">请选择服务项目</option>' +
+            items
+              .map(
+                (i) =>
+                  `<option value="${i.id}" ${i.id === selected ? "selected" : ""}>${i.id} · ${i.name}</option>`
+              )
+              .join("")
+          );
+        }
+
+        function renderLines() {
+          const box = $("itemRows");
+          box.innerHTML = lines
+            .map(
+              (l, idx) => `<div class="item-row" data-i="${idx}">
+              <select class="ctrl line-item">${itemOptionsHtml(l.itemId)}</select>
+              <input class="ctrl line-times" type="number" min="1" step="1" value="${l.times || 1}" placeholder="次数" />
+              <button type="button" class="btn btn-default line-del" ${lines.length <= 1 ? "disabled" : ""}>×</button>
+            </div>`
+            )
+            .join("");
+          if (viewMode) {
+            box.querySelectorAll("select,input,button").forEach((el) => (el.disabled = true));
+          }
+        }
+
+        function readLines() {
+          return [...document.querySelectorAll("#itemRows .item-row")].map((row) => ({
+            itemId: row.querySelector(".line-item").value,
+            times: Number(row.querySelector(".line-times").value) || 1,
+          }));
+        }
+
+        function setReadonly(ro) {
+          ["fId", "fStatus", "fName", "fType", "fDays", "fTotalPrice", "fMeal", "fProvider", "fSite", "fCanteen", "fFulfill", "fNote", "fRecommendGroup", "fLockCanteen"].forEach(
+            (id) => {
+              if ($(id)) $(id).disabled = !!ro;
+            }
+          );
+          $("btnAddLine").hidden = !!ro;
+          $("btnSave").hidden = !!ro;
+          $("btnCancel").textContent = ro ? "返回列表" : "取消";
+          renderLines();
+        }
+
+        function fillForm(r) {
+          $("fId").value = r?.id || "";
+          $("fStatus").value = r?.status || "启用";
+          $("fName").value = r?.name || "";
+          $("fType").value = r?.type || "";
+          $("fDays").value = r?.days == null ? "" : r.days;
+          $("fTotalPrice").value = r?.totalPrice == null ? "" : r.totalPrice;
+          $("fMeal").value = r?.mealType || "";
+          $("fProvider").value = r?.providerId || "";
+          refreshSites(r?.providerId || "", r?.siteId || "");
+          $("fSite").value = r?.siteId || "";
+          refreshCanteens(r?.siteId || "", r?.canteenId || "");
+          $("fCanteen").value = r?.canteenId || "";
+          $("fFulfill").value = r?.fulfillMode || "";
+          $("fRecommendGroup").value = r?.recommendGroup || "";
+          $("fLockCanteen").value = r?.lockCanteen === false ? "否" : "是";
+          renderSaleChannels(r?.saleChannels || ["商城货架"]);
+          $("fNote").value = r?.note || "";
+          lines = r?.items?.length ? r.items.map((x) => ({ ...x })) : [{ itemId: "", times: 1 }];
+          renderLines();
+        }
+
+        function readForm() {
+          return {
+            id: ($("fId").value || "").trim(),
+            status: $("fStatus").value,
+            name: ($("fName").value || "").trim(),
+            type: $("fType").value,
+            days: $("fDays").value === "" ? 0 : Number($("fDays").value),
+            totalPrice: $("fTotalPrice").value === "" ? 0 : Number($("fTotalPrice").value),
+            mealType: $("fMeal").value,
+            providerId: $("fProvider").value,
+            siteId: $("fSite").value,
+            canteenId: $("fCanteen").value,
+            fulfillMode: $("fFulfill").value,
+            items: readLines().filter((l) => l.itemId),
+            recommendGroup: ($("fRecommendGroup").value || "").trim(),
+            lockCanteen: $("fLockCanteen").value !== "否",
+            allowCrossCanteen: false,
+            saleChannels: readSaleChannels(),
+            note: ($("fNote").value || "").trim(),
+          };
+        }
+
+        function save() {
+          const next = readForm();
+          if (!next.name) return void AdminUI.toast("请填写套餐名称", "error");
+          if (!next.type) return void AdminUI.toast("请选择套餐类型", "error");
+          if (next.totalPrice === "" || Number.isNaN(next.totalPrice))
+            return void AdminUI.toast("请填写总价", "error");
+          if (!next.providerId) return void AdminUI.toast("请选择服务商", "error");
+          if (!next.siteId) return void AdminUI.toast("请选择站点", "error");
+          if (!next.fulfillMode) return void AdminUI.toast("请选择供餐方式", "error");
+          if (!next.items.length) return void AdminUI.toast("请至少添加一个服务项目", "error");
+          if (!next.id) next.id = nextId();
+          next.updated = todayText();
+
+          if (editIndex < 0) {
+            if (data.some((r) => r.id === next.id)) return void AdminUI.toast("套餐 ID 已存在", "error");
+            data.unshift(next);
+            AdminUI.toast("新增成功");
+          } else {
+            if (data.some((r, i) => i !== editIndex && r.id === next.id))
+              return void AdminUI.toast("套餐 ID 已存在", "error");
+            data[editIndex] = { ...data[editIndex], ...next };
+            AdminUI.toast("保存成功");
+          }
+          AdminStore.save(C.PACKAGE_STORE, data);
+          setTimeout(() => (location.href = "./service-packages.html"), 400);
+        }
+
+        function boot() {
+          if (boot.done) return;
+          boot.done = true;
+          document.querySelector(".page-body")?.classList.add("has-form-foot");
+
+          fillSelect($("fStatus"), C.STATUS);
+          fillSelect($("fType"), C.PACKAGE_TYPES, "请选择");
+          fillSelect($("fMeal"), C.MEAL_TYPES, "请选择");
+          fillSelect($("fProvider"), C.PROVIDERS, "请选择", "id", (p) => p.name);
+          fillSelect($("fFulfill"), C.PACKAGE_FULFILL_MODES || C.FULFILL_MODES, "请选择");
+          renderSaleChannels(["商城货架", "运营下单"]);
+          refreshSites("", "");
+
+          $("fProvider").addEventListener("change", () => refreshSites($("fProvider").value, ""));
+          $("fSite").addEventListener("change", () => refreshCanteens($("fSite").value, ""));
+
+          $("btnAddLine")?.addEventListener("click", () => {
+            lines = readLines();
+            lines.push({ itemId: "", times: 1 });
+            renderLines();
+          });
+          $("itemRows")?.addEventListener("click", (e) => {
+            const del = e.target.closest(".line-del");
+            if (!del || del.disabled) return;
+            lines = readLines();
+            const i = Number(del.closest(".item-row").dataset.i);
+            lines.splice(i, 1);
+            if (!lines.length) lines = [{ itemId: "", times: 1 }];
+            renderLines();
+          });
+
+          if (viewMode) {
+            $("pageTitle").textContent = "查看服务套餐";
+            $("footMeta").textContent = "当前为查看模式";
+          } else if (isEdit) {
+            $("pageTitle").textContent = "编辑服务套餐";
+            $("footMeta").textContent = idParam ? `正在编辑：${idParam}` : "编辑中";
+          }
+
+          if (isEdit || viewMode) {
+            editIndex = data.findIndex((r) => r.id === idParam);
+            if (editIndex < 0) {
+              AdminUI.toast("未找到该套餐", "error");
+              fillForm(null);
+            } else fillForm(data[editIndex]);
+          } else fillForm(null);
+
+          setReadonly(viewMode);
+          $("btnSave")?.addEventListener("click", save);
+        }
+
+        AdminUI.onReady(boot);
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>咨询统计 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body
+    data-primary="org"
+    data-sub="consult"
+    data-tab="咨询统计"
+    data-asset-prefix="../../assets"
+    data-index-href="../index.html"
+  >
+    <div id="admin-root"></div>
+
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">咨询统计</h1>
+          <p class="page-desc">管理来访客人信息，跟踪咨询意向与跟进状态</p>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn btn-default" id="btnExport">导出</button>
+          <button type="button" class="btn btn-primary" id="btnAdd">+ 登记来访</button>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-card"><div class="k">本月来访</div><div class="v" id="stMonth">0<em>人次</em></div></div>
+        <div class="stat-card"><div class="k">意向入住</div><div class="v" id="stIntent">0</div></div>
+        <div class="stat-card"><div class="k">跟进中</div><div class="v" id="stFollow">0</div></div>
+        <div class="stat-card"><div class="k">已转化</div><div class="v" id="stDone">0</div></div>
+      </div>
+
+      <div class="list-card" style="margin-bottom:12px;padding:14px 16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <h2 style="margin:0;font-size:15px">近 12 月来访趋势</h2>
+        </div>
+        <div id="consultChart" style="height:180px"></div>
+      </div>
+
+      <div class="filter-card">
+        <div class="filter-grid">
+          <div class="filter-item">
+            <label>访客姓名 / 电话</label>
+            <input class="ctrl" id="qKeyword" placeholder="姓名或手机号" />
+          </div>
+          <div class="filter-item">
+            <label>意向类型</label>
+            <select class="ctrl" id="qIntent">
+              <option value="">全部</option>
+              <option>入住咨询</option>
+              <option>参观体验</option>
+              <option>政策咨询</option>
+              <option>其他</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label>跟进状态</label>
+            <select class="ctrl" id="qStatus">
+              <option value="">全部</option>
+              <option value="new">新登记</option>
+              <option value="follow">跟进中</option>
+              <option value="done">已转化</option>
+              <option value="lost">已流失</option>
+            </select>
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
+            <button type="button" class="btn btn-default" id="btnReset">重置</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="list-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>来访日期</th>
+                <th>访客姓名</th>
+                <th>联系电话</th>
+                <th>关系</th>
+                <th>意向长者</th>
+                <th>意向类型</th>
+                <th>接待人</th>
+                <th>跟进状态</th>
+                <th>下次跟进</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="consultBody"></tbody>
+          </table>
+        </div>
+        <div class="pager">
+          <span id="pagerInfo">共 0 条</span>
+          <div class="pager-btns">
+            <button type="button">上一页</button>
+            <button type="button" class="active">1</button>
+            <button type="button">下一页</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-mask" data-drawer-mask="consultDrawer" data-close-drawer="consultDrawer"></div>
+      <aside class="drawer" id="consultDrawer">
+        <div class="drawer-head">
+          <h3 id="drawerTitle">登记来访</h3>
+          <button type="button" class="drawer-close" data-close-drawer="consultDrawer">×</button>
+        </div>
+        <div class="drawer-body">
+          <div class="form-grid">
+            <div class="form-field">
+              <label>来访日期<span class="req">*</span></label>
+              <input class="ctrl" id="cDate" type="date" />
+            </div>
+            <div class="form-field">
+              <label>访客姓名<span class="req">*</span></label>
+              <input class="ctrl" id="cName" />
+            </div>
+            <div class="form-field">
+              <label>联系电话<span class="req">*</span></label>
+              <input class="ctrl" id="cPhone" />
+            </div>
+            <div class="form-field">
+              <label>与长者关系</label>
+              <select class="ctrl" id="cRelation">
+                <option>子女</option>
+                <option>配偶</option>
+                <option>本人</option>
+                <option>亲属</option>
+                <option>其他</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>意向长者</label>
+              <input class="ctrl" id="cElder" placeholder="长者姓名" />
+            </div>
+            <div class="form-field">
+              <label>意向类型</label>
+              <select class="ctrl" id="cIntent">
+                <option>入住咨询</option>
+                <option>参观体验</option>
+                <option>政策咨询</option>
+                <option>其他</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>接待人</label>
+              <input class="ctrl" id="cHost" />
+            </div>
+            <div class="form-field">
+              <label>跟进状态</label>
+              <select class="ctrl" id="cStatus">
+                <option value="new">新登记</option>
+                <option value="follow">跟进中</option>
+                <option value="done">已转化</option>
+                <option value="lost">已流失</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>下次跟进</label>
+              <input class="ctrl" id="cNext" type="date" />
+            </div>
+            <div class="form-field full">
+              <label>备注</label>
+              <textarea class="ctrl" id="cRemark" placeholder="关注点、预算、护理需求等"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="drawer-foot">
+          <button type="button" class="btn btn-default" data-close-drawer="consultDrawer">取消</button>
+          <button type="button" class="btn btn-primary" id="btnSave">保存</button>
+        </div>
+      </aside>
+    </template>
+
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/org-consult.js"></script>
+  </body>
+</html>

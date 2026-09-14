@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>提现审核与打款 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="finance" data-sub="settle-withdraw" data-tab="提现审核与打款" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">提现审核与打款</h1>
+    <p class="page-desc">审核商户/服务商提现申请，记录打款流水与驳回原因</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">收益分享总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 登记提现</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">待审核</div><div class="v" id="stPend">0</div></div><div class="stat-card"><div class="k">已打款</div><div class="v" id="stPaid">0</div></div><div class="stat-card"><div class="k">已驳回</div><div class="v" id="stReject">0</div></div><div class="stat-card"><div class="k">全部</div><div class="v" id="stAll">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>关键词</label><input class="ctrl" id="qKeyword" placeholder="名称/编号"/></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="待审核">待审核</option><option value="已通过">已通过</option><option value="已打款">已打款</option><option value="已驳回">已驳回</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>申请编号</th><th>申请主体</th><th>提现金额</th><th>收款账户</th><th>申请时间</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">登记提现</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>名称<span class="req">*</span></label><input class="ctrl" id="fName" type="text"  placeholder=""/></div><div class="form-field"><label>编号<span class="req">*</span></label><input class="ctrl" id="fCode" type="text"  placeholder=""/></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="待审核">待审核</option><option value="已通过">已通过</option><option value="已打款">已打款</option><option value="已驳回">已驳回</option></select></div><div class="form-field"><label>备注</label><textarea class="ctrl" id="fNote" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "登记提现",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "finance:settle-withdraw",
+  rows: [{"applyId":"WD2026080101","owner":"康护到家服务商","amount":"¥20,000","bank":"工行 ****6688","applyAt":"2026-08-01","status":"待审核","note":""},{"applyId":"WD2026073002","owner":"夕阳红辅具店","amount":"¥8,500","bank":"建行 ****1122","applyAt":"2026-07-30","status":"已打款","note":""},{"applyId":"WD2026072803","owner":"某商户A","amount":"¥50,000","bank":"农行 ****3344","applyAt":"2026-07-28","status":"已驳回","note":"账户信息不符"}],
+  columns: [{key:"applyId"},{key:"owner"},{key:"amount"},{key:"bank"},{key:"applyAt"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.applyId||"").includes(v)||String(r.owner||"").includes(v)||String(r.bank||"").includes(v)},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v}],
+  formFields: [{id:"fName",key:"name",type:"text",label:"名称",required:true},{id:"fCode",key:"code",type:"text",label:"编号",required:true},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fNote",key:"note",type:"text",label:"备注",required:false}],
+  stats: [{id:"stPend",html:false,value:(l)=>l.filter(r=>r.status==="待审核").length},{id:"stPaid",html:false,value:(l)=>l.filter(r=>r.status==="已打款").length},{id:"stReject",html:false,value:(l)=>l.filter(r=>r.status==="已驳回").length},{id:"stAll",html:false,value:(l)=>l.length}],
+  getStatus:(r)=>(r.status==="已打款"?{text:r.status,cls:"status-on"}:r.status==="待审核"?{text:r.status,cls:"status-warn"}:{text:r.status,cls:"status-off"})
+});
+</script>
+</body>
+</html>

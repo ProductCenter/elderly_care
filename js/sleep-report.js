@@ -35,10 +35,7 @@
             .join("")}
         </div>
         <div class="sc-foot">
-          <div>
-            <div style="font-size:12px;opacity:.9;margin-bottom:2px">${pkg.expectedText}</div>
-            <div class="sc-price">¥${Care.money(pkg.salePrice)}<small>起</small></div>
-          </div>
+          <div class="sc-expect">${pkg.expectedText}</div>
           <span class="sc-cta">查看我的方案</span>
         </div>
       </a>`

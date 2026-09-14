@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>核销交付归还同步 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="fulfill" data-sub="api-sync" data-tab="核销交付归还同步" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">核销交付归还同步</h1>
+    <p class="page-desc">同步第三方回传的到店核销、设备交付与归还验收结果，形成履约记录</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">履约总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 同步记录</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">成功</div><div class="v" id="stOk">0</div></div><div class="stat-card"><div class="k">失败</div><div class="v" id="stFail">0</div></div><div class="stat-card"><div class="k">重试中</div><div class="v" id="stRetry">0</div></div><div class="stat-card"><div class="k">同步数</div><div class="v" id="stAll">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>同步/业务单</label><input class="ctrl" id="qKeyword" placeholder=""/></div><div class="filter-item"><label>业务类型</label><select class="ctrl" id="qBiz"><option value="">全部</option><option value="到店核销">到店核销</option><option value="设备交付">设备交付</option><option value="归还验收">归还验收</option></select></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="成功">成功</option><option value="失败">失败</option><option value="重试中">重试中</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>同步号</th><th>业务类型</th><th>业务单号</th><th>第三方</th><th>结果</th><th>同步时间</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">同步记录</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>同步号<span class="req">*</span></label><input class="ctrl" id="fSyncId" type="text"  placeholder=""/></div><div class="form-field"><label>业务类型<span class="req">*</span></label><select class="ctrl" id="fBizType"><option value="到店核销">到店核销</option><option value="设备交付">设备交付</option><option value="归还验收">归还验收</option></select></div><div class="form-field"><label>业务单号<span class="req">*</span></label><input class="ctrl" id="fRefId" type="text"  placeholder=""/></div><div class="form-field"><label>第三方<span class="req">*</span></label><input class="ctrl" id="fProvider" type="text"  placeholder=""/></div><div class="form-field"><label>结果<span class="req">*</span></label><input class="ctrl" id="fResult" type="text"  placeholder=""/></div><div class="form-field"><label>同步时间<span class="req">*</span></label><input class="ctrl" id="fSyncedAt" type="date"  placeholder=""/></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="成功">成功</option><option value="失败">失败</option><option value="重试中">重试中</option></select></div><div class="form-field"><label>报文摘要</label><textarea class="ctrl" id="fPayload" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "同步记录",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "fulfill:api-sync",
+  rows: [{"syncId":"SY26073101","bizType":"到店核销","refId":"O1785462472361","provider":"站点核销网关","result":"扣次成功-2","syncedAt":"2026-07-31","status":"成功","payload":"PK1 redeem lunch"},{"syncId":"SY26073008","bizType":"设备交付","refId":"DL26073101","provider":"安心到家","result":"用户已确认交付","syncedAt":"2026-07-30","status":"成功","payload":""}],
+  columns: [{key:"syncId"},{key:"bizType"},{key:"refId"},{key:"provider"},{key:"result"},{key:"syncedAt"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.syncId||"").includes(v)||String(r.refId||"").includes(v)},{id:"qBiz",match:(r,v)=>!v||String(r.bizType)===v},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v}],
+  formFields: [{id:"fSyncId",key:"syncId",type:"text",label:"同步号",required:true},{id:"fBizType",key:"bizType",type:"select",label:"业务类型",required:true},{id:"fRefId",key:"refId",type:"text",label:"业务单号",required:true},{id:"fProvider",key:"provider",type:"text",label:"第三方",required:true},{id:"fResult",key:"result",type:"text",label:"结果",required:true},{id:"fSyncedAt",key:"syncedAt",type:"date",label:"同步时间",required:true},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fPayload",key:"payload",type:"text",label:"报文摘要",required:false}],
+  stats: [{id:"stOk",html:false,value:(l)=>l.filter(r=>r.status==="成功").length},{id:"stFail",html:false,value:(l)=>l.filter(r=>r.status==="失败").length},{id:"stRetry",html:false,value:(l)=>l.filter(r=>r.status==="重试中").length},{id:"stAll",html:false,value:(l)=>l.length}],
+  getStatus:(r)=>(r.status==="成功"?{text:r.status,cls:"status-on"}:r.status==="重试中"?{text:r.status,cls:"status-warn"}:{text:r.status,cls:"status-off"})
+});
+</script>
+</body>
+</html>

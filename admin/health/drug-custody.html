@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>药品托管 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body data-primary="health" data-sub="drug-custody" data-tab="药品托管" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div><h1 class="page-title">药品托管</h1><p class="page-desc">管理院内长者药品托管信息，可设置阈值提醒</p></div>
+        <div style="display:flex;gap:8px"><button type="button" class="btn btn-primary" id="btnAdd">+ 登记托管</button></div>
+      </div>
+      <div class="stat-row"><div class="stat-card"><div class="k">托管药品</div><div class="v" id="stTotal">0</div></div><div class="stat-card"><div class="k">低于阈值</div><div class="v" id="stWarn">0</div></div><div class="stat-card"><div class="k">涉及长者</div><div class="v" id="stElders">0</div></div><div class="stat-card"><div class="k">近效期(30天)</div><div class="v" id="stNear">0</div></div></div>
+      
+      <div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>长者 / 药品</label><input class="ctrl" id="qKeyword" placeholder="" /></div><div class="filter-item"><label>库存预警</label><select class="ctrl" id="qWarn"><option value="">全部</option><option value="1">低于阈值</option><option value="0">正常</option></select></div><div class="filter-item"><label>长者</label><select class="ctrl" id="qElder"><option value="">全部</option><option value="张秀英">张秀英</option><option value="李建国">李建国</option><option value="陈桂兰">陈桂兰</option><option value="王德福">王德福</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+      <div class="list-card">
+        <div class="table-wrap"><table class="data-table"><thead><tr><th>长者</th><th>药品</th><th>规格</th><th>库存</th><th>阈值</th><th>效期</th><th>预警</th><th>托管人</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+        <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div>
+      </div>
+      <div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+      <aside id="listDrawer" class="drawer">
+        <div class="drawer-head"><h3 id="drawerTitle">登记托管</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+        <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>长者<span class="req">*</span></label><select class="ctrl" id="fElder"><option value="张秀英">张秀英</option><option value="李建国">李建国</option><option value="陈桂兰">陈桂兰</option><option value="王德福">王德福</option></select></div><div class="form-field"><label>药品名称<span class="req">*</span></label><input class="ctrl" id="fDrug" placeholder="" /></div><div class="form-field"><label>规格</label><input class="ctrl" id="fSpec" placeholder="" /></div><div class="form-field"><label>库存数量</label><input class="ctrl" id="fStock" type="number" value="10" /></div><div class="form-field"><label>预警阈值</label><input class="ctrl" id="fThreshold" type="number" value="5" /></div><div class="form-field"><label>有效期至</label><input class="ctrl" id="fExpire" type="date" /></div><div class="form-field"><label>托管登记人</label><input class="ctrl" id="fKeeper" placeholder="" /></div><div class="form-field full"><label>备注</label><textarea class="ctrl" id="fNote" placeholder=""></textarea></div></div></div>
+        <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/admin-page-list.js"></script>
+    <script>
+      AdminPageList.mount({
+        addTitle: "\u767b\u8bb0\u6258\u7ba1",
+        editTitle: "编辑",
+        rows: [
+    {elder:"张秀英",drug:"氨氯地平",spec:"5mg*28片",stock:12,threshold:5,expire:"2027-01-01",keeper:"李护士",warn:"0"},
+    {elder:"李建国",drug:"阿司匹林肠溶片",spec:"100mg*30片",stock:4,threshold:6,expire:"2026-08-20",keeper:"王护士",warn:"1"},
+    {elder:"李建国",drug:"二甲双胍",spec:"0.5g*48片",stock:20,threshold:8,expire:"2027-03-15",keeper:"王护士",warn:"0"},
+    {elder:"王德福",drug:"阿托伐他汀",spec:"20mg*7片",stock:2,threshold:3,expire:"2026-09-01",keeper:"刘护士",warn:"1"},
+  ],
+        columns: [{ key: "elder" }, { key: "drug" }, { key: "spec" }, { key: "stock" }, { key: "threshold" }, { key: "expire" }, { key: "warn", status: true }, { key: "keeper" }],
+        filters: [{ id: "qKeyword", match: (r,v) => !v || (String(r.elder||"").includes(v) || String(r.drug||"").includes(v)) }, { id: "qWarn", match: (r,v) => !v || (v==="1" ? r.stock<=r.threshold : r.stock>r.threshold) }, { id: "qElder", match: (r,v) => !v || String(r.elder) === v }],
+        formFields: [{ id: "fElder", key: "elder", type: "select", label: "长者", required: true }, { id: "fDrug", key: "drug", type: "text", label: "药品名称", required: true }, { id: "fSpec", key: "spec", type: "text", label: "规格" }, { id: "fStock", key: "stock", type: "number", label: "库存数量", default: 10 }, { id: "fThreshold", key: "threshold", type: "number", label: "预警阈值", default: 5 }, { id: "fExpire", key: "expire", type: "date", label: "有效期至" }, { id: "fKeeper", key: "keeper", type: "text", label: "托管登记人" }, { id: "fNote", key: "note", type: "textarea", label: "备注" }],
+        stats: [{ id: "stTotal", html: false, value: (list)=>list.length }, { id: "stWarn", html: false, value: (list)=>list.filter(r=>r.stock<=r.threshold).length }, { id: "stElders", html: false, value: (list)=>new Set(list.map(r=>r.elder)).size }, { id: "stNear", html: false, value: (list)=>list.filter(r=>r.expire && r.expire<="2026-08-30").length }],
+        getStatus: (r)=>({text:r.stock<=r.threshold?"低于阈值":"正常", cls:r.stock<=r.threshold?"status-repair":"status-on"}),
+        rowActions: null,
+        onAction: null,
+      });
+    </script>
+  </body>
+</html>

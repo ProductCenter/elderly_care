@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Banner 管理 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+    <style>
+      .bn-thumb {
+        width: 72px;
+        height: 48px;
+        border-radius: 6px;
+        object-fit: cover;
+        background: #f5f5f5;
+        display: block;
+        border: 1px solid #f0f0f0;
+      }
+      .bn-title {
+        font-weight: 600;
+        color: #1f1f1f;
+        white-space: pre-line;
+        line-height: 1.35;
+      }
+      .bn-sub {
+        margin-top: 2px;
+        font-size: 12px;
+        color: #8c8c8c;
+      }
+      .bn-bg {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: #595959;
+      }
+      .bn-bg i {
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        display: inline-block;
+      }
+      .bn-spec {
+        margin: 0 0 12px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        background: #fafafa;
+        border: 1px solid #e8e8e8;
+        font-size: 12px;
+        color: #595959;
+        line-height: 1.55;
+      }
+      .bn-spec strong {
+        color: #1677ff;
+        font-weight: 600;
+      }
+      .bn-presets {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .bn-preset {
+        padding: 0;
+        border: 2px solid #e8e8e8;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #fff;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .bn-preset img {
+        width: 100%;
+        height: 48px;
+        object-fit: cover;
+        display: block;
+      }
+      .bn-preset span {
+        display: block;
+        padding: 4px;
+        font-size: 11px;
+        text-align: center;
+        color: #595959;
+      }
+      .bn-preset.on,
+      .bn-preset:hover {
+        border-color: #1677ff;
+      }
+      .bn-color-row {
+        display: grid;
+        grid-template-columns: 48px 1fr;
+        gap: 8px;
+      }
+      .bn-color-row input[type="color"] {
+        width: 48px;
+        height: 32px;
+        padding: 0;
+        border: 1px solid #d9d9d9;
+        border-radius: 6px;
+        background: #fff;
+      }
+      .bn-upload {
+        display: grid;
+        gap: 10px;
+      }
+      .bn-upload-preview {
+        position: relative;
+        width: 100%;
+        height: 148px;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #f5f5f5;
+        border: 1px solid #e8e8e8;
+      }
+      .bn-upload-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .bn-upload-preview .bn-upload-meta {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 6px 10px;
+        font-size: 12px;
+        color: #fff;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.55));
+      }
+      .bn-upload-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .bn-upload-actions .hint {
+        font-size: 12px;
+        color: #8c8c8c;
+      }
+      .bn-upload-msg {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.45;
+        color: #8c8c8c;
+      }
+      .bn-upload-msg.is-ok {
+        color: #389e0d;
+      }
+      .bn-upload-msg.is-err {
+        color: #cf1322;
+      }
+      .sort-btns {
+        display: inline-flex;
+        gap: 4px;
+      }
+      .sort-btns .link {
+        min-width: 28px;
+      }
+      .page-head-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+    </style>
+  </head>
+  <body
+    data-primary="mall"
+    data-sub="banners"
+    data-tab="Banner管理"
+    data-asset-prefix="../../assets"
+    data-index-href="../index.html"
+  >
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Banner 管理</h1>
+          <p class="page-desc">维护商城首页通屏轮播图：文案、配图、联动背景色与上下架，保存后同步首页装修与商城首页</p>
+        </div>
+        <div class="page-head-actions">
+          <a class="btn btn-default" href="./home-designer.html">打开首页装修</a>
+          <button type="button" class="btn btn-primary" id="btnAdd">+ 新增 Banner</button>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-card"><div class="k">全部</div><div class="v" id="stTotal">0</div></div>
+        <div class="stat-card"><div class="k">上架中</div><div class="v" id="stOn">0</div></div>
+        <div class="stat-card"><div class="k">已下架</div><div class="v" id="stOff">0</div></div>
+        <div class="stat-card"><div class="k">首页展示</div><div class="v" id="stShow">0</div></div>
+      </div>
+
+      <div class="filter-card">
+        <div class="filter-grid">
+          <div class="filter-item">
+            <label>关键词</label>
+            <input class="ctrl" id="qKeyword" type="text" placeholder="标题 / 角标 / 副标题" />
+          </div>
+          <div class="filter-item">
+            <label>状态</label>
+            <select class="ctrl" id="qStatus">
+              <option value="">全部</option>
+              <option value="上架">上架</option>
+              <option value="下架">下架</option>
+            </select>
+          </div>
+          <div class="filter-item"></div>
+          <div class="filter-actions">
+            <button type="button" class="btn btn-default" id="btnReset">重置</button>
+            <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="list-card">
+        <div class="toolbar" style="padding: 14px 16px 0">
+          <div class="toolbar-left"><strong style="font-size: 14px">Banner 列表</strong></div>
+          <div class="toolbar-right">
+            <span style="font-size: 12px; color: #8c8c8c">推荐尺寸 750×560 · 单张 ≤500KB</span>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 56px">排序</th>
+                <th>预览</th>
+                <th>文案</th>
+                <th>跳转</th>
+                <th>背景色</th>
+                <th>状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="body"></tbody>
+          </table>
+        </div>
+        <div class="pager">
+          <span id="pagerInfo">共 0 条</span>
+          <div class="pager-btns" id="pagerBtns"></div>
+        </div>
+      </div>
+
+      <div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+      <aside class="drawer" id="listDrawer">
+        <div class="drawer-head">
+          <h3 id="drawerTitle">新增 Banner</h3>
+          <button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button>
+        </div>
+        <div class="drawer-body">
+          <p class="bn-spec">
+            图片规格：推荐 <strong>750 × 560 px</strong>（约 4:3），最小不低于 750×520；JPG / PNG / WebP；通屏 cover 裁切，主体放中上部，底部约 20% 会羽化。
+          </p>
+          <div class="form-grid">
+            <div class="form-field full">
+              <label>Banner 图片<span class="req">*</span></label>
+              <div class="bn-upload">
+                <div class="bn-upload-preview">
+                  <img id="fPreview" src="" alt="Banner 预览" />
+                  <div class="bn-upload-meta" id="fPreviewMeta">未选择图片</div>
+                </div>
+                <div class="bn-upload-actions">
+                  <label class="btn btn-default" style="cursor: pointer; margin: 0">
+                    上传图片
+                    <input type="file" id="fUpload" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" hidden />
+                  </label>
+                  <button type="button" class="btn btn-default" id="btnClearUpload" hidden>清除上传</button>
+                  <span class="hint">支持 JPG / PNG / WebP</span>
+                </div>
+                <p class="bn-upload-msg" id="fUploadMsg">请上传符合规格的图片，或使用下方快速换图</p>
+              </div>
+            </div>
+            <div class="form-field full">
+              <label>快速换图</label>
+              <div class="bn-presets" id="presetGrid"></div>
+            </div>
+            <div class="form-field full">
+              <label>图片地址<span class="req">*</span></label>
+              <input class="ctrl" id="fImage" type="text" placeholder="./assets/cover-xxx.png 或上传后自动填入" />
+            </div>
+            <div class="form-field full">
+              <label>角标文案</label>
+              <input class="ctrl" id="fEyebrow" type="text" placeholder="春风优选 · 到店理疗" />
+            </div>
+            <div class="form-field full">
+              <label>主标题<span class="req">*</span></label>
+              <textarea class="ctrl" id="fTitle" placeholder="主标题，可用回车换行"></textarea>
+            </div>
+            <div class="form-field full">
+              <label>副标题</label>
+              <input class="ctrl" id="fSub" type="text" placeholder="智能理疗 · 限时体验" />
+            </div>
+            <div class="form-field">
+              <label>跳转类型<span class="req">*</span></label>
+              <select class="ctrl" id="fLinkType">
+                <option value="">请选择</option>
+                <option value="product">商品详情</option>
+                <option value="article">文章详情</option>
+                <option value="activity">活动落地页</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>跳转地址<span class="req">*</span></label>
+              <select class="ctrl" id="fLinkId">
+                <option value="">请先选择类型</option>
+              </select>
+            </div>
+            <div class="form-field full">
+              <label>联动背景色</label>
+              <div class="bn-color-row">
+                <input id="fBgPicker" type="color" value="#ffe0cc" />
+                <input class="ctrl" id="fBg" type="text" value="#ffe0cc" placeholder="#ffe0cc" />
+              </div>
+            </div>
+            <div class="form-field">
+              <label>状态</label>
+              <select class="ctrl" id="fStatus">
+                <option value="上架">上架</option>
+                <option value="下架">下架</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="drawer-foot">
+          <button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button>
+          <button type="button" class="btn btn-primary" id="btnSave">保存</button>
+        </div>
+      </aside>
+    </template>
+
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../../js/products.js?v=20260820-page1"></script>
+    <script src="../../js/mall-links.js?v=20260820-page1"></script>
+    <script src="./js/banners.js?v=20260820-page1"></script>
+  </body>
+</html>

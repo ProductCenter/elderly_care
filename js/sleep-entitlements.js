@@ -9,8 +9,7 @@
 
   root.innerHTML = `
     <nav class="sub-nav">
-      <a href="./sleep-todo.html">待办</a>
-      <a href="./sleep-calendar.html">日历</a>
+      <a href="./sleep-todo.html">日历</a>
       <a href="./sleep-appoint.html">预约核销</a>
       <a href="./sleep-forecast.html">今晚预测</a>
       <a class="on" href="./sleep-entitlements.html">我的权益</a>

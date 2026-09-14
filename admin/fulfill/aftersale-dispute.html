@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>平台争议介入 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="fulfill" data-sub="aftersale-dispute" data-tab="平台争议介入" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">平台争议介入</h1>
+    <p class="page-desc">用户与商户争议时平台仲裁；依据订单、履约、核销记录与证据材料</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">履约总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 立案仲裁</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">取证中</div><div class="v" id="stEv">0</div></div><div class="stat-card"><div class="k">待裁决</div><div class="v" id="stJudge">0</div></div><div class="stat-card"><div class="k">已裁决</div><div class="v" id="stDone">0</div></div><div class="stat-card"><div class="k">争议单</div><div class="v" id="stAll">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>争议/售后/用户</label><input class="ctrl" id="qKeyword" placeholder=""/></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="取证中">取证中</option><option value="待裁决">待裁决</option><option value="已裁决">已裁决</option></select></div><div class="filter-item"><label>商户</label><input class="ctrl" id="q" placeholder=""/></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>争议单</th><th>关联售后</th><th>用户</th><th>商户</th><th>争议焦点</th><th>仲裁人</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">立案仲裁</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>争议单<span class="req">*</span></label><input class="ctrl" id="fDisputeId" type="text"  placeholder=""/></div><div class="form-field"><label>关联售后<span class="req">*</span></label><input class="ctrl" id="fApplyId" type="text"  placeholder=""/></div><div class="form-field"><label>用户<span class="req">*</span></label><input class="ctrl" id="fUser" type="text"  placeholder=""/></div><div class="form-field"><label>商户<span class="req">*</span></label><input class="ctrl" id="fMerchant" type="text"  placeholder=""/></div><div class="form-field"><label>争议焦点<span class="req">*</span></label><input class="ctrl" id="fFocus" type="text"  placeholder=""/></div><div class="form-field"><label>仲裁人</label><input class="ctrl" id="fArbiter" type="text"  placeholder=""/></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="取证中">取证中</option><option value="待裁决">待裁决</option><option value="已裁决">已裁决</option></select></div><div class="form-field"><label>证据/结论</label><textarea class="ctrl" id="fEvidence" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "立案仲裁",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "fulfill:aftersale-dispute",
+  rows: [{"disputeId":"DS26073101","applyId":"AS26073002","user":"张伟","merchant":"春风朝阳门店","focus":"押金扣减是否合理","arbiter":"平台专员A","status":"取证中","evidence":"已调取验收照片与履约日志"}],
+  columns: [{key:"disputeId"},{key:"applyId"},{key:"user"},{key:"merchant"},{key:"focus"},{key:"arbiter"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.disputeId||"").includes(v)||String(r.applyId||"").includes(v)||String(r.user||"").includes(v)},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v},{id:"q",field:"merchant"}],
+  formFields: [{id:"fDisputeId",key:"disputeId",type:"text",label:"争议单",required:true},{id:"fApplyId",key:"applyId",type:"text",label:"关联售后",required:true},{id:"fUser",key:"user",type:"text",label:"用户",required:true},{id:"fMerchant",key:"merchant",type:"text",label:"商户",required:true},{id:"fFocus",key:"focus",type:"text",label:"争议焦点",required:true},{id:"fArbiter",key:"arbiter",type:"text",label:"仲裁人",required:false},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fEvidence",key:"evidence",type:"text",label:"证据/结论",required:false}],
+  stats: [{id:"stEv",html:false,value:(l)=>l.filter(r=>r.status==="取证中").length},{id:"stJudge",html:false,value:(l)=>l.filter(r=>r.status==="待裁决").length},{id:"stDone",html:false,value:(l)=>l.filter(r=>r.status==="已裁决").length},{id:"stAll",html:false,value:(l)=>l.length}],
+  getStatus:(r)=>(r.status==="已裁决"?{text:r.status,cls:"status-on"}:r.status==="待裁决"?{text:r.status,cls:"status-warn"}:{text:r.status,cls:"status-off"})
+});
+</script>
+</body>
+</html>

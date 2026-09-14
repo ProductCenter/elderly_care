@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>柳州数字康养 · 需求侧总览</title>
+  <style>
+    :root {
+      --bg: #000b1d;
+      --cyan: #00e5ff;
+      --blue: #3b9eff;
+      --orange: #ff9a1a;
+      --pink: #e85cff;
+      --green: #3ddea8;
+      --violet: #8b7cff;
+      --red: #ff4d4f;
+      --text: #ffffff;
+      --muted: #7fa3c4;
+      --label: #9ec0de;
+      --font: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+      --header-h: clamp(56px, 7.2vh, 88px);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; font-family: var(--font); color: var(--text); background: var(--bg); }
+    body {
+      background:
+        linear-gradient(180deg, rgba(0, 10, 28, 0.28) 0%, transparent 16%),
+        url("./assets/screen-body.png") center center / cover no-repeat,
+        #000814;
+    }
+    .screen {
+      position: relative; z-index: 1; height: 100vh;
+      display: grid; grid-template-rows: var(--header-h) auto auto minmax(0, 1fr);
+      padding: 0 14px 10px; gap: 6px; overflow: hidden;
+    }
+
+    /* Header */
+    .header {
+      position: relative; display: flex; align-items: center; justify-content: center;
+      isolation: isolate;
+    }
+    .header-bg {
+      position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background: url("./assets/screen-header.png") center bottom / 100% 100% no-repeat;
+    }
+    .title-box { position: relative; z-index: 1; padding: 0 40px 6px; text-align: center; }
+    .title-box h1 {
+      font-size: clamp(18px, 2vw, 30px); font-weight: 700;
+      letter-spacing: 0.18em; text-indent: 0.18em; color: #fff; white-space: nowrap;
+      text-shadow: 0 0 18px rgba(0,229,255,.55), 0 0 40px rgba(40,140,255,.35);
+    }
+    .title-box .sub {
+      margin-top: 2px; font-size: 11px; color: rgba(180,220,255,.75); letter-spacing: .12em;
+    }
+    .header-left, .header-right {
+      position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .header-left { left: 12px; }
+    .header-right { right: 12px; }
+    .btn-fs, .btn-link {
+      height: 28px; padding: 0 10px; border-radius: 3px; cursor: pointer;
+      border: 1px solid rgba(0,229,255,.4); background: rgba(4,24,52,.55);
+      color: #b8e0ff; font-size: 12px; display: inline-flex; align-items: center; gap: 5px;
+      text-decoration: none;
+    }
+    .btn-fs:hover, .btn-link:hover {
+      border-color: rgba(0,229,255,.7); background: rgba(8,40,80,.72);
+      box-shadow: 0 0 14px rgba(0,180,255,.25);
+    }
+    .btn-fs svg { width: 14px; height: 14px; }
+
+    /* Filters */
+    .filters {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px;
+      padding: 2px 8px 4px; min-height: 36px;
+    }
+    .filters .lab {
+      font-size: 11px; color: var(--muted); letter-spacing: .5px; margin-right: -6px;
+    }
+    .chip-group { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      appearance: none; border: 0; cursor: pointer;
+      height: 26px; padding: 0 12px; border-radius: 3px;
+      font-size: 12px; color: rgba(190,220,240,.8);
+      background: rgba(6, 28, 58, .55);
+      box-shadow: inset 0 0 0 1px rgba(0,180,255,.22);
+      transition: background .15s, color .15s, box-shadow .15s;
+    }
+    .chip:hover { color: #fff; background: rgba(0,120,200,.2); }
+    .chip.on {
+      color: #fff;
+      background: linear-gradient(180deg, rgba(0,180,255,.4), rgba(20,90,170,.7));
+      box-shadow: inset 0 0 0 1px rgba(0,229,255,.5), 0 0 12px rgba(0,180,255,.25);
+    }
+    .filters .hint {
+      margin-left: auto; font-size: 11px; color: rgba(150,190,220,.7);
+      white-space: nowrap;
+    }
+
+    /* Body grid */
+    .body {
+      min-height: 0; display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr);
+      gap: 10px; padding: 0 2px 2px;
+    }
+    .col { min-width: 0; min-height: 0; display: grid; gap: 8px; }
+    .col-l { grid-template-rows: minmax(0, 1.05fr) minmax(0, 1fr); }
+    .col-c { grid-template-rows: minmax(0, 1.15fr) minmax(0, 1fr); }
+    .col-r { grid-template-rows: minmax(0, 1fr) minmax(0, 1.05fr) auto; }
+
+    .panel {
+      min-height: 0; overflow: hidden;
+      display: flex; flex-direction: column;
+      background: linear-gradient(180deg, rgba(4,22,48,.28), rgba(2,12,32,.12));
+      position: relative;
+    }
+    .panel::before {
+      content: ""; position: absolute; left: 8px; right: 8px; top: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,220,255,.45), transparent);
+      opacity: .7; pointer-events: none;
+    }
+    .ph {
+      flex-shrink: 0; height: 30px; padding: 0 10px;
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    }
+    .ph h3 {
+      font-size: 14px; font-weight: 700; letter-spacing: 2px; color: #fff;
+      display: flex; align-items: center; gap: 8px; white-space: nowrap;
+    }
+    .ph h3::before {
+      content: ""; width: 0; height: 0;
+      border-left: 7px solid var(--cyan);
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      filter: drop-shadow(0 0 5px rgba(0,229,255,.7));
+    }
+    .ph .more {
+      font-size: 11px; color: var(--cyan); text-decoration: none; white-space: nowrap;
+    }
+    .ph .more:hover { text-shadow: 0 0 8px rgba(0,229,255,.5); }
+    .pb {
+      flex: 1; min-height: 0; padding: 4px 10px 10px;
+      display: flex; flex-direction: column; gap: 6px; overflow: hidden;
+    }
+
+    .kpi-panel { flex: 0 0 auto; }
+    .kpi-strip {
+      display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px;
+      padding: 8px 6px 10px;
+    }
+    .kpi {
+      min-width: 0; padding: 8px 10px 10px;
+      background: linear-gradient(160deg, rgba(8,36,72,.4), rgba(4,16,40,.12));
+      position: relative;
+    }
+    .kpi::before {
+      content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px;
+      background: linear-gradient(180deg, var(--cyan), transparent);
+      opacity: .7;
+    }
+    .kpi .k { font-size: 11px; color: var(--muted); margin-bottom: 4px; white-space: nowrap; }
+    .kpi .n {
+      font-size: 24px; font-weight: 760; color: #fff; font-variant-numeric: tabular-nums;
+      line-height: 1.15; white-space: nowrap;
+    }
+    .kpi .n em { font-style: normal; font-size: 11px; color: var(--muted); margin-left: 3px; font-weight: 500; }
+    .kpi .d { margin-top: 3px; font-size: 10px; color: rgba(160,200,230,.7); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Lists / rows */
+    .seg-list, .gap-list, .hot-list { display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 0; overflow: auto; }
+    .seg-list::-webkit-scrollbar, .gap-list::-webkit-scrollbar, .hot-list::-webkit-scrollbar { width: 2px; }
+    .seg-list::-webkit-scrollbar-thumb, .gap-list::-webkit-scrollbar-thumb, .hot-list::-webkit-scrollbar-thumb { background: rgba(0,180,255,.3); }
+
+    .seg-row, .type-row, .hot-row, .gap-row {
+      display: grid; gap: 8px; align-items: center; min-width: 0;
+      font-size: 12px; color: rgba(200,225,245,.9);
+    }
+    .seg-row { grid-template-columns: 72px minmax(0, 1fr) 48px; }
+    .type-row { grid-template-columns: 64px minmax(0, 1fr) 42px; }
+    .hot-row { grid-template-columns: 22px minmax(0, 1.1fr) minmax(0, 1fr) 52px; cursor: pointer; padding: 4px 4px; border-radius: 2px; }
+    .hot-row:hover { background: rgba(0,140,255,.12); }
+    .hot-row.on { background: linear-gradient(90deg, rgba(0,140,255,.28), transparent); }
+    .gap-row { grid-template-columns: minmax(0, 1fr) 56px 48px; padding: 5px 4px; }
+    .gap-row + .gap-row { box-shadow: inset 0 1px 0 rgba(0,160,255,.1); }
+
+    .track {
+      height: 8px; border-radius: 4px; background: rgba(120,160,200,.12); overflow: hidden;
+    }
+    .track > i { display: block; height: 100%; border-radius: 4px; }
+    .nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .val { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; color: #fff; }
+    .rk { color: var(--cyan); font-weight: 700; font-variant-numeric: tabular-nums; }
+    .tag-lv {
+      display: inline-flex; align-items: center; justify-content: center;
+      height: 18px; padding: 0 6px; font-size: 10px; border-radius: 2px; white-space: nowrap;
+    }
+    .tag-lv.high { color: #ffb4a8; background: rgba(255,77,79,.18); box-shadow: inset 0 0 0 1px rgba(255,77,79,.35); }
+    .tag-lv.mid { color: #ffd29a; background: rgba(255,154,26,.16); box-shadow: inset 0 0 0 1px rgba(255,154,26,.35); }
+    .tag-lv.low { color: #9eecd4; background: rgba(61,222,168,.12); box-shadow: inset 0 0 0 1px rgba(61,222,168,.3); }
+
+    .plot { flex: 1; min-height: 0; width: 100%; }
+    .split-2 { display: grid; grid-template-columns: 1.05fr 1fr; gap: 8px; flex: 1; min-height: 0; }
+    .split-2 > div { min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+
+    .funnel-wrap { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+    .funnel-cap {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 10px; color: var(--muted); margin-bottom: 4px; flex-shrink: 0;
+    }
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 6px 10px; font-size: 10px; color: var(--muted);
+    }
+    .legend i {
+      display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 3px; vertical-align: -1px;
+    }
+
+    .scope-bar {
+      display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center;
+      font-size: 11px; color: rgba(180,215,240,.85); padding: 2px 0 4px;
+    }
+    .scope-bar b { color: #fff; font-weight: 650; }
+    .scope-bar .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
+
+    .note {
+      font-size: 11px; color: rgba(160,195,225,.78); line-height: 1.55;
+      padding: 8px 10px;
+      background: linear-gradient(90deg, rgba(8,36,72,.35), rgba(4,18,40,.1));
+      box-shadow: inset 0 0 0 1px rgba(70,150,210,.15);
+    }
+    .note strong { color: #d8f0ff; font-weight: 650; }
+
+    .heat-grid {
+      flex: 1; min-height: 0;
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;
+      align-content: stretch;
+    }
+    .heat-cell {
+      min-height: 0; padding: 8px; cursor: pointer;
+      display: flex; flex-direction: column; justify-content: space-between;
+      background: rgba(0,80,140,.12);
+      box-shadow: inset 0 0 0 1px rgba(0,180,255,.12);
+      transition: background .15s, box-shadow .15s;
+    }
+    .heat-cell:hover, .heat-cell.on {
+      box-shadow: inset 0 0 0 1px rgba(0,229,255,.55);
+    }
+    .heat-cell .dn { font-size: 12px; color: rgba(210,230,250,.9); }
+    .heat-cell .hv { font-size: 18px; font-weight: 760; color: #fff; font-variant-numeric: tabular-nums; }
+    .heat-cell .hv em { font-style: normal; font-size: 10px; color: var(--muted); margin-left: 2px; }
+
+    @media (max-width: 1280px) {
+      body { overflow: auto; }
+      .screen { height: auto; min-height: 100vh; overflow: visible; }
+      .body { grid-template-columns: 1fr; }
+      .col { grid-template-rows: auto; }
+      .kpi-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .title-box h1 { font-size: 16px; letter-spacing: .1em; white-space: normal; }
+      .plot { min-height: 180px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="header">
+      <div class="header-bg" aria-hidden="true"></div>
+      <div class="header-left">
+        <a class="btn-link" href="./ecology-blank-screen.html">生态运营</a>
+      </div>
+      <div class="title-box">
+        <h1>柳州数字康养 · 需求侧总览</h1>
+        <div class="sub">看清谁需要什么 · 在哪里需要 · 何时需要</div>
+      </div>
+      <div class="header-right">
+        <button class="btn-fs" type="button" id="btnFullscreen" title="全屏切换" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg>
+          <span id="fsLabel">全屏</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="filters" role="toolbar" aria-label="下钻筛选">
+      <span class="lab">站点</span>
+      <div class="chip-group" id="siteChips"></div>
+      <span class="lab">人群</span>
+      <div class="chip-group" id="crowdChips"></div>
+      <span class="lab">场景</span>
+      <div class="chip-group" id="sceneChips"></div>
+      <span class="hint">统一需求事件口径：建档 · 浏览 · 咨询 · 订单 · 服务计划 · 投诉</span>
+    </div>
+
+    <section class="panel kpi-panel">
+      <div class="kpi-strip" id="kpiStrip"></div>
+    </section>
+
+    <div class="body">
+      <!-- 左 -->
+      <div class="col col-l">
+        <section class="panel">
+          <div class="ph">
+            <h3>人群分层</h3>
+            <a class="more" href="javascript:;" id="drillCrowd">按人群下钻 ›</a>
+          </div>
+          <div class="pb">
+            <div class="split-2">
+              <div class="plot" id="chCrowd"></div>
+              <div class="seg-list" id="crowdList"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="ph">
+            <h3>需求类型</h3>
+            <span class="legend" id="typeLeg"></span>
+          </div>
+          <div class="pb">
+            <div id="typeList" class="seg-list"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- 中 -->
+      <div class="col col-c">
+        <section class="panel">
+          <div class="ph">
+            <h3>需求热区</h3>
+            <a class="more" href="javascript:;" id="drillSite">按站点下钻 ›</a>
+          </div>
+          <div class="pb">
+            <div class="scope-bar" id="scopeBar" style="padding-top:0"></div>
+            <div class="heat-grid" id="heatGrid"></div>
+            <div class="hot-list" id="hotList" style="max-height:38%;margin-top:4px"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="ph">
+            <h3>需求时间趋势</h3>
+            <span class="legend" id="trendLeg"></span>
+          </div>
+          <div class="pb">
+            <div class="plot" id="chTrend"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- 右 -->
+      <div class="col col-r">
+        <section class="panel">
+          <div class="ph">
+            <h3>未满足需求</h3>
+            <a class="more" href="javascript:;" id="drillGap">缺口清单 ›</a>
+          </div>
+          <div class="pb">
+            <div class="gap-list" id="gapList"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="ph">
+            <h3>需求转化漏斗</h3>
+            <a class="more" href="javascript:;" id="drillScene">按场景下钻 ›</a>
+          </div>
+          <div class="pb">
+            <div class="funnel-wrap">
+              <div class="funnel-cap">
+                <span>浏览 → 咨询 → 下单 → 服务计划 → 履约闭环</span>
+                <span id="funnelRate">闭环率 —</span>
+              </div>
+              <div class="plot" id="chFunnel"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="ph"><h3>口径与洞察</h3></div>
+          <div class="pb" style="padding-top:2px">
+            <div class="note" id="insightBox">—</div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const C = {
+        cyan: "#00d4ff", blue: "#3b9eff", orange: "#ff9a1a",
+        pink: "#e85cff", green: "#3ddea8", violet: "#8b7cff", red: "#ff4d4f"
+      };
+      const svgPut = (el, html) => { if (el) el.innerHTML = html; };
+
+      const SITES = [
+        { id: "all", name: "全市" },
+        { id: "jinsheng", name: "金盛驿站" },
+        { id: "dexin", name: "德心医养" },
+        { id: "liunan", name: "柳南站" },
+        { id: "chengzhong", name: "城中驿站" },
+        { id: "yufeng", name: "鱼峰点" },
+        { id: "liujiang", name: "柳江中心" }
+      ];
+      const CROWDS = [
+        { id: "all", name: "全部人群" },
+        { id: "high", name: "高龄失能" },
+        { id: "chronic", name: "慢病管理" },
+        { id: "empty", name: "空巢独居" },
+        { id: "family", name: "家属代办" }
+      ];
+      const SCENES = [
+        { id: "all", name: "全部场景" },
+        { id: "home", name: "居家" },
+        { id: "community", name: "社区" },
+        { id: "org", name: "机构" },
+        { id: "online", name: "线上" }
+      ];
+
+      const TYPE_META = [
+        { id: "archive", name: "建档", color: C.blue },
+        { id: "browse", name: "浏览", color: C.cyan },
+        { id: "consult", name: "咨询", color: C.green },
+        { id: "order", name: "订单", color: C.orange },
+        { id: "plan", name: "服务计划", color: C.violet },
+        { id: "complaint", name: "投诉", color: C.pink }
+      ];
+
+      const DISTRICTS = [
+        { id: "chengzhong", name: "城中区" },
+        { id: "liubei", name: "柳北区" },
+        { id: "liunan", name: "柳南区" },
+        { id: "yufeng", name: "鱼峰区" },
+        { id: "liujiang", name: "柳江区" },
+        { id: "liucheng", name: "柳城县" }
+      ];
+
+      /* —— 演示数据集：按筛选组合给出差异 —— */
+      const BASE = {
+        kpis: [
+          { k: "demandCnt", label: "需求事件", n: "12860", u: "次", d: "近30天统一口径汇聚" },
+          { k: "elderCnt", label: "有需求长者", n: "4862", u: "人", d: "建档/咨询/订单去重" },
+          { k: "unmet", label: "未满足需求", n: "742", u: "项", d: "超SLA或无供给匹配" },
+          { k: "hotSites", label: "热区站点", n: "18", u: "个", d: "需求强度 Top 分位" },
+          { k: "consultRate", label: "咨询转化", n: "31.6", u: "%", d: "浏览→咨询" },
+          { k: "closeRate", label: "履约闭环", n: "68.4", u: "%", d: "计划→履约完成" }
+        ],
+        crowds: [
+          { id: "high", name: "高龄失能", pct: 28, cnt: 1361 },
+          { id: "chronic", name: "慢病管理", pct: 34, cnt: 1653 },
+          { id: "empty", name: "空巢独居", pct: 22, cnt: 1070 },
+          { id: "family", name: "家属代办", pct: 16, cnt: 778 }
+        ],
+        types: [
+          { id: "browse", name: "浏览意向", v: 4280 },
+          { id: "consult", name: "咨询诉求", v: 2150 },
+          { id: "order", name: "订单需求", v: 1860 },
+          { id: "archive", name: "建档需求", v: 1520 },
+          { id: "plan", name: "服务计划", v: 1680 },
+          { id: "complaint", name: "投诉反馈", v: 370 }
+        ],
+        heat: [
+          { id: "chengzhong", name: "城中区", v: 92 },
+          { id: "liubei", name: "柳北区", v: 78 },
+          { id: "liunan", name: "柳南区", v: 86 },
+          { id: "yufeng", name: "鱼峰区", v: 71 },
+          { id: "liujiang", name: "柳江区", v: 64 },
+          { id: "liucheng", name: "柳城县", v: 48 }
+        ],
+        hotSites: [
+          { id: "jinsheng", name: "金盛驿站", scene: "社区", v: 1280 },
+          { id: "dexin", name: "德心医养", scene: "机构", v: 960 },
+          { id: "liunan", name: "柳南站", scene: "社区", v: 840 },
+          { id: "chengzhong", name: "城中驿站", scene: "居家", v: 720 },
+          { id: "yufeng", name: "鱼峰点", scene: "居家", v: 610 },
+          { id: "liujiang", name: "柳江中心", scene: "机构", v: 540 }
+        ],
+        trend: {
+          labels: ["3月", "4月", "5月", "6月", "7月", "8月"],
+          series: [
+            { name: "浏览", color: C.cyan, data: [620, 710, 680, 860, 920, 980] },
+            { name: "咨询", color: C.green, data: [280, 310, 340, 390, 420, 450] },
+            { name: "订单", color: C.orange, data: [180, 210, 230, 260, 290, 310] },
+            { name: "投诉", color: C.pink, data: [42, 38, 45, 51, 48, 40] }
+          ]
+        },
+        gaps: [
+          { name: "夜间紧急呼叫响应", crowd: "空巢独居", lv: "high", wait: 126 },
+          { name: "康复上门床边训练", crowd: "高龄失能", lv: "high", wait: 98 },
+          { name: "慢病用药提醒服务", crowd: "慢病管理", lv: "mid", wait: 76 },
+          { name: "家属远程探视预约", crowd: "家属代办", lv: "mid", wait: 64 },
+          { name: "助浴/助洁时段供给", crowd: "空巢独居", lv: "mid", wait: 58 },
+          { name: "认知症日间照护名额", crowd: "高龄失能", lv: "low", wait: 41 }
+        ],
+        funnel: [4280, 2150, 1860, 1680, 1148],
+        insight: "近30天需求事件以浏览与咨询为主；城中/柳南热度最高。高龄失能与空巢独居的夜间响应、康复上门缺口突出，建议优先扩容相关供给并缩短 SLA。"
+      };
+
+      const clone = (o) => JSON.parse(JSON.stringify(o));
+
+      function scaleData(filters) {
+        const d = clone(BASE);
+        let f = 1;
+        if (filters.site !== "all") f *= 0.22;
+        if (filters.crowd !== "all") f *= 0.35;
+        if (filters.scene !== "all") f *= 0.4;
+
+        const mul = (n) => Math.max(1, Math.round(Number(n) * f));
+        d.kpis.forEach((k) => {
+          if (k.u === "%") {
+            const base = parseFloat(k.n);
+            k.n = (base * (0.9 + f * 0.18)).toFixed(1);
+          } else {
+            k.n = String(mul(parseFloat(k.n)));
+          }
+        });
+        d.types.forEach((t) => { t.v = mul(t.v); });
+        d.funnel = d.funnel.map(mul);
+        d.hotSites.forEach((s) => { s.v = mul(s.v); });
+        d.gaps.forEach((g) => { g.wait = mul(g.wait); });
+        d.trend.series.forEach((s) => { s.data = s.data.map(mul); });
+        d.heat.forEach((h) => {
+          h.v = Math.min(99, Math.max(18, Math.round(h.v * (0.75 + f * 0.35))));
+        });
+
+        if (filters.crowd !== "all") {
+          d.crowds = d.crowds
+            .filter((c) => c.id === filters.crowd)
+            .map((c) => ({ ...c, pct: 100, cnt: mul(c.cnt * 2.2) }));
+        } else {
+          d.crowds.forEach((c) => { c.cnt = mul(c.cnt); });
+          const t2 = d.crowds.reduce((a, c) => a + c.cnt, 0) || 1;
+          let remain = 100;
+          d.crowds.forEach((c, i) => {
+            if (i === d.crowds.length - 1) c.pct = remain;
+            else {
+              c.pct = Math.round((c.cnt / t2) * 100);
+              remain -= c.pct;
+            }
+          });
+        }
+
+        if (filters.site !== "all") {
+          d.hotSites = d.hotSites.filter((s) => s.id === filters.site);
+          const site = SITES.find((s) => s.id === filters.site);
+          d.insight = `当前下钻至「${site?.name || filters.site}」：本地需求以咨询与订单为主，未满足项集中在上门时效与专项康复，建议对照热区排班与供给池。`;
+        } else if (filters.crowd !== "all") {
+          const cr = CROWDS.find((c) => c.id === filters.crowd);
+          d.insight = `人群视角「${cr?.name}」：需求结构偏向刚需照护与连续性服务，未满足缺口应优先纳入周计划产能。`;
+        } else if (filters.scene !== "all") {
+          const sc = SCENES.find((s) => s.id === filters.scene);
+          d.insight = `场景「${sc?.name}」：转化漏斗中咨询到下单环节损耗明显，建议强化场景内推荐与一键预约。`;
+        } else {
+          d.insight = BASE.insight;
+        }
+
+        const closed = d.funnel[4] || 1;
+        const top = d.funnel[0] || 1;
+        d.closePct = Math.round((closed / top) * 1000) / 10;
+        return d;
+      }
+
+      let filters = { site: "all", crowd: "all", scene: "all" };
+
+      function renderChips(el, items, key) {
+        el.innerHTML = items.map((it) =>
+          `<button type="button" class="chip${filters[key] === it.id ? " on" : ""}" data-id="${it.id}">${it.name}</button>`
+        ).join("");
+        el.querySelectorAll(".chip").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            filters[key] = btn.dataset.id;
+            renderAll();
+          });
+        });
+      }
+
+      function heatColor(v) {
+        const t = Math.max(0, Math.min(1, (v - 40) / 55));
+        const r = Math.round(20 + t * 40);
+        const g = Math.round(90 + t * 40);
+        const b = Math.round(160 + t * 60);
+        const a = 0.12 + t * 0.42;
+        return `rgba(${r},${g},${b},${a.toFixed(2)})`;
+      }
+
+      function donut(el, parts) {
+        if (!el) return;
+        const w = el.clientWidth || 160, h = el.clientHeight || 140;
+        const cx = w * 0.42, cy = h / 2, r = Math.min(w, h) * 0.32, r0 = r * 0.58;
+        const total = parts.reduce((a, p) => a + p.pct, 0) || 1;
+        let a0 = -Math.PI / 2;
+        let g = "";
+        parts.forEach((p) => {
+          const ang = (p.pct / total) * Math.PI * 2;
+          const a1 = a0 + ang;
+          const x0 = cx + r * Math.cos(a0), y0 = cy + r * Math.sin(a0);
+          const x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
+          const x2 = cx + r0 * Math.cos(a1), y2 = cy + r0 * Math.sin(a1);
+          const x3 = cx + r0 * Math.cos(a0), y3 = cy + r0 * Math.sin(a0);
+          const large = ang > Math.PI ? 1 : 0;
+          const color = ({ high: C.pink, chronic: C.blue, empty: C.orange, family: C.green })[p.id] || C.cyan;
+          g += `<path d="M${x0} ${y0} A${r} ${r} 0 ${large} 1 ${x1} ${y1} L${x2} ${y2} A${r0} ${r0} 0 ${large} 0 ${x3} ${y3} Z" fill="${color}" opacity=".9"/>`;
+          a0 = a1;
+        });
+        const people = parts.reduce((a, p) => a + (p.cnt || 0), 0);
+        g += `<text x="${cx}" y="${cy - 2}" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">${people}</text>`;
+        g += `<text x="${cx}" y="${cy + 14}" fill="rgba(170,200,225,.8)" font-size="10" text-anchor="middle">有需求长者</text>`;
+        svgPut(el, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${g}</svg>`);
+      }
+
+      function lineChart(el, series, labels) {
+        if (!el) return;
+        const w = el.clientWidth || 360, h = el.clientHeight || 180;
+        const pad = { t: 14, r: 10, b: 22, l: 32 };
+        const max = Math.max(...series.flatMap((s) => s.data), 1) * 1.12;
+        const n = labels.length;
+        const xAt = (i) => pad.l + (i / Math.max(n - 1, 1)) * (w - pad.l - pad.r);
+        const yAt = (v) => pad.t + (1 - v / max) * (h - pad.t - pad.b);
+        let g = "";
+        for (let i = 0; i <= 4; i++) {
+          const y = pad.t + (i / 4) * (h - pad.t - pad.b);
+          const val = Math.round(max - (i / 4) * max);
+          g += `<line x1="${pad.l}" y1="${y}" x2="${w - pad.r}" y2="${y}" stroke="rgba(140,180,220,.14)" stroke-dasharray="2 3"/>`;
+          g += `<text x="${pad.l - 4}" y="${y + 3}" fill="rgba(142,176,208,.7)" font-size="9" text-anchor="end">${val}</text>`;
+        }
+        series.forEach((s) => {
+          const pts = s.data.map((v, i) => `${xAt(i)},${yAt(v)}`).join(" ");
+          const area = `${xAt(0)},${h - pad.b} ${pts} ${xAt(n - 1)},${h - pad.b}`;
+          g += `<polygon points="${area}" fill="${s.color}" opacity=".08"/>`;
+          g += `<polyline points="${pts}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round"/>`;
+          s.data.forEach((v, i) => {
+            g += `<circle cx="${xAt(i)}" cy="${yAt(v)}" r="2.4" fill="${s.color}"/>`;
+          });
+        });
+        labels.forEach((lb, i) => {
+          g += `<text x="${xAt(i)}" y="${h - 4}" fill="rgba(160,190,220,.85)" font-size="10" text-anchor="middle">${lb}</text>`;
+        });
+        svgPut(el, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${g}</svg>`);
+      }
+
+      function funnelChart(el, values) {
+        if (!el) return;
+        const labels = ["浏览意向", "咨询诉求", "付费下单", "服务计划", "履约闭环"];
+        const colors = [C.cyan, C.green, C.orange, C.violet, C.blue];
+        const vals = values.map((v) => Number(v) || 0);
+        const topVal = Math.max(vals[0] || 0, 1);
+        const w = Math.max(el.clientWidth || 240, 160);
+        const h = Math.max(el.clientHeight || 200, 140);
+        const n = labels.length;
+        const leftPad = 58, rightPad = 44, topPad = 2, botPad = 2, gap = 2.5;
+        const rowH = (h - topPad - botPad - gap * (n - 1)) / n;
+        const cx = leftPad + (w - leftPad - rightPad) / 2;
+        const maxHalf = (w - leftPad - rightPad) * 0.48;
+        const minHalf = maxHalf * 0.22;
+        const halfOf = (v) => minHalf + Math.sqrt(Math.max(v, 0) / topVal) * (maxHalf - minHalf);
+        let g = "";
+        vals.forEach((v, i) => {
+          const y0 = topPad + i * (rowH + gap);
+          const y1 = y0 + rowH;
+          const topHalf = halfOf(v);
+          const next = i < n - 1 ? vals[i + 1] : v * 0.72;
+          const botHalf = halfOf(next);
+          const pts = [[cx - topHalf, y0], [cx + topHalf, y0], [cx + botHalf, y1], [cx - botHalf, y1]]
+            .map((p) => p.join(",")).join(" ");
+          const midY = (y0 + y1) / 2;
+          const rate = Math.round((v / topVal) * 100);
+          g += `<polygon points="${pts}" fill="${colors[i]}" opacity=".9"/>`;
+          g += `<text x="${leftPad - 6}" y="${midY + 3.5}" fill="rgba(200,225,245,.92)" font-size="10" text-anchor="end">${labels[i]}</text>`;
+          g += `<text x="${w - 6}" y="${midY + 3.5}" fill="#fff" font-size="11" font-weight="700" text-anchor="end">${v}</text>`;
+          g += `<text x="${cx}" y="${midY + 3.5}" fill="rgba(255,255,255,.95)" font-size="9" font-weight="650" text-anchor="middle">${rate}%</text>`;
+        });
+        svgPut(el, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${g}</svg>`);
+      }
+
+      function renderAll() {
+        renderChips(document.getElementById("siteChips"), SITES, "site");
+        renderChips(document.getElementById("crowdChips"), CROWDS, "crowd");
+        renderChips(document.getElementById("sceneChips"), SCENES, "scene");
+
+        const d = scaleData(filters);
+        const siteName = SITES.find((s) => s.id === filters.site)?.name || "全市";
+        const crowdName = CROWDS.find((c) => c.id === filters.crowd)?.name || "全部人群";
+        const sceneName = SCENES.find((s) => s.id === filters.scene)?.name || "全部场景";
+
+        document.getElementById("scopeBar").innerHTML = `
+          <span class="dot"></span>
+          <span>当前范围：<b>${siteName}</b></span>
+          <span>·</span>
+          <span>人群：<b>${crowdName}</b></span>
+          <span>·</span>
+          <span>场景：<b>${sceneName}</b></span>
+          <span>·</span>
+          <span>近30天需求事件统一汇聚</span>
+        `;
+
+        document.getElementById("kpiStrip").innerHTML = d.kpis.map((k) => `
+          <div class="kpi">
+            <div class="k">${k.label}</div>
+            <div class="n">${k.n}<em>${k.u}</em></div>
+            <div class="d">${k.d}</div>
+          </div>
+        `).join("");
+
+        donut(document.getElementById("chCrowd"), d.crowds);
+        document.getElementById("crowdList").innerHTML = d.crowds.map((c) => {
+          const color = ({ high: C.pink, chronic: C.blue, empty: C.orange, family: C.green })[c.id] || C.cyan;
+          return `<div class="seg-row">
+            <span class="nm">${c.name}</span>
+            <span class="track"><i style="width:${c.pct}%;background:linear-gradient(90deg,rgba(0,180,255,.2),${color})"></i></span>
+            <span class="val">${c.pct}%</span>
+          </div>`;
+        }).join("");
+
+        const tmax = Math.max(...d.types.map((t) => t.v), 1);
+        document.getElementById("typeList").innerHTML = d.types.map((t) => {
+          const meta = TYPE_META.find((m) => m.id === t.id) || { color: C.cyan };
+          return `<div class="type-row">
+            <span class="nm">${t.name}</span>
+            <span class="track"><i style="width:${Math.max(8, (t.v / tmax) * 100)}%;background:linear-gradient(90deg,rgba(0,180,255,.15),${meta.color})"></i></span>
+            <span class="val">${t.v}</span>
+          </div>`;
+        }).join("");
+
+        document.getElementById("heatGrid").innerHTML = d.heat.map((h) => `
+          <div class="heat-cell${filters.site !== "all" && filters.site.includes(h.id.slice(0, 4)) ? " on" : ""}" data-dist="${h.id}" style="background:${heatColor(h.v)}">
+            <div class="dn">${h.name}</div>
+            <div class="hv">${h.v}<em>热度</em></div>
+          </div>
+        `).join("");
+
+        const hmax = Math.max(...d.hotSites.map((s) => s.v), 1);
+        document.getElementById("hotList").innerHTML = d.hotSites.map((s, i) => `
+          <div class="hot-row${filters.site === s.id ? " on" : ""}" data-site="${s.id}">
+            <span class="rk">${i + 1}</span>
+            <span class="nm">${s.name}</span>
+            <span class="track"><i style="width:${Math.max(10, (s.v / hmax) * 100)}%;background:linear-gradient(90deg,rgba(0,180,255,.2),${C.cyan})"></i></span>
+            <span class="val">${s.v}</span>
+          </div>
+        `).join("");
+        document.querySelectorAll("#hotList .hot-row").forEach((row) => {
+          row.addEventListener("click", () => {
+            filters.site = row.dataset.site;
+            renderAll();
+          });
+        });
+
+        document.getElementById("trendLeg").innerHTML = d.trend.series.map((s) =>
+          `<span><i style="background:${s.color}"></i>${s.name}</span>`
+        ).join("");
+        lineChart(document.getElementById("chTrend"), d.trend.series, d.trend.labels);
+
+        document.getElementById("gapList").innerHTML = d.gaps.map((g) => `
+          <div class="gap-row">
+            <div>
+              <div class="nm" style="font-weight:650;color:#fff">${g.name}</div>
+              <div style="font-size:10px;color:var(--muted);margin-top:2px">${g.crowd}</div>
+            </div>
+            <span class="tag-lv ${g.lv}">${g.lv === "high" ? "高缺口" : g.lv === "mid" ? "中缺口" : "低缺口"}</span>
+            <span class="val">${g.wait}</span>
+          </div>
+        `).join("");
+
+        funnelChart(document.getElementById("chFunnel"), d.funnel);
+        document.getElementById("funnelRate").textContent = `闭环率 ${d.closePct}%`;
+        document.getElementById("insightBox").innerHTML = `<strong>洞察：</strong>${d.insight}`;
+      }
+
+      /* drill shortcuts */
+      document.getElementById("drillCrowd")?.addEventListener("click", () => {
+        filters.crowd = filters.crowd === "all" ? "high" : "all";
+        renderAll();
+      });
+      document.getElementById("drillSite")?.addEventListener("click", () => {
+        filters.site = filters.site === "all" ? "jinsheng" : "all";
+        renderAll();
+      });
+      document.getElementById("drillScene")?.addEventListener("click", () => {
+        filters.scene = filters.scene === "all" ? "home" : "all";
+        renderAll();
+      });
+      document.getElementById("drillGap")?.addEventListener("click", () => {
+        filters.crowd = "empty";
+        renderAll();
+      });
+
+      /* fullscreen */
+      const btnFs = document.getElementById("btnFullscreen");
+      const syncFs = () => {
+        const on = !!document.fullscreenElement;
+        btnFs?.setAttribute("aria-pressed", on ? "true" : "false");
+        const lab = document.getElementById("fsLabel");
+        if (lab) lab.textContent = on ? "退出全屏" : "全屏";
+      };
+      btnFs?.addEventListener("click", async () => {
+        try {
+          if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+          else await document.exitFullscreen();
+        } catch (e) { console.warn(e); }
+      });
+      document.addEventListener("fullscreenchange", () => {
+        syncFs();
+        setTimeout(renderAll, 120);
+      });
+
+      let resizeTimer;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(renderAll, 100);
+      });
+
+      renderAll();
+    })();
+  </script>
+</body>
+</html>

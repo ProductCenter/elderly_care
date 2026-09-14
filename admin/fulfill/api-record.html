@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>服务记录回传 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="fulfill" data-sub="api-record" data-tab="服务记录回传" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">服务记录回传</h1>
+    <p class="page-desc">接收第三方回传：到达、开始、完成时间、服务照片/附件、长者或家属确认</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">履约总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 录入回传</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">已回传</div><div class="v" id="stOk">0</div></div><div class="stat-card"><div class="k">缺附件</div><div class="v" id="stMiss">0</div></div><div class="stat-card"><div class="k">已归档</div><div class="v" id="stArch">0</div></div><div class="stat-card"><div class="k">回传数</div><div class="v" id="stAll">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>回传/任务</label><input class="ctrl" id="qKeyword" placeholder=""/></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="已回传">已回传</option><option value="缺附件">缺附件</option><option value="已归档">已归档</option></select></div><div class="filter-item"><label>确认人</label><input class="ctrl" id="q" placeholder=""/></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>回传编号</th><th>任务号</th><th>到达</th><th>开始</th><th>完成</th><th>确认人</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">录入回传</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>回传编号<span class="req">*</span></label><input class="ctrl" id="fRecordId" type="text"  placeholder=""/></div><div class="form-field"><label>任务号<span class="req">*</span></label><input class="ctrl" id="fTaskId" type="text"  placeholder=""/></div><div class="form-field"><label>到达时间</label><input class="ctrl" id="fArriveAt" type="text"  placeholder=""/></div><div class="form-field"><label>开始时间</label><input class="ctrl" id="fStartAt" type="text"  placeholder=""/></div><div class="form-field"><label>完成时间</label><input class="ctrl" id="fEndAt" type="text"  placeholder=""/></div><div class="form-field"><label>确认人</label><input class="ctrl" id="fConfirmBy" type="text"  placeholder=""/></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="已回传">已回传</option><option value="缺附件">缺附件</option><option value="已归档">已归档</option></select></div><div class="form-field"><label>照片/附件</label><textarea class="ctrl" id="fAttach" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "录入回传",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "fulfill:api-record",
+  rows: [{"recordId":"RC26073002","taskId":"TP26073002","arriveAt":"14:55","startAt":"15:05","endAt":"16:20","confirmBy":"家属李娜","status":"已归档","attach":"服务照片3张"},{"recordId":"RC26073101","taskId":"TP26073101","arriveAt":"—","startAt":"—","endAt":"—","confirmBy":"—","status":"缺附件","attach":""}],
+  columns: [{key:"recordId"},{key:"taskId"},{key:"arriveAt"},{key:"startAt"},{key:"endAt"},{key:"confirmBy"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.recordId||"").includes(v)||String(r.taskId||"").includes(v)},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v},{id:"q",field:"confirmBy"}],
+  formFields: [{id:"fRecordId",key:"recordId",type:"text",label:"回传编号",required:true},{id:"fTaskId",key:"taskId",type:"text",label:"任务号",required:true},{id:"fArriveAt",key:"arriveAt",type:"text",label:"到达时间",required:false},{id:"fStartAt",key:"startAt",type:"text",label:"开始时间",required:false},{id:"fEndAt",key:"endAt",type:"text",label:"完成时间",required:false},{id:"fConfirmBy",key:"confirmBy",type:"text",label:"确认人",required:false},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fAttach",key:"attach",type:"text",label:"照片/附件",required:false}],
+  stats: [{id:"stOk",html:false,value:(l)=>l.filter(r=>r.status==="已回传").length},{id:"stMiss",html:false,value:(l)=>l.filter(r=>r.status==="缺附件").length},{id:"stArch",html:false,value:(l)=>l.filter(r=>r.status==="已归档").length},{id:"stAll",html:false,value:(l)=>l.length}],
+  getStatus:(r)=>(r.status==="已归档"?{text:r.status,cls:"status-on"}:r.status==="缺附件"?{text:r.status,cls:"status-warn"}:{text:r.status,cls:"status-warn"})
+});
+</script>
+</body>
+</html>

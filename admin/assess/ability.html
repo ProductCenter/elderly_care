@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>长者评估 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body data-primary="assess" data-sub="ability" data-tab="长者评估" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div><h1 class="page-title">长者评估</h1><p class="page-desc">管理院内长者能力评估信息，可下载或上传评估表</p></div>
+        <div style="display:flex;gap:8px"><button type="button" class="btn btn-default" id="btnTpl">下载评估表模板</button><button type="button" class="btn btn-primary" id="btnAdd">+ 新建评估</button></div>
+      </div>
+      <div class="stat-row"><div class="stat-card"><div class="k">评估总数</div><div class="v" id="stTotal">0</div></div><div class="stat-card"><div class="k">本月评估</div><div class="v" id="stMonth">0</div></div><div class="stat-card"><div class="k">重度失能</div><div class="v" id="stSevere">0</div></div><div class="stat-card"><div class="k">待复核</div><div class="v" id="stPending">0</div></div></div>
+      
+      <div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>长者</label><input class="ctrl" id="qKeyword" placeholder="" /></div><div class="filter-item"><label>能力等级</label><select class="ctrl" id="qLevel"><option value="">全部</option><option value="能力完好">能力完好</option><option value="轻度失能">轻度失能</option><option value="中度失能">中度失能</option><option value="重度失能">重度失能</option></select></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="待复核">待复核</option><option value="已归档">已归档</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+      <div class="list-card">
+        <div class="table-wrap"><table class="data-table"><thead><tr><th>评估日期</th><th>长者</th><th>评估类型</th><th>能力等级</th><th>评估人</th><th>状态</th><th>附件</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+        <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div>
+      </div>
+      <div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+      <aside id="listDrawer" class="drawer">
+        <div class="drawer-head"><h3 id="drawerTitle">新建评估</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+        <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>长者<span class="req">*</span></label><select class="ctrl" id="fElder"><option value="张秀英">张秀英</option><option value="李建国">李建国</option><option value="陈桂兰">陈桂兰</option><option value="王德福">王德福</option></select></div><div class="form-field"><label>评估日期<span class="req">*</span></label><input class="ctrl" id="fDate" type="date" /></div><div class="form-field"><label>评估类型</label><select class="ctrl" id="fType"><option value="入住评估">入住评估</option><option value="定期复评">定期复评</option><option value="变更复评">变更复评</option></select></div><div class="form-field"><label>能力等级</label><select class="ctrl" id="fLevel"><option value="能力完好">能力完好</option><option value="轻度失能">轻度失能</option><option value="中度失能">中度失能</option><option value="重度失能">重度失能</option></select></div><div class="form-field"><label>评估人</label><input class="ctrl" id="fBy" placeholder="" /></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="待复核">待复核</option><option value="已归档">已归档</option></select></div><div class="form-field"><label>附件名</label><input class="ctrl" id="fFile" placeholder="评估表.pdf" /></div><div class="form-field full"><label>评估说明</label><textarea class="ctrl" id="fNote" placeholder=""></textarea></div></div></div>
+        <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/admin-page-list.js"></script>
+    <script>
+      AdminPageList.mount({
+        addTitle: "\u65b0\u5efa\u8bc4\u4f30",
+        editTitle: "编辑",
+        rows: [
+    {date:"2026-07-05",elder:"陈桂兰",type:"入住评估",level:"能力完好",by:"评估师-周",status:"已归档",file:"陈桂兰-入住评估.pdf",note:""},
+    {date:"2026-03-12",elder:"张秀英",type:"变更复评",level:"轻度失能",by:"评估师-周",status:"已归档",file:"张秀英-复评.pdf",note:"护理等级上调"},
+    {date:"2026-07-28",elder:"李建国",type:"定期复评",level:"重度失能",by:"评估师-吴",status:"待复核",file:"李建国-复评.docx",note:""},
+  ],
+        columns: [{ key: "date" }, { key: "elder" }, { key: "type" }, { key: "level" }, { key: "by" }, { key: "status", status: true }, { key: "file" }],
+        filters: [{ id: "qKeyword", match: (r,v) => !v || (String(r.elder||"").includes(v)) }, { id: "qLevel", match: (r,v) => !v || String(r.level) === v }, { id: "qStatus", match: (r,v) => !v || String(r.status) === v }],
+        formFields: [{ id: "fElder", key: "elder", type: "select", label: "长者", required: true }, { id: "fDate", key: "date", type: "date", label: "评估日期", required: true }, { id: "fType", key: "type", type: "select", label: "评估类型" }, { id: "fLevel", key: "level", type: "select", label: "能力等级" }, { id: "fBy", key: "by", type: "text", label: "评估人" }, { id: "fStatus", key: "status", type: "select", label: "状态" }, { id: "fFile", key: "file", type: "text", label: "附件名" }, { id: "fNote", key: "note", type: "textarea", label: "评估说明" }],
+        stats: [{ id: "stTotal", html: false, value: (list)=>list.length }, { id: "stMonth", html: false, value: (list)=>list.filter(r=>(r.date||"").startsWith("2026-07")).length }, { id: "stSevere", html: false, value: (list)=>list.filter(r=>r.level==="重度失能").length }, { id: "stPending", html: false, value: (list)=>list.filter(r=>r.status==="待复核").length }],
+        getStatus: (r)=>({text:r.status, cls:r.status==="已归档"?"status-on":"status-busy"}),
+        rowActions: null,
+        onAction: null,
+      });
+    </script>
+  </body>
+</html>

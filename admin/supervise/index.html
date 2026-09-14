@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>运营监管总览 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+<style>
+  .hub-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 1100px) { .hub-grid { grid-template-columns: 1fr; } }
+  .hub-card {
+    background: #fff; border: 1px solid var(--line, #e5e6eb); border-radius: 12px;
+    padding: 16px 18px 14px; box-shadow: 0 6px 18px rgba(31,35,41,.04);
+  }
+  .hub-card h2 { margin: 0 0 6px; font-size: 16px; }
+  .hub-card p { margin: 0 0 12px; color: #646a73; font-size: 13px; line-height: 1.55; }
+  .hub-links { display: grid; gap: 8px; }
+  .hub-links a {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px; border: 1px solid #eef0f3; border-radius: 8px;
+    text-decoration: none; color: #1f2329; font-size: 13px; background: #fafbfc;
+  }
+  .hub-links a:hover { border-color: #c9d7ff; background: #f5f8ff; color: #2f6bff; }
+  .hub-links em { font-style: normal; color: #8f959e; font-size: 12px; }
+  .hub-priority {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #fff5f5 0%, #fff 60%);
+    border: 1px solid #ffc9c9;
+    box-shadow: 0 8px 24px rgba(220,38,38,.08);
+  }
+  .hub-priority h2 { color: #b91c1c; }
+  .hub-priority .hub-links a {
+    border-color: #fecaca; background: #fff;
+  }
+  .hub-priority .hub-links a.priority-main {
+    border-color: #f87171; background: linear-gradient(90deg, #fef2f2, #fff);
+    font-weight: 600; color: #b91c1c;
+  }
+  .hub-priority .hub-links a.priority-main:hover {
+    border-color: #ef4444; background: #fef2f2; color: #dc2626;
+  }
+  .hub-priority .hub-links a.priority-main em { color: #ef4444; font-weight: 600; }
+  .tag-priority {
+    display: inline-block; margin-left: 8px; padding: 2px 8px; border-radius: 4px;
+    background: #dc2626; color: #fff; font-size: 11px; font-weight: 600;
+  }
+  .flow {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    margin: 0 0 16px; padding: 12px 14px; background: #f7f9fc; border-radius: 10px;
+    border: 1px solid #eef0f3; font-size: 13px; color: #646a73;
+  }
+  .flow b { color: #1f2329; font-weight: 600; }
+  .flow i { font-style: normal; color: #c0c4cc; }
+</style>
+</head>
+<body data-primary="supervise" data-sub="overview" data-tab="运营监管总览" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">运营监管总览</h1>
+    <p class="page-desc">监管驾驶舱总览商户准入、供给履约、补贴追溯、投诉评价与报表导出，支撑平台合规运营</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-primary" href="./cockpit.html">打开监管驾驶舱</a>
+    <a class="btn btn-default" href="../../biz-demo.html" target="_blank">B 端演示入口</a>
+  </div>
+</div>
+
+<div class="flow">
+  <b>推荐路径</b>
+  <span>监管驾驶舱</span><i>→</i>
+  <span>准入 / 供给监管</span><i>→</i>
+  <span>履约 / 补贴 / 投诉</span><i>→</i>
+  <span>区域评价 / 报表导出</span>
+</div>
+
+<div class="hub-grid">
+  <section class="hub-card hub-priority">
+    <h2>监管驾驶舱 <span class="tag-priority">优先</span></h2>
+    <p>全市用户、商户、供给、订单、履约、补贴、投诉与评价 KPI 一屏总览，支持区域/品类/时间筛选</p>
+    <div class="hub-links">
+      <a class="priority-main" href="./cockpit.html">监管驾驶舱大屏 <em>S0 · 优先入口</em></a>
+    </div>
+  </section>
+
+  <section class="hub-card">
+    <h2>准入与供给</h2>
+    <p>商户准入审核与供给上架合规监管</p>
+    <div class="hub-links">
+      <a href="./merchant-admit.html">商户准入监管 <em>S1</em></a>
+      <a href="./supply.html">供给监管 <em>S2</em></a>
+    </div>
+  </section>
+
+  <section class="hub-card">
+    <h2>履约与资金</h2>
+    <p>履约质量监管与政府补贴资金全链路追溯</p>
+    <div class="hub-links">
+      <a href="./fulfill-quality.html">履约质量监管 <em>S3</em></a>
+      <a href="./subsidy-trace.html">补贴资金追溯 <em>S4</em></a>
+    </div>
+  </section>
+
+  <section class="hub-card">
+    <h2>投诉与评价</h2>
+    <p>售后投诉督办与区域服务质量评价</p>
+    <div class="hub-links">
+      <a href="./aftersale-complaint.html">售后投诉监管 <em>S5</em></a>
+      <a href="./region-quality.html">区域服务质量评价 <em>S6</em></a>
+    </div>
+  </section>
+
+  <section class="hub-card">
+    <h2>报表导出</h2>
+    <p>监管报表查询、订阅与批量导出</p>
+    <div class="hub-links">
+      <a href="./report-export.html">监管报表查询与导出 <em>S7</em></a>
+    </div>
+  </section>
+</div>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+</body>
+</html>

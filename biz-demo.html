@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+    <title>B 端业务演示 · 收益分享 / 经营赋能 / 运营监管</title>
+    <style>
+      :root {
+        --bg: #f3f5f8;
+        --card: #fff;
+        --text: #1f2329;
+        --muted: #646a73;
+        --line: #e5e6eb;
+        --brand: #2563eb;
+        --finance: #0f766e;
+        --empower: #7c3aed;
+        --supervise: #dc2626;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        background: linear-gradient(180deg, #e8efff 0%, var(--bg) 40%);
+        color: var(--text);
+        min-height: 100vh;
+      }
+      .wrap { max-width: 860px; margin: 0 auto; padding: 28px 20px 48px; }
+      h1 { margin: 0 0 8px; font-size: 24px; }
+      .lead { margin: 0 0 20px; color: var(--muted); line-height: 1.6; font-size: 14px; }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 18px;
+        margin-bottom: 14px;
+        box-shadow: 0 8px 24px rgba(31, 35, 41, 0.04);
+      }
+      .card h2 { margin: 0 0 8px; font-size: 16px; }
+      .card p { margin: 0 0 12px; color: var(--muted); font-size: 13px; line-height: 1.55; }
+      .links { display: grid; gap: 8px; }
+      .links a {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 11px 12px; border: 1px solid var(--line); border-radius: 10px;
+        text-decoration: none; color: var(--text); background: #fafbff; font-size: 13px;
+      }
+      .links a:hover { border-color: #93c5fd; color: var(--brand); }
+      .links em { font-style: normal; color: var(--muted); font-size: 12px; }
+      .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        height: 34px; padding: 0 12px; border-radius: 8px;
+        background: var(--brand); color: #fff; text-decoration: none; font-size: 13px;
+      }
+      .btn.finance { background: var(--finance); }
+      .btn.empower { background: var(--empower); }
+      .btn.supervise { background: var(--supervise); }
+      .btn.ghost { background: #fff; color: var(--brand); border: 1px solid #c9d7ff; }
+      .priority {
+        border-color: #fecaca;
+        background: linear-gradient(135deg, #fff5f5 0%, #fff 60%);
+      }
+      .priority h2 { color: var(--supervise); }
+      .priority a.main {
+        border-color: #f87171; background: #fef2f2; color: var(--supervise); font-weight: 600;
+      }
+      .tag {
+        display: inline-block; margin-left: 6px; padding: 1px 6px; border-radius: 4px;
+        background: var(--supervise); color: #fff; font-size: 11px; vertical-align: middle;
+      }
+    </style>    <link rel="stylesheet" href="./css/app-shell.css?v=20260912-covers5" />
+
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>B 端业务演示</h1>
+      <p class="lead">收益分享（分账结算）、经营赋能（研判营销）、运营监管（驾驶舱）三大模块 Admin 页面演示入口。</p>
+
+      <div class="card">
+        <h2>快捷入口</h2>
+        <div class="row">
+          <a class="btn finance" href="./admin/finance/index.html">收益分享总览</a>
+          <a class="btn empower" href="./admin/empower/index.html">经营赋能总览</a>
+          <a class="btn supervise" href="./admin/supervise/cockpit.html">监管驾驶舱</a>
+          <a class="btn ghost" href="./admin/supervise/index.html">监管模块总览</a>
+          <a class="btn ghost" href="./fulfill-demo.html">履约演示</a>
+        </div>
+      </div>
+
+      <div class="card priority">
+        <h2>运营监管 <span class="tag">优先</span></h2>
+        <p>监管驾驶舱一屏总览用户、商户、供给、订单、履约、补贴、投诉与评价指标。</p>
+        <div class="links">
+          <a class="main" href="./admin/supervise/cockpit.html">监管驾驶舱大屏 <em>S0</em></a>
+          <a href="./admin/supervise/index.html">监管总览 Hub <em>S0a</em></a>
+          <a href="./admin/supervise/merchant-admit.html">商户准入监管 <em>S1</em></a>
+          <a href="./admin/supervise/supply.html">供给监管 <em>S2</em></a>
+          <a href="./admin/supervise/fulfill-quality.html">履约质量监管 <em>S3</em></a>
+          <a href="./admin/supervise/subsidy-trace.html">补贴资金追溯 <em>S4</em></a>
+          <a href="./admin/supervise/aftersale-complaint.html">售后投诉监管 <em>S5</em></a>
+          <a href="./admin/supervise/region-quality.html">区域服务质量评价 <em>S6</em></a>
+          <a href="./admin/supervise/report-export.html">监管报表查询与导出 <em>S7</em></a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>收益分享</h2>
+        <p>多方分账、结算引擎、虚拟账户、提现打款与对账导出。</p>
+        <div class="links">
+          <a href="./admin/finance/index.html">收益分享总览 <em>R0</em></a>
+          <a href="./admin/finance/share-ratio.html">多方分账比例配置 <em>R1</em></a>
+          <a href="./admin/finance/share-member.html">会员权益核销分账计算 <em>R2</em></a>
+          <a href="./admin/finance/settle-engine.html">结算规则引擎执行 <em>R6</em></a>
+          <a href="./admin/finance/settle-withdraw.html">提现审核与打款 <em>R8</em></a>
+          <a href="./admin/finance/recon-export.html">对账报表导出 <em>R11</em></a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>经营赋能</h2>
+        <p>运营研判告警、政策复盘、营销智能生成与效率改进。</p>
+        <div class="links">
+          <a href="./admin/empower/index.html">经营赋能总览 <em>E0</em></a>
+          <a href="./admin/empower/ops-health-risk.html">人群健康风险研判 <em>E1</em></a>
+          <a href="./admin/empower/ops-safety-alert.html">安全风险事件告警 <em>E2</em></a>
+          <a href="./admin/empower/mkt-copy.html">权益内容智能生成 <em>E7</em></a>
+          <a href="./admin/empower/mkt-deliver.html">多端精准投放 <em>E9</em></a>
+          <a href="./admin/empower/eff-improve.html">运营改进方案生成 <em>E12</em></a>
+        </div>
+      </div>
+    </div>    <script src="./js/app-shell.js?v=20260912-covers5"></script>
+
+  </body>
+</html>

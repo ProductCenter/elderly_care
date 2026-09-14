@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>经营赋能总览 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+<style>
+  .hub-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 1100px) { .hub-grid { grid-template-columns: 1fr; } }
+  .hub-card {
+    background: #fff; border: 1px solid var(--line, #e5e6eb); border-radius: 12px;
+    padding: 16px 18px 14px; box-shadow: 0 6px 18px rgba(31,35,41,.04);
+  }
+  .hub-card h2 { margin: 0 0 6px; font-size: 16px; }
+  .hub-card p { margin: 0 0 12px; color: #646a73; font-size: 13px; line-height: 1.55; }
+  .hub-links { display: grid; gap: 8px; }
+  .hub-links a {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px; border: 1px solid #eef0f3; border-radius: 8px;
+    text-decoration: none; color: #1f2329; font-size: 13px; background: #fafbfc;
+  }
+  .hub-links a:hover { border-color: #c9d7ff; background: #f5f8ff; color: #2f6bff; }
+  .hub-links em { font-style: normal; color: #8f959e; font-size: 12px; }
+  .flow {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    margin: 0 0 16px; padding: 12px 14px; background: #f7f9fc; border-radius: 10px;
+    border: 1px solid #eef0f3; font-size: 13px; color: #646a73;
+  }
+  .flow b { color: #1f2329; font-weight: 600; }
+  .flow i { font-style: normal; color: #c0c4cc; }
+</style>
+</head>
+<body data-primary="empower" data-sub="overview" data-tab="经营赋能总览" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">经营赋能总览</h1>
+    <p class="page-desc">运营研判告警、政策复盘、营销智能生成与投放、效率分析与改进方案，助力平台精细化经营</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="../../biz-demo.html" target="_blank">B 端演示入口</a>
+  </div>
+</div>
+
+<div class="flow">
+  <b>推荐路径</b>
+  <span>风险研判 / 告警</span><i>→</i>
+  <span>成效推送 / 政策复盘</span><i>→</i>
+  <span>营销生成 / 投放</span><i>→</i>
+  <span>效率分析 / 改进方案</span>
+</div>
+
+<div class="hub-grid">
+  <section class="hub-card">
+    <h2>运营研判与告警</h2>
+    <p>健康风险、安全消防告警与底线/探访成效推送</p>
+    <div class="hub-links">
+      <a href="./ops-health-risk.html">人群健康风险研判 <em>E1</em></a>
+      <a href="./ops-safety-alert.html">安全风险事件告警 <em>E2</em></a>
+      <a href="./ops-fire-alert.html">消防安全事件告警 <em>E3</em></a>
+      <a href="./ops-bottomline.html">底线服务成效推送 <em>E4</em></a>
+      <a href="./ops-homevisit.html">入户探访成效推送 <em>E5</em></a>
+      <a href="./ops-policy-review.html">政策落地复盘 <em>E6</em></a>
+    </div>
+  </section>
+
+  <section class="hub-card">
+    <h2>营销智能</h2>
+    <p>权益文案生成、活动策划与多端精准投放</p>
+    <div class="hub-links">
+      <a href="./mkt-copy.html">权益内容智能生成 <em>E7</em></a>
+      <a href="./mkt-plan.html">营销活动策划助手 <em>E8</em></a>
+      <a href="./mkt-deliver.html">多端精准投放 <em>E9</em></a>
+    </div>
+  </section>
+
+  <section class="hub-card">
+    <h2>效率与改进</h2>
+    <p>工时效率、生态履约分析与运营改进方案</p>
+    <div class="hub-links">
+      <a href="./eff-hour.html">工时效率分析报告 <em>E10</em></a>
+      <a href="./eff-ecology.html">生态服务履约分析 <em>E11</em></a>
+      <a href="./eff-improve.html">运营改进方案生成 <em>E12</em></a>
+    </div>
+  </section>
+</div>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+</body>
+</html>

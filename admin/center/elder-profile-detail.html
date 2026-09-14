@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>长者健康详情 · C-Life 运营驾驶舱</title>
+  <style>
+    :root {
+      --bg: #050d1f;
+      --cyan: #38bdf8;
+      --blue: #3b82f6;
+      --teal: #2dd4bf;
+      --violet: #a78bfa;
+      --amber: #fbbf24;
+      --rose: #f87171;
+      --muted: #7ea4c9;
+      --line: rgba(64, 168, 255, 0.28);
+      --font: "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      min-height: 100%; font-family: var(--font); color: #e8f3ff;
+      background:
+        radial-gradient(800px 420px at 50% 0%, rgba(30,100,180,.2), transparent 60%),
+        linear-gradient(180deg, #061228, #050d1f 50%, #040a18);
+    }
+    .page { max-width: 1280px; margin: 0 auto; padding: 18px 20px 28px; }
+    .top {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .top h1 {
+      font-size: 22px; letter-spacing: 2px;
+      background: linear-gradient(180deg, #fff, #7dd3fc);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .top p { margin-top: 4px; font-size: 12px; color: var(--muted); }
+    .actions { display: flex; gap: 8px; }
+    .btn {
+      height: 34px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--line);
+      background: rgba(12,40,80,.7); color: #c7e4ff; font-size: 12px; cursor: pointer;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn.primary {
+      background: linear-gradient(135deg, rgba(56,189,248,.4), rgba(59,130,246,.5));
+      color: #fff; border: none; box-shadow: 0 0 14px rgba(56,189,248,.3);
+    }
+    .panel {
+      border: 1px solid var(--line); border-radius: 12px;
+      background: rgba(8,28,58,.72); padding: 16px;
+      box-shadow: 0 0 24px rgba(0,0,0,.3); margin-bottom: 12px;
+      position: relative;
+    }
+    .panel::before {
+      content: ""; position: absolute; left: 16px; right: 16px; top: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    }
+    .sec { font-size: 13px; color: #93c5fd; margin-bottom: 10px; font-weight: 700; }
+    .pinfo { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 14px; margin-bottom: 12px; }
+    .pinfo b { color: var(--muted); font-weight: 500; margin-right: 6px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .tags span {
+      font-size: 12px; padding: 4px 10px; border-radius: 5px;
+      background: rgba(30,58,95,.9); border: 1px solid rgba(100,140,190,.35); color: #c7d7eb;
+    }
+    .judge {
+      padding: 10px 12px; border-radius: 8px; margin-bottom: 14px;
+      border: 1px solid rgba(64,168,255,.3); background: rgba(8,28,58,.55);
+      font-size: 13px; color: #c7d7eb; line-height: 1.5;
+    }
+    .judge strong { color: var(--amber); }
+    .vitals {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;
+    }
+    .vital {
+      padding: 12px 14px; border-radius: 8px;
+      background: rgba(4,18,40,.7); border: 1px solid rgba(64,168,255,.2);
+    }
+    .vital .t { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .vital .row { display: flex; justify-content: space-between; align-items: baseline; }
+    .vital .val { font-size: 22px; font-weight: 800; }
+    .vital .val em { font-style: normal; font-size: 11px; color: var(--muted); margin-left: 3px; }
+    .vital .st { font-size: 12px; font-weight: 700; }
+    .st.ok { color: var(--cyan); }
+    .st.low { color: var(--rose); }
+    .st.na { color: #6488a8; }
+    .charts {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    }
+    .chart-box {
+      border: 1px solid rgba(64,168,255,.2); border-radius: 10px;
+      background: rgba(4,16,36,.5); padding: 10px 12px; min-height: 220px;
+      display: flex; flex-direction: column;
+    }
+    .chart-box .cap { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .chart-box > div:last-child { flex: 1; min-height: 160px; }
+    @media (max-width: 900px) {
+      .vitals, .charts { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top">
+      <div>
+        <h1>长者健康详情下钻</h1>
+        <p>C-Life 社区AI康养驿站 · 个人动态画像深度页</p>
+      </div>
+      <div class="actions">
+        <a class="btn" href="./ecology-scene-screen.html">← 返回驾驶舱</a>
+        <button class="btn primary" type="button" id="btnFs">全屏</button>
+      </div>
+    </div>
+
+    <section class="panel">
+      <div class="sec">基础信息</div>
+      <div class="pinfo" id="pinfo"></div>
+      <div class="sec">长者标签</div>
+      <div class="tags" id="tags"></div>
+      <div class="sec">最新数据研判</div>
+      <div class="judge" id="judge"></div>
+      <div class="sec">最新体征</div>
+      <div class="vitals" id="vitals"></div>
+    </section>
+
+    <section class="charts">
+      <div class="chart-box">
+        <div class="cap">近7日血压趋势（收缩压 / 舒张压）</div>
+        <div id="bpLine"></div>
+      </div>
+      <div class="chart-box">
+        <div class="cap">近7日脉率 / 血氧趋势</div>
+        <div id="pulseLine"></div>
+      </div>
+      <div class="chart-box">
+        <div class="cap">本月到站场景使用（次）</div>
+        <div id="sceneBar"></div>
+      </div>
+      <div class="chart-box">
+        <div class="cap">服务履约与评价回流</div>
+        <div id="orderLine"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      const DB = {
+        chen: {
+          name: "陈*", gender: "男", age: "45岁", weight: "76.0kg", height: "171.5cm",
+          tags: ["体重稳定","几乎不起夜","近一年无跌倒","食欲良好","吞咽正常","偶有困倦","偶尔睡不好","可独立行走"],
+          judge: "<strong>研判提醒：</strong>脉率 35 次/分偏低，建议确认是否处于静息/睡眠后状态并安排复测；收缩压/舒张压与血氧均正常，暂无紧急预警。",
+          vitals: [
+            { name: "收缩压", val: "105", unit: "mmHg", st: "正常", cls: "ok" },
+            { name: "舒张压", val: "72", unit: "mmHg", st: "正常", cls: "ok" },
+            { name: "脉率", val: "35", unit: "次/分", st: "偏低", cls: "low" },
+            { name: "血氧饱和度", val: "99", unit: "%", st: "正常", cls: "ok" },
+            { name: "空腹血糖", val: "--", unit: "", st: "暂无", cls: "na" },
+            { name: "餐后血糖", val: "--", unit: "", st: "暂无", cls: "na" },
+          ],
+          bp: { sys: [118, 112, 108, 110, 106, 107, 105], dia: [78, 74, 72, 73, 71, 72, 72] },
+          pulse: [62, 58, 55, 48, 42, 38, 35],
+          spo2: [98, 99, 98, 99, 99, 98, 99],
+        },
+        wang: {
+          name: "王*", gender: "女", age: "68岁", weight: "58.2kg", height: "158.0cm",
+          tags: ["慢病随访中","食欲良好","可独立行走","偶有关节酸痛","睡眠一般"],
+          judge: "<strong>研判提醒：</strong>体适能测评指标正常，建议按科学运动方案持续跟进。",
+          vitals: [
+            { name: "收缩压", val: "128", unit: "mmHg", st: "正常", cls: "ok" },
+            { name: "舒张压", val: "78", unit: "mmHg", st: "正常", cls: "ok" },
+            { name: "脉率", val: "72", unit: "次/分", st: "正常", cls: "ok" },
+            { name: "血氧饱和度", val: "98", unit: "%", st: "正常", cls: "ok" },
+            { name: "空腹血糖", val: "5.6", unit: "mmol/L", st: "正常", cls: "ok" },
+            { name: "餐后血糖", val: "7.2", unit: "mmol/L", st: "正常", cls: "ok" },
+          ],
+          bp: { sys: [130, 128, 132, 126, 129, 127, 128], dia: [80, 78, 82, 76, 79, 77, 78] },
+          pulse: [70, 72, 74, 71, 73, 72, 72],
+          spo2: [97, 98, 98, 97, 98, 99, 98],
+        },
+        li: {
+          name: "李*", gender: "男", age: "72岁", weight: "69.5kg", height: "168.0cm",
+          tags: ["近一年无跌倒","吞咽正常","偶有困倦","可独立行走"],
+          judge: "<strong>研判提醒：</strong>足底理疗履约完成，体征平稳。",
+          vitals: [
+            { name: "收缩压", val: "136", unit: "mmHg", st: "正常", cls: "ok" },
+            { name: "舒张压", val: "84", unit: "mmHg", st: "正常", cls: "ok" },
+            { name: "脉率", val: "68", unit: "次/分", st: "正常", cls: "ok" },
+            { name: "血氧饱和度", val: "97", unit: "%", st: "正常", cls: "ok" },
+            { name: "空腹血糖", val: "--", unit: "", st: "暂无", cls: "na" },
+            { name: "餐后血糖", val: "--", unit: "", st: "暂无", cls: "na" },
+          ],
+          bp: { sys: [138, 136, 140, 135, 137, 134, 136], dia: [86, 84, 88, 82, 85, 83, 84] },
+          pulse: [66, 68, 70, 67, 69, 68, 68],
+          spo2: [96, 97, 97, 96, 97, 98, 97],
+        },
+        zhao: {
+          name: "赵*", gender: "女", age: "65岁", weight: "55.0kg", height: "155.5cm",
+          tags: ["食欲良好","体重稳定","可独立行走","偶尔睡不好"],
+          judge: "<strong>研判提醒：</strong>助餐签到完成，膳食方案执行中。",
+          vitals: [
+            { name: "收缩压", val: "118", unit: "mmHg", st: "正常", cls: "ok" },
+            { name: "舒张压", val: "70", unit: "mmHg", st: "正常", cls: "ok" },
+            { name: "脉率", val: "76", unit: "次/分", st: "正常", cls: "ok" },
+            { name: "血氧饱和度", val: "99", unit: "%", st: "正常", cls: "ok" },
+            { name: "空腹血糖", val: "5.2", unit: "mmol/L", st: "正常", cls: "ok" },
+            { name: "餐后血糖", val: "--", unit: "", st: "暂无", cls: "na" },
+          ],
+          bp: { sys: [120, 118, 122, 116, 119, 117, 118], dia: [72, 70, 74, 68, 71, 69, 70] },
+          pulse: [74, 76, 78, 75, 77, 76, 76],
+          spo2: [98, 99, 99, 98, 99, 99, 99],
+        },
+        sun: {
+          name: "孙*", gender: "男", age: "70岁", weight: "72.3kg", height: "170.0cm",
+          tags: ["偶尔睡不好","偶有困倦","近一年无跌倒","可独立行走"],
+          judge: "<strong>研判提醒：</strong>睡眠评估已生成疗愈建议，建议按方案执行作息。",
+          vitals: [
+            { name: "收缩压", val: "132", unit: "mmHg", st: "正常", cls: "ok" },
+            { name: "舒张压", val: "80", unit: "mmHg", st: "正常", cls: "ok" },
+            { name: "脉率", val: "64", unit: "次/分", st: "正常", cls: "ok" },
+            { name: "血氧饱和度", val: "98", unit: "%", st: "正常", cls: "ok" },
+            { name: "空腹血糖", val: "--", unit: "", st: "暂无", cls: "na" },
+            { name: "餐后血糖", val: "--", unit: "", st: "暂无", cls: "na" },
+          ],
+          bp: { sys: [134, 132, 136, 130, 133, 131, 132], dia: [82, 80, 84, 78, 81, 79, 80] },
+          pulse: [62, 64, 66, 63, 65, 64, 64],
+          spo2: [97, 98, 98, 97, 98, 98, 98],
+        },
+      };
+
+      const id = new URLSearchParams(location.search).get("id") || "chen";
+      const e = DB[id] || DB.chen;
+
+      document.getElementById("pinfo").innerHTML = `
+        <span><b>姓名</b>${e.name}</span>
+        <span><b>性别</b>${e.gender}</span>
+        <span><b>年龄</b>${e.age}</span>
+        <span><b>体重</b>${e.weight}</span>
+        <span><b>身高</b>${e.height}</span>
+        <span><b>档案号</b>${id.toUpperCase()}-JS01</span>`;
+      document.getElementById("tags").innerHTML = e.tags.map(t => `<span>${t}</span>`).join("");
+      document.getElementById("judge").innerHTML = e.judge;
+      document.getElementById("vitals").innerHTML = e.vitals.map(v => `
+        <div class="vital">
+          <div class="t">${v.name}</div>
+          <div class="row">
+            <div class="val">${v.val}${v.unit ? `<em>${v.unit}</em>` : ""}</div>
+            <div class="st ${v.cls}">${v.st}</div>
+          </div>
+        </div>`).join("");
+
+      document.getElementById("btnFs").onclick = () => {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+        else document.exitFullscreen?.();
+      };
+
+      function lineChart(el, labels, series, yMax) {
+        const w = 520, h = 180, pad = { l: 34, r: 10, t: 12, b: 24 };
+        const iw = w - pad.l - pad.r, ih = h - pad.t - pad.b;
+        const max = yMax || Math.max(...series.flatMap(s => s.data), 1) * 1.15;
+        const xAt = i => pad.l + (iw * i) / Math.max(labels.length - 1, 1);
+        const yAt = v => pad.t + ih - (v / max) * ih;
+        let svg = `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:100%;display:block">`;
+        for (let i = 0; i <= 4; i++) {
+          const y = pad.t + (ih * i) / 4;
+          svg += `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="rgba(56,189,248,.12)" stroke-dasharray="3 3"/>`;
+          svg += `<text x="${pad.l-4}" y="${y+3}" fill="#6488a8" font-size="10" text-anchor="end">${Math.round(max*(1-i/4))}</text>`;
+        }
+        labels.forEach((lab, i) => svg += `<text x="${xAt(i)}" y="${h-6}" fill="#6488a8" font-size="10" text-anchor="middle">${lab}</text>`);
+        series.forEach(s => {
+          const d = s.data.map((v, i) => `${i?"L":"M"}${xAt(i)},${yAt(v)}`).join(" ");
+          svg += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2.2"/>`;
+          s.data.forEach((v, i) => svg += `<circle cx="${xAt(i)}" cy="${yAt(v)}" r="3" fill="#041024" stroke="${s.color}" stroke-width="1.8"/>`);
+        });
+        el.innerHTML = svg + "</svg>";
+      }
+
+      function barChart(el, labels, data, colors) {
+        const w = 520, h = 180, pad = { l: 34, r: 10, t: 12, b: 28 };
+        const iw = w - pad.l - pad.r, ih = h - pad.t - pad.b;
+        const max = Math.max(...data, 1) * 1.2;
+        const gw = iw / labels.length, bw = Math.min(36, gw * 0.5);
+        let svg = `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:100%;display:block">`;
+        labels.forEach((lab, i) => {
+          const bh = (data[i] / max) * ih, x = pad.l + gw * i + gw / 2 - bw / 2;
+          svg += `<rect x="${x}" y="${pad.t+ih-bh}" width="${bw}" height="${bh}" rx="3" fill="${colors[i%colors.length]}"/>`;
+          svg += `<text x="${x+bw/2}" y="${h-8}" fill="#7ea4c9" font-size="10" text-anchor="middle">${lab}</text>`;
+          svg += `<text x="${x+bw/2}" y="${pad.t+ih-bh-5}" fill="#93c5fd" font-size="10" text-anchor="middle">${data[i]}</text>`;
+        });
+        el.innerHTML = svg + "</svg>";
+      }
+
+      const days = ["01","02","03","04","05","06","07"];
+      lineChart(document.getElementById("bpLine"), days, [
+        { name: "收缩压", color: "#38bdf8", data: e.bp.sys },
+        { name: "舒张压", color: "#a78bfa", data: e.bp.dia },
+      ], 160);
+      lineChart(document.getElementById("pulseLine"), days, [
+        { name: "脉率", color: "#f87171", data: e.pulse },
+        { name: "血氧", color: "#2dd4bf", data: e.spo2 },
+      ], 110);
+      barChart(document.getElementById("sceneBar"),
+        ["健康监测","科学运动","营养膳食","睡眠疗愈","足底理疗"],
+        [6, 3, 8, 2, 4],
+        ["#38bdf8","#4ade80","#2dd4bf","#a78bfa","#3b82f6"]);
+      lineChart(document.getElementById("orderLine"), ["2月","3月","4月","5月","6月","7月"], [
+        { name: "履约完成", color: "#38bdf8", data: [1, 2, 2, 3, 3, 4] },
+        { name: "已评价", color: "#2dd4bf", data: [1, 1, 2, 2, 3, 3] },
+      ], 6);
+    })();
+  </script>
+</body>
+</html>

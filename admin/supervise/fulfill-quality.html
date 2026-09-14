@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>履约质量监管 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="supervise" data-sub="fulfill-quality" data-tab="履约质量监管" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">履约质量监管</h1>
+    <p class="page-desc">订单履约时效、服务质量评分、超时与差评监管台账</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">监管总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 登记监管记录</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">启用</div><div class="v" id="stOn">0</div></div><div class="stat-card"><div class="k">停用</div><div class="v" id="stOff">0</div></div><div class="stat-card"><div class="k">草稿</div><div class="v" id="stDraft">0</div></div><div class="stat-card"><div class="k">全部</div><div class="v" id="stAll">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>关键词</label><input class="ctrl" id="qKeyword" placeholder="名称/编号"/></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="正常">正常</option><option value="预警">预警</option><option value="整改中">整改中</option><option value="已关闭">已关闭</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>记录编号</th><th>订单号</th><th>商户</th><th>服务/商品</th><th>质量评分</th><th>问题类型</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">登记监管记录</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>名称<span class="req">*</span></label><input class="ctrl" id="fName" type="text"  placeholder=""/></div><div class="form-field"><label>编号<span class="req">*</span></label><input class="ctrl" id="fCode" type="text"  placeholder=""/></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="正常">正常</option><option value="预警">预警</option><option value="整改中">整改中</option><option value="已关闭">已关闭</option></select></div><div class="form-field"><label>备注</label><textarea class="ctrl" id="fNote" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "登记监管记录",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "supervise:fulfill-quality",
+  rows: [{"recordId":"FQ202608001","orderId":"O20260731001","merchant":"康护到家","service":"上门护理","score":"5.0","issue":"—","status":"正常","note":""},{"recordId":"FQ202607902","orderId":"O20260728088","merchant":"夕阳红辅具","service":"轮椅租赁","score":"3.2","issue":"交付延迟","status":"整改中","note":""},{"recordId":"FQ202608003","orderId":"O20260801005","merchant":"某商户D","service":"助餐","score":"2.0","issue":"差评集中","status":"预警","note":""}],
+  columns: [{key:"recordId"},{key:"orderId"},{key:"merchant"},{key:"service"},{key:"score"},{key:"issue"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.recordId||"").includes(v)||String(r.orderId||"").includes(v)||String(r.merchant||"").includes(v)},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v}],
+  formFields: [{id:"fName",key:"name",type:"text",label:"名称",required:true},{id:"fCode",key:"code",type:"text",label:"编号",required:true},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fNote",key:"note",type:"text",label:"备注",required:false}],
+  stats: [{id:"stOn",html:false,value:(l)=>l.filter(r=>r.status==="启用").length},{id:"stOff",html:false,value:(l)=>l.filter(r=>r.status==="停用").length},{id:"stDraft",html:false,value:(l)=>l.filter(r=>r.status==="草稿").length},{id:"stAll",html:false,value:(l)=>l.length}],
+  getStatus:(r)=>(r.status==="正常"?{text:r.status,cls:"status-on"}:r.status==="预警"?{text:r.status,cls:"status-warn"}:{text:r.status,cls:"status-off"})
+});
+</script>
+</body>
+</html>

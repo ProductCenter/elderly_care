@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>综合统计大屏 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/dashboard-screen.css" />
+  </head>
+  <body
+    data-primary="home"
+    data-sub="dashboard"
+    data-tab="综合统计大屏"
+    data-flush="true"
+    data-asset-prefix="../../assets"
+    data-index-href="../index.html"
+  >
+    <div id="admin-root"></div>
+
+    <template id="page-content">
+      <div class="screen-page">
+        <div class="screen-top">
+          <div class="screen-brand">
+            <h1>机构综合运营统计大屏</h1>
+            <p>嵌入报表视图 · 覆盖入住、床位、长者画像、员工、护理与费用等核心指标</p>
+          </div>
+          <div class="screen-meta">
+            <span class="meta-chip">数据时点 <strong id="clockNow">—</strong></span>
+            <span class="meta-chip">统计月 <strong>2026-07</strong></span>
+            <button type="button" class="btn btn-primary" id="btnFullscreen">全屏展示</button>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">在院长者</div>
+            <div class="kpi-value">328<em>人</em></div>
+            <div class="kpi-trend">较上月 +6</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">总入住率</div>
+            <div class="kpi-value">86.4<em>%</em></div>
+            <div class="kpi-trend">目标 85%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">床位总数</div>
+            <div class="kpi-value">380<em>张</em></div>
+            <div class="kpi-trend">空余 52</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">本月来访</div>
+            <div class="kpi-value">214<em>人次</em></div>
+            <div class="kpi-trend">较上月 +12%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">在职员工</div>
+            <div class="kpi-value">96<em>人</em></div>
+            <div class="kpi-trend">照护比 1:3.4</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">本月费用收入</div>
+            <div class="kpi-value">186.2<em>万</em></div>
+            <div class="kpi-trend down">环比 -2.1%</div>
+          </div>
+        </div>
+
+        <div class="screen-grid">
+          <!-- A 各中心人数 -->
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">各中心人数图 <span class="tag">A</span></h2>
+            </div>
+            <div class="panel-body" id="chartA"></div>
+          </section>
+
+          <!-- B 总入住率 / 各层入住率 -->
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">总入住率 · 各层占比 <span class="tag">B</span></h2>
+            </div>
+            <div class="panel-body dual-chart">
+              <div class="chart-block">
+                <div class="chart-caption">总入住率</div>
+                <div id="chartB1"></div>
+              </div>
+              <div class="chart-block">
+                <div class="chart-caption">各层入住占比</div>
+                <div id="chartB2"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- C 每月出入院 -->
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">每月出入院人数 <span class="tag">C</span></h2>
+              <div class="panel-tools">
+                <button type="button" class="seg active">近12月</button>
+              </div>
+            </div>
+            <div class="panel-body" id="chartC"></div>
+          </section>
+
+          <!-- D 各层床位使用率 -->
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">各层床位使用率 <span class="tag">D</span></h2>
+            </div>
+            <div class="panel-body" id="chartD"></div>
+          </section>
+
+          <!-- E 长者画像 -->
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">长者性别 / 年龄 / 健康状况 <span class="tag">E</span></h2>
+            </div>
+            <div class="panel-body dual-chart">
+              <div class="chart-block" id="chartE1"></div>
+              <div class="chart-block" id="chartE2"></div>
+            </div>
+          </section>
+
+          <!-- F 来访人次 -->
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">每月来访人次 <span class="tag">F</span></h2>
+            </div>
+            <div class="panel-body" id="chartF"></div>
+          </section>
+
+          <!-- G 员工结构 -->
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">员工人数 · 性别 · 年龄 · 分组 <span class="tag">G</span></h2>
+            </div>
+            <div class="panel-body dual-chart">
+              <div class="chart-block" id="chartG1"></div>
+              <div class="chart-block" id="chartG2"></div>
+            </div>
+          </section>
+
+          <!-- H 职位分布 -->
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">员工职位分布 <span class="tag">H</span></h2>
+            </div>
+            <div class="panel-body" id="chartH"></div>
+          </section>
+
+          <!-- I 照护比 -->
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">照护比统计 <span class="tag">I</span></h2>
+            </div>
+            <div class="panel-body" id="chartI"></div>
+          </section>
+
+          <!-- J 护理等级楼层分布 -->
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">护理等级 · 各楼层分布 <span class="tag">J</span></h2>
+            </div>
+            <div class="panel-body" id="chartJ"></div>
+          </section>
+
+          <!-- K 护理等级排行 -->
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">护理等级排行榜 <span class="tag">K</span></h2>
+            </div>
+            <div class="panel-body">
+              <ul class="rank-list" id="rankK"></ul>
+            </div>
+          </section>
+
+          <!-- L-Q 费用多维 -->
+          <section class="panel span-2">
+            <div class="panel-head">
+              <h2 class="panel-title">费用多维统计 <span class="tag">L·M·N·O·P·Q</span></h2>
+              <div class="panel-tools" id="feeSeg">
+                <button type="button" class="seg active" data-fee="month">月份·费用项</button>
+                <button type="button" class="seg" data-fee="yearMonth">年·月·费用项</button>
+                <button type="button" class="seg" data-fee="year">年度·费用项</button>
+                <button type="button" class="seg" data-fee="floorMonth">月·楼层·费用</button>
+                <button type="button" class="seg" data-fee="floor">楼层·费用</button>
+                <button type="button" class="seg" data-fee="total">年·月·总费用</button>
+              </div>
+            </div>
+            <div class="panel-body" id="chartFee"></div>
+          </section>
+
+          <!-- R 费用报表 -->
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">费用统计报表 <span class="tag">R</span></h2>
+              <button type="button" class="btn btn-default" style="height:28px;font-size:12px" id="btnExportFee">导出</button>
+            </div>
+            <div class="panel-body" style="overflow:auto">
+              <table class="table-mini" id="feeTable">
+                <thead>
+                  <tr>
+                    <th>费用项</th>
+                    <th>本月应收</th>
+                    <th>本月实收</th>
+                    <th>同比</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </div>
+    </template>
+
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/dashboard-screen.js"></script>
+  </body>
+</html>

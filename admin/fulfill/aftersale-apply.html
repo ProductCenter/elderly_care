@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>用户售后申请 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="fulfill" data-sub="aftersale-apply" data-tab="用户售后申请" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">用户售后申请</h1>
+    <p class="page-desc">用户发起退款/退货退款/换货/服务取消/投诉/押金申诉，支持图片凭证</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">履约总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 登记申请</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">待审核</div><div class="v" id="stWait">0</div></div><div class="stat-card"><div class="k">处理中</div><div class="v" id="stDoing">0</div></div><div class="stat-card"><div class="k">已完成</div><div class="v" id="stDone">0</div></div><div class="stat-card"><div class="k">已驳回</div><div class="v" id="stReject">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>申请/用户/订单</label><input class="ctrl" id="qKeyword" placeholder=""/></div><div class="filter-item"><label>类型</label><select class="ctrl" id="qType"><option value="">全部</option><option value="仅退款">仅退款</option><option value="退货退款">退货退款</option><option value="换货">换货</option><option value="服务取消">服务取消</option><option value="投诉">投诉</option><option value="押金申诉">押金申诉</option></select></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="待审核">待审核</option><option value="处理中">处理中</option><option value="已完成">已完成</option><option value="已驳回">已驳回</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>申请单</th><th>用户</th><th>订单号</th><th>类型</th><th>原因</th><th>申请时间</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">登记申请</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>申请单<span class="req">*</span></label><input class="ctrl" id="fApplyId" type="text"  placeholder=""/></div><div class="form-field"><label>用户<span class="req">*</span></label><input class="ctrl" id="fUser" type="text"  placeholder=""/></div><div class="form-field"><label>订单号<span class="req">*</span></label><input class="ctrl" id="fOrderId" type="text"  placeholder=""/></div><div class="form-field"><label>类型<span class="req">*</span></label><select class="ctrl" id="fType"><option value="仅退款">仅退款</option><option value="退货退款">退货退款</option><option value="换货">换货</option><option value="服务取消">服务取消</option><option value="投诉">投诉</option><option value="押金申诉">押金申诉</option></select></div><div class="form-field"><label>原因<span class="req">*</span></label><input class="ctrl" id="fReason" type="text"  placeholder=""/></div><div class="form-field"><label>申请时间<span class="req">*</span></label><input class="ctrl" id="fCreatedAt" type="date"  placeholder=""/></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="待审核">待审核</option><option value="处理中">处理中</option><option value="已完成">已完成</option><option value="已驳回">已驳回</option></select></div><div class="form-field"><label>凭证</label><textarea class="ctrl" id="fProof" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "登记申请",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "fulfill:aftersale-apply",
+  rows: [{"applyId":"AS26073101","user":"安辉","orderId":"O20260730088","type":"仅退款","reason":"少发配件","createdAt":"2026-07-31","status":"待审核","proof":"开箱照片×2"},{"applyId":"AS26073002","user":"张伟","orderId":"RB26073102","type":"押金申诉","reason":"不服配件扣款","createdAt":"2026-07-30","status":"处理中","proof":"验收视频"},{"applyId":"AS26072803","user":"李娜","orderId":"O20260725001","type":"服务取消","reason":"改期失败要求取消","createdAt":"2026-07-28","status":"已完成","proof":""}],
+  columns: [{key:"applyId"},{key:"user"},{key:"orderId"},{key:"type"},{key:"reason"},{key:"createdAt"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.applyId||"").includes(v)||String(r.user||"").includes(v)||String(r.orderId||"").includes(v)},{id:"qType",match:(r,v)=>!v||String(r.type)===v},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v}],
+  formFields: [{id:"fApplyId",key:"applyId",type:"text",label:"申请单",required:true},{id:"fUser",key:"user",type:"text",label:"用户",required:true},{id:"fOrderId",key:"orderId",type:"text",label:"订单号",required:true},{id:"fType",key:"type",type:"select",label:"类型",required:true},{id:"fReason",key:"reason",type:"text",label:"原因",required:true},{id:"fCreatedAt",key:"createdAt",type:"date",label:"申请时间",required:true},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fProof",key:"proof",type:"text",label:"凭证",required:false}],
+  stats: [{id:"stWait",html:false,value:(l)=>l.filter(r=>r.status==="待审核").length},{id:"stDoing",html:false,value:(l)=>l.filter(r=>r.status==="处理中").length},{id:"stDone",html:false,value:(l)=>l.filter(r=>r.status==="已完成").length},{id:"stReject",html:false,value:(l)=>l.filter(r=>r.status==="已驳回").length}],
+  getStatus:(r)=>(r.status==="已完成"?{text:r.status,cls:"status-on"}:r.status==="已驳回"?{text:r.status,cls:"status-off"}:{text:r.status,cls:"status-warn"})
+});
+</script>
+</body>
+</html>

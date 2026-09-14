@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>租赁项目发布 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="fulfill" data-sub="aid-project" data-tab="租赁项目发布" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">租赁项目发布</h1>
+    <p class="page-desc">发布辅具租赁项目：品类、规格、租金、押金、租期、续租规则、服务区域与说明</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">履约总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 发布项目</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">上架</div><div class="v" id="stOn">0</div></div><div class="stat-card"><div class="k">下架</div><div class="v" id="stOff">0</div></div><div class="stat-card"><div class="k">均租金</div><div class="v" id="stAvg">0</div></div><div class="stat-card"><div class="k">项目数</div><div class="v" id="stAll">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>名称/品类</label><input class="ctrl" id="qKeyword" placeholder=""/></div><div class="filter-item"><label>品类</label><select class="ctrl" id="qCat"><option value="">全部</option><option value="行动辅具">行动辅具</option><option value="如厕洗浴">如厕洗浴</option><option value="护理床具">护理床具</option><option value="监测设备">监测设备</option></select></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="上架">上架</option><option value="下架">下架</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>项目名称</th><th>品类</th><th>规格</th><th>月租金</th><th>押金</th><th>租期(月)</th><th>服务区域</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">发布项目</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>项目名称<span class="req">*</span></label><input class="ctrl" id="fName" type="text"  placeholder=""/></div><div class="form-field"><label>品类<span class="req">*</span></label><select class="ctrl" id="fCategory"><option value="行动辅具">行动辅具</option><option value="如厕洗浴">如厕洗浴</option><option value="护理床具">护理床具</option><option value="监测设备">监测设备</option></select></div><div class="form-field"><label>规格<span class="req">*</span></label><input class="ctrl" id="fSpec" type="text"  placeholder=""/></div><div class="form-field"><label>月租金<span class="req">*</span></label><input class="ctrl" id="fRent" type="number" value="0" placeholder=""/></div><div class="form-field"><label>押金<span class="req">*</span></label><input class="ctrl" id="fDeposit" type="number" value="0" placeholder=""/></div><div class="form-field"><label>租期(月)</label><input class="ctrl" id="fPeriod" type="number" value="1" placeholder=""/></div><div class="form-field"><label>续租规则</label><input class="ctrl" id="fRenew" type="text"  placeholder=""/></div><div class="form-field"><label>服务区域<span class="req">*</span></label><input class="ctrl" id="fArea" type="text"  placeholder=""/></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="上架">上架</option><option value="下架">下架</option></select></div><div class="form-field"><label>使用说明</label><textarea class="ctrl" id="fIntro" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "发布项目",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "fulfill:aid-project",
+  rows: [{"name":"铝合金四脚拐杖","category":"行动辅具","spec":"可调高度","rent":30,"deposit":100,"period":1,"renewRule":"到期前7天可续","area":"朝阳/东城","status":"上架","intro":"适短途助行"},{"name":"电动护理床","category":"护理床具","spec":"三功能","rent":380,"deposit":1500,"period":3,"renewRule":"可续租最多12个月","area":"城六区","status":"上架","intro":"含上门安装"},{"name":"防滑沐浴椅","category":"如厕洗浴","spec":"带扶手","rent":45,"deposit":150,"period":1,"renewRule":"到期前3天可续","area":"全市","status":"下架","intro":"暂停供应"}],
+  columns: [{key:"name"},{key:"category"},{key:"spec"},{key:"rent"},{key:"deposit"},{key:"period"},{key:"area"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.name||"").includes(v)||String(r.category||"").includes(v)},{id:"qCat",match:(r,v)=>!v||String(r.category)===v},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v}],
+  formFields: [{id:"fName",key:"name",type:"text",label:"项目名称",required:true},{id:"fCategory",key:"category",type:"select",label:"品类",required:true},{id:"fSpec",key:"spec",type:"text",label:"规格",required:true},{id:"fRent",key:"rent",type:"number",label:"月租金",required:true,default:0},{id:"fDeposit",key:"deposit",type:"number",label:"押金",required:true,default:0},{id:"fPeriod",key:"period",type:"number",label:"租期(月)",required:false,default:1},{id:"fRenew",key:"renewRule",type:"text",label:"续租规则",required:false},{id:"fArea",key:"area",type:"text",label:"服务区域",required:true},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fIntro",key:"intro",type:"text",label:"使用说明",required:false}],
+  stats: [{id:"stOn",html:false,value:(l)=>l.filter(r=>r.status==="上架").length},{id:"stOff",html:false,value:(l)=>l.filter(r=>r.status==="下架").length},{id:"stAvg",html:false,value:(l)=>{const a=l.filter(r=>r.status==="上架");return a.length?Math.round(a.reduce((s,r)=>s+Number(r.rent||0),0)/a.length):0}},{id:"stAll",html:false,value:(l)=>l.length}],
+  getStatus:(r)=>(r.status==="上架"?{text:r.status,cls:"status-on"}:{text:r.status,cls:"status-off"})
+});
+</script>
+</body>
+</html>

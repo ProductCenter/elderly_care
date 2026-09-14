@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <title>会员中心</title>
+    <link rel="stylesheet" href="./css/member.css" />    <link rel="stylesheet" href="./css/app-shell.css?v=20260912-covers5" />
+
+  </head>
+  <body>
+    <div class="phone" id="app">
+      <div class="status-bar" aria-hidden="true">
+        <span class="status-time">11:48</span>
+        <div class="status-right"><span class="status-net">5G</span></div>
+      </div>
+      <header class="nav-bar">
+        <button class="nav-back" type="button" id="btnBack" aria-label="返回">‹</button>
+        <h1 class="nav-title">会员中心</h1>
+        <span class="nav-side"></span>
+      </header>
+      <main class="page-body">
+        <section class="member-card" id="memberCard">
+          <div class="mc-top">
+            <div>
+              <div class="mc-level" id="mcLevel">—</div>
+              <div class="mc-name" id="mcName">—</div>
+            </div>
+            <div class="mc-points"><em id="mcPoints">0</em><span>积分</span></div>
+          </div>
+          <div class="mc-progress">
+            <div class="mc-bar"><i id="mcBar" style="width:0%"></i></div>
+            <p id="mcProgressText">—</p>
+          </div>
+          <div class="mc-meta" id="mcMeta"></div>
+        </section>
+
+        <section class="card">
+          <div class="card-hd"><h2>我的权益</h2></div>
+          <ul class="perk-list" id="perkList"></ul>
+        </section>
+
+        <section class="card">
+          <div class="card-hd"><h2>等级说明</h2></div>
+          <ul class="level-list" id="levelList"></ul>
+        </section>
+
+        <section class="card">
+          <div class="card-hd">
+            <h2>积分明细</h2>
+            <button type="button" class="link-btn" id="btnRefreshLedger">刷新</button>
+          </div>
+          <ul class="ledger-list" id="ledgerList"></ul>
+        </section>
+
+        <button type="button" class="btn-ghost block danger" id="btnLogout">退出登录</button>
+      </main>
+      <div class="wx-toast" id="toast" hidden></div>
+    </div>
+    <script src="./js/member.js"></script>
+    <script src="./js/member-center.js"></script>    <script src="./js/app-shell.js?v=20260912-covers5"></script>
+
+  </body>
+</html>

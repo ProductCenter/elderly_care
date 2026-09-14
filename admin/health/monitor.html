@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>健康检测 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body data-primary="health" data-sub="monitor" data-tab="健康检测" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">健康检测</h1>
+          <p class="page-desc">记录体温、血压、血糖、心率、呼吸、血氧、大便、翻身等检测信息</p>
+        </div>
+        <div style="display:flex;gap:8px"><button type="button" class="btn btn-primary" id="btnAdd">+ 录入检测</button></div>
+      </div>
+      <div class="stat-row"><div class="stat-card"><div class="k">今日录入</div><div class="v" id="stToday">0</div></div><div class="stat-card"><div class="k">异常项</div><div class="v" id="stAbn">0</div></div><div class="stat-card"><div class="k">覆盖长者</div><div class="v" id="stElders">0</div></div><div class="stat-card"><div class="k">检测类型</div><div class="v" id="stTypes">0</div></div></div>
+      
+      <div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>长者</label><input class="ctrl" id="qKeyword" placeholder="" /></div><div class="filter-item"><label>检测类型</label><select class="ctrl" id="qType"><option value="">全部</option><option value="体温">体温</option><option value="血压">血压</option><option value="血糖">血糖</option><option value="心率">心率</option><option value="呼吸">呼吸</option><option value="血氧">血氧</option><option value="大便">大便</option><option value="翻身">翻身</option></select></div><div class="filter-item"><label>结果</label><select class="ctrl" id="qResult"><option value="">全部</option><option value="正常">正常</option><option value="异常">异常</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+      <div class="list-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>时间</th><th>长者</th><th>床位</th><th>类型</th><th>数值</th><th>结果</th><th>录入人</th><th>操作</th></tr></thead>
+            <tbody id="body"></tbody>
+          </table>
+        </div>
+        <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div>
+      </div>
+      <div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+      <aside class="drawer" id="listDrawer">
+        <div class="drawer-head"><h3 id="drawerTitle">录入检测</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+        <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>长者<span class="req">*</span></label><select class="ctrl" id="fElder"><option value="张秀英">张秀英</option><option value="李建国">李建国</option><option value="陈桂兰">陈桂兰</option><option value="王德福">王德福</option></select></div><div class="form-field"><label>床位<span class="req">*</span></label><input class="ctrl" id="fBed" placeholder="" /></div><div class="form-field"><label>检测类型</label><select class="ctrl" id="fType"><option value="体温">体温</option><option value="血压">血压</option><option value="血糖">血糖</option><option value="心率">心率</option><option value="呼吸">呼吸</option><option value="血氧">血氧</option><option value="大便">大便</option><option value="翻身">翻身</option></select></div><div class="form-field"><label>检测值<span class="req">*</span></label><input class="ctrl" id="fValue" placeholder="如：36.5℃ / 128/82" /></div><div class="form-field"><label>结果</label><select class="ctrl" id="fResult"><option value="正常">正常</option><option value="异常">异常</option></select></div><div class="form-field"><label>录入人</label><input class="ctrl" id="fBy" placeholder="" /></div><div class="form-field"><label>检测时间</label><input class="ctrl" id="fTime" placeholder="2026-07-30 08:00" /></div><div class="form-field full"><label>备注</label><textarea class="ctrl" id="fNote" placeholder=""></textarea></div></div></div>
+        <div class="drawer-foot">
+          <button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button>
+          <button type="button" class="btn btn-primary" id="btnSave">保存</button>
+        </div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/admin-page-list.js"></script>
+    <script>
+      AdminPageList.mount({
+        addTitle: "\u5f55\u5165\u68c0\u6d4b",
+        editTitle: "编辑",
+        rows: [
+    {time:"2026-07-30 08:00",elder:"张秀英",bed:"3F 312-A",type:"血压",value:"128/82 mmHg",result:"正常",by:"李护士",note:""},
+    {time:"2026-07-30 08:10",elder:"李建国",bed:"3F 312-B",type:"血糖",value:"9.8 mmol/L",result:"异常",by:"王护士",note:"餐前偏高"},
+    {time:"2026-07-30 07:40",elder:"王德福",bed:"1F 108-B",type:"翻身",value:"完成",result:"正常",by:"赵护理",note:""},
+    {time:"2026-07-29 16:20",elder:"陈桂兰",bed:"2F 215-A",type:"体温",value:"36.4℃",result:"正常",by:"赵护士",note:""},
+    {time:"2026-07-29 10:00",elder:"李建国",bed:"3F 312-B",type:"血氧",value:"96%",result:"正常",by:"王护士",note:""},
+    {time:"2026-07-28 20:00",elder:"张秀英",bed:"3F 312-A",type:"心率",value:"78 次/分",result:"正常",by:"李护士",note:""},
+  ],
+        columns: [{ key: "time" }, { key: "elder" }, { key: "bed" }, { key: "type" }, { key: "value" }, { key: "result", status: true }, { key: "by" }],
+        filters: [{ id: "qKeyword", match: (r,v) => !v || (String(r.elder||"").includes(v)) }, { id: "qType", match: (r,v) => !v || String(r.type) === v }, { id: "qResult", match: (r,v) => !v || String(r.result) === v }],
+        formFields: [{ id: "fElder", key: "elder", type: "select", label: "长者", required: true }, { id: "fBed", key: "bed", type: "text", label: "床位", required: true }, { id: "fType", key: "type", type: "select", label: "检测类型" }, { id: "fValue", key: "value", type: "text", label: "检测值", required: true }, { id: "fResult", key: "result", type: "select", label: "结果" }, { id: "fBy", key: "by", type: "text", label: "录入人" }, { id: "fTime", key: "time", type: "text", label: "检测时间" }, { id: "fNote", key: "note", type: "textarea", label: "备注" }],
+        stats: [{ id: "stToday", html: false, value: (list)=>list.filter(r=>(r.time||"").startsWith("2026-07-30")).length }, { id: "stAbn", html: false, value: (list)=>list.filter(r=>r.result==="异常").length }, { id: "stElders", html: false, value: (list)=>new Set(list.map(r=>r.elder)).size }, { id: "stTypes", html: false, value: (list)=>new Set(list.map(r=>r.type)).size }],
+        getStatus: (r)=>({text:r.result, cls:r.result==="异常"?"status-repair":"status-on"}),
+        rowActions: null,
+      });
+    </script>
+  </body>
+</html>

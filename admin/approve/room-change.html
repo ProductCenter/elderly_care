@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>房间变更审批 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body data-primary="approve" data-sub="room-appr" data-tab="房间变更审批" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div><h1 class="page-title">房间变更审批</h1><p class="page-desc">审批房间变更申请，填写同意或不同意意见</p></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="k">待审批</div><div class="v" id="stPending">0</div></div>
+        <div class="stat-card"><div class="k">已通过</div><div class="v" id="stOk">0</div></div>
+        <div class="stat-card"><div class="k">已驳回</div><div class="v" id="stNo">0</div></div>
+        <div class="stat-card"><div class="k">今日新增</div><div class="v" id="stToday">0</div></div>
+      </div>
+      <div class="list-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>单号</th><th>长者</th><th>原床位</th><th>目标床位</th><th>原因</th><th>申请人</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody id="body"></tbody>
+          </table>
+        </div>
+        <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div>
+      </div>
+      <div class="drawer-mask" data-drawer-mask="raDrawer" data-close-drawer="raDrawer"></div>
+      <aside class="drawer" id="raDrawer">
+        <div class="drawer-head"><h3>审批房间变更</h3><button type="button" class="drawer-close" data-close-drawer="raDrawer">×</button></div>
+        <div class="drawer-body">
+          <div id="meta" style="margin-bottom:14px;font-size:13px;line-height:1.8;color:#595959"></div>
+          <div class="form-field"><label>审批意见<span class="req">*</span></label><textarea class="ctrl" id="opinion"></textarea></div>
+        </div>
+        <div class="drawer-foot">
+          <button type="button" class="btn btn-default" data-close-drawer="raDrawer">取消</button>
+          <button type="button" class="btn btn-default" id="btnNo" style="color:#ff4d4f;border-color:#ffa39e">不同意</button>
+          <button type="button" class="btn btn-primary" id="btnOk">同意</button>
+        </div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script><script src="../js/admin-shell.js"></script><script src="../js/admin-ui.js"></script>
+    <script>
+      (() => {
+        const statusText = { pending: "待审批", ok: "已同意", no: "不同意" };
+        const statusClass = { pending: "status-busy", ok: "status-on", no: "status-repair" };
+        const SEED = [
+          { no: "RC20260729002", elder: "陈桂兰", from: "2F 215-A", to: "2F 220-A", reason: "家属申请", by: "陈静", status: "pending" },
+          { no: "RC20260729003", elder: "王德福", from: "1F 108-B", to: "1F 106-A", reason: "床位优化", by: "刘芳", status: "pending" },
+          { no: "RC20260728001", elder: "张秀英", from: "2F 208-B", to: "3F 312-A", reason: "护理等级调整", by: "赵敏", status: "ok" },
+          { no: "RC20260720004", elder: "李建国", from: "4F 410-A", to: "3F 312-B", reason: "护理等级调整", by: "周强", status: "no" },
+        ];
+        let rows = AdminStore.load("approve-room-change", SEED);
+        function persist() { AdminStore.save("approve-room-change", rows); }
+        let cur = -1;
+        function render() {
+          stPending.textContent = rows.filter((r) => r.status === "pending").length;
+          stOk.textContent = rows.filter((r) => r.status === "ok").length;
+          stNo.textContent = rows.filter((r) => r.status === "no").length;
+          stToday.textContent = 2;
+          pagerInfo.textContent = `共 ${rows.length} 条`;
+          body.innerHTML = rows.map((r, i) => `<tr>
+            <td>${r.no}</td><td>${r.elder}</td><td>${r.from}</td><td>${r.to}</td><td>${r.reason}</td><td>${r.by}</td>
+            <td><span class="status ${statusClass[r.status]}">${statusText[r.status]}</span></td>
+            <td>
+              <button type="button" class="link" data-i="${i}">${r.status === "pending" ? "审批" : "查看"}</button>
+              <button type="button" class="link danger" data-del="${i}">删除</button>
+            </td>
+          </tr>`).join("") || `<tr class="empty-row"><td colspan="8"><div class="empty-state">暂无变更审批</div></td></tr>`;
+        }
+        AdminUI.onReady(() => {
+          AdminUI.bindDrawer("raDrawer");
+          body.onclick = async (e) => {
+            const el = e.target.closest("[data-i]");
+            const del = e.target.closest("[data-del]");
+            if (del) {
+              const ok = await AdminUI.confirm("确定删除该审批单？", { title: "删除确认", okText: "删除" });
+              if (!ok) return;
+              rows.splice(Number(del.dataset.del), 1);
+              persist();
+              AdminUI.toast("已删除");
+              render();
+              return;
+            }
+            if (!el) return;
+            cur = Number(el.dataset.i);
+            const r = rows[cur];
+            meta.innerHTML = `<div>单号：<strong>${r.no}</strong></div><div>长者：${r.elder}</div><div>变更：${r.from} → ${r.to}</div><div>原因：${r.reason} · 申请人 ${r.by}</div>`;
+            opinion.value = r.opinion || "";
+            btnOk.hidden = r.status !== "pending";
+            btnNo.hidden = r.status !== "pending";
+            AdminUI.openDrawer("raDrawer");
+          };
+          const decide = (ok) => {
+            if (!opinion.value.trim()) {
+              AdminUI.toast("请填写审批意见", "error");
+              return;
+            }
+            rows[cur].status = ok ? "ok" : "no";
+            rows[cur].opinion = opinion.value.trim();
+            persist();
+            AdminUI.closeDrawer("raDrawer");
+            AdminUI.toast(ok ? "已同意" : "已驳回");
+            render();
+          };
+          btnOk.onclick = () => decide(true);
+          btnNo.onclick = () => decide(false);
+          render();
+        });
+      })();
+    </script>
+  </body>
+</html>

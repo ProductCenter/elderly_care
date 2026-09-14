@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>春风康养商城 · 蓝湖交付文档</title>
+    <style>
+      :root {
+        --text: #1f2329;
+        --muted: #646a73;
+        --line: #e5e6eb;
+        --bg: #f5f6f8;
+        --card: #fff;
+        --blue: #3370ff;
+        --price: #ff6146;
+        --green: #07c160;
+        --instore: #3b82f6;
+        --home: #16a34a;
+        --goods: #0f766e;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+        color: var(--text);
+        background: var(--bg);
+        line-height: 1.6;
+      }
+      .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 24px 80px; }
+      .hero {
+        background: linear-gradient(135deg, #1e3a8a, #3b82f6 55%, #60a5fa);
+        color: #fff;
+        border-radius: 16px;
+        padding: 36px 40px;
+        margin-bottom: 28px;
+      }
+      .hero h1 { margin: 0 0 8px; font-size: 28px; }
+      .hero p { margin: 0; opacity: 0.92; }
+      .meta {
+        display: flex; flex-wrap: wrap; gap: 12px 24px;
+        margin-top: 18px; font-size: 13px; opacity: 0.9;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 24px 28px;
+        margin-bottom: 20px;
+      }
+      .card h2 {
+        margin: 0 0 16px;
+        font-size: 18px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--line);
+      }
+      .card h3 { margin: 20px 0 10px; font-size: 15px; }
+      .card p, .card li { color: var(--muted); font-size: 14px; }
+      .toc a { color: var(--blue); text-decoration: none; }
+      .toc li { margin: 6px 0; }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      th, td {
+        border: 1px solid var(--line);
+        padding: 10px 12px;
+        text-align: left;
+        vertical-align: top;
+      }
+      th { background: #f8f9fb; color: var(--text); font-weight: 600; }
+      .swatch {
+        display: inline-flex; align-items: center; gap: 8px;
+        margin: 0 16px 12px 0; font-size: 13px; color: var(--muted);
+      }
+      .swatch i {
+        width: 28px; height: 28px; border-radius: 6px;
+        border: 1px solid var(--line); display: inline-block;
+      }
+      .page-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 16px;
+      }
+      .shot {
+        background: #111;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+      }
+      .shot img {
+        display: block;
+        width: 100%;
+        height: auto;
+        background: #f0f0f0;
+      }
+      .shot figcaption {
+        background: #fff;
+        padding: 10px 12px;
+        font-size: 13px;
+        color: var(--text);
+        border-top: 1px solid var(--line);
+      }
+      .shot figcaption small { display: block; color: var(--muted); margin-top: 2px; }
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #fff;
+      }
+      .tag.instore { background: var(--instore); }
+      .tag.home { background: var(--home); }
+      .tag.goods { background: var(--goods); }
+      .flow {
+        display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+        font-size: 13px; color: var(--muted);
+      }
+      .flow b {
+        background: #eef3ff; color: var(--blue);
+        padding: 4px 10px; border-radius: 6px; font-weight: 600;
+      }
+      .flow span { color: #c0c4cc; }
+      .note {
+        background: #fff8e6;
+        border: 1px solid #ffe58f;
+        border-radius: 8px;
+        padding: 12px 14px;
+        font-size: 13px;
+        color: #8c6d1f;
+      }
+      @media print {
+        body { background: #fff; }
+        .wrap { max-width: none; padding: 0; }
+        .hero { break-after: avoid; }
+        .card { break-inside: avoid; box-shadow: none; }
+        .shot { break-inside: avoid; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="hero">
+        <h1>春风康养 · 商城 H5 蓝湖交付文档</h1>
+        <p>由现有 HTML 原型整理的产品/设计协作文档，可直接上传蓝湖「产品文档」或导出 PDF。</p>
+        <div class="meta">
+          <span>项目：kangyang-mall</span>
+          <span>端：微信小程序风格 H5 · 390px</span>
+          <span>版本：v1.0 · 2026-07-21</span>
+        </div>
+      </header>
+
+      <section class="card toc">
+        <h2>目录</h2>
+        <ol>
+          <li><a href="#upload">如何上传到蓝湖</a></li>
+          <li><a href="#overview">产品概述与页面清单</a></li>
+          <li><a href="#attr">商品属性与订单逻辑</a></li>
+          <li><a href="#flow">核心用户流程</a></li>
+          <li><a href="#tokens">设计规范（色值 / 字号 / 间距）</a></li>
+          <li><a href="#screens">页面截图（设计稿示意）</a></li>
+          <li><a href="#specs">关键页面说明与标注要点</a></li>
+        </ol>
+        <p class="note" id="upload" style="margin-top:16px">
+          <strong>上传蓝湖：</strong>打开蓝湖项目 → 顶部「产品」→「上传」→ 选择本目录导出的
+          <code>春风康养商城-蓝湖交付文档.pdf</code>，或将本 <code>index.html</code> 部署后以「外部链接」添加。
+          截图可另建「设计图」分组，由设计师用 Sketch/PS 插件按图重建后上传正式标注稿。
+          <br />蓝湖不支持直接把 HTML 当设计稿导入；本文件作为产品文档 + 视觉参考。
+        </p>
+      </section>
+
+      <section class="card" id="overview">
+        <h2>1. 产品概述与页面清单</h2>
+        <p>康养行业生态服务商城，支持三类商品属性驱动的差异化履约：到店服务、到家服务、实物商品。</p>
+        <table>
+          <thead>
+            <tr>
+              <th>页面</th>
+              <th>文件</th>
+              <th>说明</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>商城首页</td><td>index.html</td><td>分类、主推卡、瀑布流商品列表</td></tr>
+            <tr><td>商品详情</td><td>detail.html</td><td>主图、价格、属性标签、门店/发货信息、购买</td></tr>
+            <tr><td>填写订单</td><td>order.html</td><td>按商品属性展示地址/门店/预约/运费</td></tr>
+            <tr><td>订单详情</td><td>order-detail.html</td><td>核销码（到店）/ 时间轴（到家·实物）</td></tr>
+            <tr><td>我的订单</td><td>orders.html</td><td>全部 / 待核销 / 已完成</td></tr>
+            <tr><td>个人中心</td><td>mine.html</td><td>订单入口、商家核销入口</td></tr>
+            <tr><td>商家核销</td><td>merchant-verify.html</td><td>扫码/手输核销演示</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card" id="attr">
+        <h2>2. 商品属性与订单逻辑</h2>
+        <p>属性字段：<code>productAttr</code>（兼容旧字段 <code>serviceType</code>）</p>
+        <table>
+          <thead>
+            <tr>
+              <th>属性</th>
+              <th>标签</th>
+              <th>下单页</th>
+              <th>履约</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="tag instore">到店服务</span></td>
+              <td>短标签「到店」</td>
+              <td>门店信息 + 预约时间；无收货地址；无运费</td>
+              <td>支付后生成核销二维码，到店核销</td>
+            </tr>
+            <tr>
+              <td><span class="tag home">到家服务</span></td>
+              <td>短标签「到家」</td>
+              <td>收货地址 + 预约上门时间</td>
+              <td>工单时间轴：下单→派工→确认→成功</td>
+            </tr>
+            <tr>
+              <td><span class="tag goods">实物商品</span></td>
+              <td>短标签「实物」</td>
+              <td>收货地址 + 运费；无预约</td>
+              <td>物流时间轴：下单→发货→运输→收货</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card" id="flow">
+        <h2>3. 核心用户流程</h2>
+        <h3>到店服务</h3>
+        <div class="flow">
+          <b>首页</b><span>→</span><b>详情</b><span>→</span><b>下单（门店+预约）</b><span>→</span><b>支付</b><span>→</span><b>订单详情（核销码）</b><span>→</span><b>商家核销</b>
+        </div>
+        <h3>到家服务</h3>
+        <div class="flow">
+          <b>首页</b><span>→</span><b>详情</b><span>→</span><b>下单（地址+预约）</b><span>→</span><b>支付</b><span>→</span><b>订单详情（服务进度）</b>
+        </div>
+        <h3>实物商品</h3>
+        <div class="flow">
+          <b>首页</b><span>→</span><b>详情</b><span>→</span><b>下单（地址+运费）</b><span>→</span><b>支付</b><span>→</span><b>订单详情（物流）</b>
+        </div>
+      </section>
+
+      <section class="card" id="tokens">
+        <h2>4. 设计规范</h2>
+        <h3>画板</h3>
+        <p>移动端宽度 <strong>390px</strong>；状态栏 44px；导航栏 44px；微信胶囊约 87×32；底部安全区 <code>safe-area-inset-bottom</code>。</p>
+        <h3>色板</h3>
+        <div>
+          <span class="swatch"><i style="background:#191919"></i>#191919 主文字</span>
+          <span class="swatch"><i style="background:#888"></i>#888 次要文字</span>
+          <span class="swatch"><i style="background:#f7f7f7"></i>#F7F7F7 页面底</span>
+          <span class="swatch"><i style="background:#ff6146"></i>#FF6146 价格</span>
+          <span class="swatch"><i style="background:#fa5151"></i>#FA5151 强调红</span>
+          <span class="swatch"><i style="background:#3b82f6"></i>#3B82F6 主按钮/到店</span>
+          <span class="swatch"><i style="background:#07c160"></i>#07C160 微信绿</span>
+          <span class="swatch"><i style="background:#16a34a"></i>#16A34A 到家标签</span>
+          <span class="swatch"><i style="background:#0f766e"></i>#0F766E 实物标签</span>
+        </div>
+        <h3>字体</h3>
+        <p>系统字体栈：PingFang SC / Helvetica Neue / Microsoft YaHei。标题约 17px 半粗；正文 14–15px；辅助 12–13px。</p>
+        <h3>圆角与间距</h3>
+        <p>卡片圆角 10–12px；页面水平边距 12px；卡片间距 10px；主按钮高度约 40px、圆角胶囊形。</p>
+      </section>
+
+      <section class="card" id="screens">
+        <h2>5. 页面截图</h2>
+        <p>以下截图来自当前 HTML 原型（390×1200 视口），可作为蓝湖设计图分组参考。</p>
+        <div class="page-grid">
+          <figure class="shot">
+            <img src="./screenshots/01-home.png" alt="商城首页" />
+            <figcaption>01 商城首页<small>index.html</small></figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="./screenshots/02-detail-instore.png" alt="详情-到店" />
+            <figcaption>02 商品详情 · 到店<small>detail.html?id=ai_massage</small></figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="./screenshots/03-detail-home.png" alt="详情-到家" />
+            <figcaption>03 商品详情 · 到家<small>detail.html?id=neck_massage</small></figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="./screenshots/04-detail-goods.png" alt="详情-实物" />
+            <figcaption>04 商品详情 · 实物<small>detail.html?id=bp_monitor</small></figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="./screenshots/05-order-instore.png" alt="下单-到店" />
+            <figcaption>05 填写订单 · 到店<small>门店+预约，无地址</small></figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="./screenshots/06-order-home.png" alt="下单-到家" />
+            <figcaption>06 填写订单 · 到家<small>地址+预约</small></figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="./screenshots/07-order-goods.png" alt="下单-实物" />
+            <figcaption>07 填写订单 · 实物<small>地址+运费，无预约</small></figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="./screenshots/08-orders.png" alt="订单列表" />
+            <figcaption>08 我的订单<small>orders.html</small></figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="./screenshots/09-mine.png" alt="个人中心" />
+            <figcaption>09 个人中心<small>mine.html</small></figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="./screenshots/10-merchant-verify.png" alt="商家核销" />
+            <figcaption>10 商家核销<small>merchant-verify.html</small></figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="./screenshots/11-order-detail.png" alt="订单详情" />
+            <figcaption>11 订单详情<small>order-detail.html</small></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="card" id="specs">
+        <h2>6. 关键页面标注要点</h2>
+        <h3>商城首页</h3>
+        <ul>
+          <li>顶部定位 + 搜索 + 横向分类</li>
+          <li>左侧主推大卡 + 右侧优惠券/活动栈</li>
+          <li>商品卡统一展示属性短标签（到店/到家/实物）+ 价格 + 月售</li>
+          <li>底部 Tab：首页 / 健康 / 商城 / 我的</li>
+        </ul>
+        <h3>填写订单</h3>
+        <ul>
+          <li>顶部只读属性徽章条（不可切换）</li>
+          <li>到店：门店卡（地址/电话/营业）对齐网格</li>
+          <li>到家/实物：收货地址行</li>
+          <li>实物隐藏预约；到店/到家显示预约</li>
+          <li>底部固定栏：合计 + 微信支付</li>
+        </ul>
+        <h3>订单详情（到店）</h3>
+        <ul>
+          <li>待核销：状态文案仅「待核销」，不展示「已完成」</li>
+          <li>核销区仅二维码（无条形码切换）</li>
+          <li>多份核销码支持左右切换；已使用遮罩「已使用」</li>
+          <li>门店地图预览 + 多地图导航</li>
+        </ul>
+        <h3>源码路径</h3>
+        <p>
+          预览：<code>cd kangyang-mall && python3 -m http.server 5173</code><br />
+          打开：<code>http://127.0.0.1:5173/</code><br />
+          本文档目录：<code>kangyang-mall/lanhu-docs/</code>
+        </p>
+      </section>
+    </div>
+  </body>
+</html>

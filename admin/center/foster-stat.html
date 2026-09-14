@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>托养统计分析 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/><link rel="stylesheet" href="../css/admin-list.css"/></head>
+<body data-primary="center" data-sub="foster-stat" data-tab="托养统计分析" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head"><div><h1 class="page-title">托养统计分析</h1><p class="page-desc">多维度报表：床位使用率、入住率趋势、社区/特困占比、平均居住时长</p></div>
+<div style="display:flex;gap:8px"><button type="button" class="btn btn-default" id="btnExport">导出报表</button><button type="button" class="btn btn-primary" id="btnAdd">+ 生成报表</button></div></div>
+<div class="stat-row"><div class="stat-card"><div class="k">床位使用率</div><div class="v" id="stOcc">0</div></div><div class="stat-card"><div class="k">本月入住</div><div class="v" id="stIn">0</div></div><div class="stat-card"><div class="k">本月退住</div><div class="v" id="stOut">0</div></div><div class="stat-card"><div class="k">平均居住</div><div class="v" id="stAvg">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>统计区间</label><input class="ctrl" id="qRange" placeholder="2026-07"/></div><div class="filter-item"><label>维度</label><select class="ctrl" id="qDim"><option value="">全部</option><option value="日">日</option><option value="周">周</option><option value="月">月</option></select></div><div class="filter-item"><label>报表类型</label><select class="ctrl" id="qType"><option value="">全部</option><option value="床位使用率">床位使用率</option><option value="入住趋势">入住趋势</option><option value="人群占比">人群占比</option><option value="居住时长">居住时长</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>报表名称</th><th>类型</th><th>统计区间</th><th>维度</th><th>生成时间</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+<div class="drawer-head"><h3 id="drawerTitle">生成报表</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+<div class="drawer-body"><div class="form-grid"><div class="form-field"><label>报表名称<span class="req">*</span></label><input class="ctrl" id="fName" placeholder=""/></div><div class="form-field"><label>类型</label><select class="ctrl" id="fType"><option value="床位使用率">床位使用率</option><option value="入住趋势">入住趋势</option><option value="人群占比">人群占比</option><option value="居住时长">居住时长</option></select></div><div class="form-field"><label>统计区间<span class="req">*</span></label><input class="ctrl" id="fRange" placeholder=""/></div><div class="form-field"><label>维度</label><select class="ctrl" id="fDim"><option value="日">日</option><option value="周">周</option><option value="月">月</option></select></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="已生成">已生成</option><option value="生成中">生成中</option></select></div></div></div>
+<div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script><script src="../js/admin-shell.js"></script><script src="../js/admin-ui.js"></script><script src="../js/admin-page-list.js"></script>
+<script>AdminPageList.mount({addTitle:"\u751f\u6210\u62a5\u8868",editTitle:"编辑",rows:[
+    {name:"2026-07 床位使用率",type:"床位使用率",range:"2026-07",dim:"日",time:"2026-07-30 08:00",status:"已生成"},
+    {name:"近12月入住趋势",type:"入住趋势",range:"2025-08~2026-07",dim:"月",time:"2026-07-29 10:20",status:"已生成"},
+    {name:"社区/特困占比",type:"人群占比",range:"2026-Q2",dim:"月",time:"2026-07-28 15:10",status:"已生成"},
+    {name:"平均居住时长",type:"居住时长",range:"2026-H1",dim:"月",time:"2026-07-30 09:05",status:"生成中"},
+  ],columns:[{key:"name"},{key:"type"},{key:"range"},{key:"dim"},{key:"time"},{key:"status",status:true}],filters:[{id:"qRange",match:(r,v)=>!v||(String(r.range||"").includes(v))},{id:"qDim",match:(r,v)=>!v||String(r.dim)===v},{id:"qType",match:(r,v)=>!v||String(r.type)===v}],formFields:[{id:"fName",key:"name",type:"text",label:"报表名称",required:true},{id:"fType",key:"type",type:"select",label:"类型"},{id:"fRange",key:"range",type:"text",label:"统计区间",required:true},{id:"fDim",key:"dim",type:"select",label:"维度"},{id:"fStatus",key:"status",type:"select",label:"状态"}],stats:[{id:"stOcc",html:true,value:()=>"86.4<em>%</em>"},{id:"stIn",html:false,value:()=>18},{id:"stOut",html:false,value:()=>5},{id:"stAvg",html:true,value:()=>"14.2<em>月</em>"}],getStatus:(r)=>({text:r.status,cls:r.status==="已生成"?"status-on":"status-busy"}),rowActions:null,onAction:null});AdminUI.onReady(()=>{document.getElementById("btnExport")?.addEventListener("click",()=>alert("已导出托养统计报表（演示）"));});</script>
+</body></html>

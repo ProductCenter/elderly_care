@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>商户准入监管 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="supervise" data-sub="merchant-admit" data-tab="商户准入监管" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">商户准入监管</h1>
+    <p class="page-desc">商户入驻资质审核、证照校验、准入标准与黑名单管理</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">监管总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 登记准入申请</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">待审核</div><div class="v" id="stPend">0</div></div><div class="stat-card"><div class="k">已通过</div><div class="v" id="stPass">0</div></div><div class="stat-card"><div class="k">已驳回</div><div class="v" id="stReject">0</div></div><div class="stat-card"><div class="k">全部</div><div class="v" id="stAll">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>关键词</label><input class="ctrl" id="qKeyword" placeholder="名称/编号"/></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="待审核">待审核</option><option value="已通过">已通过</option><option value="已驳回">已驳回</option><option value="补充材料">补充材料</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>申请编号</th><th>商户名称</th><th>经营品类</th><th>所属区域</th><th>提交时间</th><th>审核人</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">登记准入申请</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>名称<span class="req">*</span></label><input class="ctrl" id="fName" type="text"  placeholder=""/></div><div class="form-field"><label>编号<span class="req">*</span></label><input class="ctrl" id="fCode" type="text"  placeholder=""/></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="待审核">待审核</option><option value="已通过">已通过</option><option value="已驳回">已驳回</option><option value="补充材料">补充材料</option></select></div><div class="form-field"><label>备注</label><textarea class="ctrl" id="fNote" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "登记准入申请",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "supervise:merchant-admit",
+  rows: [{"applyId":"MA2026080101","merchant":"康护到家","category":"上门护理","region":"河西区","submitAt":"2026-08-01","reviewer":"—","status":"待审核","note":""},{"applyId":"MA2026072802","merchant":"夕阳红辅具店","category":"辅具租赁","region":"南开区","submitAt":"2026-07-28","reviewer":"王监管","status":"已通过","note":""},{"applyId":"MA2026071503","merchant":"某商户B","category":"团购","region":"和平区","submitAt":"2026-07-15","reviewer":"李监管","status":"已驳回","note":"证照过期"}],
+  columns: [{key:"applyId"},{key:"merchant"},{key:"category"},{key:"region"},{key:"submitAt"},{key:"reviewer"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.applyId||"").includes(v)||String(r.merchant||"").includes(v)||String(r.category||"").includes(v)},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v}],
+  formFields: [{id:"fName",key:"name",type:"text",label:"名称",required:true},{id:"fCode",key:"code",type:"text",label:"编号",required:true},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fNote",key:"note",type:"text",label:"备注",required:false}],
+  stats: [{id:"stPend",html:false,value:(l)=>l.filter(r=>r.status==="待审核").length},{id:"stPass",html:false,value:(l)=>l.filter(r=>r.status==="已通过").length},{id:"stReject",html:false,value:(l)=>l.filter(r=>r.status==="已驳回").length},{id:"stAll",html:false,value:(l)=>l.length}],
+  getStatus:(r)=>(r.status==="已通过"?{text:r.status,cls:"status-on"}:r.status==="待审核"?{text:r.status,cls:"status-warn"}:{text:r.status,cls:"status-off"})
+});
+</script>
+</body>
+</html>

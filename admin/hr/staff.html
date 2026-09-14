@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>人员信息 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css" />
+<link rel="stylesheet" href="../css/admin-list.css" />
+</head>
+<body data-primary="hr" data-sub="staff" data-tab="人员信息" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+  <div class="page-head"><div><h1 class="page-title">人员信息</h1><p class="page-desc">管理养老院内所有员工信息，可导入 Excel</p></div>
+  <div style="display:flex;gap:8px"><label class="btn btn-default" style="cursor:pointer">导入 Excel<input type="file" id="importExcel" accept=".xlsx,.xls,.csv" hidden /></label><button type="button" class="btn btn-primary" id="btnAdd">+ 新增员工</button></div></div>
+  <div class="stat-row"><div class="stat-card"><div class="k">员工总数</div><div class="v" id="stTotal">0</div></div><div class="stat-card"><div class="k">在职</div><div class="v" id="stOn">0</div></div><div class="stat-card"><div class="k">护理员</div><div class="v" id="stNurse">0</div></div><div class="stat-card"><div class="k">本月入职</div><div class="v" id="stNew">0</div></div></div>
+  <div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>姓名 / 工号</label><input class="ctrl" id="qKeyword" placeholder="" /></div><div class="filter-item"><label>岗位</label><select class="ctrl" id="qRole"><option value="">全部</option><option value="护理员">护理员</option><option value="护士">护士</option><option value="医生">医生</option><option value="后勤">后勤</option><option value="行政">行政</option></select></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="在职">在职</option><option value="离职">离职</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+  <div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>工号</th><th>姓名</th><th>性别</th><th>岗位</th><th>所属分组</th><th>手机</th><th>入职日期</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+  <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+  <div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+  <aside class="drawer" id="listDrawer">
+    <div class="drawer-head"><h3 id="drawerTitle">新增员工</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+    <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>工号<span class="req">*</span></label><input class="ctrl" id="fNo" placeholder="" /></div><div class="form-field"><label>姓名<span class="req">*</span></label><input class="ctrl" id="fName" placeholder="" /></div><div class="form-field"><label>性别</label><select class="ctrl" id="fGender"><option value="女">女</option><option value="男">男</option></select></div><div class="form-field"><label>岗位</label><select class="ctrl" id="fRole"><option value="护理员">护理员</option><option value="护士">护士</option><option value="医生">医生</option><option value="后勤">后勤</option><option value="行政">行政</option></select></div><div class="form-field"><label>所属分组</label><input class="ctrl" id="fGroup" placeholder="" /></div><div class="form-field"><label>手机</label><input class="ctrl" id="fPhone" placeholder="" /></div><div class="form-field"><label>入职日期</label><input class="ctrl" id="fJoin" type="date" /></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="在职">在职</option><option value="离职">离职</option></select></div></div></div>
+    <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+  </aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script><script src="../js/admin-shell.js"></script><script src="../js/admin-ui.js"></script><script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle:"\u65b0\u589e\u5458\u5de5", editTitle:"编辑",
+  rows:[
+    {no:"YG001",name:"赵敏",gender:"女",role:"护理员",group:"护理一组",phone:"137****6652",join:"2022-03-01",status:"在职"},
+    {no:"YG002",name:"陈静",gender:"女",role:"护理员",group:"护理二组",phone:"139****2218",join:"2021-08-12",status:"在职"},
+    {no:"YG003",name:"李护士",gender:"女",role:"护士",group:"医疗组",phone:"136****9088",join:"2020-05-20",status:"在职"},
+    {no:"YG004",name:"李医生",gender:"男",role:"医生",group:"医疗组",phone:"132****3399",join:"2019-01-08",status:"在职"},
+    {no:"YG005",name:"马超",gender:"男",role:"后勤",group:"后勤组",phone:"133****7781",join:"2023-06-15",status:"在职"},
+    {no:"YG006",name:"王悦",gender:"女",role:"行政",group:"行政组",phone:"131****5520",join:"2024-02-01",status:"在职"},
+  ], columns:[{ key: "no" },{ key: "name" },{ key: "gender" },{ key: "role" },{ key: "group" },{ key: "phone" },{ key: "join" },{ key: "status", status: true }], filters:[{ id: "qKeyword", match: (r,v) => !v || (String(r.name||"").includes(v) || String(r.no||"").includes(v)) },{ id: "qRole", match: (r,v) => !v || String(r.role) === v },{ id: "qStatus", match: (r,v) => !v || String(r.status) === v }],
+  formFields:[{id:"fNo",key:"no",type:"text",label:"工号",required:true},{id:"fName",key:"name",type:"text",label:"姓名",required:true},{id:"fGender",key:"gender",type:"select",label:"性别"},{id:"fRole",key:"role",type:"select",label:"岗位"},{id:"fGroup",key:"group",type:"text",label:"所属分组"},{id:"fPhone",key:"phone",type:"text",label:"手机"},{id:"fJoin",key:"join",type:"date",label:"入职日期"},{id:"fStatus",key:"status",type:"select",label:"状态"}], stats:[{id:"stTotal",html:false,value:(l)=>l.length},{id:"stOn",html:false,value:(l)=>l.filter(r=>r.status==="在职").length},{id:"stNurse",html:false,value:(l)=>l.filter(r=>r.role==="护理员").length},{id:"stNew",html:false,value:(l)=>l.filter(r=>(r.join||"").startsWith("2026-07")).length}],
+  getStatus:(r)=>({text:r.status,cls:r.status==="在职"?"status-on":"status-off"}), rowActions:null, onAction:null,
+});
+AdminUI.onReady(()=>{document.getElementById("importExcel")?.addEventListener("change",(e)=>{const f=e.target.files?.[0]; e.target.value=""; if(!f) return; AdminUI.toast("已选择 "+f.name+"，正式环境将解析并导入员工（演示）");});});
+</script>
+</body></html>

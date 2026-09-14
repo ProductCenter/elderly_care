@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>服务内容 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body data-primary="vas" data-sub="content" data-tab="服务内容" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div><h1 class="page-title">服务内容</h1><p class="page-desc">管理养老院提供的增值服务项目信息</p></div>
+        <div style="display:flex;gap:8px"><button type="button" class="btn btn-primary" id="btnAdd">+ 新增服务</button></div>
+      </div>
+      <div class="stat-row"><div class="stat-card"><div class="k">服务项目</div><div class="v" id="stTotal">0</div></div><div class="stat-card"><div class="k">上架中</div><div class="v" id="stOn">0</div></div><div class="stat-card"><div class="k">服务大类</div><div class="v" id="stCats">0</div></div><div class="stat-card"><div class="k">均价</div><div class="v" id="stAvg">0</div></div></div>
+      
+      <div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>服务名称</label><input class="ctrl" id="qKeyword" placeholder="" /></div><div class="filter-item"><label>大类</label><select class="ctrl" id="qCat"><option value="">全部</option><option value="康复理疗">康复理疗</option><option value="生活照料">生活照料</option><option value="陪诊陪护">陪诊陪护</option><option value="其他">其他</option></select></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="上架">上架</option><option value="下架">下架</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+      <div class="list-card">
+        <div class="table-wrap"><table class="data-table"><thead><tr><th>服务名称</th><th>大类</th><th>时长</th><th>单价(元)</th><th>状态</th><th>更新时间</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+        <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div>
+      </div>
+      <div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+      <aside id="listDrawer" class="drawer">
+        <div class="drawer-head"><h3 id="drawerTitle">新增服务</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+        <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>服务名称<span class="req">*</span></label><input class="ctrl" id="fName" placeholder="" /></div><div class="form-field"><label>大类</label><select class="ctrl" id="fCat"><option value="康复理疗">康复理疗</option><option value="生活照料">生活照料</option><option value="陪诊陪护">陪诊陪护</option><option value="其他">其他</option></select></div><div class="form-field"><label>服务时长</label><input class="ctrl" id="fDuration" placeholder="如：60分钟" /></div><div class="form-field"><label>单价(元)</label><input class="ctrl" id="fPrice" type="number" value="98" /></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="上架">上架</option><option value="下架">下架</option></select></div><div class="form-field full"><label>服务说明</label><textarea class="ctrl" id="fNote" placeholder=""></textarea></div></div></div>
+        <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/admin-page-list.js"></script>
+    <script>
+      AdminPageList.mount({
+        addTitle: "\u65b0\u589e\u670d\u52a1",
+        editTitle: "编辑",
+        rows: [
+    {name:"中医推拿",cat:"康复理疗",duration:"45分钟",price:128,status:"上架",updated:"2026-07-10",note:""},
+    {name:"助浴服务",cat:"生活照料",duration:"60分钟",price:98,status:"上架",updated:"2026-07-08",note:""},
+    {name:"陪同就医",cat:"陪诊陪护",duration:"按次",price:200,status:"上架",updated:"2026-06-20",note:""},
+    {name:"理发上门",cat:"其他",duration:"30分钟",price:35,status:"下架",updated:"2026-05-01",note:"暂停"},
+  ],
+        columns: [{ key: "name" }, { key: "cat" }, { key: "duration" }, { key: "price" }, { key: "status", status: true }, { key: "updated" }],
+        filters: [{ id: "qKeyword", match: (r,v) => !v || (String(r.name||"").includes(v)) }, { id: "qCat", match: (r,v) => !v || String(r.cat) === v }, { id: "qStatus", match: (r,v) => !v || String(r.status) === v }],
+        formFields: [{ id: "fName", key: "name", type: "text", label: "服务名称", required: true }, { id: "fCat", key: "cat", type: "select", label: "大类" }, { id: "fDuration", key: "duration", type: "text", label: "服务时长" }, { id: "fPrice", key: "price", type: "number", label: "单价(元)", default: 98 }, { id: "fStatus", key: "status", type: "select", label: "状态" }, { id: "fNote", key: "note", type: "textarea", label: "服务说明" }],
+        stats: [{ id: "stTotal", html: false, value: (list)=>list.length }, { id: "stOn", html: false, value: (list)=>list.filter(r=>r.status==="上架").length }, { id: "stCats", html: false, value: (list)=>new Set(list.map(r=>r.cat)).size }, { id: "stAvg", html: true, value: (list)=>{const n=list.length||1; return Math.round(list.reduce((s,r)=>s+r.price,0)/n)+"<em>元</em>";} }],
+        getStatus: (r)=>({text:r.status, cls:r.status==="上架"?"status-on":"status-off"}),
+        rowActions: null,
+        onAction: null,
+      });
+    </script>
+  </body>
+</html>

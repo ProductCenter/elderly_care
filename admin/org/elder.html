@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>长者信息 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+    <link rel="stylesheet" href="../css/org-elder.css" />
+  </head>
+  <body
+    data-primary="org"
+    data-sub="elder"
+    data-tab="长者信息"
+    data-asset-prefix="../../assets"
+    data-index-href="../index.html"
+  >
+    <div id="admin-root"></div>
+
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">长者信息</h1>
+          <p class="page-desc">管理院内长者基本信息、健康陈述、居住与家属、变更记录等，支持 Excel 导入</p>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <label class="btn btn-default" style="cursor:pointer">
+            导入 Excel
+            <input type="file" id="importExcel" accept=".xlsx,.xls,.csv" hidden />
+          </label>
+          <span class="import-hint">模板：姓名/性别/身份证/楼层/房间床位</span>
+          <button type="button" class="btn btn-primary" id="btnAdd">+ 新增长者</button>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-card"><div class="k">在院长者</div><div class="v" id="stIn">0</div></div>
+        <div class="stat-card"><div class="k">本月新入</div><div class="v" id="stNew">0</div></div>
+        <div class="stat-card"><div class="k">特护 / 全护理</div><div class="v" id="stCare">0</div></div>
+        <div class="stat-card"><div class="k">资料完整率</div><div class="v" id="stFull">0<em>%</em></div></div>
+      </div>
+
+      <div class="filter-card">
+        <div class="filter-grid">
+          <div class="filter-item">
+            <label>姓名 / 身份证 / 床位</label>
+            <input class="ctrl" id="qKeyword" placeholder="支持模糊查询" />
+          </div>
+          <div class="filter-item">
+            <label>楼层</label>
+            <select class="ctrl" id="qFloor">
+              <option value="">全部</option>
+              <option>1F</option><option>2F</option><option>3F</option><option>4F</option><option>5F</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label>护理等级</label>
+            <select class="ctrl" id="qCare">
+              <option value="">全部</option>
+              <option>自理</option>
+              <option>半护理</option>
+              <option>全护理</option>
+              <option>特护</option>
+            </select>
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
+            <button type="button" class="btn btn-default" id="btnReset">重置</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="list-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>姓名</th>
+                <th>性别</th>
+                <th>年龄</th>
+                <th>身份证号</th>
+                <th>楼层床位</th>
+                <th>护理等级</th>
+                <th>入住日期</th>
+                <th>紧急联系人</th>
+                <th>资料</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="elderBody"></tbody>
+          </table>
+        </div>
+        <div class="pager">
+          <span id="pagerInfo">共 0 条</span>
+          <div class="pager-btns">
+            <button type="button">上一页</button>
+            <button type="button" class="active">1</button>
+            <button type="button">下一页</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-mask" data-drawer-mask="elderDrawer" data-close-drawer="elderDrawer"></div>
+      <aside class="drawer wide" id="elderDrawer">
+        <div class="drawer-head">
+          <h3 id="drawerTitle">长者档案</h3>
+          <button type="button" class="drawer-close" data-close-drawer="elderDrawer">×</button>
+        </div>
+        <div class="drawer-body">
+          <div class="avatar-row">
+            <div class="elder-avatar" id="eAvatar">长</div>
+            <div class="avatar-meta">
+              <div class="name" id="eTitleName">—</div>
+              <div class="sub" id="eTitleSub">完善各页签信息后保存</div>
+            </div>
+          </div>
+
+          <div class="elder-tabs" id="elderTabs">
+            <button type="button" class="active" data-tab="basic">基本信息</button>
+            <button type="button" data-tab="health">健康陈述书</button>
+            <button type="button" data-tab="live">居住信息</button>
+            <button type="button" data-tab="family">家属信息</button>
+            <button type="button" data-tab="change">变更信息</button>
+            <button type="button" data-tab="other">其他信息</button>
+          </div>
+
+          <div class="elder-panel" data-panel="basic">
+            <div class="form-grid">
+              <div class="form-field"><label>姓名<span class="req">*</span></label><input class="ctrl" id="eName" /></div>
+              <div class="form-field"><label>性别</label>
+                <select class="ctrl" id="eGender"><option>女</option><option>男</option></select>
+              </div>
+              <div class="form-field"><label>出生日期</label><input class="ctrl" id="eBirth" type="date" /></div>
+              <div class="form-field"><label>身份证号<span class="req">*</span></label><input class="ctrl" id="eIdNo" /></div>
+              <div class="form-field"><label>民族</label><input class="ctrl" id="eNation" value="汉族" /></div>
+              <div class="form-field"><label>婚姻状况</label>
+                <select class="ctrl" id="eMarriage"><option>已婚</option><option>丧偶</option><option>未婚</option><option>离异</option></select>
+              </div>
+              <div class="form-field"><label>文化程度</label><input class="ctrl" id="eEdu" /></div>
+              <div class="form-field"><label>原职业</label><input class="ctrl" id="eJob" /></div>
+              <div class="form-field full"><label>户籍地址</label><input class="ctrl" id="eHukou" /></div>
+              <div class="form-field full"><label>现住址</label><input class="ctrl" id="eAddr" /></div>
+            </div>
+          </div>
+
+          <div class="elder-panel" data-panel="health" hidden>
+            <div class="form-grid">
+              <div class="form-field"><label>血型</label>
+                <select class="ctrl" id="eBlood"><option>A</option><option>B</option><option>AB</option><option>O</option><option>不详</option></select>
+              </div>
+              <div class="form-field"><label>过敏史</label><input class="ctrl" id="eAllergy" placeholder="无则填无" /></div>
+              <div class="form-field"><label>慢性病</label><input class="ctrl" id="eChronic" placeholder="高血压/糖尿病等" /></div>
+              <div class="form-field"><label>失能情况</label>
+                <select class="ctrl" id="eDisability"><option>能力完好</option><option>轻度失能</option><option>中度失能</option><option>重度失能</option></select>
+              </div>
+              <div class="form-field full"><label>既往病史</label><textarea class="ctrl" id="eHistory"></textarea></div>
+              <div class="form-field full"><label>健康陈述说明</label><textarea class="ctrl" id="eHealthNote" placeholder="本人或家属健康陈述要点"></textarea></div>
+            </div>
+          </div>
+
+          <div class="elder-panel" data-panel="live" hidden>
+            <div class="form-grid">
+              <div class="form-field"><label>楼层<span class="req">*</span></label>
+                <select class="ctrl" id="eFloor"><option>1F</option><option>2F</option><option>3F</option><option>4F</option><option>5F</option></select>
+              </div>
+              <div class="form-field"><label>房间床位<span class="req">*</span></label><input class="ctrl" id="eBed" placeholder="如：312-A" /></div>
+              <div class="form-field"><label>护理等级</label>
+                <select class="ctrl" id="eCare"><option>自理</option><option>半护理</option><option>全护理</option><option>特护</option></select>
+              </div>
+              <div class="form-field"><label>入住日期</label><input class="ctrl" id="eCheckin" type="date" /></div>
+              <div class="form-field"><label>合同编号</label><input class="ctrl" id="eContract" /></div>
+              <div class="form-field"><label>膳食偏好</label><input class="ctrl" id="eMeal" placeholder="软食/低盐等" /></div>
+              <div class="form-field full"><label>特殊照护要求</label><textarea class="ctrl" id="eCareNote"></textarea></div>
+            </div>
+          </div>
+
+          <div class="elder-panel" data-panel="family" hidden>
+            <div id="familyList"></div>
+            <button type="button" class="btn btn-default" id="btnAddFamily">+ 添加家属</button>
+          </div>
+
+          <div class="elder-panel" data-panel="change" hidden>
+            <div id="changeList"></div>
+            <p style="font-size:12px;color:#8c8c8c;margin:8px 0 0">变更记录由房间变更、护理等级调整等流程自动生成，支持手工补充说明。</p>
+          </div>
+
+          <div class="elder-panel" data-panel="other" hidden>
+            <div class="form-grid">
+              <div class="form-field"><label>宗教信仰</label><input class="ctrl" id="eReligion" /></div>
+              <div class="form-field"><label>兴趣爱好</label><input class="ctrl" id="eHobby" /></div>
+              <div class="form-field"><label>社保卡号</label><input class="ctrl" id="eSocial" /></div>
+              <div class="form-field"><label>银行卡号</label><input class="ctrl" id="eBank" /></div>
+              <div class="form-field full"><label>备注</label><textarea class="ctrl" id="eRemark"></textarea></div>
+            </div>
+          </div>
+        </div>
+        <div class="drawer-foot">
+          <button type="button" class="btn btn-default" data-close-drawer="elderDrawer">取消</button>
+          <button type="button" class="btn btn-primary" id="btnSave">保存档案</button>
+        </div>
+      </aside>
+    </template>
+
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/org-elder.js"></script>
+  </body>
+</html>

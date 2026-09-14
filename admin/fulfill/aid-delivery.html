@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>租赁交付与归还 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="fulfill" data-sub="aid-delivery" data-tab="租赁交付与归还" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">租赁交付与归还</h1>
+    <p class="page-desc">记录交付/归还时间、凭证、用户确认与归还申请</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">履约总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 登记交付/归还</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">交付</div><div class="v" id="stDel">0</div></div><div class="stat-card"><div class="k">归还申请</div><div class="v" id="stApply">0</div></div><div class="stat-card"><div class="k">已归还</div><div class="v" id="stBack">0</div></div><div class="stat-card"><div class="k">待确认</div><div class="v" id="stWait">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>记录/用户</label><input class="ctrl" id="qKeyword" placeholder=""/></div><div class="filter-item"><label>类型</label><select class="ctrl" id="qType"><option value="">全部</option><option value="交付">交付</option><option value="归还申请">归还申请</option><option value="已归还">已归还</option></select></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="待确认">待确认</option><option value="已完成">已完成</option><option value="待上门">待上门</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>记录号</th><th>用户</th><th>辅具</th><th>类型</th><th>时间</th><th>用户确认</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">登记交付/归还</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>记录号<span class="req">*</span></label><input class="ctrl" id="fRecordId" type="text"  placeholder=""/></div><div class="form-field"><label>用户<span class="req">*</span></label><input class="ctrl" id="fUser" type="text"  placeholder=""/></div><div class="form-field"><label>辅具<span class="req">*</span></label><input class="ctrl" id="fItem" type="text"  placeholder=""/></div><div class="form-field"><label>类型</label><select class="ctrl" id="fType"><option value="交付">交付</option><option value="归还申请">归还申请</option><option value="已归还">已归还</option></select></div><div class="form-field"><label>时间<span class="req">*</span></label><input class="ctrl" id="fTime" type="date"  placeholder=""/></div><div class="form-field"><label>用户确认</label><select class="ctrl" id="fConfirm"><option value="已确认">已确认</option><option value="未确认">未确认</option></select></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="待确认">待确认</option><option value="已完成">已完成</option><option value="待上门">待上门</option></select></div><div class="form-field"><label>凭证说明</label><textarea class="ctrl" id="fProof" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "登记交付/归还",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "fulfill:aid-delivery",
+  rows: [{"recordId":"DL26073101","user":"安辉","item":"铝合金四脚拐杖","type":"交付","time":"2026-07-31","confirm":"已确认","status":"已完成","proof":"签收单S001"},{"recordId":"RT26073102","user":"张伟","item":"电动护理床","type":"归还申请","time":"2026-07-31","confirm":"未确认","status":"待上门","proof":"预约8/2上门"}],
+  columns: [{key:"recordId"},{key:"user"},{key:"item"},{key:"type"},{key:"time"},{key:"confirm"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.recordId||"").includes(v)||String(r.user||"").includes(v)},{id:"qType",match:(r,v)=>!v||String(r.type)===v},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v}],
+  formFields: [{id:"fRecordId",key:"recordId",type:"text",label:"记录号",required:true},{id:"fUser",key:"user",type:"text",label:"用户",required:true},{id:"fItem",key:"item",type:"text",label:"辅具",required:true},{id:"fType",key:"type",type:"select",label:"类型",required:false},{id:"fTime",key:"time",type:"date",label:"时间",required:true},{id:"fConfirm",key:"confirm",type:"select",label:"用户确认",required:false},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fProof",key:"proof",type:"text",label:"凭证说明",required:false}],
+  stats: [{id:"stDel",html:false,value:(l)=>l.filter(r=>r.type==="交付").length},{id:"stApply",html:false,value:(l)=>l.filter(r=>r.type==="归还申请").length},{id:"stBack",html:false,value:(l)=>l.filter(r=>r.type==="已归还").length},{id:"stWait",html:false,value:(l)=>l.filter(r=>r.status==="待确认").length}],
+  getStatus:(r)=>(r.status==="已完成"?{text:r.status,cls:"status-on"}:r.status==="待上门"?{text:r.status,cls:"status-warn"}:{text:r.status,cls:"status-off"})
+});
+</script>
+</body>
+</html>

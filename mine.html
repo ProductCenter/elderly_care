@@ -7,7 +7,8 @@
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
     />
     <title>我的</title>
-    <link rel="stylesheet" href="./css/mine.css" />
+    <link rel="stylesheet" href="./css/mine.css?v=20260804-capsule1" />    <link rel="stylesheet" href="./css/app-shell.css?v=20260912-covers5" />
+
   </head>
   <body>
     <div class="phone" id="app">
@@ -23,7 +24,7 @@
         <span class="nav-side"></span>
         <h1 class="nav-title">我的</h1>
         <div class="mp-capsule" aria-hidden="true">
-          <span class="capsule-more"><i></i><i></i><i></i></span>
+          <span class="capsule-more"><span></span><span></span><span></span></span>
           <i class="capsule-divider"></i>
           <span class="capsule-home"><i class="ring"></i></span>
         </div>
@@ -107,19 +108,21 @@
             <span class="chevron">›</span>
           </a>
           <a class="menu-item" href="./sleep-todo.html">
-            <span class="menu-icon ic-sleep"></span>
+            <span class="menu-icon ic-sleep-loop"></span>
             <span class="menu-text">睡眠健康闭环</span>
             <span class="menu-extra">待办/计划</span>
             <span class="chevron">›</span>
           </a>
           <a class="menu-item" href="./sleep-entitlements.html">
-            <span class="menu-icon ic-member"></span>
+            <span class="menu-icon ic-sleep-ent"></span>
             <span class="menu-text">睡眠权益</span>
+            <span class="menu-extra"></span>
             <span class="chevron">›</span>
           </a>
           <button type="button" class="menu-item" id="btnAddress">
             <span class="menu-icon ic-addr"></span>
             <span class="menu-text">收货地址</span>
+            <span class="menu-extra"></span>
             <span class="chevron">›</span>
           </button>
           <button type="button" class="menu-item" id="btnCoupon">
@@ -131,21 +134,25 @@
           <a class="menu-item" href="./merchant-verify.html">
             <span class="menu-icon ic-scan"></span>
             <span class="menu-text">商家核销（演示）</span>
+            <span class="menu-extra"></span>
             <span class="chevron">›</span>
           </a>
           <a class="menu-item" href="./logistics-track.html">
             <span class="menu-icon ic-order"></span>
             <span class="menu-text">物流轨迹</span>
+            <span class="menu-extra"></span>
             <span class="chevron">›</span>
           </a>
           <a class="menu-item" href="./aid-rental.html">
             <span class="menu-icon ic-coupon"></span>
             <span class="menu-text">辅具租赁</span>
+            <span class="menu-extra"></span>
             <span class="chevron">›</span>
           </a>
           <a class="menu-item" href="./aftersale-apply.html">
             <span class="menu-icon ic-service"></span>
             <span class="menu-text">售后申请</span>
+            <span class="menu-extra"></span>
             <span class="chevron">›</span>
           </a>
         </section>
@@ -154,22 +161,24 @@
           <a class="menu-item" href="./aftersale-apply.html">
             <span class="menu-icon ic-service"></span>
             <span class="menu-text">联系客服 / 售后</span>
+            <span class="menu-extra"></span>
             <span class="chevron">›</span>
           </a>
           <button type="button" class="menu-item" id="btnAbout">
             <span class="menu-icon ic-about"></span>
             <span class="menu-text">关于春风康养</span>
+            <span class="menu-extra"></span>
             <span class="chevron">›</span>
           </button>
         </section>
       </main>
 
       <nav class="tabbar" aria-label="主导航">
-        <a class="tab-item" href="./index.html">
+        <a class="tab-item" href="./home.html">
           <svg viewBox="0 0 24 24"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
           <span>首页</span>
         </a>
-        <a class="tab-item" href="./sleep-todo.html" id="tabHealth">
+        <a class="tab-item" href="./health-service/index.html" id="tabHealth">
           <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
           <span>健康</span>
         </a>
@@ -189,6 +198,7 @@
     <script src="./js/hmac.js"></script>
     <script src="./js/verify-code.js"></script>
     <script src="./js/member.js"></script>
-    <script src="./js/mine.js"></script>
+    <script src="./js/mine.js"></script>    <script src="./js/app-shell.js?v=20260912-covers5"></script>
+
   </body>
 </html>

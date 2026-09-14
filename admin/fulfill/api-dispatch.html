@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>服务任务下发与查询 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="fulfill" data-sub="api-dispatch" data-tab="服务任务下发与查询" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">服务任务下发与查询</h1>
+    <p class="page-desc">向第三方下发预约时间、服务对象、地址、联系人、服务项目；支持任务状态同步查询</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">履约总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 下发任务</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">已下发</div><div class="v" id="stSend">0</div></div><div class="stat-card"><div class="k">服务中</div><div class="v" id="stDoing">0</div></div><div class="stat-card"><div class="k">已完成</div><div class="v" id="stDone">0</div></div><div class="stat-card"><div class="k">失败</div><div class="v" id="stFail">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>任务/对象/项目</label><input class="ctrl" id="qKeyword" placeholder=""/></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="已下发">已下发</option><option value="已接单">已接单</option><option value="服务中">服务中</option><option value="已完成">已完成</option><option value="失败">失败</option></select></div><div class="filter-item"><label>第三方</label><input class="ctrl" id="qProvider" placeholder=""/></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>任务号</th><th>第三方</th><th>服务对象</th><th>预约时间</th><th>地址</th><th>服务项目</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">下发任务</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>任务号<span class="req">*</span></label><input class="ctrl" id="fTaskId" type="text"  placeholder=""/></div><div class="form-field"><label>第三方<span class="req">*</span></label><input class="ctrl" id="fProvider" type="text"  placeholder=""/></div><div class="form-field"><label>服务对象<span class="req">*</span></label><input class="ctrl" id="fSubject" type="text"  placeholder=""/></div><div class="form-field"><label>预约时间<span class="req">*</span></label><input class="ctrl" id="fAppointAt" type="text"  placeholder=""/></div><div class="form-field"><label>联系人/电话<span class="req">*</span></label><input class="ctrl" id="fContact" type="text"  placeholder=""/></div><div class="form-field"><label>地址<span class="req">*</span></label><input class="ctrl" id="fAddress" type="text"  placeholder=""/></div><div class="form-field"><label>服务项目<span class="req">*</span></label><input class="ctrl" id="fItem" type="text"  placeholder=""/></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="已下发">已下发</option><option value="已接单">已接单</option><option value="服务中">服务中</option><option value="已完成">已完成</option><option value="失败">失败</option></select></div><div class="form-field"><label>服务说明</label><textarea class="ctrl" id="fNote" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "下发任务",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "fulfill:api-dispatch",
+  rows: [{"taskId":"TP26073101","provider":"安心到家","subject":"安辉父亲","appointAt":"2026-08-01 10:00","contact":"安辉/13800001234","address":"朝阳门内大街100号","item":"上门保洁","status":"已接单","note":"需带适老化工具"},{"taskId":"TP26073002","provider":"康护通","subject":"李娜","appointAt":"2026-07-30 15:00","contact":"李娜/13700009876","address":"望京街10号","item":"上门护理","status":"已完成","note":""}],
+  columns: [{key:"taskId"},{key:"provider"},{key:"subject"},{key:"appointAt"},{key:"address"},{key:"item"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.taskId||"").includes(v)||String(r.subject||"").includes(v)||String(r.item||"").includes(v)},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v},{id:"qProvider",field:"provider"}],
+  formFields: [{id:"fTaskId",key:"taskId",type:"text",label:"任务号",required:true},{id:"fProvider",key:"provider",type:"text",label:"第三方",required:true},{id:"fSubject",key:"subject",type:"text",label:"服务对象",required:true},{id:"fAppointAt",key:"appointAt",type:"text",label:"预约时间",required:true},{id:"fContact",key:"contact",type:"text",label:"联系人/电话",required:true},{id:"fAddress",key:"address",type:"text",label:"地址",required:true},{id:"fItem",key:"item",type:"text",label:"服务项目",required:true},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fNote",key:"note",type:"text",label:"服务说明",required:false}],
+  stats: [{id:"stSend",html:false,value:(l)=>l.filter(r=>r.status==="已下发").length},{id:"stDoing",html:false,value:(l)=>l.filter(r=>r.status==="服务中"||r.status==="已接单").length},{id:"stDone",html:false,value:(l)=>l.filter(r=>r.status==="已完成").length},{id:"stFail",html:false,value:(l)=>l.filter(r=>r.status==="失败").length}],
+  getStatus:(r)=>(r.status==="已完成"?{text:r.status,cls:"status-on"}:r.status==="失败"?{text:r.status,cls:"status-off"}:{text:r.status,cls:"status-warn"})
+});
+</script>
+</body>
+</html>

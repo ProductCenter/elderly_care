@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f6eee2" />
+    <title>春风康养 · 用户手册</title>
+    <style>
+      :root {
+        --bg: #f6eee2;
+        --ink: #2b241c;
+        --muted: #8a7a68;
+        --orange: #f08a2a;
+        --deep: #e36a12;
+        --card: #fffdf9;
+        --line: rgba(90, 62, 32, 0.1);
+        --font: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; }
+      body {
+        font-family: var(--font);
+        color: var(--ink);
+        background:
+          radial-gradient(90% 45% at 100% 0%, #ffe6c4 0%, transparent 55%),
+          linear-gradient(180deg, #f8f0e4 0%, var(--bg) 35%, #f3e6d4 100%);
+        line-height: 1.6;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+        max-width: 1180px;
+        margin: 0 auto;
+        min-height: 100vh;
+      }
+      .toc {
+        position: sticky;
+        top: 0;
+        align-self: start;
+        height: 100vh;
+        overflow: auto;
+        padding: 28px 16px 40px 20px;
+        border-right: 1px solid var(--line);
+        background: rgba(255, 253, 249, 0.72);
+      }
+      .toc .brand {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: var(--deep);
+        margin-bottom: 8px;
+      }
+      .toc h1 {
+        font-size: 18px;
+        font-weight: 800;
+        margin-bottom: 16px;
+      }
+      .toc a {
+        display: block;
+        padding: 6px 8px;
+        margin-bottom: 2px;
+        border-radius: 3px;
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 13px;
+      }
+      .toc a:hover { background: rgba(240, 138, 42, 0.1); color: var(--deep); }
+      .toc .g {
+        margin: 14px 8px 6px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--ink);
+        letter-spacing: 0.04em;
+      }
+      .main { padding: 36px 32px 80px; }
+      .hero h2 {
+        font-size: clamp(26px, 3.5vw, 36px);
+        font-weight: 800;
+        line-height: 1.25;
+      }
+      .hero p {
+        margin-top: 10px;
+        max-width: 640px;
+        color: var(--muted);
+        font-size: 15px;
+      }
+      .meta {
+        margin-top: 14px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .meta span {
+        height: 28px;
+        padding: 0 10px;
+        border-radius: 3px;
+        background: rgba(255, 253, 249, 0.95);
+        border: 1px solid var(--line);
+        font-size: 12px;
+        color: var(--muted);
+        display: inline-flex;
+        align-items: center;
+      }
+      .meta a {
+        color: var(--deep);
+        text-decoration: none;
+        font-weight: 650;
+      }
+      section.block {
+        margin-top: 40px;
+        padding-top: 8px;
+      }
+      section.block > h3 {
+        font-size: 22px;
+        font-weight: 800;
+        margin-bottom: 8px;
+      }
+      section.block > .lead {
+        color: var(--muted);
+        font-size: 14px;
+        margin-bottom: 16px;
+        max-width: 720px;
+      }
+      .shot-row {
+        display: grid;
+        grid-template-columns: 280px minmax(0, 1fr);
+        gap: 18px;
+        align-items: start;
+        margin: 18px 0 22px;
+        padding: 14px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 3px;
+      }
+      .shot-row.wide {
+        grid-template-columns: 1fr;
+      }
+      .shot-row img {
+        width: 100%;
+        border-radius: 3px;
+        border: 1px solid var(--line);
+        background: #fff;
+        display: block;
+      }
+      .shot-row.phone img {
+        max-width: 280px;
+      }
+      .shot-copy h4 {
+        font-size: 16px;
+        font-weight: 750;
+        margin-bottom: 6px;
+      }
+      .shot-copy p,
+      .shot-copy li {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .shot-copy ol,
+      .shot-copy ul {
+        margin: 8px 0 0 18px;
+      }
+      .shot-copy li { margin: 4px 0; }
+      .feat-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .feat {
+        padding: 12px 14px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 3px;
+      }
+      .feat strong {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+      .feat p {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 3px;
+        overflow: hidden;
+        font-size: 13px;
+        margin-top: 12px;
+      }
+      th, td {
+        text-align: left;
+        padding: 11px 12px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+      th { background: rgba(240, 138, 42, 0.08); font-weight: 700; }
+      tr:last-child td { border-bottom: 0; }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 12px;
+        color: var(--deep);
+      }
+      .foot {
+        margin-top: 48px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      @media (max-width: 900px) {
+        .layout { grid-template-columns: 1fr; }
+        .toc { position: relative; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+        .shot-row { grid-template-columns: 1fr; }
+        .feat-grid { grid-template-columns: 1fr; }
+        .main { padding: 24px 16px 56px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <nav class="toc" aria-label="目录">
+        <div class="brand">春风康养</div>
+        <h1>用户手册</h1>
+        <div class="g">入门</div>
+        <a href="#start">1. 快速开始</a>
+        <a href="#nav">2. 页面导航</a>
+        <div class="g">C 端功能</div>
+        <a href="#mall">3. 康养商城</a>
+        <a href="#agent">4. AI 智伴</a>
+        <a href="#order">5. 下单与订单</a>
+        <a href="#mine">6. 我的</a>
+        <div class="g">平台能力</div>
+        <a href="#pillars">7. 需供三条主线</a>
+        <a href="#ops">8. 运营驾驶舱</a>
+        <div class="g">附录</div>
+        <a href="#faq">9. 常见问题</a>
+        <a href="#links">10. 入口一览</a>
+      </nav>
+
+      <div class="main">
+        <header class="hero" id="top">
+          <h2>春风康养用户手册</h2>
+          <p>
+            本手册面向业务演示与试用人员，说明康养商城、AI 智伴、订单履约及运营大屏的主要功能与操作路径。
+            截图取自本地演示环境（端口 8091）。
+          </p>
+          <div class="meta">
+            <span>版本：演示档 2026-09</span>
+            <span>统一入口：<a href="./index.html">商城</a> · <a href="./agent.html">智伴</a></span>
+            <span>产品功能总览：<a href="./product-features.html">product-features.html</a></span>
+          </div>
+        </header>
+
+        <section class="block" id="start">
+          <h3>1. 快速开始</h3>
+          <p class="lead">商城页面与大模型 API 已统一到同一服务端口，启动一次即可同时使用商城与智伴。</p>
+          <div class="feat-grid">
+            <div class="feat">
+              <strong>启动服务</strong>
+              <p>在项目目录执行 <code>HOST=0.0.0.0 PORT=8091 python3 scripts/llm_server.py</code>（或已配置的 LaunchAgent）。</p>
+            </div>
+            <div class="feat">
+              <strong>本机访问</strong>
+              <p>商城 <code>http://127.0.0.1:8091/index.html</code>；智伴 <code>http://127.0.0.1:8091/agent.html</code>。</p>
+            </div>
+            <div class="feat">
+              <strong>内网访问</strong>
+              <p>同网段设备用本机局域网 IP，例如 <code>http://10.6.24.47:8091/</code>。</p>
+            </div>
+            <div class="feat">
+              <strong>大模型配置</strong>
+              <p>在 <code>llm.env</code> 填写千帆 / DeepSeek 密钥；未配置时智伴仍可走固化演示对话。</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="block" id="nav">
+          <h3>2. 页面导航</h3>
+          <p class="lead">底部 Tab 覆盖首页商城、健康、智伴入口与我的；多数详情页左上角可返回。</p>
+          <table>
+            <thead>
+              <tr><th>模块</th><th>入口</th><th>说明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>康养商城</td><td><code>index.html</code></td><td>Banner、分类、智伴卡片、到店/到家/辅具/邮寄信息流</td></tr>
+              <tr><td>AI 智伴</td><td><code>agent.html</code></td><td>康小护对话、试试这些、快捷入口、CUI 卡片</td></tr>
+              <tr><td>商品详情</td><td><code>detail.html?id=…</code></td><td>主图、亮点、配送说明、加购/购买</td></tr>
+              <tr><td>下单</td><td><code>order.html</code></td><td>到店预约 / 到家派单 / 套餐权益</td></tr>
+              <tr><td>订单</td><td><code>orders.html</code></td><td>订单列表与详情、核销码</td></tr>
+              <tr><td>我的</td><td><code>mine.html</code></td><td>个人中心、订单入口</td></tr>
+              <tr><td>运营大屏</td><td><code>admin/center/*-screen.html</code></td><td>需求侧总览、综合运营 KPI</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="block" id="mall">
+          <h3>3. 康养商城</h3>
+          <p class="lead">面向长者家庭的微信小程序风格商城：活动 Banner、业务分类、智伴入口，以及四栏服务信息流。</p>
+
+          <div class="shot-row phone">
+            <img src="./assets/user-manual/um-mall.png?v=20260914-full1" alt="康养商城首页截图" />
+            <div class="shot-copy">
+              <h4>3.1 首页结构</h4>
+              <ol>
+                <li>顶部 Banner 轮播活动（可点击进入活动页）。</li>
+                <li>站点切换与搜索入口。</li>
+                <li>业务金刚区：慢病守护、康复照护、银发餐桌等。</li>
+                <li>广播站 + AI 智伴卡片（套餐推荐 / 附近食堂 / 健康咨询）。</li>
+                <li>信息流 Tab：到店服务、到家服务、辅具租赁、邮寄到家。</li>
+              </ol>
+              <div class="feat-grid">
+                <div class="feat">
+                  <strong>到店服务</strong>
+                  <p>理疗、检测、兴趣课等到站点核销履约。</p>
+                </div>
+                <div class="feat">
+                  <strong>到家服务</strong>
+                  <p>上门照护、助浴、保洁、陪诊等预约派单。</p>
+                </div>
+                <div class="feat">
+                  <strong>辅具租赁</strong>
+                  <p>轮椅、助行器、护理床等租赁月付。</p>
+                </div>
+                <div class="feat">
+                  <strong>邮寄到家</strong>
+                  <p>血糖仪、护理垫、蛋白粉等实物全国包邮。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="shot-row phone">
+            <img src="./assets/user-manual/um-search.png?v=20260914-full1" alt="搜索页截图" />
+            <div class="shot-copy">
+              <h4>3.2 搜索</h4>
+              <p>支持历史词、猜你想搜与结果列表。可从首页搜索按钮进入 <code>search.html</code>。</p>
+            </div>
+          </div>
+
+          <div class="shot-row phone">
+            <img src="./assets/user-manual/um-detail.png?v=20260914-full1" alt="商品详情截图" />
+            <div class="shot-copy">
+              <h4>3.3 商品详情</h4>
+              <ol>
+                <li>查看主图、价格、服务亮点与配送说明。</li>
+                <li>「加入购物车」或「立即购买」进入下单页。</li>
+                <li>套餐类商品支付后生成权益，到站按次核销。</li>
+              </ol>
+            </div>
+          </div>
+        </section>
+
+        <section class="block" id="agent">
+          <h3>4. AI 智伴（康小护）</h3>
+          <p class="lead">对话式入口：把家庭档案、体征解读、食堂推荐、照护建议固化在同一页完成，形象与「试试这些」在对话时仍保留。</p>
+
+          <div class="shot-row phone">
+            <img src="./assets/user-manual/um-agent.png?v=20260914-full1" alt="AI智伴首页截图" />
+            <div class="shot-copy">
+              <h4>4.1 智伴首页</h4>
+              <ol>
+                <li>康小护形象与问候语。</li>
+                <li>「试试这些」推荐问题，可换一批。</li>
+                <li>底部快捷入口：我家爸妈、附近食堂、上门照护、健康数据、社区活动。</li>
+                <li>支持按住说话或键盘输入。</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="shot-row wide">
+            <img src="./assets/user-manual/feature-ai-agent.png" alt="智伴对话式调度示意" />
+            <div class="shot-copy">
+              <h4>4.2 对话与卡片</h4>
+              <ul>
+                <li>固化演示：林家双老健康档案、体征、睡眠、营养、业务节点等。</li>
+                <li>回答可带 CUI 卡片：体征、趋势、地图食堂、供给列表、需供匹配表等。</li>
+                <li>追问问题会出现在回复下方，点击继续对话。</li>
+                <li>配置大模型后可流式输出；未配置时仍走演示档答案。</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block" id="order">
+          <h3>5. 下单与订单</h3>
+          <p class="lead">覆盖到店预约、到家派单、套餐权益与核销闭环。</p>
+
+          <div class="shot-row phone">
+            <img src="./assets/user-manual/um-order.png?v=20260914-full1" alt="下单页截图" />
+            <div class="shot-copy">
+              <h4>5.1 提交订单</h4>
+              <ol>
+                <li>从详情页进入下单，确认商品、门店与时段。</li>
+                <li>到店订单支付后生成核销码。</li>
+                <li>到家订单侧重地址与上门时段，不生成到店核销码。</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="shot-row phone">
+            <img src="./assets/user-manual/um-orders.png?v=20260914-full1" alt="订单列表截图" />
+            <div class="shot-copy">
+              <h4>5.2 我的订单</h4>
+              <p>在 <code>orders.html</code> 查看订单状态；详情页可查看核销码、模拟退款等演示能力。商家端可用 <code>merchant-verify.html</code> 扫码核销。</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="block" id="mine">
+          <h3>6. 我的</h3>
+          <div class="shot-row phone">
+            <img src="./assets/user-manual/um-mine.png?v=20260914-full1" alt="我的页面截图" />
+            <div class="shot-copy">
+              <h4>个人中心</h4>
+              <p>查看账号信息、订单入口、常用服务快捷方式。底部 Tab 可在商城 / 健康 / 智伴 / 我的之间切换。</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="block" id="pillars">
+          <h3>7. 需供三条主线</h3>
+          <p class="lead">产品讲解口径：需智能看清家里的事，供智能备好资源，需供匹配把服务接到人。</p>
+
+          <div class="shot-row wide">
+            <img src="./assets/user-manual/feature-demand-intel.png" alt="需智能功能示意" />
+            <div class="shot-copy">
+              <h4>7.1 需智能</h4>
+              <p>家庭画像、体征档案、能力评估、体征→需求解析。智伴问「最需要什么照护」「打开健康档案」可演示。</p>
+            </div>
+          </div>
+
+          <div class="shot-row wide">
+            <img src="./assets/user-manual/feature-supply-intel.png" alt="供智能功能示意" />
+            <div class="shot-copy">
+              <h4>7.2 供智能</h4>
+              <p>服务要素 / 项目 / 套餐编排；监测网、双病种配餐、卒中康复包、应急日托。食堂成交锁定结算主体。</p>
+            </div>
+          </div>
+
+          <div class="shot-row wide">
+            <img src="./assets/user-manual/feature-match-loop.png" alt="需供匹配功能示意" />
+            <div class="shot-copy">
+              <h4>7.3 需供匹配</h4>
+              <p>把「空腹血糖偏高」等信号配对控糖套餐与用药提醒，形成本周履约闭环并回传子女。</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="block" id="ops">
+          <h3>8. 运营驾驶舱</h3>
+          <p class="lead">面向站点 / 中心运营人员的 PC 大屏与管理清单。</p>
+
+          <div class="shot-row wide">
+            <img src="./assets/user-manual/um-demand.png?v=20260914-full1" alt="需求侧总览大屏截图" />
+            <div class="shot-copy">
+              <h4>8.1 需求侧总览</h4>
+              <p>按站点、人群、场景筛选，查看需求热力与供给对照。入口：<code>admin/center/demand-overview-screen.html</code>。</p>
+            </div>
+          </div>
+
+          <div class="shot-row wide">
+            <img src="./assets/user-manual/um-ops.png?v=20260914-full1" alt="综合运营大屏截图" />
+            <div class="shot-copy">
+              <h4>8.2 综合运营大屏</h4>
+              <p>食堂就餐、托养、上门、团购、设备体验等 KPI。入口：<code>admin/center/ops-screen.html</code>。完整管理清单见 <code>admin/index.html</code>。</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="block" id="faq">
+          <h3>9. 常见问题</h3>
+          <table>
+            <thead>
+              <tr><th>现象</th><th>原因与处理</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>浏览器 <code>ERR_CONNECTION_REFUSED</code></td>
+                <td>8091 服务未运行。执行 <code>HOST=0.0.0.0 PORT=8091 python3 scripts/llm_server.py</code>，或确认 LaunchAgent <code>local.kangyang.llm8091</code> 已加载。</td>
+              </tr>
+              <tr>
+                <td>智伴提示「连不上大模型 / 501」</td>
+                <td>请用 8091 统一服务打开页面（不要用纯静态端口）。确认 <code>/api/llm/status</code> 返回 200。</td>
+              </tr>
+              <tr>
+                <td>内网手机打不开</td>
+                <td>使用局域网 IP（非 127.0.0.1），确认电脑与手机同一网段，服务已 <code>HOST=0.0.0.0</code> 绑定。</td>
+              </tr>
+              <tr>
+                <td>智伴只回答演示档案</td>
+                <td>演示档对「林家双老」问题走固化知识；其他问题需配置 <code>llm.env</code> 密钥。</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="block" id="links">
+          <h3>10. 入口一览</h3>
+          <table>
+            <thead>
+              <tr><th>名称</th><th>链接</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>康养商城</td><td><a href="./index.html">./index.html</a></td></tr>
+              <tr><td>AI 智伴</td><td><a href="./agent.html">./agent.html</a></td></tr>
+              <tr><td>我的</td><td><a href="./mine.html">./mine.html</a></td></tr>
+              <tr><td>订单列表</td><td><a href="./orders.html">./orders.html</a></td></tr>
+              <tr><td>产品功能与截图</td><td><a href="./product-features.html">./product-features.html</a></td></tr>
+              <tr><td>管理端清单</td><td><a href="./admin/index.html">./admin/index.html</a></td></tr>
+              <tr><td>需求侧总览</td><td><a href="./admin/center/demand-overview-screen.html">./admin/center/demand-overview-screen.html</a></td></tr>
+              <tr><td>运营大屏</td><td><a href="./admin/center/ops-screen.html">./admin/center/ops-screen.html</a></td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <p class="foot">截图目录：<code>assets/user-manual/</code> · 演示数据仅供产品说明，不构成医疗建议</p>
+      </div>
+    </div>
+  </body>
+</html>

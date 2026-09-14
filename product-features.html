@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="theme-color" content="#f6eee2" />
+    <title>需供平台 · 主要产品功能</title>
+    <style>
+      :root {
+        --bg: #f6eee2;
+        --ink: #2b241c;
+        --muted: #8a7a68;
+        --orange: #f08a2a;
+        --deep: #e36a12;
+        --card: #fffdf9;
+        --line: rgba(90, 62, 32, 0.1);
+        --font: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: var(--font);
+        color: var(--ink);
+        background:
+          radial-gradient(90% 50% at 100% 0%, #ffe6c4 0%, transparent 55%),
+          linear-gradient(180deg, #f8f0e4 0%, var(--bg) 40%, #f3e6d4 100%);
+        min-height: 100vh;
+        line-height: 1.55;
+      }
+      .wrap {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 40px 24px 80px;
+      }
+      .hero {
+        margin-bottom: 36px;
+      }
+      .hero .brand {
+        display: inline-block;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: var(--deep);
+        margin-bottom: 10px;
+      }
+      .hero h1 {
+        font-size: clamp(28px, 4vw, 40px);
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        line-height: 1.2;
+      }
+      .hero p {
+        margin-top: 12px;
+        max-width: 640px;
+        font-size: 15px;
+        color: var(--muted);
+      }
+      .pillars {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin: 28px 0 40px;
+      }
+      .pillar {
+        padding: 16px 18px;
+        background: rgba(255, 253, 249, 0.9);
+        border: 1px solid var(--line);
+        border-radius: 3px;
+      }
+      .pillar b {
+        display: block;
+        font-size: 16px;
+        color: var(--deep);
+        margin-bottom: 6px;
+      }
+      .pillar span {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .section {
+        margin-bottom: 48px;
+      }
+      .section-hd {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+      .section-hd h2 {
+        font-size: 22px;
+        font-weight: 800;
+      }
+      .section-hd em {
+        font-style: normal;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .shot {
+        display: block;
+        width: 100%;
+        border-radius: 3px;
+        border: 1px solid var(--line);
+        background: #fff;
+      }
+      .features {
+        margin-top: 14px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .feat {
+        padding: 12px 14px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 3px;
+      }
+      .feat strong {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+      .feat p {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .matrix {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 3px;
+        overflow: hidden;
+        font-size: 13px;
+      }
+      .matrix th,
+      .matrix td {
+        text-align: left;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+      .matrix th {
+        background: rgba(240, 138, 42, 0.08);
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .matrix tr:last-child td { border-bottom: 0; }
+      .matrix code {
+        font-family: inherit;
+        color: var(--deep);
+        font-weight: 650;
+      }
+      .links {
+        margin-top: 18px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .links a {
+        display: inline-flex;
+        align-items: center;
+        height: 32px;
+        padding: 0 12px;
+        border-radius: 3px;
+        background: linear-gradient(180deg, #fff5eb, #ffe8d6);
+        border: 1px solid rgba(240, 138, 42, 0.25);
+        color: var(--deep);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 650;
+      }
+      .foot {
+        margin-top: 40px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      @media (max-width: 720px) {
+        .pillars,
+        .features { grid-template-columns: 1fr; }
+        .wrap { padding: 28px 16px 56px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="hero">
+        <span class="brand">春风康养 · 需供平台</span>
+        <h1>主要产品功能</h1>
+        <p>
+          把长者家里的真实需求看清楚，把站点能用的供给备齐全，再把对的服务接到同一个人、同一个星期里。
+          平台以「需智能 / 供智能 / 需供匹配」三条主线组织能力。
+        </p>
+      </header>
+
+      <div class="pillars" aria-label="三条主线">
+        <div class="pillar">
+          <b>需智能</b>
+          <span>画像 · 体征 · 评估 · 风险翻译成可调度任务</span>
+        </div>
+        <div class="pillar">
+          <b>供智能</b>
+          <span>食堂 · 照护 · 康复 · 设备 · 日托编成供给网</span>
+        </div>
+        <div class="pillar">
+          <b>需供匹配</b>
+          <span>派单 · 换餐 · 提醒 · 回传，形成履约闭环</span>
+        </div>
+      </div>
+
+      <section class="section">
+        <div class="section-hd">
+          <h2>01 需智能</h2>
+          <em>看清家里的事</em>
+        </div>
+        <img class="shot" src="./assets/product-features/feature-demand-intel.png" alt="需智能 · 家庭健康画像功能截图" />
+        <div class="features">
+          <div class="feat">
+            <strong>家庭 / 长者画像</strong>
+            <p>双老家庭结构、病种、能力、居住与子女陪伴，形成需智能入口。</p>
+          </div>
+          <div class="feat">
+            <strong>体征与健康档案</strong>
+            <p>血糖、血压、睡眠、营养、运动、病程固化看板，异常分级提醒。</p>
+          </div>
+          <div class="feat">
+            <strong>能力评估与业务节点</strong>
+            <p>Barthel / 失能等级开口，评估→计划→履约→账单全链路节点可视。</p>
+          </div>
+          <div class="feat">
+            <strong>体征 → 需求解析</strong>
+            <p>把偏高血糖、偏高血压等信号翻译成控糖餐、防跌、康复等刚需清单。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-hd">
+          <h2>02 供智能</h2>
+          <em>备好用得上的资源</em>
+        </div>
+        <img class="shot" src="./assets/product-features/feature-supply-intel.png" alt="供智能 · 供给网络编排功能截图" />
+        <div class="features">
+          <div class="feat">
+            <strong>服务要素 / 项目 / 套餐</strong>
+            <p>模板→实例→套餐三层供给；食堂结算锁定，禁止跨食堂核销。</p>
+          </div>
+          <div class="feat">
+            <strong>四网供给编排</strong>
+            <p>慢病监测网、双病种配餐、卒中康复包、应急与日托按病种半径编排。</p>
+          </div>
+          <div class="feat">
+            <strong>康养商城履约</strong>
+            <p>到店 / 到家 / 辅具租赁 / 邮寄到家；核销码与订单权益闭环。</p>
+          </div>
+          <div class="feat">
+            <strong>站点运营与库存</strong>
+            <p>食堂余量、康复时段、日托名额、设备体验预约统一可视。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-hd">
+          <h2>03 需供匹配</h2>
+          <em>把对的服务接到人</em>
+        </div>
+        <img class="shot" src="./assets/product-features/feature-match-loop.png" alt="需供匹配 · 闭环派单功能截图" />
+        <div class="features">
+          <div class="feat">
+            <strong>信号 → 供给配对</strong>
+            <p>如「空腹血糖偏高 3 天」配对控糖套餐 + 用药提醒，状态可追踪。</p>
+          </div>
+          <div class="feat">
+            <strong>本周履约闭环</strong>
+            <p>康复加训、夜灯巡检、日托喘息、账单确认按周回写子女看板。</p>
+          </div>
+          <div class="feat">
+            <strong>优先级调度</strong>
+            <p>先防再卒中与跌倒，再稳血糖，同时减轻照护者负担。</p>
+          </div>
+          <div class="feat">
+            <strong>异常秒推</strong>
+            <p>子女不在身边时远程可视；超标体征与漏药自动推送。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-hd">
+          <h2>04 AI 智伴</h2>
+          <em>对话式入口</em>
+        </div>
+        <img class="shot" src="./assets/product-features/feature-ai-agent.png" alt="AI智伴 · 对话式调度功能截图" />
+        <div class="features">
+          <div class="feat">
+            <strong>康小护对话</strong>
+            <p>档案问答、体征解读、附近食堂地图卡、追问推荐固化演示。</p>
+          </div>
+          <div class="feat">
+            <strong>快捷场景入口</strong>
+            <p>我家爸妈 / 附近食堂 / 上门照护 / 健康数据 / 社区活动一键问。</p>
+          </div>
+          <div class="feat">
+            <strong>CUI 卡片表达</strong>
+            <p>体征、趋势、睡眠、业务节点、供给、地图等结构化卡片进聊天气泡。</p>
+          </div>
+          <div class="feat">
+            <strong>可接大模型</strong>
+            <p>演示档固化林家数字；配置密钥后可走 DeepSeek 等兼容接口。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-hd">
+          <h2>05 康养商城</h2>
+          <em>C 端履约触达</em>
+        </div>
+        <img class="shot" src="./assets/product-features/feature-mall.png" alt="康养商城 · 到店到家邮寄功能截图" />
+        <div class="features">
+          <div class="feat">
+            <strong>四栏信息流</strong>
+            <p>到店服务、到家服务、辅具租赁、邮寄到家分区推荐。</p>
+          </div>
+          <div class="feat">
+            <strong>套餐权益核销</strong>
+            <p>包月订餐等到站按次核销；到店核销码、商家扫码校验。</p>
+          </div>
+          <div class="feat">
+            <strong>活动与主题落地页</strong>
+            <p>Banner 活动、主题推荐流、智伴入口联动。</p>
+          </div>
+          <div class="feat">
+            <strong>售后与订单</strong>
+            <p>订单详情、退款模拟、售后申请等履约后链路。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-hd">
+          <h2>06 运营驾驶舱</h2>
+          <em>B 端全站可视</em>
+        </div>
+        <img class="shot" src="./assets/product-features/feature-ops-screen.png" alt="运营驾驶舱 · 全站可视功能截图" />
+        <div class="features">
+          <div class="feat">
+            <strong>需求侧总览大屏</strong>
+            <p>站点 / 人群 / 场景筛选，需求热力与供给缺口对照。</p>
+          </div>
+          <div class="feat">
+            <strong>综合运营大屏</strong>
+            <p>食堂就餐、托养、上门、团购、设备体验等核心 KPI。</p>
+          </div>
+          <div class="feat">
+            <strong>机构与健康管理</strong>
+            <p>长者档案、评估、用药托管、巡查适老化、请假复诊。</p>
+          </div>
+          <div class="feat">
+            <strong>监督与结算</strong>
+            <p>履约质量、投诉、补贴追溯、分账结算与对账导出。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-hd">
+          <h2>功能对照表</h2>
+          <em>产品能力 ↔ 演示入口</em>
+        </div>
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th>主线</th>
+              <th>核心功能</th>
+              <th>演示入口</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>需智能</code></td>
+              <td>家庭画像、体征档案、能力评估、需求解析</td>
+              <td>智伴「打开爸妈的健康档案」「最需要什么照护」</td>
+            </tr>
+            <tr>
+              <td><code>供智能</code></td>
+              <td>服务要素/项目/套餐、四网供给、食堂锁定结算</td>
+              <td>智伴「平台要准备哪些供给」· 管理端服务套餐</td>
+            </tr>
+            <tr>
+              <td><code>需供匹配</code></td>
+              <td>信号配对、本周闭环、异常推送</td>
+              <td>智伴「需求和供给对上」</td>
+            </tr>
+            <tr>
+              <td><code>AI 智伴</code></td>
+              <td>对话调度、CUI 卡片、地图推荐</td>
+              <td><a href="./agent.html">agent.html</a></td>
+            </tr>
+            <tr>
+              <td><code>康养商城</code></td>
+              <td>到店/到家/辅具/邮寄、核销履约</td>
+              <td><a href="./index.html">index.html</a></td>
+            </tr>
+            <tr>
+              <td><code>运营驾驶舱</code></td>
+              <td>需求总览、综合运营、机构健康管理</td>
+              <td><a href="./admin/center/demand-overview-screen.html">需求侧总览</a> · <a href="./admin/center/ops-screen.html">运营大屏</a></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="links">
+          <a href="./agent.html">打开 AI 智伴</a>
+          <a href="./index.html">打开康养商城</a>
+          <a href="./admin/index.html">打开管理端清单</a>
+          <a href="./admin/center/demand-overview-screen.html">需求侧总览大屏</a>
+          <a href="./admin/center/ops-screen.html">运营大屏</a>
+        </div>
+      </section>
+
+      <p class="foot">截图为产品功能示意 · 交互演示以仓库内静态页与智伴固化对话为准</p>
+    </div>
+  </body>
+</html>

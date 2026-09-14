@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>押金退还与申诉 · 天津康养运营平台</title>
+<link rel="stylesheet" href="../css/admin-shell.css"/>
+<link rel="stylesheet" href="../css/admin-list.css"/>
+</head>
+<body data-primary="fulfill" data-sub="aid-refund" data-tab="押金退还与申诉" data-asset-prefix="../../assets" data-index-href="../index.html">
+<div id="admin-root"></div>
+<template id="page-content">
+<div class="page-head">
+  <div>
+    <h1 class="page-title">押金退还与申诉</h1>
+    <p class="page-desc">验收后自动触发退还或扣减；用户可查看进度并对扣减结果申诉</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-default" href="./index.html">履约总览</a>
+    <button type="button" class="btn btn-primary" id="btnAdd">+ 登记退还/申诉</button>
+  </div>
+</div>
+<div class="stat-row"><div class="stat-card"><div class="k">处理中</div><div class="v" id="stProc">0</div></div><div class="stat-card"><div class="k">已退款</div><div class="v" id="stOk">0</div></div><div class="stat-card"><div class="k">申诉中</div><div class="v" id="stAppeal">0</div></div><div class="stat-card"><div class="k">应退合计</div><div class="v" id="stAmt">0</div></div></div>
+<div class="filter-card"><div class="filter-grid"><div class="filter-item"><label>单号/用户</label><input class="ctrl" id="qKeyword" placeholder=""/></div><div class="filter-item"><label>类型</label><select class="ctrl" id="qType"><option value="">全部</option><option value="自动退还">自动退还</option><option value="扣减退还">扣减退还</option><option value="用户申诉">用户申诉</option></select></div><div class="filter-item"><label>状态</label><select class="ctrl" id="qStatus"><option value="">全部</option><option value="处理中">处理中</option><option value="已退款">已退款</option><option value="申诉中">申诉中</option><option value="已驳回">已驳回</option></select></div><div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div></div></div>
+<div class="list-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>单号</th><th>用户</th><th>辅具</th><th>押金</th><th>应退金额</th><th>类型</th><th>状态</th><th>操作</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div></div>
+<div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+<aside class="drawer" id="listDrawer">
+  <div class="drawer-head"><h3 id="drawerTitle">登记退还/申诉</h3><button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button></div>
+  <div class="drawer-body"><div class="form-grid"><div class="form-field"><label>单号<span class="req">*</span></label><input class="ctrl" id="fCaseId" type="text"  placeholder=""/></div><div class="form-field"><label>用户<span class="req">*</span></label><input class="ctrl" id="fUser" type="text"  placeholder=""/></div><div class="form-field"><label>辅具<span class="req">*</span></label><input class="ctrl" id="fItem" type="text"  placeholder=""/></div><div class="form-field"><label>押金</label><input class="ctrl" id="fDeposit" type="number" value="0" placeholder=""/></div><div class="form-field"><label>应退金额</label><input class="ctrl" id="fRefund" type="number" value="0" placeholder=""/></div><div class="form-field"><label>类型</label><select class="ctrl" id="fType"><option value="自动退还">自动退还</option><option value="扣减退还">扣减退还</option><option value="用户申诉">用户申诉</option></select></div><div class="form-field"><label>状态</label><select class="ctrl" id="fStatus"><option value="处理中">处理中</option><option value="已退款">已退款</option><option value="申诉中">申诉中</option><option value="已驳回">已驳回</option></select></div><div class="form-field"><label>说明/申诉理由</label><textarea class="ctrl" id="fReason" rows="3" placeholder=""></textarea></div></div></div>
+  <div class="drawer-foot"><button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button><button type="button" class="btn btn-primary" id="btnSave">保存</button></div>
+</aside>
+</template>
+<script src="../js/admin-nav.js?v=20260821c"></script>
+<script src="../js/admin-shell.js"></script>
+<script src="../js/admin-ui.js"></script>
+<script src="../js/admin-page-list.js"></script>
+<script>
+AdminPageList.mount({
+  addTitle: "登记退还/申诉",
+  editTitle: "编辑",
+  viewTitle: "查看详情",
+  storageKey: "fulfill:aid-refund",
+  rows: [{"caseId":"DP26073001","user":"李娜","item":"防滑沐浴椅","deposit":150,"refund":150,"type":"自动退还","status":"已退款","reason":"验收完好"},{"caseId":"DP26073102","user":"张伟","item":"电动护理床","deposit":1500,"refund":1380,"type":"扣减退还","status":"申诉中","reason":"不服配件扣款120"}],
+  columns: [{key:"caseId"},{key:"user"},{key:"item"},{key:"deposit"},{key:"refund"},{key:"type"},{key:"status",status:true}],
+  filters: [{id:"qKeyword",match:(r,v)=>!v||String(r.caseId||"").includes(v)||String(r.user||"").includes(v)},{id:"qType",match:(r,v)=>!v||String(r.type)===v},{id:"qStatus",match:(r,v)=>!v||String(r.status)===v}],
+  formFields: [{id:"fCaseId",key:"caseId",type:"text",label:"单号",required:true},{id:"fUser",key:"user",type:"text",label:"用户",required:true},{id:"fItem",key:"item",type:"text",label:"辅具",required:true},{id:"fDeposit",key:"deposit",type:"number",label:"押金",required:false,default:0},{id:"fRefund",key:"refund",type:"number",label:"应退金额",required:false,default:0},{id:"fType",key:"type",type:"select",label:"类型",required:false},{id:"fStatus",key:"status",type:"select",label:"状态",required:false},{id:"fReason",key:"reason",type:"text",label:"说明/申诉理由",required:false}],
+  stats: [{id:"stProc",html:false,value:(l)=>l.filter(r=>r.status==="处理中"||r.status==="申诉中").length},{id:"stOk",html:false,value:(l)=>l.filter(r=>r.status==="已退款").length},{id:"stAppeal",html:false,value:(l)=>l.filter(r=>r.status==="申诉中").length},{id:"stAmt",html:false,value:(l)=>l.reduce((s,r)=>s+Number(r.refund||0),0)}],
+  getStatus:(r)=>(r.status==="已退款"?{text:r.status,cls:"status-on"}:r.status==="申诉中"?{text:r.status,cls:"status-warn"}:r.status==="已驳回"?{text:r.status,cls:"status-off"}:{text:r.status,cls:"status-warn"})
+});
+</script>
+</body>
+</html>

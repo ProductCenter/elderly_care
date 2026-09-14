@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <title>物流轨迹</title>
+    <link rel="stylesheet" href="./css/fulfill-c.css" />    <link rel="stylesheet" href="./css/app-shell.css?v=20260912-covers5" />
+
+  </head>
+  <body>
+    <div class="phone" id="app">
+      <div class="status-bar" aria-hidden="true">
+        <span class="status-time">10:22</span>
+        <div class="status-right"><span class="status-net">5G</span></div>
+      </div>
+      <header class="nav-bar">
+        <button class="nav-back" type="button" id="btnBack" aria-label="返回">‹</button>
+        <h1 class="nav-title">物流轨迹</h1>
+        <span class="nav-side"></span>
+      </header>
+      <main class="page-body">
+        <section class="card">
+          <div class="meta-row"><span>订单号</span><strong id="orderId">O20260730088</strong></div>
+          <div class="meta-row"><span>运单号</span><strong id="trackingNo">SF1234567890</strong></div>
+          <div class="meta-row"><span>物流公司</span><strong>顺丰速运</strong></div>
+          <div class="meta-row" style="margin-bottom:0"><span>当前状态</span><span class="tag ok" id="curStatus">派送中</span></div>
+        </section>
+
+        <section class="card">
+          <h2>轨迹节点</h2>
+          <ul class="timeline" id="timeline"></ul>
+        </section>
+
+        <section class="card">
+          <h2>收货确认</h2>
+          <p class="lead">签收后可手动确认；超时未操作将按规则自动确认。</p>
+          <button type="button" class="btn-primary" id="btnReceive">确认收货</button>
+          <p class="lead" id="receiveTip" style="margin:10px 0 0"></p>
+        </section>
+
+        <section class="card">
+          <a class="btn-ghost" href="./aftersale-apply.html">物流异常？去申请售后</a>
+        </section>
+      </main>
+      <div class="wx-toast" id="toast" hidden></div>
+    </div>
+    <script>
+      const nodes = [
+        { title: "派送中", desc: "北京朝阳区 · 快递员正在派送", time: "2026-07-31 09:40", active: true },
+        { title: "运输中", desc: "已到达北京转运中心", time: "2026-07-30 22:10" },
+        { title: "揽收", desc: "商家已发货，顺丰已揽收", time: "2026-07-30 16:05" },
+        { title: "待发货", desc: "订单已支付，等待商家出库", time: "2026-07-30 11:20" },
+      ];
+      const toast = document.getElementById("toast");
+      const KEY = "c_logistics_receive_v1";
+
+      function showToast(msg) {
+        toast.hidden = false;
+        toast.textContent = msg;
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => (toast.hidden = true), 1800);
+      }
+
+      document.getElementById("timeline").innerHTML = nodes
+        .map(
+          (n) => `<li class="${n.active ? "active" : ""}"><strong>${n.title}</strong><span>${n.desc}<br/>${n.time}</span></li>`
+        )
+        .join("");
+
+      const tip = document.getElementById("receiveTip");
+      const received = localStorage.getItem(KEY) === "1";
+      if (received) {
+        tip.textContent = "您已于演示环境确认收货。";
+        document.getElementById("btnReceive").disabled = true;
+        document.getElementById("curStatus").textContent = "已签收";
+      }
+
+      document.getElementById("btnBack").onclick = () => history.back();
+      document.getElementById("btnReceive").onclick = () => {
+        localStorage.setItem(KEY, "1");
+        document.getElementById("btnReceive").disabled = true;
+        document.getElementById("curStatus").textContent = "已签收";
+        tip.textContent = "已确认收货，签收时间已记录。";
+        showToast("收货确认成功");
+      };
+
+      const q = new URLSearchParams(location.search);
+      if (q.get("orderId")) document.getElementById("orderId").textContent = q.get("orderId");
+      if (q.get("trackingNo")) document.getElementById("trackingNo").textContent = q.get("trackingNo");
+    </script>    <script src="./js/app-shell.js?v=20260912-covers5"></script>
+
+  </body>
+</html>

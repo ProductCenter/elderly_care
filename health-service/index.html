@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#dcefe8" />
+    <title>康养标准服务</title>
+    <link rel="stylesheet" href="./css/app.css?v=20260801split" />    <link rel="stylesheet" href="../css/app-shell.css?v=20260912-covers5" />
+
+  </head>
+  <body>
+    <div class="phone" id="app">
+      <div class="status-bar" aria-hidden="true">
+        <span class="status-time">20:35</span>
+        <div class="status-right">
+          <svg class="status-signal" viewBox="0 0 18 12">
+            <rect x="0" y="8" width="3" height="4" rx="0.5" fill="currentColor" />
+            <rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="currentColor" />
+            <rect x="9" y="2.5" width="3" height="9.5" rx="0.5" fill="currentColor" />
+            <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="currentColor" opacity=".35" />
+          </svg>
+          <span class="status-net">5G</span>
+          <div class="status-battery"><span class="battery-level"></span></div>
+        </div>
+      </div>
+
+      <header class="nav-bar">
+        <div class="nav-side"></div>
+        <h1 class="nav-title">康养服务</h1>
+        <div class="nav-side">
+          <div class="mp-capsule" aria-label="小程序菜单">
+            <button class="capsule-more" type="button" aria-label="更多">
+              <span></span><span></span><span></span>
+            </button>
+            <i class="capsule-divider" aria-hidden="true"></i>
+            <button class="capsule-home" type="button" aria-label="关闭">
+              <span class="ring"></span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="page-body has-cta">
+        <span class="chip"><i class="chip-dot"></i>标准服务能力展示</span>
+
+        <section class="hero">
+          <div class="hero-kicker">Standard Care</div>
+          <h1 class="hero-title">康养标准服务</h1>
+          <p class="hero-lead">
+            覆盖可落地动作、专业人员与规则标准，先看清服务能力，再进入健康洞察生成专属方案。
+          </p>
+        </section>
+
+        <section class="section" id="standardServices">
+          <div class="section-head">
+            <h2 class="section-title">服务清单</h2>
+            <p class="section-desc">动作 · 人员 · 规则（SOP / 风控 / 计价）</p>
+          </div>
+          <div class="std-pillars" aria-label="标准服务三要素">
+            <div class="std-pillar">
+              <strong>动作</strong>
+              <span>助餐助浴 · 体征 · 康复 · 护理</span>
+            </div>
+            <div class="std-pillar">
+              <strong>人员</strong>
+              <span>护理员 · 护士 · 康复师 · 营养师</span>
+            </div>
+            <div class="std-pillar">
+              <strong>规则</strong>
+              <span>服务 SOP · 风控应急 · 收费计价</span>
+            </div>
+          </div>
+          <div class="std-grid" id="stdServices">
+            <article class="std-card">
+              <div class="std-mark" style="background:#1a7a63">餐</div>
+              <div class="std-body">
+                <h3 class="std-name">助餐服务</h3>
+                <p class="std-action"><em>动作</em>到站就餐 / 送餐上门 / 营养配餐</p>
+                <p class="std-staff"><em>人员</em>营养师 · 护理员</p>
+                <div class="std-tags"><span class="std-tag">服务 SOP</span><span class="std-tag">收费计价</span></div>
+              </div>
+            </article>
+            <article class="std-card">
+              <div class="std-mark" style="background:#2d7a8a">浴</div>
+              <div class="std-body">
+                <h3 class="std-name">助浴服务</h3>
+                <p class="std-action"><em>动作</em>上门助浴 / 床旁擦浴 / 安全护送</p>
+                <p class="std-staff"><em>人员</em>护理员 · 护士</p>
+                <div class="std-tags"><span class="std-tag">服务 SOP</span><span class="std-tag">风控应急</span></div>
+              </div>
+            </article>
+            <article class="std-card">
+              <div class="std-mark" style="background:#3b6d8c">征</div>
+              <div class="std-body">
+                <h3 class="std-name">体征检测</h3>
+                <p class="std-action"><em>动作</em>血压心率 / 血糖血氧 / 体重体温</p>
+                <p class="std-staff"><em>人员</em>护士 · 护理员</p>
+                <div class="std-tags"><span class="std-tag">服务 SOP</span><span class="std-tag">异常上报</span></div>
+              </div>
+            </article>
+            <article class="std-card">
+              <div class="std-mark" style="background:#c4784a">康</div>
+              <div class="std-body">
+                <h3 class="std-name">康复训练</h3>
+                <p class="std-action"><em>动作</em>关节活动 / 步行训练 / 平衡练习</p>
+                <p class="std-staff"><em>人员</em>康复师 · 护理员</p>
+                <div class="std-tags"><span class="std-tag">服务 SOP</span><span class="std-tag">收费计价</span></div>
+              </div>
+            </article>
+            <article class="std-card">
+              <div class="std-mark" style="background:#5b7c8a">护</div>
+              <div class="std-body">
+                <h3 class="std-name">基础护理</h3>
+                <p class="std-action"><em>动作</em>翻身拍背 / 口腔清洁 / 皮肤护理</p>
+                <p class="std-staff"><em>人员</em>护理员 · 护士</p>
+                <div class="std-tags"><span class="std-tag">服务 SOP</span><span class="std-tag">风控应急</span></div>
+              </div>
+            </article>
+            <article class="std-card">
+              <div class="std-mark" style="background:#8a5b6d">药</div>
+              <div class="std-body">
+                <h3 class="std-name">用药指导</h3>
+                <p class="std-action"><em>动作</em>用药提醒 / 分药核对 / 不良反应观察</p>
+                <p class="std-staff"><em>人员</em>护士 · 药师</p>
+                <div class="std-tags"><span class="std-tag">服务 SOP</span><span class="std-tag">风控应急</span></div>
+              </div>
+            </article>
+            <article class="std-card">
+              <div class="std-mark" style="background:#6b8a3b">营</div>
+              <div class="std-body">
+                <h3 class="std-name">营养膳食指导</h3>
+                <p class="std-action"><em>动作</em>膳食评估 / 慢病食谱 / 随访调整</p>
+                <p class="std-staff"><em>人员</em>营养师</p>
+                <div class="std-tags"><span class="std-tag">服务 SOP</span><span class="std-tag">收费计价</span></div>
+              </div>
+            </article>
+            <article class="std-card">
+              <div class="std-mark" style="background:#7a6b1a">访</div>
+              <div class="std-body">
+                <h3 class="std-name">入户探访关爱</h3>
+                <p class="std-action"><em>动作</em>定期探访 / 情绪疏导 / 需求登记</p>
+                <p class="std-staff"><em>人员</em>社工 · 护理员</p>
+                <div class="std-tags"><span class="std-tag">服务 SOP</span><span class="std-tag">风控应急</span></div>
+              </div>
+            </article>
+            <article class="std-card">
+              <div class="std-mark" style="background:#c24141">急</div>
+              <div class="std-body">
+                <h3 class="std-name">应急呼叫响应</h3>
+                <p class="std-action"><em>动作</em>一键呼救 / 到场处置 / 家属联动</p>
+                <p class="std-staff"><em>人员</em>护士 · 护理员</p>
+                <div class="std-tags"><span class="std-tag">风控应急</span><span class="std-tag">服务 SOP</span></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="panel">
+            <div class="panel-label">下一步</div>
+            <h3>康养服务 → 健康洞察</h3>
+            <p>了解标准服务能力后，进入健康洞察查看长者体征与趋势，并生成专属服务方案。</p>
+          </div>
+        </section>
+      </main>
+
+      <div class="cta-bar">
+        <a class="btn btn-primary" href="./insight.html">
+          进入健康洞察
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <script src="./js/data.js?v=20260801split"></script>
+    <script>
+      (function () {
+        const services = window.HealthService?.STANDARD_SERVICES || [];
+        if (!services.length) return;
+        document.getElementById("stdServices").innerHTML = services
+          .map(
+            (s) => `
+          <article class="std-card">
+            <div class="std-mark" style="background:${s.tone}">${s.mark}</div>
+            <div class="std-body">
+              <h3 class="std-name">${s.name}</h3>
+              <p class="std-action"><em>动作</em>${s.action}</p>
+              <p class="std-staff"><em>人员</em>${s.staff}</p>
+              <div class="std-tags">${s.standards
+                .map((t) => `<span class="std-tag">${t}</span>`)
+                .join("")}</div>
+            </div>
+          </article>`
+          )
+          .join("");
+      })();
+    </script>    <script src="../js/app-shell.js?v=20260912-covers5"></script>
+
+  </body>
+</html>

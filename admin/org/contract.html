@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>合同管理 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+    <style>
+      .contract-preview {
+        border: 1px solid #f0f0f0;
+        border-radius: 8px;
+        background: #fcfcfc;
+        padding: 16px 18px;
+        font-size: 13px;
+        line-height: 1.8;
+        color: #595959;
+        margin-top: 8px;
+      }
+      .contract-preview h4 {
+        margin: 0 0 8px;
+        text-align: center;
+        font-size: 16px;
+        color: #1f1f1f;
+      }
+      .contract-preview .blank {
+        display: inline-block;
+        min-width: 64px;
+        border-bottom: 1px solid #1677ff;
+        color: #1677ff;
+        padding: 0 4px;
+        text-align: center;
+      }
+      .step-bar {
+        display: flex;
+        gap: 0;
+        margin-bottom: 16px;
+        overflow-x: auto;
+      }
+      .step-bar .step {
+        flex: 1;
+        min-width: 90px;
+        text-align: center;
+        font-size: 12px;
+        color: #8c8c8c;
+        position: relative;
+        padding-bottom: 8px;
+      }
+      .step-bar .step::before {
+        content: attr(data-n);
+        display: grid;
+        place-items: center;
+        width: 24px;
+        height: 24px;
+        margin: 0 auto 6px;
+        border-radius: 50%;
+        background: #f5f5f5;
+        color: #8c8c8c;
+        font-weight: 600;
+      }
+      .step-bar .step.done,
+      .step-bar .step.active {
+        color: #1677ff;
+      }
+      .step-bar .step.done::before,
+      .step-bar .step.active::before {
+        background: #e6f4ff;
+        color: #1677ff;
+      }
+    </style>
+  </head>
+  <body data-primary="org" data-sub="contract" data-tab="合同管理" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">合同管理</h1>
+          <p class="page-desc">基于《养老机构服务合同（2024）》制式模板，维护空项信息并生成合同</p>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn btn-default" id="btnTemplate">查看制式模板</button>
+          <button type="button" class="btn btn-primary" id="btnAdd">+ 新建合同</button>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-card"><div class="k">合同总数</div><div class="v" id="stTotal">0</div></div>
+        <div class="stat-card"><div class="k">履行中</div><div class="v" id="stActive">0</div></div>
+        <div class="stat-card"><div class="k">即将到期(30天)</div><div class="v" id="stExpire">0</div></div>
+        <div class="stat-card"><div class="k">草稿 / 待签</div><div class="v" id="stDraft">0</div></div>
+      </div>
+
+      <div class="filter-card">
+        <div class="filter-grid">
+          <div class="filter-item"><label>合同编号 / 长者</label><input class="ctrl" id="qKeyword" /></div>
+          <div class="filter-item"><label>状态</label>
+            <select class="ctrl" id="qStatus">
+              <option value="">全部</option>
+              <option value="draft">草稿</option>
+              <option value="signing">待签署</option>
+              <option value="active">履行中</option>
+              <option value="expired">已到期</option>
+              <option value="terminated">已终止</option>
+            </select>
+          </div>
+          <div class="filter-item"><label>护理等级</label>
+            <select class="ctrl" id="qCare">
+              <option value="">全部</option>
+              <option>自理</option><option>半护理</option><option>全护理</option><option>特护</option>
+            </select>
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
+            <button type="button" class="btn btn-default" id="btnReset">重置</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="list-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>合同编号</th><th>长者</th><th>监护人/代理人</th><th>床位</th><th>护理等级</th>
+                <th>月费用合计</th><th>起止日期</th><th>状态</th><th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="body"></tbody>
+          </table>
+        </div>
+        <div class="pager">
+          <span id="pagerInfo">共 0 条</span>
+          <div class="pager-btns"><button type="button">上一页</button><button type="button" class="active">1</button><button type="button">下一页</button></div>
+        </div>
+      </div>
+
+      <div class="drawer-mask" data-drawer-mask="ctDrawer" data-close-drawer="ctDrawer"></div>
+      <aside class="drawer wide" id="ctDrawer" style="width:min(760px,100vw)">
+        <div class="drawer-head">
+          <h3 id="drawerTitle">新建合同</h3>
+          <button type="button" class="drawer-close" data-close-drawer="ctDrawer">×</button>
+        </div>
+        <div class="drawer-body">
+          <div class="step-bar">
+            <div class="step active" data-n="1">甲方乙方</div>
+            <div class="step" data-n="2">服务内容</div>
+            <div class="step" data-n="3">费用条款</div>
+            <div class="step" data-n="4">预览生成</div>
+          </div>
+
+          <div class="form-grid" id="secParties">
+            <div class="form-field"><label>合同编号</label><input class="ctrl" id="cNo" placeholder="保存后自动生成亦可手填" /></div>
+            <div class="form-field"><label>状态</label>
+              <select class="ctrl" id="cStatus"><option value="draft">草稿</option><option value="signing">待签署</option><option value="active">履行中</option></select>
+            </div>
+            <div class="form-field"><label>长者（乙方服务对象）<span class="req">*</span></label>
+              <select class="ctrl" id="cElder"><option>张秀英</option><option>李建国</option><option>陈桂兰</option><option>王德福</option></select>
+            </div>
+            <div class="form-field"><label>身份证号</label><input class="ctrl" id="cIdNo" /></div>
+            <div class="form-field"><label>监护人/代理人<span class="req">*</span></label><input class="ctrl" id="cAgent" /></div>
+            <div class="form-field"><label>代理人电话</label><input class="ctrl" id="cAgentPhone" /></div>
+            <div class="form-field"><label>与长者关系</label>
+              <select class="ctrl" id="cRelation"><option>子女</option><option>配偶</option><option>亲属</option><option>其他</option></select>
+            </div>
+            <div class="form-field"><label>机构（甲方）</label><input class="ctrl" id="cOrg" value="天津康养运营中心" /></div>
+          </div>
+
+          <div class="form-grid" id="secService" hidden>
+            <div class="form-field"><label>床位<span class="req">*</span></label><input class="ctrl" id="cBed" placeholder="如：3F 312-A" /></div>
+            <div class="form-field"><label>护理等级<span class="req">*</span></label>
+              <select class="ctrl" id="cCare"><option>自理</option><option>半护理</option><option>全护理</option><option>特护</option></select>
+            </div>
+            <div class="form-field"><label>服务开始日<span class="req">*</span></label><input class="ctrl" id="cStart" type="date" /></div>
+            <div class="form-field"><label>服务结束日</label><input class="ctrl" id="cEnd" type="date" /></div>
+            <div class="form-field full"><label>服务项目约定</label>
+              <textarea class="ctrl" id="cService" placeholder="住宿、餐饮、生活照料、康复护理等"></textarea>
+            </div>
+            <div class="form-field full"><label>特别约定</label>
+              <textarea class="ctrl" id="cSpecial" placeholder="合同空白处需填写的特别约定"></textarea>
+            </div>
+          </div>
+
+          <div class="form-grid" id="secFee" hidden>
+            <div class="form-field"><label>床位费(元/月)</label><input class="ctrl" id="cFeeBed" type="number" value="3800" /></div>
+            <div class="form-field"><label>护理费(元/月)</label><input class="ctrl" id="cFeeCare" type="number" value="2200" /></div>
+            <div class="form-field"><label>餐费(元/月)</label><input class="ctrl" id="cFeeMeal" type="number" value="1200" /></div>
+            <div class="form-field"><label>押金(元)</label><input class="ctrl" id="cDeposit" type="number" value="5000" /></div>
+            <div class="form-field"><label>缴费周期</label>
+              <select class="ctrl" id="cPayCycle"><option>按月</option><option>按季</option><option>按年</option></select>
+            </div>
+            <div class="form-field"><label>月费用合计</label><input class="ctrl" id="cFeeTotal" readonly /></div>
+            <div class="form-field full"><label>费用备注</label><textarea class="ctrl" id="cFeeNote"></textarea></div>
+          </div>
+
+          <div id="secPreview" hidden>
+            <div class="contract-preview" id="previewBox"></div>
+          </div>
+        </div>
+        <div class="drawer-foot">
+          <button type="button" class="btn btn-default" data-close-drawer="ctDrawer">取消</button>
+          <button type="button" class="btn btn-default" id="btnPrev">上一步</button>
+          <button type="button" class="btn btn-primary" id="btnNext">下一步</button>
+          <button type="button" class="btn btn-primary" id="btnSave" hidden>保存合同</button>
+        </div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script>
+    <script src="../js/admin-shell.js"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/org-contract.js"></script>
+  </body>
+</html>

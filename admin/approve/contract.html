@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>合同审批 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+  </head>
+  <body data-primary="approve" data-sub="contract-appr" data-tab="合同审批" data-asset-prefix="../../assets" data-index-href="../index.html">
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div><h1 class="page-title">合同审批</h1><p class="page-desc">各角色填写审批意见（同意 / 不同意）</p></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="k">待我审批</div><div class="v" id="stMine">0</div></div>
+        <div class="stat-card"><div class="k">本周已审</div><div class="v" id="stDone">0</div></div>
+        <div class="stat-card"><div class="k">同意</div><div class="v" id="stOk">0</div></div>
+        <div class="stat-card"><div class="k">不同意</div><div class="v" id="stNo">0</div></div>
+      </div>
+      <div class="filter-card">
+        <div class="filter-grid">
+          <div class="filter-item"><label>合同 / 长者</label><input class="ctrl" id="qKeyword" /></div>
+          <div class="filter-item"><label>状态</label>
+            <select class="ctrl" id="qStatus"><option value="">全部</option><option value="pending">待审批</option><option value="ok">已同意</option><option value="no">不同意</option></select>
+          </div>
+          <div class="filter-item"><label></label><div></div></div>
+          <div class="filter-actions"><button type="button" class="btn btn-primary" id="btnSearch">查询</button><button type="button" class="btn btn-default" id="btnReset">重置</button></div>
+        </div>
+      </div>
+      <div class="list-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>合同编号</th><th>长者</th><th>月费用</th><th>发起人</th><th>提交时间</th><th>当前节点</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody id="body"></tbody>
+          </table>
+        </div>
+        <div class="pager"><span id="pagerInfo">共 0 条</span><div class="pager-btns"><button type="button" class="active">1</button></div></div>
+      </div>
+      <div class="drawer-mask" data-drawer-mask="apprDrawer" data-close-drawer="apprDrawer"></div>
+      <aside class="drawer" id="apprDrawer">
+        <div class="drawer-head"><h3>合同审批</h3><button type="button" class="drawer-close" data-close-drawer="apprDrawer">×</button></div>
+        <div class="drawer-body">
+          <div id="apprMeta" style="margin-bottom:14px;font-size:13px;line-height:1.8;color:#595959"></div>
+          <div class="form-field"><label>审批意见<span class="req">*</span></label><textarea class="ctrl" id="aOpinion" placeholder="请填写同意或不同意的理由"></textarea></div>
+        </div>
+        <div class="drawer-foot">
+          <button type="button" class="btn btn-default" data-close-drawer="apprDrawer">取消</button>
+          <button type="button" class="btn btn-default" id="btnReject" style="color:#ff4d4f;border-color:#ffa39e">不同意</button>
+          <button type="button" class="btn btn-primary" id="btnApprove">同意</button>
+        </div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260821c"></script><script src="../js/admin-shell.js"></script><script src="../js/admin-ui.js"></script>
+    <script>
+      (() => {
+        const statusText = { pending: "待审批", ok: "已同意", no: "不同意" };
+        const statusClass = { pending: "status-busy", ok: "status-on", no: "status-repair" };
+        const SEED = [
+          { no: "HT-2026-0705", elder: "陈桂兰", fee: 5600, by: "刘芳", time: "2026-07-29 10:20", node: "院长审批", status: "pending" },
+          { no: "HT-DRAFT-001", elder: "张秀英", fee: 7400, by: "赵敏", time: "2026-07-30 09:05", node: "财务复核", status: "pending" },
+          { no: "HT-2025-1102", elder: "张秀英", fee: 7200, by: "刘芳", time: "2025-11-01 15:40", node: "已归档", status: "ok", opinion: "材料齐全，同意" },
+          { no: "HT-2024-0999", elder: "试住长者", fee: 5000, by: "王悦", time: "2026-07-18 11:10", node: "已驳回", status: "no", opinion: "费用条款需修订" },
+        ];
+        let rows = AdminStore.load("approve-contract", SEED);
+        function persist() { AdminStore.save("approve-contract", rows); }
+        let cur = -1;
+        function filtered() {
+          const kw = qKeyword.value.trim();
+          const st = qStatus.value;
+          return rows.filter((r) => (!kw || r.no.includes(kw) || r.elder.includes(kw)) && (!st || r.status === st));
+        }
+        function render() {
+          const list = filtered();
+          stMine.textContent = list.filter((r) => r.status === "pending").length;
+          stDone.textContent = list.filter((r) => r.status !== "pending").length;
+          stOk.textContent = list.filter((r) => r.status === "ok").length;
+          stNo.textContent = list.filter((r) => r.status === "no").length;
+          pagerInfo.textContent = `共 ${list.length} 条`;
+          body.innerHTML = list.map((r) => {
+            const i = rows.indexOf(r);
+            const act = r.status === "pending"
+              ? `<button type="button" class="link" data-i="${i}">审批</button>`
+              : `<button type="button" class="link" data-i="${i}">查看</button>`;
+            return `<tr><td>${r.no}</td><td>${r.elder}</td><td>${r.fee}</td><td>${r.by}</td><td>${r.time}</td><td>${r.node}</td>
+              <td><span class="status ${statusClass[r.status]}">${statusText[r.status]}</span></td>
+              <td>${act} <button type="button" class="link danger" data-del="${i}">删除</button></td></tr>`;
+          }).join("") || `<tr class="empty-row"><td colspan="8"><div class="empty-state">暂无审批单</div></td></tr>`;
+        }
+        function open(i) {
+          cur = i;
+          const r = rows[i];
+          apprMeta.innerHTML = `<div>合同：<strong>${r.no}</strong></div><div>长者：${r.elder} · 月费用 ${r.fee} 元</div><div>发起人：${r.by} · ${r.time}</div><div>当前节点：${r.node}</div>${r.opinion ? `<div>历史意见：${r.opinion}</div>` : ""}`;
+          aOpinion.value = r.opinion || "";
+          btnApprove.hidden = r.status !== "pending";
+          btnReject.hidden = r.status !== "pending";
+          AdminUI.openDrawer("apprDrawer");
+        }
+        function decide(ok) {
+          const opinion = aOpinion.value.trim();
+          if (!opinion) {
+            AdminUI.toast("请填写审批意见", "error");
+            return;
+          }
+          rows[cur].status = ok ? "ok" : "no";
+          rows[cur].opinion = opinion;
+          rows[cur].node = ok ? "已归档" : "已驳回";
+          persist();
+          AdminUI.closeDrawer("apprDrawer");
+          AdminUI.toast(ok ? "已同意" : "已驳回");
+          render();
+        }
+        AdminUI.onReady(() => {
+          AdminUI.bindDrawer("apprDrawer");
+          btnSearch.onclick = render;
+          btnReset.onclick = () => { qKeyword.value = ""; qStatus.value = ""; render(); };
+          btnApprove.onclick = () => decide(true);
+          btnReject.onclick = () => decide(false);
+          body.onclick = async (e) => {
+            const el = e.target.closest("[data-i]");
+            const del = e.target.closest("[data-del]");
+            if (el) open(Number(el.dataset.i));
+            if (del) {
+              const ok = await AdminUI.confirm("确定删除该审批单？", { title: "删除确认", okText: "删除" });
+              if (!ok) return;
+              rows.splice(Number(del.dataset.del), 1);
+              persist();
+              AdminUI.toast("已删除");
+              render();
+            }
+          };
+          render();
+        });
+      })();
+    </script>
+  </body>
+</html>

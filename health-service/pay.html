@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#dcefe8" />
+    <title>方案支付</title>
+    <link rel="stylesheet" href="./css/app.css?v=20260801pay" />    <link rel="stylesheet" href="../css/app-shell.css?v=20260912-covers5" />
+
+  </head>
+  <body>
+    <div class="phone" id="app">
+      <div class="status-bar" aria-hidden="true">
+        <span class="status-time">20:35</span>
+        <div class="status-right">
+          <svg class="status-signal" viewBox="0 0 18 12">
+            <rect x="0" y="8" width="3" height="4" rx="0.5" fill="currentColor" />
+            <rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="currentColor" />
+            <rect x="9" y="2.5" width="3" height="9.5" rx="0.5" fill="currentColor" />
+            <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="currentColor" opacity=".35" />
+          </svg>
+          <span class="status-net">5G</span>
+          <div class="status-battery"><span class="battery-level"></span></div>
+        </div>
+      </div>
+
+      <header class="nav-bar">
+        <div class="nav-side">
+          <a class="nav-back" href="./plan.html" aria-label="返回方案">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        </div>
+        <h1 class="nav-title">确认支付</h1>
+        <div class="nav-side">
+          <div class="mp-capsule" aria-label="小程序菜单">
+            <button class="capsule-more" type="button" aria-label="更多">
+              <span></span><span></span><span></span>
+            </button>
+            <i class="capsule-divider" aria-hidden="true"></i>
+            <button class="capsule-home" type="button" aria-label="关闭">
+              <span class="ring"></span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="page-body has-cta">
+        <div class="pay-steps" aria-label="支付流程">
+          <span class="is-done">方案确认</span>
+          <i></i>
+          <span class="is-on">支付</span>
+          <i></i>
+          <span>日历执行</span>
+        </div>
+
+        <section class="pay-amount panel">
+          <div class="panel-label">应付金额</div>
+          <div class="pay-figure" id="payAmount">¥0</div>
+          <p class="pay-plan-name" id="payPlanName">—</p>
+          <p class="pay-plan-meta" id="payPlanMeta">—</p>
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <h2 class="section-title">费用明细</h2>
+            <p class="section-desc">与方案交易明细一致，支付后生效</p>
+          </div>
+          <div class="pay-bill" id="payBill"></div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <h2 class="section-title">支付方式</h2>
+            <p class="section-desc">演示环境模拟收款，不产生真实扣款</p>
+          </div>
+          <div class="pay-methods" id="payMethods" role="radiogroup" aria-label="支付方式">
+            <button type="button" class="pay-method is-on" data-method="微信支付" aria-checked="true">
+              <span class="pm-ico wx">微</span>
+              <span class="pm-text">
+                <strong>微信支付</strong>
+                <em>推荐 · 免到账</em>
+              </span>
+              <span class="pm-check" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="pay-method" data-method="会员余额" aria-checked="false">
+              <span class="pm-ico bal">余</span>
+              <span class="pm-text">
+                <strong>会员余额</strong>
+                <em>可用余额 ¥1,280.00</em>
+              </span>
+              <span class="pm-check" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="pay-method" data-method="对公转账" aria-checked="false">
+              <span class="pm-ico bank">银</span>
+              <span class="pm-text">
+                <strong>对公转账</strong>
+                <em>机构/家属代付</em>
+              </span>
+              <span class="pm-check" aria-hidden="true"></span>
+            </button>
+          </div>
+        </section>
+
+        <section class="section" id="paidCard" hidden>
+          <div class="pay-success panel">
+            <div class="panel-label">已支付</div>
+            <h3 id="paidTitle">支付成功</h3>
+            <p id="paidDetail">—</p>
+          </div>
+        </section>
+      </main>
+
+      <div class="cta-bar">
+        <div class="btn-row">
+          <a class="btn btn-ghost" href="./plan.html">返回方案</a>
+          <button class="btn btn-primary" type="button" id="btnPay">确认支付</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./js/data.js?v=20260801pay"></script>
+    <script>
+      (function () {
+        const { PLAN, tradeTotal, money, ensureState, acceptPlan, payPlan, toast } = HealthService;
+        const total = tradeTotal(PLAN.trade);
+        let method = "微信支付";
+
+        document.getElementById("payAmount").textContent = `¥${money(total)}`;
+        document.getElementById("payPlanName").textContent = PLAN.name;
+        document.getElementById("payPlanMeta").textContent = `${PLAN.cycle} · ${PLAN.scene}`;
+        document.getElementById("payBill").innerHTML = PLAN.trade
+          .map(
+            (l) => `
+          <div class="pay-line">
+            <div>
+              <strong>${l.name}</strong>
+              <span>${l.sub}</span>
+            </div>
+            <em>¥${money(l.price)}</em>
+          </div>`
+          )
+          .join("") +
+          `<div class="pay-line total"><div><strong>合计</strong></div><em>¥${money(total)}</em></div>`;
+
+        const state = ensureState();
+        const paidCard = document.getElementById("paidCard");
+        const btnPay = document.getElementById("btnPay");
+
+        function renderPaid(payment) {
+          if (!payment) return;
+          paidCard.hidden = false;
+          document.getElementById("paidTitle").textContent = "支付成功";
+          document.getElementById("paidDetail").textContent =
+            `${payment.method} · ¥${money(payment.amount)} · ${payment.paidAt} · 单号 ${payment.orderNo}`;
+          btnPay.textContent = "进入执行日历";
+        }
+
+        if (state.paid && state.payment) {
+          renderPaid(state.payment);
+        }
+
+        document.getElementById("payMethods").addEventListener("click", (e) => {
+          const btn = e.target.closest(".pay-method");
+          if (!btn || (ensureState().paid && ensureState().payment)) return;
+          method = btn.dataset.method;
+          document.querySelectorAll(".pay-method").forEach((el) => {
+            const on = el === btn;
+            el.classList.toggle("is-on", on);
+            el.setAttribute("aria-checked", on ? "true" : "false");
+          });
+        });
+
+        btnPay.addEventListener("click", () => {
+          const cur = ensureState();
+          if (cur.paid && cur.payment) {
+            location.href = "./calendar.html";
+            return;
+          }
+          btnPay.disabled = true;
+          btnPay.textContent = "支付中…";
+          acceptPlan();
+          setTimeout(() => {
+            const next = payPlan(method);
+            toast("支付成功");
+            renderPaid(next.payment);
+            btnPay.disabled = false;
+            btnPay.textContent = "进入执行日历";
+          }, 700);
+        });
+      })();
+    </script>    <script src="../js/app-shell.js?v=20260912-covers5"></script>
+
+  </body>
+</html>
