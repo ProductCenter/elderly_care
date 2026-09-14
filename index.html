@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#2a3a4a" />
+    <title>春风康养</title>
+    <link rel="stylesheet" href="./css/mall.css?v=20260910-moko" />
+  </head>
+  <body>
+    <div class="phone" id="app">
+      <!-- 通屏可切换背景：融合 banner + 页面背景 -->
+      <div class="hero-stage" id="heroStage" aria-roledescription="轮播" aria-label="首页背景">
+        <div class="hero-track" id="heroTrack">
+          <article class="hero-slide is-active" data-index="0" data-tone="warm" data-bg="#ffe0cc">
+            <img
+              class="hero-img"
+              src="./assets/cover-ai-massage.png"
+              alt=""
+              draggable="false"
+            />
+            <div class="hero-shade"></div>
+            <div class="hero-promo">
+              <p class="hero-eyebrow">春风优选 · 到店理疗</p>
+              <h2 class="hero-title">AI 舒压<br />一键放松</h2>
+              <p class="hero-sub">智能理疗 · 限时体验</p>
+            </div>
+          </article>
+          <article class="hero-slide" data-index="1" data-tone="fresh" data-bg="#c6ebd8">
+            <img
+              class="hero-img"
+              src="./assets/cover-nutrition-meal.png"
+              alt=""
+              draggable="false"
+            />
+            <div class="hero-shade"></div>
+            <div class="hero-promo">
+              <p class="hero-eyebrow">营养配餐 · 社区直达</p>
+              <h2 class="hero-title">暖心简餐<br />每日新鲜</h2>
+              <p class="hero-sub">低盐少油 · 适合长者</p>
+            </div>
+          </article>
+          <article class="hero-slide" data-index="2" data-tone="calm" data-bg="#c9ddf7">
+            <img
+              class="hero-img"
+              src="./assets/cover-health-check.png"
+              alt=""
+              draggable="false"
+            />
+            <div class="hero-shade"></div>
+            <div class="hero-promo">
+              <p class="hero-eyebrow">健康守护 · 上门服务</p>
+              <h2 class="hero-title">体检套餐<br />安心守护</h2>
+              <p class="hero-sub">专业评估 · 报告解读</p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- 系统状态栏 -->
+      <div class="status-bar" aria-hidden="true">
+        <span class="status-time">21:50</span>
+        <div class="status-right">
+          <svg class="status-signal" viewBox="0 0 18 12">
+            <rect x="0" y="8" width="3" height="4" rx="0.5" fill="currentColor" />
+            <rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="currentColor" />
+            <rect x="9" y="2.5" width="3" height="9.5" rx="0.5" fill="currentColor" />
+            <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="currentColor" opacity=".35" />
+          </svg>
+          <span class="status-net">5G</span>
+          <div class="status-battery">
+            <span class="battery-level"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 小程序导航栏：左上角搜索 + 定位 + 胶囊 -->
+      <div class="nav-bar">
+        <button class="nav-search" type="button" id="navSearch" aria-label="搜索">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+            />
+          </svg>
+        </button>
+
+        <div class="nav-left">
+          <button class="location-btn" type="button" id="btnSitePick" aria-haspopup="dialog" aria-expanded="false">
+            <svg class="pin" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"
+              />
+            </svg>
+            <span class="loc-name" id="locName">选择站点</span>
+            <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor" d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+            </svg>
+          </button>
+          <div class="weather">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"
+              />
+            </svg>
+            <span>26°C</span>
+          </div>
+        </div>
+
+        <div class="mp-capsule" aria-label="小程序菜单">
+          <button class="capsule-more" type="button" aria-label="更多">
+            <span></span><span></span><span></span>
+          </button>
+          <i class="capsule-divider" aria-hidden="true"></i>
+          <button class="capsule-home" type="button" aria-label="关闭">
+            <span class="ring"></span>
+          </button>
+        </div>
+      </div>
+
+      <main class="content" id="mainContent">
+        <!-- 为通屏背景留出展示区（可左右滑切换） -->
+        <div class="hero-gap" id="heroGap">
+          <div class="hero-swipe" id="heroSwipe" aria-hidden="true"></div>
+          <div class="hero-dots" id="heroDots" role="tablist" aria-label="背景切换"></div>
+        </div>
+
+        <!-- 金刚区 + 智能体：同组收紧留白 -->
+        <div class="home-stack">
+        <!-- 金刚区：浮在通屏背景之上 -->
+        <section class="kingkong" aria-label="业务分类">
+          <div class="kk-grid" id="kingkongGrid"></div>
+          <div class="kk-dots" id="kingkongDots" role="tablist" aria-label="分类翻页"></div>
+        </section>
+
+        <!-- 智能体卡片：智伴首页风格 -->
+        <section class="agent-card agent-card--home" id="agentCard" aria-label="AI康养助手">
+          <button type="button" class="agent-main" id="agentMainEntry" aria-label="打开AI康养助手">
+            <div class="agent-hero" aria-hidden="true">
+              <img
+                class="agent-mascot"
+                src="./assets/moko-avatar.png"
+                alt=""
+                width="96"
+                height="96"
+                decoding="async"
+              />
+            </div>
+            <div class="agent-copy">
+              <h2 class="agent-greet">
+                <span id="agentGreetLead">晚上好</span>，<em>康小护</em> 在
+              </h2>
+              <p class="agent-sub" id="agentSub">
+                食堂、照护、健康服务，想问什么直接点 👇
+              </p>
+            </div>
+          </button>
+
+          <section class="agent-guess" aria-label="猜你想问">
+            <div class="guess-hd">
+              <span>试试这些</span>
+              <button type="button" class="guess-refresh" id="agentGuessRefresh" aria-label="换一换">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    fill="currentColor"
+                    d="M12 6V3L8 7l4 4V8c2.76 0 5 2.24 5 5a5 5 0 0 1-8.9 3.1L6.7 17.5A7 7 0 0 0 19 13c0-3.87-3.13-7-7-7zm-7 7c0-1.48.46-2.85 1.25-4L4.85 7.6A8.96 8.96 0 0 0 3 13a9 9 0 0 0 9 9v-2a7 7 0 0 1-7-7z"
+                  />
+                </svg>
+                换一换
+              </button>
+            </div>
+            <div class="guess-list" id="agentGuessList" role="list"></div>
+          </section>
+
+          <div class="agent-actions" role="group" aria-label="快捷入口">
+            <button type="button" class="agent-action" data-agent-act="canteen">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4 10h16v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9z"
+                />
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M7 10V7a5 5 0 0 1 10 0v3"
+                />
+              </svg>
+              <span>附近食堂</span>
+            </button>
+            <button type="button" class="agent-action" data-agent-act="consult">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v7A2.5 2.5 0 0 1 16.5 16H11l-3.5 3v-3H7.5A2.5 2.5 0 0 1 5 13.5v-7z"
+                />
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  d="M9 9h6M9 12h4"
+                />
+              </svg>
+              <span>健康咨询</span>
+            </button>
+            <button type="button" class="agent-action" data-agent-act="package">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M7 4h10a1 1 0 0 1 1 1v14l-3-1.5L12 19l-3-1.5L6 19V5a1 1 0 0 1 1-1z"
+                />
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  d="M9 9h6M9 12h4"
+                />
+              </svg>
+              <span>套餐推荐</span>
+            </button>
+          </div>
+        </section>
+        </div>
+
+        <!-- 热门推荐：商品 / 服务券 / 活动折扣 -->
+        <section class="hot-section" id="hotSection" aria-label="热门推荐">
+          <div class="section-head">
+            <h2 class="section-title">热门推荐</h2>
+          </div>
+          <div class="masonry">
+            <article class="card feature-card" data-cat="elder" data-id="ai_massage" data-attr="instore" data-service="instore" role="link" tabindex="0">
+              <div class="feature-head">
+                <span class="svc-tag svc-instore">到店</span>
+                <h2>AI舒压理疗服务</h2>
+                <span class="hot-tag">最热</span>
+              </div>
+              <div class="feature-body">
+                <img class="feature-img" src="./assets/cover-ai-massage.png" alt="AI舒压理疗服务" />
+                <div class="feature-aside">
+                  <p class="feature-sub">45 分钟 · 智能分区舒缓</p>
+                  <ul class="feature-list">
+                    <li>身律动按摩</li>
+                    <li>压递推按摩</li>
+                    <li>脊足底加热</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="feature-foot">
+                <span class="meta">月售236 · 距你 520m</span>
+                <button class="cta-buy" type="button">去看看</button>
+              </div>
+            </article>
+
+            <div class="right-stack">
+              <article class="card coupon-card">
+                <div class="coupon-title">您有服务券限时可领</div>
+                <div class="coupon-ticket">
+                  <div class="coupon-amount"><em>¥</em>5</div>
+                  <div class="coupon-info">
+                    <span>服务满减券</span>
+                    <button class="claim-btn" type="button">立即领取</button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="card discount-card" data-cat="food">
+                <div class="discount-head">
+                  <span>超低折扣</span>
+                  <strong>9.9折</strong>
+                </div>
+                <img src="./assets/discount-lifestyle.png" alt="超低折扣" />
+                <div class="discount-banner">一个月服务免费领</div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <!-- 商品 Feed 筛选：到店 / 到家 / 辅具租赁 -->
+        <div class="feed-sticky-sentinel" id="feedStickySentinel" aria-hidden="true"></div>
+        <div class="feed-filter" id="feedFilter" role="tablist" aria-label="商品列表筛选">
+          <button type="button" class="feed-tab on" role="tab" aria-selected="true" data-feed="instore">到店服务</button>
+          <button type="button" class="feed-tab" role="tab" aria-selected="false" data-feed="home">到家服务</button>
+          <button type="button" class="feed-tab" role="tab" aria-selected="false" data-feed="goods">辅具租赁</button>
+        </div>
+
+        <!-- 商品列表由 mall.js 根据 MALL_PRODUCTS.productAttr 动态渲染 -->
+        <div class="goods-grid" id="goodsGrid"></div>
+      </main>
+
+      <nav class="tabbar" aria-label="主导航">
+        <a class="tab" href="#home">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          <span>首页</span>
+        </a>
+        <a class="tab" href="#health">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1.5 14.5L6 11l1.4-1.4 3.1 3.1 6.1-6.1L18 8.1l-7.5 7.4z"/></svg>
+          <span>健康</span>
+        </a>
+        <a class="tab active" href="#mall" aria-current="page">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M18 6h-2c0-2.21-1.79-4-4-4S8 3.79 8 6H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm6 16H6V8h2v2h2V8h4v2h2V8h2v12z"/></svg>
+          <span>商城</span>
+        </a>
+        <a class="tab" href="#mine">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          <span>我的</span>
+        </a>
+      </nav>
+
+      <div class="wx-toast" id="toast" hidden></div>
+
+      <!-- 选择服务站点 -->
+      <div class="site-mask" id="siteMask" hidden></div>
+      <div class="site-sheet" id="siteSheet" hidden role="dialog" aria-labelledby="siteSheetTitle">
+        <div class="site-sheet-hd">
+          <strong id="siteSheetTitle">选择服务站点</strong>
+          <button type="button" class="site-sheet-close" id="siteSheetClose">关闭</button>
+        </div>
+        <p class="site-sheet-tip" id="siteSheetTip"></p>
+        <div class="site-sheet-bd" id="siteList"></div>
+      </div>
+    </div>
+
+    <script src="./js/products.js?v=20260911-agenthome"></script>
+    <script src="./js/mall-links.js?v=20260911-agenthome"></script>
+    <script src="./js/sites.js?v=20260911-agenthome"></script>
+    <script src="./js/mall.js?v=20260911-agenthome"></script>
+  </body>
+</html>

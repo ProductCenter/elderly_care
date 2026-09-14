@@ -1,6 +1,8 @@
 (() => {
   const toastEl = document.getElementById("toast");
   let toastTimer;
+  const isDesigner = document.body?.dataset?.designer === "1";
+  const HOME_CFG_KEY = "kangyang-admin:mall:home-config";
 
   function toast(message) {
     if (!toastEl) return;
@@ -16,6 +18,212 @@
     }, 1500);
   }
 
+  function resolveAsset(src) {
+    if (!src || typeof src !== "string") return src;
+    if (src.startsWith("data:image/") || src.startsWith("blob:")) return src;
+    const prefix = window.MALL_ASSET_PREFIX || "./assets/";
+    const m = src.match(/(?:(?:\.\.\/)+|\.\/)?assets\/(.+)$/);
+    if (m) return prefix.replace(/\/?$/, "/") + m[1];
+    return src;
+  }
+
+  function loadHomeConfig() {
+    try {
+      return JSON.parse(localStorage.getItem(HOME_CFG_KEY) || "null");
+    } catch {
+      return null;
+    }
+  }
+
+  function hexToRgbCsv(hex) {
+    const m = String(hex || "").trim().match(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i);
+    if (!m) return null;
+    let h = m[1];
+    if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+    const n = parseInt(h, 16);
+    return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`;
+  }
+
+  function setPageBg(color) {
+    const app = document.getElementById("app");
+    if (!app || !color) return;
+    app.style.setProperty("--wx-bg", color);
+    app.style.backgroundColor = color;
+    const rgb = hexToRgbCsv(color);
+    if (rgb) app.style.setProperty("--wx-bg-rgb", rgb);
+  }
+
+  const FALLBACK_BANNER_BG = ["#ffe0cc", "#c6ebd8", "#c9ddf7"];
+  const BG_BY_IMAGE = {
+    "cover-ai-massage.png": "#ffe0cc",
+    "cover-nutrition-meal.png": "#c6ebd8",
+    "cover-health-check.png": "#c9ddf7",
+    "cover-foot-spa.png": "#f5d9c8",
+    "cover-neck-massage.png": "#e2d8f5",
+    "cover-therapy-device.png": "#d5e4f5",
+  };
+  const WEAK_BGS = new Set([
+    "#f7f7f7",
+    "#faf8f5",
+    "#f6f1ec",
+    "#f0f6f3",
+    "#eef2f8",
+    "#f3f1f6",
+    "#f5f2ef",
+    "#f1f4f7",
+    "#f2f7f4",
+    "#f0f5fa",
+    "#f5f3fa",
+    "#ebebeb",
+  ]);
+
+  function resolveBannerBg(b, i, cfg) {
+    const file = String(b?.image || "").split("/").pop();
+    const guessed =
+      (file && BG_BY_IMAGE[file]) || FALLBACK_BANNER_BG[i] || cfg?.pageBg || "#f7f7f7";
+    if (b?.bg && !WEAK_BGS.has(String(b.bg).toLowerCase())) return b.bg;
+    return guessed;
+  }
+
+  function escapeHtml(s) {
+    return String(s ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  /** 上架 Banner；设计器内展示全部；前台若全下架则仍展示全部，避免无图 */
+  function getActiveBanners(cfg) {
+    const all = Array.isArray(cfg?.banners) ? cfg.banners.filter(Boolean) : [];
+    if (!all.length) return [];
+    if (isDesigner) return all;
+    const on = all.filter((b) => (b.status || "上架") !== "下架");
+    return on.length ? on : all;
+  }
+
+  function syncHeroSlides(cfg) {
+    const track = document.getElementById("heroTrack");
+    if (!track) return [];
+    const list = getActiveBanners(cfg);
+    if (!list.length) return [];
+    const base = window.MALL_PAGE_BASE || "./";
+    track.innerHTML = list
+      .map((b, i) => {
+        const bg = resolveBannerBg(b, i, cfg);
+        const titleHtml = escapeHtml(b.title || "").replace(/\n/g, "<br />");
+        const linkType = b.linkType || "";
+        const linkId = b.linkId || "";
+        const href = window.resolveMallLinkHref?.(linkType, linkId, base) || "";
+        const clickable = href ? " is-link" : "";
+        return `<article class="hero-slide${i === 0 ? " is-active" : ""}${clickable}" data-index="${i}" data-bg="${escapeHtml(bg)}" data-link-type="${escapeHtml(linkType)}" data-link-id="${escapeHtml(linkId)}" data-href="${escapeHtml(href)}" role="${href ? "link" : "group"}" ${href ? `tabindex="0"` : ""}>
+          <img class="hero-img" src="${escapeHtml(resolveAsset(b.image))}" alt="" draggable="false" />
+          <div class="hero-shade"></div>
+          <div class="hero-promo">
+            <p class="hero-eyebrow">${escapeHtml(b.eyebrow || "")}</p>
+            <h2 class="hero-title">${titleHtml}</h2>
+            <p class="hero-sub">${escapeHtml(b.sub || "")}</p>
+          </div>
+        </article>`;
+      })
+      .join("");
+    return list;
+  }
+
+  /** 后台「首页装修」配置 → 商城首页 */
+  function applyHomeConfig(cfg) {
+    if (!cfg) return;
+
+    if (Array.isArray(cfg.banners)) {
+      const list = syncHeroSlides(cfg);
+      if (list.length) setPageBg(resolveBannerBg(list[0], 0, cfg));
+    } else if (cfg.pageBg) {
+      setPageBg(cfg.pageBg);
+    }
+
+    if (cfg.location) {
+      const el = document.querySelector(".loc-name");
+      if (el) el.textContent = cfg.location;
+    }
+
+    if (Array.isArray(cfg.kingkong) && Array.isArray(window.MALL_KINGKONG)) {
+      cfg.kingkong.forEach((item, i) => {
+        if (!window.MALL_KINGKONG[i] || !item) return;
+        if (item.name != null) window.MALL_KINGKONG[i].name = item.name;
+        if (item.fullName != null) window.MALL_KINGKONG[i].fullName = item.fullName;
+      });
+    }
+
+    if (cfg.coupon) {
+      const coupon = document.querySelector(".coupon-card");
+      const c = cfg.coupon;
+      if (coupon) {
+        const t = coupon.querySelector(".coupon-title");
+        const amt = coupon.querySelector(".coupon-amount");
+        const label = coupon.querySelector(".coupon-info > span");
+        const btn = coupon.querySelector(".claim-btn");
+        if (t && c.title != null) t.textContent = c.title;
+        if (amt && c.amount != null) amt.innerHTML = `<em>¥</em>${c.amount}`;
+        if (label && c.label != null) label.textContent = c.label;
+        if (btn && c.btn != null && btn.dataset.claimed !== "1") btn.textContent = c.btn;
+      }
+    }
+
+    if (cfg.discount) {
+      const disc = document.querySelector(".discount-card");
+      const d = cfg.discount;
+      if (disc) {
+        const label = disc.querySelector(".discount-head span");
+        const badge = disc.querySelector(".discount-head strong");
+        const ban = disc.querySelector(".discount-banner");
+        const img = disc.querySelector("img");
+        if (label && d.label != null) label.textContent = d.label;
+        if (badge && d.badge != null) badge.textContent = d.badge;
+        if (ban && d.banner != null) ban.textContent = d.banner;
+        if (img && d.image) img.src = resolveAsset(d.image);
+      }
+    }
+  }
+
+  function applyFeatureOverride(cfg) {
+    const f = cfg?.feature;
+    if (!f) return;
+    const featureCard = document.querySelector(".feature-card");
+    if (!featureCard) return;
+    if (f.productId) featureCard.dataset.id = f.productId;
+    const h2 = featureCard.querySelector("h2");
+    const sub = featureCard.querySelector(".feature-sub");
+    const list = featureCard.querySelector(".feature-list");
+    const hot = featureCard.querySelector(".hot-tag");
+    const img = featureCard.querySelector(".feature-img");
+    const cta = featureCard.querySelector(".cta-buy");
+    if (h2 && f.title != null) h2.textContent = f.title;
+    if (sub && f.subtitle != null) sub.textContent = f.subtitle;
+    if (list && f.features != null) {
+      list.innerHTML = String(f.features)
+        .split("\n")
+        .filter(Boolean)
+        .slice(0, 3)
+        .map(
+          (x) =>
+            `<li>${String(x)
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")}</li>`
+        )
+        .join("");
+    }
+    if (hot) {
+      hot.hidden = !f.hot;
+      if (f.hot != null) hot.textContent = f.hot;
+    }
+    if (img && f.image) {
+      img.src = resolveAsset(f.image);
+      if (f.title) img.alt = f.title;
+    }
+    if (cta && f.cta != null) cta.textContent = f.cta;
+  }
+
   const timeEl = document.querySelector(".status-time");
   function tick() {
     if (!timeEl) return;
@@ -28,8 +236,9 @@
   setInterval(tick, 30_000);
 
   function goDetail(id) {
-    if (!id) return;
-    location.href = `./detail.html?id=${encodeURIComponent(id)}`;
+    if (!id || isDesigner) return;
+    const base = window.MALL_PAGE_BASE || "./";
+    location.href = `${base}detail.html?id=${encodeURIComponent(id)}`;
   }
 
   const OPS_TAGS = new Set(["最热", "热门", "热销", "新品", "公益"]);
@@ -117,7 +326,36 @@
       '<svg viewBox="0 0 48 48" fill="none"><path d="M24 8.5 36 13.5v9.5c0 7.8-5.3 12.5-12 14.4-6.7-1.9-12-6.6-12-14.4v-9.5L24 8.5z" fill="currentColor" opacity=".16"/><path d="M24 8.5 36 13.5v9.5c0 7.8-5.3 12.5-12 14.4-6.7-1.9-12-6.6-12-14.4v-9.5L24 8.5z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M19 23.5 22.3 26.7 29.2 18.8" stroke="currentColor" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   };
 
-  let filterState = { cat: "all" };
+  let filterState = { cat: "all", feed: "instore" };
+
+  const FEED_ATTR_MAP = {
+    instore: ["instore", "package"],
+    home: ["home"],
+    goods: ["goods"],
+  };
+
+  function matchFeedAttr(attrKey) {
+    const feed = filterState.feed;
+    if (!feed || feed === "all") return true;
+    const list = FEED_ATTR_MAP[feed] || [feed];
+    return list.includes(attrKey || "");
+  }
+
+  function syncFeedTabs() {
+    document.querySelectorAll("#feedFilter .feed-tab").forEach((tab) => {
+      const on = tab.dataset.feed === filterState.feed;
+      tab.classList.toggle("on", on);
+      tab.setAttribute("aria-selected", on ? "true" : "false");
+    });
+  }
+
+  function setFeed(feedKey) {
+    if (!FEED_ATTR_MAP[feedKey]) return;
+    if (filterState.feed === feedKey) return;
+    filterState.feed = feedKey;
+    syncFeedTabs();
+    applyFilter();
+  }
 
   function renderCatalog() {
     const catalog = window.MALL_PRODUCTS || {};
@@ -154,7 +392,7 @@
       }
       const img = featureCard.querySelector(".feature-img");
       if (img) {
-        img.src = featured.cover;
+        img.src = resolveAsset(featured.cover);
         img.alt = featured.name;
       }
       const sub = featureCard.querySelector(".feature-sub");
@@ -181,7 +419,7 @@
         const meta = metaLine(p);
         return `<article class="mt-card" data-cat="${p.cat || ""}" data-attr="${attr.key}" data-id="${p.id}" data-service="${attr.key}" role="link" tabindex="0">
             <div class="mt-pic">
-              <img src="${p.cover}" alt="${p.name}" loading="lazy" />
+              <img src="${resolveAsset(p.cover)}" alt="${p.name}" loading="lazy" />
               <span class="mt-corner ${attr.mtTagClass}">${attr.short}</span>
             </div>
             <div class="mt-body">
@@ -328,26 +566,23 @@
 
   function applyFilter() {
     const { cat } = filterState;
-    document.querySelectorAll(".feature-card").forEach((card) => {
-      const cardCat = card.dataset.cat || "";
-      const show = cat === "all" || cardCat === cat;
-      card.classList.toggle("is-hidden", !show);
+
+    // 热门推荐（商品卡 / 券 / 折扣）固定展示，不受 Feed 筛选影响
+    document.querySelectorAll(".hot-section .feature-card, .hot-section .right-stack").forEach((el) => {
+      el.classList.remove("is-hidden");
     });
 
-    const rightStack = document.querySelector(".right-stack");
-    if (rightStack) {
-      rightStack.classList.toggle("is-hidden", cat !== "all");
-    }
-
-    // 瀑布流：筛选后按可见卡片重新左右交错排布
+    // 仅筛选下方商品 Feed
     const grid = document.getElementById("goodsGrid");
     if (!grid) return;
     const cards = Array.from(grid.querySelectorAll(".mt-card"));
     if (!cards.length) return;
     cards.forEach((card) => {
       const cardCat = card.dataset.cat || "";
-      const show = cat === "all" || cardCat === cat;
-      card.classList.toggle("is-hidden", !show);
+      const cardAttr = card.dataset.attr || card.dataset.service || "";
+      const showCat = cat === "all" || cardCat === cat;
+      const showFeed = matchFeedAttr(cardAttr);
+      card.classList.toggle("is-hidden", !(showCat && showFeed));
     });
     const visible = cards.filter((c) => !c.classList.contains("is-hidden"));
     let cols = grid.querySelectorAll(".goods-col");
@@ -360,7 +595,6 @@
     visible.forEach((card, i) => {
       cols[i % 2].appendChild(card);
     });
-    // 隐藏的卡片挂到末尾容器外隐藏，避免占位
     const hidden = cards.filter((c) => c.classList.contains("is-hidden"));
     hidden.forEach((card) => cols[0].appendChild(card));
   }
@@ -393,6 +627,12 @@
     setCat(item.dataset.id);
   });
 
+  document.getElementById("feedFilter")?.addEventListener("click", (e) => {
+    const tab = e.target.closest(".feed-tab[data-feed]");
+    if (!tab) return;
+    setFeed(tab.dataset.feed);
+  });
+
   document.getElementById("kingkongGrid")?.addEventListener(
     "scroll",
     () => {
@@ -416,7 +656,7 @@
   });
 
   document.getElementById("navSearch")?.addEventListener("click", () => {
-    toast("搜索服务 / 商品");
+    location.href = "./search.html";
   });
 
   document.querySelector(".claim-btn")?.addEventListener("click", (e) => {
@@ -434,16 +674,220 @@
 
   document.querySelector(".cta-buy")?.addEventListener("click", (e) => {
     e.stopPropagation();
+    if (isDesigner) return;
     const id = document.querySelector(".feature-card")?.dataset.id || "ai_massage";
-    location.href = `./detail.html?id=${encodeURIComponent(id)}`;
+    const base = window.MALL_PAGE_BASE || "./";
+    location.href = `${base}detail.html?id=${encodeURIComponent(id)}`;
   });
 
   document.querySelector(".discount-card")?.addEventListener("click", () => {
     toast("超低折扣活动");
   });
 
-  document.querySelector(".location-btn")?.addEventListener("click", () => {
-    toast("选择服务站点");
+  /* ---------- 智伴卡片：首页风格 ---------- */
+  const AGENT_QUESTION_POOL = [
+    [
+      { q: "帮我推荐附近合适的上门照护服务", cat: "care", icon: "🏠", color: "#7b9e6c" },
+      { q: "预约下周的上门助浴", cat: "care", icon: "🛁", color: "#7b9e6c" },
+      { q: "居家照护和到店理疗怎么选？", cat: "care", icon: "🆚", color: "#7b9e6c" },
+    ],
+    [
+      { q: "我这一周血压控制得怎么样？", cat: "health", icon: "🩺", color: "#5a8fc7" },
+      { q: "帮我制定一个控糖饮食计划", cat: "health", icon: "🥗", color: "#5a8fc7" },
+      { q: "睡眠监测报告出来后怎么看？", cat: "health", icon: "😴", color: "#5a8fc7" },
+    ],
+    [
+      { q: "附近哪家食堂的控糖套餐更合适？", cat: "canteen", icon: "🍱", color: "#f08a2a" },
+      { q: "周末有没有适合长者的兴趣活动？", cat: "activity", icon: "🎨", color: "#c979d8" },
+      { q: "帮我安排下周的社区活动", cat: "activity", icon: "📅", color: "#c979d8" },
+    ],
+  ];
+  let agentQuestionIndex = 0;
+
+  function greetByHour(h) {
+    if (h >= 5 && h < 11) return "早上好";
+    if (h >= 11 && h < 13) return "中午好";
+    if (h >= 13 && h < 18) return "下午好";
+    return "晚上好";
+  }
+
+  function subByHour(h) {
+    if (h >= 5 && h < 11) return "食堂、照护、健康服务，想问什么直接点 👇";
+    if (h >= 11 && h < 13) return "看看附近食堂控糖套餐，或约个上门照护 👇";
+    if (h >= 13 && h < 18) return "下午放松一下？查查活动和健康数据 👇";
+    return "晚上好，食堂、照护、健康服务随时问 👇";
+  }
+
+  function renderAgentQuestions(batch) {
+    const list = document.getElementById("agentGuessList");
+    if (!list) return;
+    list.innerHTML = batch
+      .map((it) => {
+        const q = typeof it === "string" ? it : it.q;
+        const icon = typeof it === "string" ? "✨" : it.icon || "✨";
+        const color = typeof it === "string" ? "var(--agent-orange)" : it.color || "var(--agent-orange)";
+        const cat = typeof it === "string" ? "" : it.cat || "";
+        return `<button type="button" class="guess-item" role="listitem" data-q="${q.replace(/"/g, "&quot;")}" data-cat="${cat}" style="--guess-accent: ${color}">
+        <span class="guess-icon" aria-hidden="true">${icon}</span>
+        <span class="guess-text">${q}</span>
+      </button>`;
+      })
+      .join("");
+  }
+
+  function syncAgentClock() {
+    const now = new Date();
+    const lead = document.getElementById("agentGreetLead");
+    const sub = document.getElementById("agentSub");
+    if (lead) lead.textContent = greetByHour(now.getHours());
+    if (sub) sub.textContent = subByHour(now.getHours());
+  }
+
+  renderAgentQuestions(AGENT_QUESTION_POOL[0]);
+  syncAgentClock();
+
+  document.getElementById("agentGuessRefresh")?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    agentQuestionIndex = (agentQuestionIndex + 1) % AGENT_QUESTION_POOL.length;
+    renderAgentQuestions(AGENT_QUESTION_POOL[agentQuestionIndex]);
+  });
+
+  document.getElementById("agentCard")?.addEventListener("click", (e) => {
+    const guess = e.target.closest("#agentGuessList .guess-item");
+    if (guess && !isDesigner) {
+      location.href = `./agent.html?q=${encodeURIComponent(guess.dataset.q || "")}`;
+      return;
+    }
+
+    const btn = e.target.closest("[data-agent-act]");
+    if (!btn || isDesigner) return;
+    const act = btn.dataset.agentAct;
+    if (act === "package") {
+      const feed = document.getElementById("feedFilter");
+      feed?.querySelector('.feed-tab[data-feed="instore"]')?.click();
+      document.getElementById("feedStickySentinel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      toast("已为你推荐可订套餐与到店服务");
+      return;
+    }
+    if (act === "canteen") {
+      openSiteSheet();
+      toast("选择供餐食堂 / 服务站点");
+      return;
+    }
+    if (act === "consult") {
+      location.href = "./agent.html";
+    }
+  });
+
+  document.getElementById("agentMainEntry")?.addEventListener("click", () => {
+    if (isDesigner) return;
+    location.href = "./agent.html";
+  });
+
+  function syncLocName(site) {
+    const el = document.getElementById("locName") || document.querySelector(".loc-name");
+    if (!el || !site) return;
+    const name = site.shortName || site.name || "选择站点";
+    el.textContent = name;
+    const agentSite = document.getElementById("agentSiteName");
+    if (agentSite) agentSite.textContent = name;
+  }
+
+  function closeSiteSheet() {
+    const mask = document.getElementById("siteMask");
+    const sheet = document.getElementById("siteSheet");
+    const btn = document.getElementById("btnSitePick");
+    if (mask) {
+      mask.hidden = true;
+      mask.setAttribute("hidden", "");
+    }
+    if (sheet) {
+      sheet.hidden = true;
+      sheet.setAttribute("hidden", "");
+    }
+    btn?.setAttribute("aria-expanded", "false");
+  }
+
+  function openSiteSheet() {
+    if (isDesigner) return;
+    const api = window.MALL_SITES;
+    if (!api) {
+      toast("站点数据未加载");
+      return;
+    }
+    const mask = document.getElementById("siteMask");
+    const sheet = document.getElementById("siteSheet");
+    const listEl = document.getElementById("siteList");
+    const tipEl = document.getElementById("siteSheetTip");
+    const btn = document.getElementById("btnSitePick");
+    if (!sheet || !listEl) return;
+
+    const pack = api.getSitePickerOptions();
+    const current = api.resolveCurrentSite();
+    if (tipEl) {
+      tipEl.textContent =
+        pack.mode === "bound"
+          ? "默认展示长者绑定机构，也可切换其他站点"
+          : "未绑定机构，已为你推荐距离最近的 6 个站点";
+    }
+    listEl.innerHTML = pack.list
+      .map((s) => {
+        const on = current && s.siteId === current.siteId;
+        return `<button type="button" class="site-item${on ? " is-on" : ""}" data-site-id="${escapeHtml(s.siteId)}">
+          <div class="site-item-main">
+            <div class="site-item-name">
+              <span>${escapeHtml(s.name)}</span>
+              ${s.isBound ? `<span class="badge">已绑定</span>` : ""}
+            </div>
+            <div class="site-item-addr">${escapeHtml(s.address || "")}</div>
+          </div>
+          <div class="site-item-side">
+            <span class="site-item-dist">${escapeHtml(s.distanceText || "")}</span>
+            <i class="site-item-check" aria-hidden="true"></i>
+          </div>
+        </button>`;
+      })
+      .join("");
+
+    if (mask) {
+      mask.hidden = false;
+      mask.removeAttribute("hidden");
+    }
+    sheet.hidden = false;
+    sheet.removeAttribute("hidden");
+    btn?.setAttribute("aria-expanded", "true");
+  }
+
+  function initSitePicker() {
+    if (isDesigner) return;
+    const api = window.MALL_SITES;
+    if (!api) return;
+
+    const current = api.resolveCurrentSite();
+    if (current) {
+      api.setSelectedSiteId(current.siteId);
+      syncLocName(current);
+      window.MALL_CURRENT_SITE = current;
+    }
+
+    document.getElementById("siteSheetClose")?.addEventListener("click", closeSiteSheet);
+    document.getElementById("siteMask")?.addEventListener("click", closeSiteSheet);
+    document.getElementById("siteList")?.addEventListener("click", (e) => {
+      const item = e.target.closest("[data-site-id]");
+      if (!item) return;
+      const id = item.dataset.siteId || "";
+      const site = api.findSite(id);
+      if (!site) return;
+      api.setSelectedSiteId(id);
+      window.MALL_CURRENT_SITE = site;
+      syncLocName(site);
+      closeSiteSheet();
+      toast(`已切换至${site.shortName || site.name}`);
+    });
+  }
+
+  document.getElementById("btnSitePick")?.addEventListener("click", () => {
+    openSiteSheet();
   });
 
   document.querySelector(".capsule-more")?.addEventListener("click", () => {
@@ -456,21 +900,26 @@
 
   document.querySelectorAll(".tabbar > .tab").forEach((tab) => {
     tab.addEventListener("click", (e) => {
+      if (isDesigner) {
+        e.preventDefault();
+        return;
+      }
       if (tab.classList.contains("active")) return;
       const label = tab.querySelector("span")?.textContent || "";
+      const base = window.MALL_PAGE_BASE || "./";
       if (label === "我的") {
         e.preventDefault();
-        location.href = "./mine.html";
+        location.href = `${base}mine.html`;
         return;
       }
       if (label === "首页") {
         e.preventDefault();
-        location.href = "./index.html";
+        location.href = `${base}index.html`;
         return;
       }
       if (label === "健康") {
         e.preventDefault();
-        location.href = "./sleep-todo.html";
+        location.href = `${base}sleep-todo.html`;
         return;
       }
       e.preventDefault();
@@ -478,43 +927,198 @@
     });
   });
 
-  /* —— 通屏背景：自动轮播（无跟手/视差/点击切换） —— */
+  /* —— 通屏背景：自动轮播 + 手动滑动 —— */
   function initHeroStage() {
     const stage = document.getElementById("heroStage");
     const track = document.getElementById("heroTrack");
     const dotsWrap = document.getElementById("heroDots");
     const content = document.getElementById("mainContent");
-    if (!stage || !track || !dotsWrap) return;
+    const swipeSurface =
+      document.getElementById("heroSwipe") ||
+      document.getElementById("heroGap") ||
+      stage;
+    if (!stage || !track || !dotsWrap) return null;
 
-    const slides = Array.from(track.querySelectorAll(".hero-slide"));
-    if (!slides.length) return;
+    const slides = () => Array.from(track.querySelectorAll(".hero-slide"));
+    if (!slides().length) return null;
 
     let index = 0;
     let autoTimer;
+    let drag = {
+      active: false,
+      axis: null,
+      startX: 0,
+      startY: 0,
+      dx: 0,
+      width: 0,
+      pointerId: null,
+      moved: false,
+    };
 
     function renderDots() {
-      dotsWrap.innerHTML = slides
+      const list = slides();
+      dotsWrap.innerHTML = list
         .map(
           (_, i) =>
-            `<span class="hero-dot${i === index ? " active" : ""}" aria-hidden="true"></span>`
+            `<button type="button" class="hero-dot${i === index ? " active" : ""}" data-dot="${i}" aria-label="第 ${i + 1} 张"></button>`
         )
         .join("");
     }
 
-    function go(to) {
-      index = ((to % slides.length) + slides.length) % slides.length;
+    function go(to, { animate = true } = {}) {
+      const list = slides();
+      if (!list.length) return;
+      index = ((to % list.length) + list.length) % list.length;
+      if (!animate) track.style.transition = "none";
+      else track.style.transition = "";
       track.style.transform = `translate3d(${-index * 100}%, 0, 0)`;
-      slides.forEach((slide, i) => {
+      if (!animate) {
+        void track.offsetWidth;
+        track.style.transition = "";
+      }
+      list.forEach((slide, i) => {
         slide.classList.toggle("is-active", i === index);
       });
       dotsWrap.querySelectorAll(".hero-dot").forEach((dot, i) => {
         dot.classList.toggle("active", i === index);
       });
+      const activeSlide = list[index];
+      const linkedBg =
+        activeSlide?.dataset?.bg ||
+        resolveBannerBg(homeCfg?.banners?.[index], index, homeCfg);
+      if (linkedBg) setPageBg(linkedBg);
     }
+
+    function pause() {
+      clearInterval(autoTimer);
+      autoTimer = null;
+    }
+
+    function resume(ms = 4800) {
+      pause();
+      if (isDesigner) return;
+      if (slides().length < 2) return;
+      autoTimer = setInterval(() => go(index + 1), ms);
+    }
+
+    function dragOffset(dx) {
+      const w = drag.width || stage.clientWidth || 1;
+      const list = slides();
+      let x = dx;
+      if ((index === 0 && x > 0) || (index === list.length - 1 && x < 0)) {
+        x *= 0.35;
+      }
+      const pct = -index * 100 + (x / w) * 100;
+      track.style.transform = `translate3d(${pct}%, 0, 0)`;
+    }
+
+    function openActiveBannerLink() {
+      if (isDesigner) return;
+      const list = slides();
+      const slide = list[index];
+      const href = slide?.dataset?.href;
+      if (href) location.href = href;
+    }
+
+    function endDrag() {
+      if (!drag.active) return;
+      const wasHorizontal = drag.axis === "h";
+      const dx = drag.dx;
+      const w = drag.width || stage.clientWidth || 1;
+      const wasTap = !drag.moved && Math.abs(dx) < 8 && drag.axis !== "h";
+      swipeSurface.classList.remove("is-dragging");
+      drag.active = false;
+      drag.axis = null;
+      drag.pointerId = null;
+      track.style.transition = "";
+      if (!wasHorizontal) {
+        go(index);
+        if (wasTap) openActiveBannerLink();
+        resume();
+        return;
+      }
+      const threshold = Math.min(56, w * 0.18);
+      if (dx <= -threshold) go(index + 1);
+      else if (dx >= threshold) go(index - 1);
+      else go(index);
+      resume();
+    }
+
+    function onPointerDown(e) {
+      if (isDesigner) return;
+      if (e.target.closest(".hero-dot")) return;
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      const point = e.touches ? e.touches[0] : e;
+      drag.active = true;
+      drag.axis = null;
+      drag.moved = false;
+      drag.startX = point.clientX;
+      drag.startY = point.clientY;
+      drag.dx = 0;
+      drag.width = stage.clientWidth || swipeSurface.clientWidth || 1;
+      drag.pointerId = e.pointerId;
+      pause();
+      track.style.transition = "none";
+      swipeSurface.classList.add("is-dragging");
+      try {
+        swipeSurface.setPointerCapture?.(e.pointerId);
+      } catch (_) {}
+    }
+
+    function onPointerMove(e) {
+      if (!drag.active) return;
+      if (drag.pointerId != null && e.pointerId != null && e.pointerId !== drag.pointerId) return;
+      const point = e.touches ? e.touches[0] : e;
+      const dx = point.clientX - drag.startX;
+      const dy = point.clientY - drag.startY;
+      if (!drag.axis) {
+        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+        drag.moved = true;
+        drag.axis = Math.abs(dx) > Math.abs(dy) ? "h" : "v";
+        if (drag.axis === "v") {
+          track.style.transition = "";
+          go(index);
+          drag.active = false;
+          swipeSurface.classList.remove("is-dragging");
+          resume();
+          return;
+        }
+        if (slides().length < 2) {
+          drag.active = false;
+          swipeSurface.classList.remove("is-dragging");
+          resume();
+          return;
+        }
+      }
+      if (drag.axis !== "h") return;
+      drag.moved = true;
+      if (e.cancelable) e.preventDefault();
+      drag.dx = dx;
+      dragOffset(dx);
+    }
+
+    function onPointerUp(e) {
+      if (drag.pointerId != null && e.pointerId != null && e.pointerId !== drag.pointerId) return;
+      endDrag();
+    }
+
+    // Pointer Events（含触控与鼠标）
+    swipeSurface.addEventListener("pointerdown", onPointerDown);
+    swipeSurface.addEventListener("pointermove", onPointerMove);
+    swipeSurface.addEventListener("pointerup", onPointerUp);
+    swipeSurface.addEventListener("pointercancel", onPointerUp);
+
+    dotsWrap.addEventListener("click", (e) => {
+      const dot = e.target.closest("[data-dot]");
+      if (!dot) return;
+      pause();
+      go(Number(dot.dataset.dot) || 0);
+      resume();
+    });
 
     renderDots();
     go(0);
-    autoTimer = setInterval(() => go(index + 1), 4800);
+    resume();
 
     if (content) {
       const app = document.getElementById("app");
@@ -522,18 +1126,86 @@
         "scroll",
         () => {
           const y = content.scrollTop;
-          stage.style.transform = `translate3d(0, ${-Math.min(y, 220) * 0.35}px, 0)`;
+          // 与内容区同步上移，Banner 正常滚走（不再慢速视差滞留）
+          stage.style.transform = `translate3d(0, ${-y}px, 0)`;
           app?.classList.toggle("is-scrolled", y > 48);
         },
         { passive: true }
       );
     }
 
-    return () => clearInterval(autoTimer);
+    return {
+      go,
+      pause,
+      resume,
+      refresh() {
+        const list = slides();
+        if (!list.length) return;
+        if (index >= list.length) index = 0;
+        renderDots();
+        go(index, { animate: false });
+        resume();
+      },
+      getIndex: () => index,
+      getCount: () => slides().length,
+    };
   }
 
+  let homeCfg = loadHomeConfig();
+  applyHomeConfig(homeCfg);
   renderCatalog();
+  applyFeatureOverride(homeCfg);
   renderKingkong();
+  syncFeedTabs();
   applyFilter();
-  initHeroStage();
+  const heroApi = initHeroStage();
+  initFeedSticky();
+  initSitePicker();
+
+  function initFeedSticky() {
+    const filter = document.getElementById("feedFilter");
+    const sentinel = document.getElementById("feedStickySentinel");
+    const content = document.getElementById("mainContent");
+    if (!filter || !sentinel || !content) return;
+
+    const syncStuck = () => {
+      const cr = content.getBoundingClientRect();
+      const sr = sentinel.getBoundingClientRect();
+      filter.classList.toggle("is-stuck", sr.bottom <= cr.top + 1);
+    };
+
+    content.addEventListener("scroll", syncStuck, { passive: true });
+    syncStuck();
+  }
+
+  window.MALL_HOME = {
+    renderCatalog,
+    renderKingkong,
+    applyFilter,
+    applyHomeConfig,
+    syncHeroSlides,
+    resolveAsset,
+    goHero(i) {
+      heroApi?.go(i);
+    },
+    pauseHero() {
+      heroApi?.pause();
+    },
+    getHeroIndex() {
+      return heroApi?.getIndex?.() ?? 0;
+    },
+    refreshHero() {
+      heroApi?.refresh?.();
+    },
+    reload() {
+      const cfg = loadHomeConfig();
+      homeCfg = cfg;
+      applyHomeConfig(cfg);
+      heroApi?.refresh?.();
+      renderCatalog();
+      applyFeatureOverride(cfg);
+      renderKingkong();
+      applyFilter();
+    },
+  };
 })();

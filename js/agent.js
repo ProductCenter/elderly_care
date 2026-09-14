@@ -1,0 +1,644 @@
+(() => {
+  const AGENT_NAME = "康小护";
+  const API_BASE = "";
+
+  const QUESTION_POOL = [
+    // 居家照护
+    [
+      { q: "帮我推荐附近合适的上门照护服务", cat: "care", icon: "🏠", color: "#7b9e6c" },
+      { q: "预约下周的上门助浴", cat: "care", icon: "🛁", color: "#7b9e6c" },
+      { q: "居家照护和到店理疗怎么选？", cat: "care", icon: "🆚", color: "#7b9e6c" },
+    ],
+    // 智慧健康 / 慢病管理
+    [
+      { q: "我这一周血压控制得怎么样？", cat: "health", icon: "🩺", color: "#5a8fc7" },
+      { q: "帮我制定一个控糖饮食计划", cat: "health", icon: "🥗", color: "#5a8fc7" },
+      { q: "睡眠监测报告出来后怎么看？", cat: "health", icon: "😴", color: "#5a8fc7" },
+    ],
+    // 社区嵌入式康养
+    [
+      { q: "附近哪家食堂的控糖套餐更合适？", cat: "canteen", icon: "🍱", color: "#f08a2a" },
+      { q: "周末有没有适合长者的兴趣活动？", cat: "activity", icon: "🎨", color: "#c979d8" },
+      { q: "帮我安排下周的社区活动", cat: "activity", icon: "📅", color: "#c979d8" },
+    ],
+  ];
+
+  let toastTimer = 0;
+  let questionIndex = 0;
+  let busy = false;
+  let history = [];
+
+  const $ = (id) => document.getElementById(id);
+  const app = $("app");
+
+  function toast(msg) {
+    const el = $("toast");
+    if (!el) return;
+    el.textContent = msg;
+    el.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      el.hidden = true;
+    }, 2200);
+  }
+
+  function pad(n) {
+    return String(n).padStart(2, "0");
+  }
+
+  function greetByHour(h) {
+    if (h >= 5 && h < 11) return "早上好";
+    if (h >= 11 && h < 13) return "中午好";
+    if (h >= 13 && h < 18) return "下午好";
+    return "晚上好";
+  }
+
+  function subByHour(h) {
+    if (h >= 5 && h < 11) {
+      return "食堂、照护、健康服务，想问什么直接点 👇";
+    }
+    if (h >= 11 && h < 13) {
+      return "看看附近食堂控糖套餐，或约个上门照护 👇";
+    }
+    if (h >= 13 && h < 18) {
+      return "下午放松一下？查查活动和健康数据 👇";
+    }
+    return "晚上好，食堂、照护、健康服务随时问 👇";
+  }
+
+  function syncClock() {
+    const now = new Date();
+    const timeEl = $("statusTime");
+    if (timeEl) timeEl.textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+    const lead = $("heroGreetLead");
+    if (lead) lead.textContent = greetByHour(now.getHours());
+    const sub = $("heroSub");
+    if (sub) sub.textContent = subByHour(now.getHours());
+  }
+
+  function renderQuestions(batch) {
+    const list = $("guessList");
+    if (!list) return;
+    list.innerHTML = batch
+      .map(
+        (it) => {
+          const q = typeof it === "string" ? it : it.q;
+          const icon = typeof it === "string" ? "✨" : it.icon || "✨";
+          const color = typeof it === "string" ? "var(--orange)" : it.color || "var(--orange)";
+          const cat = typeof it === "string" ? "" : it.cat || "";
+          return `
+      <button type="button" class="guess-item" role="listitem" data-q="${q.replace(/"/g, "&quot;")}" data-cat="${cat}" style="--guess-accent: ${color}">
+        <span class="guess-icon" aria-hidden="true">${icon}</span>
+        <span class="guess-text">${q}</span>
+      </button>`;
+        }
+      )
+      .join("");
+  }
+
+  function enterChat() {
+    app?.classList.add("is-chatting");
+    $("chatPane").hidden = false;
+  }
+
+  function resetChat() {
+    if (busy) return;
+    history = [];
+    app?.classList.remove("is-chatting");
+    $("chatPane").hidden = true;
+    $("chatStream").innerHTML = "";
+    $("pageBody")?.scrollTo({ top: 0, behavior: "smooth" });
+    const input = $("textInput");
+    if (input) input.value = "";
+    showVoice();
+  }
+
+  function showVoice() {
+    $("voiceBar").hidden = false;
+    $("textBar").hidden = true;
+  }
+
+  function showText() {
+    $("voiceBar").hidden = true;
+    $("textBar").hidden = false;
+    setTimeout(() => $("textInput")?.focus(), 50);
+  }
+
+  function unlockInput() {
+    busy = false;
+    $("btnSend").disabled = false;
+    $("btnHold").disabled = false;
+    $("textInput")?.removeAttribute("disabled");
+  }
+
+  function lockInput() {
+    busy = true;
+    $("btnSend").disabled = true;
+    $("btnHold").disabled = true;
+    $("textInput")?.setAttribute("disabled", "disabled");
+  }
+
+  function scrollChat() {
+    const body = $("pageBody");
+    if (body) body.scrollTop = body.scrollHeight;
+  }
+
+  function renderAnswer(el, markdown) {
+    if (!el) return;
+    el.classList.add("md-body");
+    const md = window.AgentMarkdown;
+    if (md && typeof md.render === "function") {
+      el.innerHTML = md.render(markdown || "");
+    } else {
+      el.textContent = markdown || "";
+    }
+  }
+
+  function appendUser(text) {
+    const stream = $("chatStream");
+    const row = document.createElement("div");
+    row.className = "msg is-user";
+    row.innerHTML = `<div class="msg-bubble"></div>`;
+    row.querySelector(".msg-bubble").textContent = text;
+    stream.appendChild(row);
+    scrollChat();
+  }
+
+  function appendAssistantShell() {
+    const stream = $("chatStream");
+    const row = document.createElement("div");
+    row.className = "msg is-bot is-loading";
+    row.innerHTML = `
+      <div class="msg-col">
+        <details class="think-box" hidden open>
+          <summary class="think-summary">
+            <span class="think-label">思考中</span>
+            <span class="think-hint">展开查看</span>
+          </summary>
+          <div class="think-body"></div>
+        </details>
+        <div class="msg-bubble is-empty">
+          <span class="msg-typing"><i></i><i></i><i></i></span>
+        </div>
+      </div>`;
+    stream.appendChild(row);
+    scrollChat();
+    return {
+      row,
+      thinkBox: row.querySelector(".think-box"),
+      thinkLabel: row.querySelector(".think-label"),
+      thinkBody: row.querySelector(".think-body"),
+      bubble: row.querySelector(".msg-bubble"),
+    };
+  }
+
+  async function checkLlmStatus() {
+    const banner = $("llmBanner");
+    const text = $("llmBannerText");
+    try {
+      const res = await fetch(`${API_BASE}/api/llm/status`, { cache: "no-store" });
+      if (!res.ok) throw new Error("status " + res.status);
+      const data = await res.json();
+      if (!data.configured) {
+        banner.hidden = false;
+        text.textContent = "演示模式：未配置大模型密钥（仍可对话）";
+      } else {
+        banner.hidden = true;
+        text.textContent = `已连接 ${data.model || "大模型"}`;
+      }
+      return data;
+    } catch {
+      banner.hidden = false;
+      text.textContent = "请用 scripts/llm_server.py 启动（当前静态服务无 /api）";
+      return { configured: false, offline: true };
+    }
+  }
+
+  async function streamChat(userText, ui) {
+    const context = history
+      .filter((m) => m.role === "user" || m.role === "assistant")
+      .map((m) => ({ role: m.role, content: String(m.content || "").trim() }))
+      .filter((m) => m.content);
+    const messages = context.concat([{ role: "user", content: userText }]);
+
+    const abort = new AbortController();
+    const id = setTimeout(() => abort.abort(), 70000);
+    let res;
+    try {
+      res = await fetch(`${API_BASE}/api/chat`, {
+        method: "POST",
+        signal: abort.signal,
+        headers: { "Content-Type": "application/json", Accept: "text/event-stream" },
+        body: JSON.stringify({ messages, stream: true }),
+      });
+    } finally {
+      clearTimeout(id);
+    }
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || err.detail || `请求失败 ${res.status}`);
+    }
+
+    const ctype = res.headers.get("content-type") || "";
+    if (!ctype.includes("text/event-stream")) {
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || "请求失败");
+      if (data.reasoning) {
+        ui.thinkBox.hidden = false;
+        ui.thinkBody.textContent = data.reasoning;
+        ui.thinkLabel.textContent = "已思考";
+        ui.thinkBox.open = false;
+      }
+      ui.bubble.classList.remove("is-empty");
+      renderAnswer(ui.bubble, data.content || "");
+      return { content: data.content || "", reasoning: data.reasoning || "" };
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    let content = "";
+    let reasoning = "";
+    let answerStarted = false;
+    let gotEvent = false;
+    let finished = false;
+
+    const ensureAnswer = () => {
+      if (!answerStarted) {
+        answerStarted = true;
+        ui.bubble.classList.remove("is-empty");
+        ui.bubble.innerHTML = "";
+        if (reasoning) {
+          ui.thinkLabel.textContent = "已思考";
+        }
+      }
+    };
+
+    try {
+      while (true) {
+        let chunk;
+        try {
+          chunk = await reader.read();
+        } catch (err) {
+          if (content || reasoning) break;
+          throw new Error("读取响应失败：" + (err.message || err));
+        }
+        if (chunk.done || finished) break;
+        gotEvent = true;
+        buffer += decoder.decode(chunk.value, { stream: true });
+        const parts = buffer.split("\n\n");
+        buffer = parts.pop() || "";
+        for (const part of parts) {
+          const line = part
+            .split("\n")
+            .map((l) => l.trim())
+            .find((l) => l.startsWith("data:"));
+          if (!line) continue;
+          const raw = line.slice(5).trim();
+          if (!raw || raw === "[DONE]") continue;
+          let ev;
+          try {
+            ev = JSON.parse(raw);
+          } catch {
+            continue;
+          }
+          if (ev.type === "reasoning" && ev.delta) {
+            reasoning += ev.delta;
+            ui.thinkBox.hidden = false;
+            ui.thinkBox.open = true;
+            ui.thinkLabel.textContent = "思考中";
+            ui.thinkBody.textContent = reasoning;
+            scrollChat();
+          } else if (ev.type === "content" && ev.delta) {
+            ensureAnswer();
+            content += ev.delta;
+            renderAnswer(ui.bubble, content);
+            scrollChat();
+          } else if (ev.type === "done") {
+            finished = true;
+            content = ev.content || content;
+            reasoning = ev.reasoning || reasoning;
+            if (reasoning) {
+              ui.thinkBox.hidden = false;
+              ui.thinkBody.textContent = reasoning;
+              ui.thinkLabel.textContent = "已思考";
+              ui.thinkBox.open = !content;
+            }
+            if (content) {
+              ensureAnswer();
+              renderAnswer(ui.bubble, content);
+            } else if (!reasoning) {
+              ensureAnswer();
+              ui.bubble.textContent = "（没有收到内容）";
+            }
+          } else if (ev.type === "error") {
+            finished = true;
+            if (content || reasoning) break;
+            throw new Error(ev.error || ev.detail || "流式错误");
+          }
+        }
+      }
+    } finally {
+      // close reader and force abort the underlying fetch to release the
+      // HTTP connection immediately; this prevents the next click from being
+      // queued waiting for the previous keep-alive connection to drain.
+      try {
+        await reader.cancel();
+      } catch {}
+      try {
+        abort.abort();
+      } catch {}
+    }
+
+    if (!content && !reasoning && !gotEvent) {
+      throw new Error("没有收到模型响应，请稍后再试");
+    }
+    if (!answerStarted && content) ensureAnswer();
+    if (reasoning && content) {
+      ui.thinkLabel.textContent = "已思考";
+      ui.thinkBox.open = false;
+    }
+    return { content, reasoning };
+  }
+
+  async function sendMessage(text) {
+    const content = (text || "").trim();
+    console.log("[send] content=", content, "busy=", busy);
+    if (!content || busy) {
+      if (busy) toast("小护还在回答，请稍等…");
+      return;
+    }
+    enterChat();
+    showText();
+    lockInput();
+    console.log("[send] locked busy=", busy);
+
+    appendUser(content);
+    history.push({ role: "user", content });
+    const ui = appendAssistantShell();
+
+    try {
+      const result = await streamChat(content, ui);
+      ui.row.classList.remove("is-loading");
+      if (!result.content && result.reasoning) {
+        ui.bubble.classList.remove("is-empty");
+        ui.bubble.classList.remove("md-body");
+        ui.bubble.textContent = "（思考完成，但未返回正文）";
+      }
+      history.push({ role: "assistant", content: result.content || "" });
+      scrollChat();
+    } catch (err) {
+      ui.row.classList.remove("is-loading");
+      ui.bubble.classList.remove("is-empty");
+      ui.bubble.classList.remove("md-body");
+      ui.bubble.textContent = `小护暂时连不上大模型：${err.message}`;
+      scrollChat();
+    } finally {
+      const input = $("textInput");
+      if (input) input.value = "";
+      console.log("[send] finally unlock busy=", busy);
+      unlockInput();
+      console.log("[send] unlocked busy=", busy);
+      if (input && document.activeElement === input) {
+        input.focus();
+      }
+    }
+  }
+
+  function trySendFromInput() {
+    const input = $("textInput");
+    const val = input?.value || "";
+    if (input) input.value = "";
+    sendMessage(val);
+  }
+
+  $("btnSend")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    trySendFromInput();
+  });
+
+  // 猜你想问 / 快捷问题：本页对话，禁止任何默认跳转
+  $("guessList")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const btn = e.target.closest(".guess-item");
+    if (!btn) return;
+    const q = btn.dataset.q || btn.textContent.trim();
+    console.log("[guess] click q=", q, "busy=", busy);
+    toast(busy ? "小护还在回答，请稍等…" : "正在问小护…");
+    sendMessage(q);
+  });
+
+  $("quickRow")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const btn = e.target.closest("[data-act]");
+    if (!btn) return;
+    const act = btn.dataset.act;
+    if (act === "canteen") {
+      sendMessage("附近哪家食堂的控糖套餐更合适？");
+      return;
+    }
+    if (act === "care") {
+      sendMessage("帮我推荐附近合适的上门照护服务");
+      return;
+    }
+    if (act === "health") {
+      sendMessage("我这一周血压控制得怎么样？");
+      return;
+    }
+    if (act === "activity") {
+      sendMessage("帮我安排下周的社区活动");
+      return;
+    }
+    toast(`${AGENT_NAME}：更多能力陆续开放`);
+  });
+
+  // 回答里的链接 / CUI 卡片按钮：不新开页，继续在本页对话
+  $("chatStream")?.addEventListener("click", (e) => {
+    const a = e.target.closest("a.md-link");
+    if (a) {
+      e.preventDefault();
+      e.stopPropagation();
+      const href = a.getAttribute("href") || "";
+      if (/^https?:\/\//i.test(href)) {
+        toast("演示环境请在本页继续提问，不跳转外链");
+        sendMessage(`请继续说明：${a.textContent.trim() || href}`);
+        return;
+      }
+      sendMessage(`我想了解：${a.textContent.trim() || href}`);
+      return;
+    }
+    const btn = e.target.closest(".cui-btn");
+    if (btn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const href = btn.dataset.href?.trim();
+      if (href) {
+        if (/^https?:\/\//i.test(href)) {
+          toast("演示环境请在本页继续提问，不跳转外链");
+          sendMessage(`请继续说明：${btn.textContent.trim() || href}`);
+          return;
+        }
+        location.href = href;
+        return;
+      }
+      const q = btn.dataset.q || btn.textContent.trim();
+      if (q) sendMessage(q);
+      return;
+    }
+    // Click on product card body (not action buttons) -> go to detail
+    const productCard = e.target.closest(".cui-product-card");
+    if (productCard) {
+      e.preventDefault();
+      e.stopPropagation();
+      const id = productCard.dataset.id;
+      if (id) location.href = `./detail.html?id=${encodeURIComponent(id)}`;
+      return;
+    }
+  });
+
+  // Fallback mapping: common CUI button texts => mall pages
+  const CUI_LINK_MAP = {
+    "去核销": "./orders.html",
+    "查看详情": null,
+    "立即预约": null,
+    "去核销 top1": "./orders.html",
+    "去核销 TOP1": "./orders.html",
+    "查看本周菜单": "./index.html",
+    "约上午": "./orders.html",
+    "约下午": "./orders.html",
+    "一键报名": "./mine.html",
+    "提醒我出发": "./mine.html",
+    "生成控盐计划": "./mine.html",
+    "查看详细分析": "./mine.html",
+    "查看改善建议": "./mine.html",
+    "生成完整 7 天": "./mine.html",
+    "替换我不吃的菜": null,
+    "帮我选合适的": null,
+  };
+
+  const CUI_PRODUCT_HINTS = [
+    { ids: ["ai_massage"], keywords: ["理疗", "舒压", "按摩"] },
+    { ids: ["foot_spa"], keywords: ["足浴", "泡脚"] },
+    { ids: ["health_check"], keywords: ["健康检测", "体检", "血压", "血糖"] },
+    { ids: ["package_meal_month"], keywords: ["食堂", "套餐", "订餐", "控糖套餐"] },
+    { ids: ["calligraphy"], keywords: ["书法", "兴趣"] },
+    { ids: ["ar_sports"], keywords: ["运动", "AR", "降脂"] },
+    { ids: ["neck_massage"], keywords: ["颈椎"] },
+    { ids: ["nutrition_meal"], keywords: ["营养配餐", "轻食"] },
+    { ids: ["companion_care"], keywords: ["陪诊", "陪护", "护理员"] },
+    { ids: ["home_clean"], keywords: ["保洁", "清洁"] },
+    { ids: ["bp_monitor"], keywords: ["血压计"] },
+    { ids: ["pulse_oximeter"], keywords: ["血氧仪"] },
+    { ids: ["wellness_kit"], keywords: ["礼包"] },
+  ];
+
+  function inferProductIds(text) {
+    const t = (text || "").toLowerCase();
+    const ids = new Set();
+    for (const hint of CUI_PRODUCT_HINTS) {
+      if (hint.keywords.some((k) => t.includes(k))) {
+        hint.ids.forEach((id) => ids.add(id));
+      }
+    }
+    return Array.from(ids);
+  }
+
+  function resolveCuiButtonAction(label, context) {
+    const key = (label || "").trim();
+    if (CUI_LINK_MAP[key]) return { type: "link", href: CUI_LINK_MAP[key] };
+    if (/^查看.*详情$|^去看看$|^立即预约$|^去预约$/.test(key)) {
+      const ids = inferProductIds(context + " " + key);
+      if (ids.length === 1) {
+        return { type: "link", href: `./detail.html?id=${encodeURIComponent(ids[0])}` };
+      }
+    }
+    if (/^立即预约$|^去下单$|^去买$|^购买$/.test(key)) {
+      const ids = inferProductIds(context + " " + key);
+      if (ids.length === 1) {
+        return { type: "link", href: `./order.html?goodsId=${encodeURIComponent(ids[0])}` };
+      }
+    }
+    return null;
+  }
+
+  $("btnBack")?.addEventListener("click", () => {
+    if (app?.classList.contains("is-chatting")) {
+      resetChat();
+      return;
+    }
+    if (window.history.length > 1) window.history.back();
+    else location.href = "./index.html";
+  });
+
+  $("btnRefresh")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    questionIndex = (questionIndex + 1) % QUESTION_POOL.length;
+    renderQuestions(QUESTION_POOL[questionIndex]);
+    toast("已换一批问题");
+  });
+
+  const hold = $("btnHold");
+  hold?.addEventListener("pointerdown", (e) => {
+    if (busy) return;
+    e.preventDefault();
+    hold.classList.add("is-holding");
+    hold.textContent = "松开发送";
+  });
+  const endHold = (e) => {
+    if (!hold || !hold.classList.contains("is-holding")) return;
+    hold.classList.remove("is-holding");
+    hold.textContent = "按住说话";
+    if (e) e.preventDefault();
+    sendMessage("用语音问一下：附近有什么适合长者的到店服务？");
+  };
+  hold?.addEventListener("pointerup", endHold);
+  hold?.addEventListener("pointercancel", endHold);
+  hold?.addEventListener("pointerleave", endHold);
+
+  $("btnKeyboard")?.addEventListener("click", showText);
+  $("btnToVoice")?.addEventListener("click", showVoice);
+  $("btnMenu")?.addEventListener("click", resetChat);
+
+  $("textBar")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    trySendFromInput();
+  });
+
+  $("textInput")?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+      e.preventDefault();
+      e.stopPropagation();
+      trySendFromInput();
+    }
+  });
+
+  // 确保点输入框时不被其它事件截断
+  $("textInput")?.addEventListener("focus", () => {
+    if (busy) return;
+    $("btnSend").disabled = false;
+  });
+
+  $("btnLlmHint")?.addEventListener("click", () => {
+    toast("复制 llm.env.example → llm.env，填入 API Key，再运行 python3 scripts/llm_server.py");
+  });
+
+  syncClock();
+  renderQuestions(QUESTION_POOL[0]);
+  checkLlmStatus();
+  setInterval(syncClock, 30_000);
+
+  // 支持从首页卡片「猜你想问」直接带入问题开始对话
+  try {
+    const params = new URLSearchParams(location.search);
+    const initialQ = params.get("q")?.trim();
+    if (initialQ) {
+      history.replaceState({}, "", location.pathname + location.hash);
+      setTimeout(() => sendMessage(initialQ), 120);
+    }
+  } catch {}
+})();
