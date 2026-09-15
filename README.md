@@ -52,6 +52,28 @@ HOST=0.0.0.0 PORT=8091 python3 scripts/llm_server.py
 
 > 不要用 Vercel 纯静态部署本项目的智伴能力；Vercel Hobby 也无法部署 Origin 私有仓。
 
+### 方式 4：宝塔面板（含 Python，推荐有控服务器时用）
+
+1. 把项目上传/克隆到服务器，例如 `/www/wwwroot/kangyang-mall`
+2. 在服务器执行：
+
+```bash
+cd /www/wwwroot/kangyang-mall
+bash deploy/baota/install.sh
+# 或指定域名：
+# DOMAIN=your.domain.com bash deploy/baota/install.sh
+```
+
+3. 编辑 `/www/wwwroot/kangyang-mall/llm.env`，填入 `LLM_API_KEY`
+4. 宝塔 → 网站 → 添加站点 → 配置文件里反代到 `127.0.0.1:8091`  
+   （可直接粘贴 `deploy/baota/nginx.location.conf`）
+5. 安全组/防火墙放行 80/443；访问：
+
+- `http://你的域名/index.html`
+- `http://你的域名/agent.html`
+
+也可用宝塔 **Supervisor** 导入 `deploy/baota/supervisor.ini` 守护进程（与 systemd 二选一）。
+
 | 页面 | 地址 |
 |------|------|
 | 商城 | http://127.0.0.1:8091/ |
