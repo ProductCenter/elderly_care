@@ -143,7 +143,13 @@
           <p class="feed-bubble">今天的风<br />很舒服🌤️</p>
           <a class="feed-more" href="./broadcast.html">全部 <span>›</span></a>
         </section>
-      </main>
+      
+      <section class="push-home" style="margin:12px;padding:10px;border:1px solid rgba(184,126,62,.2);border-radius:3px;background:#fffef9;">
+        <strong style="font-size:14px;">事找人</strong>
+        <p style="margin:4px 0 8px;font-size:12px;color:#8a7a68;">报告、朋友圈与办事进度会主动找你</p>
+        <a href="./index.html#pushStrip" style="color:#e36a12;font-size:12px;font-weight:700;text-decoration:none;">去商城首页查看推送 →</a>
+      </section>
+</main>
 
       <nav class="home-tabbar" aria-label="主导航">
         <a class="tab active" href="./home.html" aria-current="page">
@@ -167,10 +173,11 @@
           </svg>
           <span>健康</span>
         </a>
-        <a class="tab-mid" href="./agent.html" aria-label="打开智伴">
-          <span class="tab-avatar">
-            <img src="./assets/home/home-tab-avatar-v2.png" alt="" />
+        <a class="tab-mid tab-agent" href="./agent.html" aria-label="打开智伴">
+          <span class="tab-avatar tab-agent-avatar">
+            <img data-tab-agent-avatar src="./assets/moko-avatar.png" alt="康小护" />
           </span>
+          <span class="tab-agent-label">智伴</span>
         </a>
         <a class="tab" href="./index.html">
           <svg viewBox="0 0 24 24" fill="none">
@@ -216,6 +223,7 @@
     </div>
 
     <script src="./js/home.js?v=20260912-home8"></script>
-    <script src="./js/app-shell.js?v=20260912-covers5"></script>
+    <script src="./js/agent-avatar.js?v=20260915-tabagent"></script>
+    <script src="./js/app-shell.js?v=20260915-tabagent"></script>
   </body>
 </html>

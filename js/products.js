@@ -315,8 +315,8 @@ window.MALL_PRODUCTS = {
     badges: ["服务套餐", "站点服务", "周一至周六"],
     desc: "包月订餐提供正餐、健康饮品。支付后生成权益配额，到站按次核销，受服务天数与可服务星期约束。",
     storeId: "store_cy001",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   ai_massage: {
@@ -338,8 +338,8 @@ window.MALL_PRODUCTS = {
     badges: ["智能理疗", "健康舒缓", "专业服务"],
     desc:
       "采用智能律动与分区压递推技术，结合脊足底温热护理，缓解久坐与肩背僵硬。支持到站预约，专业技师指导体验。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
     featured: true,
   },
 
@@ -365,8 +365,8 @@ window.MALL_PRODUCTS = {
     badges: ["医疗级体验", "门店核销", "售后保障"],
     desc:
       "中频理疗按摩仪适用于肩背、腰腹等部位的舒适护理。本商品为到店服务商品，下单后请前往适用门店预约体验。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   foot_spa: {
@@ -387,8 +387,8 @@ window.MALL_PRODUCTS = {
     features: ["恒温足浴", "穴位按摩", "草本配方"],
     badges: ["舒缓疲劳", "到店核销", "适老友好"],
     desc: "到站足浴理疗服务，结合恒温泡脚与足底穴位护理，适合下肢沉重、睡眠不佳的长者。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   health_check: {
@@ -409,8 +409,8 @@ window.MALL_PRODUCTS = {
     features: ["基础体征检测", "报告解读", "健康建议"],
     badges: ["到站检测", "专业解读", "档案同步"],
     desc: "到站完成血压、血糖及基础体成分检测，结果同步健康档案，并提供简明解读建议。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   calligraphy: {
@@ -431,8 +431,8 @@ window.MALL_PRODUCTS = {
     features: ["名师带练", "材料齐全", "作品留念"],
     badges: ["休闲兴趣", "社交陪伴", "到站上课"],
     desc: "到站书法体验课，提供笔墨纸砚，适合零基础长者，课后可带走当堂作品。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   shop_daycare_half: {
@@ -452,8 +452,8 @@ window.MALL_PRODUCTS = {
     features: ["集体助餐", "文娱活动", "健康巡视"],
     badges: ["到店服务", "半日体验", "长者友好"],
     desc: "半日托管体验，含午餐与下午文娱活动，适合家属临时外出时选择。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   shop_daycare_full: {
@@ -473,8 +473,8 @@ window.MALL_PRODUCTS = {
     features: ["日间看护", "康复游戏", "健康监测"],
     badges: ["到店服务", "全日托管", "安全可靠"],
     desc: "全日日间照料服务，提供两餐两点、康复游戏及健康监测，减轻家庭照护压力。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   moxibustion_therapy: {
@@ -494,8 +494,8 @@ window.MALL_PRODUCTS = {
     features: ["艾灸调理", "温热护理", "穴位定制"],
     badges: ["到店服务", "中医理疗", "适老舒缓"],
     desc: "通过艾灸温热刺激穴位，帮助缓解关节寒凉、腰背酸痛，到店由专业理疗师操作。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   cupping_therapy: {
@@ -515,8 +515,8 @@ window.MALL_PRODUCTS = {
     features: ["气罐调理", "肩颈疏通", "到店服务"],
     badges: ["到店服务", "传统理疗", "安全操作"],
     desc: "气罐拔罐舒筋服务，适用于肩颈僵硬、背部酸胀，到店由持证人员操作。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   tuina_massage: {
@@ -536,8 +536,8 @@ window.MALL_PRODUCTS = {
     features: ["专业推拿", "经络疏通", "放松肌肉"],
     badges: ["到店服务", "专业技师", "经络调理"],
     desc: "传统推拿疏通经络，缓解久坐、劳损导致的肌肉紧张，到店体验。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   chronic_screening: {
@@ -557,8 +557,8 @@ window.MALL_PRODUCTS = {
     features: ["血压血糖", "血脂快检", "报告解读"],
     badges: ["到店服务", "慢病管理", "报告解读"],
     desc: "到站完成血压、血糖、血脂基础筛查，提供简明报告解读与生活方式建议。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   tcm_constitution: {
@@ -578,8 +578,8 @@ window.MALL_PRODUCTS = {
     features: ["体质辨识", "养生建议", "膳食调理"],
     badges: ["到店服务", "中医养生", "个性建议"],
     desc: "通过中医体质问卷与简单问诊，辨识体质类型并提供养生与膳食调理建议。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   cognitive_group: {
@@ -599,8 +599,8 @@ window.MALL_PRODUCTS = {
     features: ["记忆游戏", "手指操", "社交互动"],
     badges: ["到店服务", "认知照护", "社交陪伴"],
     desc: "面向轻度认知下降长者的趣味小组课，通过游戏、音乐与互动延缓认知衰退。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   music_therapy: {
@@ -620,8 +620,8 @@ window.MALL_PRODUCTS = {
     features: ["音乐欣赏", "节奏互动", "情绪舒缓"],
     badges: ["到店服务", "情绪照护", "团体活动"],
     desc: "通过经典音乐欣赏、节奏互动与引导放松，帮助长者舒缓情绪、改善睡眠。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   choir_class: {
@@ -641,8 +641,8 @@ window.MALL_PRODUCTS = {
     features: ["声乐练习", "合唱曲目", "社交活动"],
     badges: ["到店服务", "康养学堂", "社交娱乐"],
     desc: "合唱兴趣课帮助长者锻炼呼吸与发声，结交新朋友，到站参与。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   gardening_therapy: {
@@ -662,8 +662,8 @@ window.MALL_PRODUCTS = {
     features: ["盆栽种植", "植物认知", "放松身心"],
     badges: ["到店服务", "康养学堂", "自然疗愈"],
     desc: "通过绿植养护与园艺操作，锻炼手指灵活性，放松身心，到站体验。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   smartphone_training: {
@@ -683,8 +683,8 @@ window.MALL_PRODUCTS = {
     features: ["微信使用", "扫码支付", "安全上网"],
     badges: ["到店服务", "公益课程", "数字助老"],
     desc: "免费智能手机基础培训，帮助长者学会微信、扫码支付与安全上网，到站参加。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   // —— 到家服务 ——
@@ -708,8 +708,8 @@ window.MALL_PRODUCTS = {
     badges: ["科学运动", "趣味互动", "适老友好"],
     desc:
       "通过大屏 AR 引导完成燃脂与柔韧训练，动作幅度可调，适合中老年居家运动场景，训练数据可同步健康档案。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   neck_massage: {
@@ -731,8 +731,8 @@ window.MALL_PRODUCTS = {
     badges: ["专业理疗", "到家服务", "安全舒适"],
     desc:
       "针对颈椎僵硬、酸胀不适提供标准化按摩护理服务。预约后由专业技师上门服务，服务过程可评价留痕。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   nutrition_meal: {
@@ -753,8 +753,8 @@ window.MALL_PRODUCTS = {
     features: ["营养师定制", "每日送达", "可备注忌口"],
     badges: ["健康食品", "到家配送", "适老食谱"],
     desc: "面向慢病与减重需求的七日营养配餐，每日新鲜配送到家，支持忌口备注。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   companion_care: {
@@ -775,8 +775,8 @@ window.MALL_PRODUCTS = {
     features: ["挂号陪同", "取药协助", "行程记录"],
     badges: ["到家服务", "专业陪护", "安全可靠"],
     desc: "提供半天档就医陪诊陪护，协助挂号、候诊、取药及行程记录，减轻家属负担。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   home_clean: {
@@ -797,8 +797,8 @@ window.MALL_PRODUCTS = {
     features: ["防滑处理", "厨卫重点", "工具自带"],
     badges: ["到家服务", "适老清洁", "准时履约"],
     desc: "针对长者家庭的上门保洁服务，注重厨卫与地面防滑清洁，服务人员持证上岗。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   home_bath: {
@@ -818,8 +818,8 @@ window.MALL_PRODUCTS = {
     features: ["设备自带", "隐私保护", "家属可陪同"],
     badges: ["到家服务", "助浴照护", "安全舒适"],
     desc: "专业助浴师上门提供安全助浴服务，自带充气浴槽与保暖设备，适合行动不便长者。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   home_haircut: {
@@ -839,8 +839,8 @@ window.MALL_PRODUCTS = {
     features: ["上门理发", "工具消毒", "简单修面"],
     badges: ["到家服务", "生活照料", "准时履约"],
     desc: "理发师上门提供基础理发与修面服务，工具一客一消毒，适合居家不便出门的长者。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   home_meal: {
@@ -860,8 +860,8 @@ window.MALL_PRODUCTS = {
     features: ["送餐入户", "餐后收拾", "忌口备注"],
     badges: ["到家服务", "助餐服务", "适老食谱"],
     desc: "将适老化餐食送至家中，协助长者用餐并简单收拾，支持忌口备注。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   home_safety_assess: {
@@ -881,8 +881,8 @@ window.MALL_PRODUCTS = {
     features: ["跌倒风险排查", "改造方案", "辅具建议"],
     badges: ["到家服务", "适老化", "专业评估"],
     desc: "专业人员上门评估居家安全风险，提供适老化改造方案与辅具配置建议。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   home_moxibustion: {
@@ -902,8 +902,8 @@ window.MALL_PRODUCTS = {
     features: ["穴位艾灸", "温热护理", "居家操作"],
     badges: ["到家服务", "中医理疗", "适老舒缓"],
     desc: "理疗师携带便携艾灸设备上门服务，针对关节寒凉、腰背酸痛进行穴位艾灸护理。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   joint_rehab: {
@@ -923,8 +923,8 @@ window.MALL_PRODUCTS = {
     features: ["关节活动度", "肌力训练", "居家方案"],
     badges: ["到家服务", "康复训练", "专业指导"],
     desc: "康复治疗师上门为膝、髋、肩等关节问题长者制定个性化训练方案并指导执行。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   exercise_guidance: {
@@ -944,8 +944,8 @@ window.MALL_PRODUCTS = {
     features: ["体能评估", "运动处方", "安全防护"],
     badges: ["到家服务", "科学运动", "适老训练"],
     desc: "根据长者体能状况制定运动计划，指导居家安全锻炼，预防跌倒与肌肉流失。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   chronic_followup: {
@@ -965,8 +965,8 @@ window.MALL_PRODUCTS = {
     features: ["血压血糖监测", "用药提醒", "健康档案"],
     badges: ["到家服务", "慢病管理", "月度随访"],
     desc: "护理人员月度上门4次，完成基础体征监测、用药提醒与健康档案更新。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   sleep_monitor: {
@@ -986,8 +986,8 @@ window.MALL_PRODUCTS = {
     features: ["睡眠评估", "呼吸监测", "改善建议"],
     badges: ["到家服务", "睡眠健康", "呼吸监测"],
     desc: "使用便携设备监测夜间睡眠与呼吸状况，提供睡眠质量评估与改善建议。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   palliative_care: {
@@ -1007,8 +1007,8 @@ window.MALL_PRODUCTS = {
     features: ["症状护理", "心理陪伴", "家属指导"],
     badges: ["到家服务", "安宁疗护", "温柔照护"],
     desc: "为疾病终末期或高龄长者提供居家舒缓护理，减轻不适、陪伴心灵、指导家属照护。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   hospice_consult: {
@@ -1028,8 +1028,8 @@ window.MALL_PRODUCTS = {
     features: ["病情评估", "照护计划", "心理支持"],
     badges: ["到家服务", "公益咨询", "安宁疗护"],
     desc: "免费上门安宁疗护咨询，评估长者身心状况，制定个性化照护与心理支持方案。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   wheelchair_rental_home: {
@@ -1049,8 +1049,8 @@ window.MALL_PRODUCTS = {
     features: ["轮椅租赁", "上门安装", "月度续租"],
     badges: ["到家服务", "辅具租赁", "灵活续租"],
     desc: "轻便轮椅首月体验价，送货上门并指导使用，支持按月续租与退租回收。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   bed_rental_home: {
@@ -1070,8 +1070,8 @@ window.MALL_PRODUCTS = {
     features: ["护理床租赁", "上门安装", "月度维保"],
     badges: ["到家服务", "辅具租赁", "专业安装"],
     desc: "多功能护理床按月租赁，含上门安装调试与月度维保，适合卧床长者家庭。",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
   },
 
   // —— 实物商品 / 辅具租赁 / 邮寄 ——
@@ -1668,33 +1668,60 @@ window.MALL_PRODUCTS = {
 window.MALL_STORES = {
   store_cy001: {
     storeId: "store_cy001",
-    storeName: "春风社区中心站 · 朝阳门店",
-    storeAddress: "北京市东城区朝阳门内大街100号",
-    storePhone: "010-64001234",
+    storeName: "春风康养 · 历下旗舰店",
+    storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
+    storePhone: "0531-86001234",
     businessHours: "09:00 – 21:00",
-    distance: "距你 520m",
-    lat: 39.9245,
-    lng: 116.4345,
+    openStart: "09:00",
+    openEnd: "21:00",
+    distance: "距你 420m",
+    rating: 4.9,
+    salesText: "月售 1286",
+    notice: "到店核销请提前 30 分钟预约；食堂高峰请错峰。",
+    cover: "./assets/home/home-hero-full-bg-v3.png",
+    logo: "./assets/moko-avatar.png",
+    lat: 36.6666,
+    lng: 117.1205,
+    intro: "济南历下旗舰：到店理疗、控糖食堂、认知小组课与适老辅具一站式履约。",
+    tags: ["旗舰店", "食堂", "认知友好"],
   },
   store_wj001: {
     storeId: "store_wj001",
-    storeName: "春风社区中心站 · 望京店",
-    storeAddress: "北京市朝阳区望京街10号",
-    storePhone: "010-64781234",
+    storeName: "春风康养 · 高新区店",
+    storeAddress: "山东省济南市高新区舜华路1500号附近",
+    storePhone: "0531-88881234",
     businessHours: "09:30 – 20:30",
-    distance: "距你 3.2km",
-    lat: 39.996,
-    lng: 116.481,
+    openStart: "09:30",
+    openEnd: "20:30",
+    distance: "距你 2.8km",
+    rating: 4.8,
+    salesText: "月售 642",
+    notice: "上门服务需提前预约，当日 16:00 后预约次日履约。",
+    cover: "./assets/cover-companion-care.png",
+    logo: "./assets/cover-health-check.png",
+    lat: 36.675,
+    lng: 117.135,
+    intro: "面向高新区家庭，侧重上门照护调度与康复预约。",
+    tags: ["上门", "康复"],
   },
   store_hd001: {
     storeId: "store_hd001",
-    storeName: "春风社区中心站 · 海淀店",
-    storeAddress: "北京市海淀区中关村大街1号",
-    storePhone: "010-62501234",
+    storeName: "春风康养 · 市中店",
+    storeAddress: "山东省济南市市中区经四路附近",
+    storePhone: "0531-82001234",
     businessHours: "10:00 – 21:00",
-    distance: "距你 8.6km",
-    lat: 39.983,
-    lng: 116.316,
+    openStart: "10:00",
+    openEnd: "21:00",
+    distance: "距你 6.1km",
+    rating: 4.7,
+    salesText: "月售 398",
+    notice: "日托名额有限，建议提前 1 天确认床位。",
+    cover: "./assets/cover-ai-massage.png",
+    logo: "./assets/cover-foot-spa.png",
+    lat: 36.651,
+    lng: 117.0,
+    intro: "市中区社区店，擅长日托喘息与慢病随访。",
+    tags: ["日托", "慢病"],
   },
 };
 

@@ -35,7 +35,7 @@
         <input id="startDate" type="date" value="${startDefault}" />
       </label>
       <label><span class="lab">常去门店</span>
-        <select id="store"><option>春风社区中心站 · 朝阳门店</option><option>春风望京站</option></select>
+        <select id="store"><option>春风康养 · 历下旗舰店</option><option>春风康养 · 高新区店</option></select>
       </label>
       <div class="lab" style="margin-bottom:8px">每周可到店时段</div>
       <div class="slot-grid" id="slots">

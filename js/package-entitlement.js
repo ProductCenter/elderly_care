@@ -437,7 +437,7 @@
       qty: 1,
       payAmount: pkg.salePrice,
       storeId: pkg.storeId || "store_cy001",
-      storeName: "春风社区中心站 · 朝阳门店",
+      storeName: "春风康养 · 历下旗舰店",
       createdAt: Date.now(),
       userName: "演示用户",
     };

@@ -31,6 +31,15 @@
   syncTime();
   setInterval(syncTime, 30_000);
 
+
+  function syncEnterShopBtn(storeId) {
+    const btn = document.getElementById("btnEnterShop");
+    if (!btn || !product) return;
+    const sid = storeId || product.storeId || currentStoreId || "store_cy001";
+    btn.hidden = false;
+    btn.dataset.storeId = sid;
+  }
+
   function formatPrice(n) {
     return Number.isInteger(n) ? String(n) : Number(n).toFixed(1);
   }
@@ -89,6 +98,7 @@
     btnBuy.disabled = soldOut;
     btnBuy.textContent = soldOut ? "已售罄" : "立即购买";
     btnBuy.classList.toggle("is-disabled", soldOut);
+    syncEnterShopBtn(store.storeId || currentStoreId);
   }
 
   function renderBase(p) {
@@ -167,9 +177,11 @@
       btnBuy.classList.toggle("is-disabled", soldOut);
       const storeTitle = document.querySelector("#storeSection .sec-title");
       if (storeTitle) storeTitle.textContent = isGoods ? "发货与配送" : "适用门店";
+      syncEnterShopBtn(p.storeId || "store_cy001");
     } else {
       const storeTitle = document.querySelector("#storeSection .sec-title");
       if (storeTitle) storeTitle.textContent = "适用门店";
+      syncEnterShopBtn(currentStoreId);
     }
   }
 
@@ -243,8 +255,13 @@
     else location.href = "./index.html";
   });
 
-  document.getElementById("btnHome")?.addEventListener("click", () => {
-    location.href = "./index.html";
+  document.getElementById("btnShop")?.addEventListener("click", () => {
+    const sid =
+      document.getElementById("btnEnterShop")?.dataset.storeId ||
+      currentStoreId ||
+      product?.storeId ||
+      "store_cy001";
+    location.href = `./shop.html?id=${encodeURIComponent(sid)}`;
   });
 
   document.getElementById("btnCart")?.addEventListener("click", () => {
@@ -277,6 +294,11 @@
     location.href = `./order.html?${qs.toString()}`;
   });
 
+  document.getElementById("btnEnterShop")?.addEventListener("click", () => {
+    const btn = document.getElementById("btnEnterShop");
+    const sid = btn?.dataset.storeId || currentStoreId || product?.storeId || "store_cy001";
+    location.href = `./shop.html?id=${encodeURIComponent(sid)}`;
+  });
   document.getElementById("btnSwitchStore")?.addEventListener("click", openStoreSheet);
   document.getElementById("storeSheetClose")?.addEventListener("click", closeStoreSheet);
   document.getElementById("storeMask")?.addEventListener("click", closeStoreSheet);

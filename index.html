@@ -8,8 +8,8 @@
     />
     <meta name="theme-color" content="#f6eee2" />
     <title>春风康养</title>
-    <link rel="stylesheet" href="./css/mall.css?v=20260912-r2" />
-    <link rel="stylesheet" href="./css/app-shell.css?v=20260912-covers5" />
+    <link rel="stylesheet" href="./css/mall.css?v=20260915-homefix2" />
+    <link rel="stylesheet" href="./css/app-shell.css?v=20260915-homefix2" />
 
   </head>
   <body>
@@ -132,15 +132,129 @@
           <div class="hero-dots" id="heroDots" role="tablist" aria-label="背景切换"></div>
         </div>
 
-        <!-- 金刚区 + 智能体：同组收紧留白 -->
+        <!-- 办/圈/播/学 → 场景服务 → 事找人 → 智伴 -->
         <div class="home-stack">
-        <!-- 金刚区：浮在通屏背景之上 -->
-        <section class="kingkong" aria-label="业务分类">
+        <!-- 社区四入口：水平四列，置于智伴上方 -->
+        <section class="community-hub" aria-label="社区服务入口">
+          <a class="hub-card hub-card--ban" href="./banshi.html">
+            <span class="hub-card-ico" aria-hidden="true">
+              <!-- 办事通：公文章 · 简洁圆形印信 -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="7.2"/>
+                <circle cx="12" cy="12" r="4.2"/>
+                <path d="M12 9.2v5.6M10 11.2h4"/>
+              </svg>
+            </span>
+            <strong>办事通</strong>
+            <em>补贴 · 政务</em>
+          </a>
+          <a class="hub-card hub-card--quan" href="./moments.html">
+            <span class="hub-card-ico" aria-hidden="true">
+              <!-- 朋友圈：四象限圆点 · 清爽社交 -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="8.2" cy="8.2" r="2.35"/>
+                <circle cx="15.8" cy="8.2" r="2.35"/>
+                <circle cx="8.2" cy="15.8" r="2.35"/>
+                <circle cx="15.8" cy="15.8" r="2.35"/>
+              </svg>
+            </span>
+            <strong>朋友圈</strong>
+            <em>动态 · 话题</em>
+          </a>
+          <a class="hub-card hub-card--bo" href="./broadcast.html">
+            <span class="hub-card-ico" aria-hidden="true">
+              <!-- 广播站：天线 + 波纹 -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 16.8V8.6"/>
+                <circle cx="12" cy="7" r="1.6" fill="currentColor" stroke="none"/>
+                <path d="M8.2 11.2a4.6 4.6 0 0 1 7.6 0"/>
+                <path d="M6 13.6a7.2 7.2 0 0 1 12 0"/>
+                <path d="M8.5 16.8h7"/>
+              </svg>
+            </span>
+            <strong>广播站</strong>
+            <em>政策 · 合作</em>
+          </a>
+          <a class="hub-card hub-card--xue" href="./xue.html">
+            <span class="hub-card-ico" aria-hidden="true">
+              <!-- 学堂：打开的书本 -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 7.2c-1.8-1.2-4.2-1.6-6.4-1.2v10c2.2-.4 4.6 0 6.4 1.2"/>
+                <path d="M12 7.2c1.8-1.2 4.2-1.6 6.4-1.2v10c-2.2-.4-4.6 0-6.4 1.2"/>
+                <path d="M12 7.2v10"/>
+              </svg>
+            </span>
+            <strong>学堂</strong>
+            <em>科普 · 课程</em>
+          </a>
+        </section>
+
+        <!-- 金刚区：独立卡片 -->
+        <section class="panel-card kingkong" aria-label="场景服务">
           <div class="kk-grid" id="kingkongGrid"></div>
           <div class="kk-dots" id="kingkongDots" role="tablist" aria-label="分类翻页"></div>
         </section>
 
-        <!-- 广播站：一行内容轮播，点击进入列表 -->
+        <!-- 事找人：独立卡片 -->
+        <section class="panel-card push-strip" id="pushStrip" aria-label="事找人推送">
+          <div class="push-strip-list" id="pushStripList"></div>
+        </section>
+
+        <!-- AI 智伴 -->
+        <section class="agent-card agent-card--hero" id="agentCard" aria-label="AI康养助手">
+          <div class="agent-top">
+            <button type="button" class="agent-avatar-hit" id="btnMallAvatarSwitch" aria-label="更换智伴形象">
+              <div class="agent-avatar">
+                <img
+                  src="./assets/moko-avatar.png"
+                  alt="康小护"
+                  width="96"
+                  height="96"
+                  decoding="async"
+                  data-agent-avatar
+                />
+              </div>
+              <span class="agent-avatar-badge">换</span>
+            </button>
+            <button type="button" class="agent-main" id="agentMainEntry" aria-label="打开AI康养助手">
+              <div class="agent-copy">
+                <div class="agent-meta">
+                  <span class="agent-weather" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                      <circle cx="9.2" cy="10" r="4" fill="#f5c542" />
+                      <path
+                        fill="#fff"
+                        d="M16.4 11.3a3.3 3.3 0 0 0-6.3-1.1 2.7 2.7 0 1 0 .1 5.4h6.3a2.5 2.5 0 0 0-.1-4.3z"
+                      />
+                    </svg>
+                  </span>
+                  <span class="agent-site" id="agentSiteName">历下旗舰</span>
+                  <i class="agent-sep" aria-hidden="true"></i>
+                  <span class="agent-temp" id="agentTemp">26°</span>
+                </div>
+                <p class="agent-desc">
+                  Hi~ 我是<strong data-agent-name>康小护</strong>，无设备也能用报告与朋友圈关心爸妈~
+                </p>
+              </div>
+              <span class="agent-chevron" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    fill="currentColor"
+                    d="M9.29 6.71a1 1 0 0 0 0 1.41L13.17 12l-3.88 3.88a1 1 0 1 0 1.41 1.41l4.59-4.59a1 1 0 0 0 0-1.41L10.7 6.7a1 1 0 0 0-1.41.01z"
+                  />
+                </svg>
+              </span>
+            </button>
+          </div>
+          <div class="agent-actions agent-actions--capture" role="group" aria-label="无设备采集">
+            <button type="button" class="agent-action" data-agent-act="face"><span>AI面诊</span></button>
+            <button type="button" class="agent-action" data-agent-act="tongue"><span>AI舌诊</span></button>
+            <button type="button" class="agent-action" data-agent-act="report"><span>上传报告</span></button>
+            <button type="button" class="agent-action" data-agent-act="camera"><span>拍照识别</span></button>
+          </div>
+        </section>
+
+        <!-- 广播站 ticker 保留精简一行 -->
         <section class="broadcast" id="broadcast" aria-label="广播站">
           <span class="broadcast-icon-wrap" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -157,111 +271,6 @@
               <path d="M5 7h14M5 12h14M5 17h14" />
             </svg>
           </span>
-        </section>
-
-        <!-- 智能体卡片：参考「旅小哇」双层结构，适配康养场景 -->
-        <section class="agent-card" id="agentCard" aria-label="AI康养助手">
-          <button type="button" class="agent-main" id="agentMainEntry" aria-label="打开AI康养助手">
-            <div class="agent-avatar" aria-hidden="true">
-              <img
-                src="./assets/moko-avatar.png"
-                alt=""
-                width="96"
-                height="96"
-                decoding="async"
-              />
-            </div>
-            <div class="agent-copy">
-              <div class="agent-meta">
-                <span class="agent-weather" aria-hidden="true">
-                  <svg viewBox="0 0 24 24">
-                    <circle cx="9.2" cy="10" r="4" fill="#f5c542" />
-                    <path
-                      fill="#fff"
-                      d="M16.4 11.3a3.3 3.3 0 0 0-6.3-1.1 2.7 2.7 0 1 0 .1 5.4h6.3a2.5 2.5 0 0 0-.1-4.3z"
-                    />
-                  </svg>
-                </span>
-                <span class="agent-site" id="agentSiteName">春风站</span>
-                <i class="agent-sep" aria-hidden="true"></i>
-                <span class="agent-temp" id="agentTemp">26°</span>
-              </div>
-              <p class="agent-desc">
-                Hi~ 我是<strong>康小护</strong>，推荐附近食堂与到店服务~
-              </p>
-            </div>
-            <span class="agent-chevron" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <path
-                  fill="currentColor"
-                  d="M9.29 6.71a1 1 0 0 0 0 1.41L13.17 12l-3.88 3.88a1 1 0 1 0 1.41 1.41l4.59-4.59a1 1 0 0 0 0-1.41L10.7 6.7a1 1 0 0 0-1.41.01z"
-                />
-              </svg>
-            </span>
-          </button>
-          <div class="agent-actions" role="group" aria-label="快捷入口">
-            <button type="button" class="agent-action" data-agent-act="package">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.7"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M7 4h10a1 1 0 0 1 1 1v14l-3-1.5L12 19l-3-1.5L6 19V5a1 1 0 0 1 1-1z"
-                />
-                <path
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.7"
-                  stroke-linecap="round"
-                  d="M9 9h6M9 12h4"
-                />
-              </svg>
-              <span>套餐推荐</span>
-            </button>
-            <button type="button" class="agent-action" data-agent-act="canteen">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.7"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M4 10h16v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9z"
-                />
-                <path
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.7"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M7 10V7a5 5 0 0 1 10 0v3"
-                />
-              </svg>
-              <span>附近食堂</span>
-            </button>
-            <button type="button" class="agent-action" data-agent-act="consult">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.7"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v7A2.5 2.5 0 0 1 16.5 16H11l-3.5 3v-3H7.5A2.5 2.5 0 0 1 5 13.5v-7z"
-                />
-                <path
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.7"
-                  stroke-linecap="round"
-                  d="M9 9h6M9 12h4"
-                />
-              </svg>
-              <span>健康咨询</span>
-            </button>
-          </div>
         </section>
         </div>
 
@@ -364,11 +373,24 @@
       </div>
     </div>
 
-    <script src="./js/products.js?v=20260912-covers7"></script>
-    <script src="./js/mall-links.js?v=20260912-banner2"></script>
-    <script src="./js/sites.js?v=20260912-covers5"></script>
-    <script src="./js/mall.js?v=20260914-oneport"></script>
-    <script src="./js/app-shell.js?v=20260912-covers5"></script>
+
+    <div class="avatar-mask" id="mallAvatarMask" hidden></div>
+    <div class="avatar-sheet-pop" id="mallAvatarSheet" hidden role="dialog" aria-labelledby="mallAvatarTitle">
+      <div class="avatar-sheet-pop-hd">
+        <strong id="mallAvatarTitle">选择智伴形象</strong>
+        <button type="button" class="avatar-sheet-pop-close" id="mallAvatarClose">完成</button>
+      </div>
+      <p class="avatar-sheet-pop-tip">点选表情后，首页与对话页会一起记住</p>
+      <div class="avatar-options avatar-options--mall" id="mallAvatarOptions"></div>
+    </div>
+
+    <script src="./js/products.js?v=20260915-jn1"></script>
+    <script src="./js/mall-links.js?v=20260915-bc1"></script>
+    <script src="./js/sites.js?v=20260915-jn1"></script>
+    <script src="./js/push-feed.js?v=20260915-p1"></script>
+    <script src="./js/agent-avatar.js?v=20260915-av1"></script>
+    <script src="./js/mall.js?v=20260915-homefix2"></script>
+    <script src="./js/app-shell.js?v=20260915-homefix2"></script>
 
   </body>
 </html>

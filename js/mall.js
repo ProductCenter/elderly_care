@@ -702,6 +702,41 @@
     toast("超低折扣活动");
   });
 
+
+  /* —— 智伴换形象 —— */
+  (function setupMallAvatar() {
+    const api = window.AgentAvatar;
+    if (!api) return;
+    const mask = document.getElementById("mallAvatarMask");
+    const sheet = document.getElementById("mallAvatarSheet");
+    const open = () => {
+      api.renderOptions("mallAvatarOptions");
+      if (mask) mask.hidden = false;
+      if (sheet) sheet.hidden = false;
+    };
+    const close = () => {
+      if (mask) mask.hidden = true;
+      if (sheet) sheet.hidden = true;
+    };
+    api.apply();
+    document.getElementById("btnMallAvatarSwitch")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof isDesigner !== "undefined" && isDesigner) return;
+      open();
+    });
+    document.getElementById("mallAvatarClose")?.addEventListener("click", close);
+    mask?.addEventListener("click", close);
+    document.getElementById("mallAvatarOptions")?.addEventListener("click", (e) => {
+      const btn = e.target.closest(".avatar-opt");
+      if (!btn) return;
+      const av = api.LIST.find((a) => a.id === btn.dataset.id);
+      if (!av) return;
+      api.apply(av);
+      toast(`已切换为「${av.name}」`);
+    });
+  })();
+
   document.getElementById("agentMainEntry")?.addEventListener("click", () => {
     if (isDesigner) return;
     location.href = "./agent.html";
@@ -710,7 +745,15 @@
   document.getElementById("agentCard")?.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-agent-act]");
     if (!btn || isDesigner) return;
+    e.preventDefault();
+    e.stopPropagation();
     const act = btn.dataset.agentAct;
+    const goAgent = (action, q) => {
+      const qs = new URLSearchParams();
+      if (action) qs.set("action", action);
+      if (q) qs.set("q", q);
+      location.href = `./agent.html?${qs.toString()}`;
+    };
     if (act === "package") {
       const feed = document.getElementById("feedFilter");
       feed?.querySelector('.feed-tab[data-feed="instore"]')?.click();
@@ -720,13 +763,23 @@
     }
     if (act === "canteen") {
       openSiteSheet();
-      toast("选择供餐食堂 / 服务站点");
+      toast("选择济南供餐 / 服务门店");
       return;
     }
-    if (act === "consult") {
-      toast("健康咨询：控糖、血压与到店理疗都可以问我");
+    if (act === "consult" || act === "open") {
+      goAgent("", act === "consult" ? "健康咨询：控糖、血压和认知训练怎么看？" : "");
+      return;
     }
+    if (act === "face") return goAgent("face", "帮我做一次AI面诊示意");
+    if (act === "tongue") return goAgent("tongue", "帮我做一次AI舌诊示意");
+    if (act === "report") return goAgent("report", "我上传了体检报告，帮我解读");
+    if (act === "camera") return goAgent("camera", "拍照识别体检报告");
   });
+
+  // 事找人推送条
+  if (window.MallPushFeed?.renderStrip) {
+    window.MallPushFeed.renderStrip(document.getElementById("pushStripList"));
+  }
 
   function syncLocName(site) {
     const el = document.getElementById("locName") || document.querySelector(".loc-name");
@@ -898,33 +951,36 @@
     toast("返回微信");
   });
 
-  document.querySelectorAll(".tabbar > .tab").forEach((tab) => {
-    tab.addEventListener("click", (e) => {
-      if (isDesigner) {
-        e.preventDefault();
-        return;
-      }
-      if (tab.classList.contains("active")) return;
-      const label = tab.querySelector("span")?.textContent || "";
-      const base = window.MALL_PAGE_BASE || "./";
-      if (label === "我的") {
-        e.preventDefault();
-        location.href = `${base}mine.html`;
-        return;
-      }
-      if (label === "首页") {
-        e.preventDefault();
-        location.href = `${base}home.html`;
-        return;
-      }
-      if (label === "健康") {
-        e.preventDefault();
-        location.href = `${base}health-service/index.html`;
-        return;
-      }
+  document.querySelector(".tabbar")?.addEventListener("click", (e) => {
+    const tab = e.target.closest(".tab, .tab-item");
+    if (!tab || tab.classList.contains("tab-agent") || tab.classList.contains("tab-mid")) return;
+    if (isDesigner) {
       e.preventDefault();
-      toast(`${label}开发中`);
-    });
+      return;
+    }
+    if (tab.classList.contains("active")) return;
+    const label = tab.querySelector("span")?.textContent?.trim() || "";
+    const base = window.MALL_PAGE_BASE || "./";
+    if (label === "我的") {
+      e.preventDefault();
+      location.href = `${base}mine.html`;
+      return;
+    }
+    if (label === "首页") {
+      e.preventDefault();
+      location.href = `${base}home.html`;
+      return;
+    }
+    if (label === "健康") {
+      e.preventDefault();
+      location.href = `${base}health-service/index.html`;
+      return;
+    }
+    if (label === "商城") {
+      e.preventDefault();
+      location.href = `${base}index.html`;
+      return;
+    }
   });
 
   /* —— 通屏背景：自动轮播 + 手动滑动 —— */

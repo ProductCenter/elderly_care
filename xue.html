@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <title>学堂 · 春风康养</title>
+    <link rel="stylesheet" href="./css/mall.css?v=20260915-hub3" />
+    <link rel="stylesheet" href="./css/app-shell.css?v=20260912-covers5" />
+    <style>
+      .page-wrap { padding: 12px 12px 88px; }
+      .page-title { font-size: 18px; font-weight: 750; margin: 8px 0 4px; }
+      .page-sub { font-size: 12px; color: #8a7a68; margin-bottom: 12px; }
+      .xue-card { display: grid; grid-template-columns: 72px 1fr; gap: 10px; background: #fffef9; border: 1px solid rgba(184,126,62,.2); border-radius: 3px; padding: 10px; margin-bottom: 10px; text-decoration: none; color: inherit; }
+      .xue-card img { width: 72px; height: 72px; object-fit: cover; border-radius: 3px; }
+      .xue-card strong { display: block; font-size: 14px; margin-bottom: 4px; }
+      .xue-card p { margin: 0; font-size: 12px; color: #8a7a68; line-height: 1.4; }
+      .nav-back { border:0; background:transparent; font-size:28px; line-height:1; padding:0 8px; color:#2b241c; }
+    </style>
+  </head>
+  <body>
+    <div class="phone" id="app">
+      <div class="status-bar" aria-hidden="true"><span class="status-time">15:10</span></div>
+      <header class="nav-bar">
+        <button type="button" class="nav-back" id="btnBack" aria-label="返回">‹</button>
+        <h1 class="nav-title">学堂</h1>
+        <div class="mp-capsule" aria-hidden="true"></div>
+      </header>
+      <main class="page-wrap">
+        <h2 class="page-title">康养学堂</h2>
+        <p class="page-sub">健康科普 · 课程 · 广播站图文视频</p>
+        <div id="xueList"></div>
+      </main>
+      <nav class="tabbar" aria-label="主导航">
+        <a class="tab" href="./home.html"><span>首页</span></a>
+        <a class="tab" href="./health-service/index.html"><span>健康</span></a>
+        <a class="tab active" href="./index.html"><span>商城</span></a>
+        <a class="tab" href="./mine.html"><span>我的</span></a>
+      </nav>
+    </div>
+    <script src="./js/mall-links.js?v=20260915-bc1"></script>
+    <script>
+      (() => {
+        const arts = (window.MALL_ARTICLES || []).map((a) => ({
+          title: a.title,
+          summary: a.summary,
+          cover: a.cover,
+          href: "./article.html?id=" + encodeURIComponent(a.id),
+        }));
+        const bcs = (window.MALL_BROADCASTS || [])
+          .filter((b) => /科普|视频|讲座|政策/.test(b.badge || ""))
+          .map((b) => ({
+            title: b.title,
+            summary: b.summary,
+            cover: b.cover,
+            href: "./broadcast-detail.html?id=" + encodeURIComponent(b.id),
+          }));
+        const list = [...bcs, ...arts];
+        document.getElementById("xueList").innerHTML = list
+          .map(
+            (it) =>
+              `<a class="xue-card" href="${it.href}"><img src="${it.cover}" alt="" /><div><strong>${it.title}</strong><p>${it.summary || ""}</p></div></a>`
+          )
+          .join("");
+        document.getElementById("btnBack")?.addEventListener("click", () => {
+          if (history.length > 1) history.back();
+          else location.href = "./index.html";
+        });
+      })();
+    </script>
+      <script src="./js/agent-avatar.js?v=20260915-tabagent"></script>
+    <script src="./js/app-shell.js?v=20260915-tabagent"></script>
+  </body>
+</html>

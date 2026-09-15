@@ -1,0 +1,74 @@
+/* 办事通 / 朋友圈 / 店铺 共用轻样式 */
+:root {
+  --bg: #f6eee2;
+  --ink: #2b241c;
+  --muted: #8a7a68;
+  --line: rgba(90, 62, 32, 0.12);
+  --orange: #f08a2a;
+  --card: #fffef9;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "PingFang SC", "Noto Sans SC", sans-serif;
+  background: #1a1510;
+  color: var(--ink);
+}
+.phone {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--bg);
+  position: relative;
+}
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(246, 238, 226, 0.92);
+  border-bottom: 1px solid var(--line);
+}
+.nav-title { margin: 0; font-size: 16px; font-weight: 700; }
+.nav-back {
+  width: 32px; height: 32px; border: 0; background: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%232b241c' d='M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z'/%3E%3C/svg%3E");
+  background-size: 22px; background-repeat: no-repeat; background-position: center;
+}
+.page { padding: 12px 14px 40px; }
+.page-lead { margin: 0 0 12px; font-size: 13px; color: var(--muted); line-height: 1.45; }
+.tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+.tabs button {
+  flex: 1; border: 1px solid var(--line); background: var(--card);
+  border-radius: 3px; padding: 8px 4px; font-size: 12px; font-weight: 650; color: var(--ink);
+}
+.tabs button.on { background: rgba(240,138,42,0.12); border-color: rgba(240,138,42,0.4); color: #e36a12; }
+.card-list, .moment-list { display: flex; flex-direction: column; gap: 10px; }
+.biz-card, .moment-card, .shop-head, .sku-card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 3px; padding: 12px;
+}
+.biz-card h3, .moment-card h3 { margin: 0 0 6px; font-size: 15px; }
+.biz-meta, .moment-meta { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.tag {
+  display: inline-block; margin-right: 4px; padding: 1px 6px; border-radius: 2px;
+  background: rgba(240,138,42,0.12); color: #e36a12; font-size: 11px; font-weight: 650;
+}
+.biz-card p, .moment-card p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.45; }
+.biz-card button, .cta {
+  margin-top: 10px; width: 100%; border: 0; border-radius: 3px; padding: 9px;
+  background: var(--orange); color: #fff; font-weight: 700; font-size: 13px;
+}
+.detail { margin-top: 12px; padding: 12px; background: #fff; border: 1px solid var(--line); border-radius: 3px; }
+.detail h2 { margin: 0 0 8px; font-size: 16px; }
+.detail li { font-size: 13px; color: var(--muted); margin: 4px 0; }
+.moment-card .agent-flag { font-size: 11px; color: #e36a12; font-weight: 650; margin-top: 8px; }
+.shop-head h2 { margin: 0 0 6px; font-size: 18px; }
+.shop-tags { margin: 8px 0; }
+.sku-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.sku-card { display: grid; grid-template-columns: 72px 1fr; gap: 10px; text-decoration: none; color: inherit; }
+.sku-card img { width: 72px; height: 72px; object-fit: cover; border-radius: 3px; background: #eee; }
+.sku-card strong { display: block; font-size: 14px; margin-bottom: 4px; }
+.sku-card span { font-size: 12px; color: var(--muted); }
+.sku-card em { font-style: normal; color: var(--orange); font-weight: 750; font-size: 14px; }
+.status-bar { display: flex; justify-content: space-between; padding: 6px 14px 0; font-size: 12px; }
+.mp-capsule { width: 72px; height: 28px; border-radius: 999px; border: 1px solid var(--line); opacity: 0.5; }

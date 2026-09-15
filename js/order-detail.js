@@ -5,10 +5,10 @@
   let tickets = [];
   let activeIndex = 0;
 
-  // 默认门店坐标（朝阳门店）；旧订单无坐标时回退
+  // 默认门店坐标（科技金融大厦）；旧订单无坐标时回退
   const DEFAULT_STORE = {
-    name: "春风社区中心站 · 朝阳门店",
-    address: "北京市东城区朝阳门内大街100号",
+    name: "春风康养 · 历下旗舰店",
+    address: "山东省济南市历下区姚家街道科技金融大厦",
     phone: "010-64001234",
     lat: 39.9245,
     lng: 116.4345,
@@ -224,7 +224,7 @@
       const phone = o.receiverPhone || "158****3897";
       const detail =
         o.detailAddress ||
-        "北京市东城区东华门街道大新纺织(朝阳门内大街店)南28米007";
+        "山东省济南市历下区姚家街道科技金融大厦";
       document.getElementById("homeAddrUser").textContent = `${name} ${phone}`;
       document.getElementById("homeAddrDetail").textContent = detail;
       const addrTitle = addrCard.querySelector("h3");

@@ -459,6 +459,29 @@
       </div>`;
   }
 
+
+  function renderContentCard(data) {
+    const title = escapeHtml(data.title || "推荐内容");
+    const summary = escapeHtml(data.summary || data.desc || "");
+    const source = escapeHtml(data.source || "广播站");
+    const badge = escapeHtml(data.badge || data.mediaType || "图文");
+    const cover = safeAttr(data.cover || "./assets/cover-health-check.png");
+    const href = data.href || (data.id ? `./broadcast-detail.html?id=${data.id}` : "./broadcast.html");
+    return `
+      <div class="cui-block cui-content-wrap">
+        <div class="cui-title">${title}</div>
+        <a class="cui-content" href="${safeAttr(href)}">
+          <img src="${cover}" alt="" />
+          <div>
+            <div class="cui-content-meta">${source} · ${badge}</div>
+            <h4 class="cui-content-title">${escapeHtml(data.headline || data.title || "")}</h4>
+            ${summary ? `<p class="cui-content-sum">${summary}</p>` : ""}
+          </div>
+        </a>
+        ${renderActions(data.actions)}
+      </div>`;
+  }
+
   function renderInfoCard(data) {
     const title = escapeHtml(data.title || "");
     const lines = (data.lines || data.info || [])
@@ -703,6 +726,11 @@
       case "need":
       case "demand-parse":
         return renderNeedsCard(data);
+      case "content":
+      case "broadcast":
+      case "article":
+      case "video":
+        return renderContentCard(data);
       case "info":
       case "tip":
       default:

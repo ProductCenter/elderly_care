@@ -631,3 +631,31 @@ img {
       0 28px 60px rgba(0, 0, 0, 0.5);
   }
 }
+
+
+.store-hd-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.store-enter-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 3px;
+  border: 1px solid rgba(227, 106, 18, 0.45);
+  background: #f08a2a;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+.store-enter-btn:active {
+  background: #e36a12;
+}
+.store-enter-btn[hidden] {
+  display: none !important;
+}

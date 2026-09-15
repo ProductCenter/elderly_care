@@ -5,7 +5,7 @@
   UI.phoneShell("预约核销", "./sleep-todo.html");
 
   const root = document.getElementById("root");
-  const STORE = "春风社区中心站 · 朝阳门店";
+  const STORE = "春风康养 · 历下旗舰店";
   const SERVICES = [
     {
       elementId: "SE_TCM_HEAD_60",

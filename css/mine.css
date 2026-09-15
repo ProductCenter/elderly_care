@@ -559,3 +559,11 @@ a {
       0 28px 60px rgba(0, 0, 0, 0.5);
   }
 }
+
+
+.tabbar.has-agent {
+  grid-template-columns: 1fr 1fr 64px 1fr 1fr;
+  height: calc(62px + var(--safe-bottom, env(safe-area-inset-bottom, 0px)));
+  overflow: visible;
+  align-items: end;
+}

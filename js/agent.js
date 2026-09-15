@@ -32,7 +32,7 @@
     { q: "帮我推荐附近合适的上门照护服务", cat: "care", icon: "🏠", color: "#7b9e6c" },
     { q: "预约下周的上门助浴", cat: "care", icon: "🛁", color: "#7b9e6c" },
     { q: "居家照护和到店理疗怎么选？", cat: "care", icon: "🆚", color: "#7b9e6c" },
-    { q: "附近哪家食堂的控糖套餐更合适？", cat: "canteen", icon: "🍱", color: "#f08a2a" },
+    { q: "帮我寻找附近美食", cat: "canteen", icon: "🍜", color: "#f08a2a" },
     { q: "周末有没有适合长者的兴趣活动？", cat: "activity", icon: "🎨", color: "#c979d8" },
     { q: "帮我安排下周的社区活动", cat: "activity", icon: "📅", color: "#c979d8" },
   ];
@@ -73,16 +73,7 @@
   }
 
   function subByHour(h) {
-    if (h >= 5 && h < 11) {
-      return "先看爸妈的体征、睡眠和病程档案 👇";
-    }
-    if (h >= 11 && h < 13) {
-      return "血糖、血压、营养、运动，点下面就能摊开 👇";
-    }
-    if (h >= 13 && h < 18) {
-      return "林家健康档案已固化，先看数据再讲匹配 👇";
-    }
-    return "晚上好。两位老人的睡眠和晨测都在小护这 👇";
+    return "无设备也能用报告、面诊示意和朋友圈关心爸妈 👇";
   }
 
   function syncClock() {
@@ -162,6 +153,34 @@
     if (body) body.scrollTop = body.scrollHeight;
   }
 
+  /** CUI 调出时，把对应问题滚到可视区顶部，方便对照解读 */
+  function scrollToQuestion(userRow) {
+    const body = $("pageBody");
+    if (!body || !userRow) {
+      scrollChat();
+      return;
+    }
+    document.querySelectorAll("#chatStream .msg.is-user.is-focus").forEach((el) => {
+      el.classList.remove("is-focus");
+    });
+    userRow.classList.add("is-focus");
+    const apply = () => {
+      const bodyRect = body.getBoundingClientRect();
+      const rowRect = userRow.getBoundingClientRect();
+      const nextTop = body.scrollTop + (rowRect.top - bodyRect.top) - 10;
+      body.scrollTo({ top: Math.max(0, nextTop), behavior: "smooth" });
+    };
+    requestAnimationFrame(() => requestAnimationFrame(apply));
+    clearTimeout(scrollToQuestion._timer);
+    scrollToQuestion._timer = setTimeout(() => userRow.classList.remove("is-focus"), 1600);
+  }
+
+  function scrollAfterAnswer(userRow, bubble) {
+    const hasCui = !!(bubble && bubble.querySelector && bubble.querySelector(".cui-block"));
+    if (hasCui && userRow) scrollToQuestion(userRow);
+    else scrollChat();
+  }
+
   function renderAnswer(el, markdown) {
     if (!el) return;
     el.classList.add("md-body");
@@ -201,14 +220,29 @@
     col.appendChild(box);
   }
 
-  function appendUser(text) {
+  function appendUser(text, imageUrl) {
     const stream = $("chatStream");
     const row = document.createElement("div");
     row.className = "msg is-user";
-    row.innerHTML = `<div class="msg-bubble"></div>`;
-    row.querySelector(".msg-bubble").textContent = text;
+    const bubble = document.createElement("div");
+    bubble.className = "msg-bubble" + (imageUrl ? " has-media" : "");
+    if (imageUrl) {
+      const img = document.createElement("img");
+      img.className = "msg-media";
+      img.src = imageUrl;
+      img.alt = "上传图片";
+      bubble.appendChild(img);
+      const cap = document.createElement("div");
+      cap.className = "msg-media-cap";
+      cap.textContent = text;
+      bubble.appendChild(cap);
+    } else {
+      bubble.textContent = text;
+    }
+    row.appendChild(bubble);
     stream.appendChild(row);
     scrollChat();
+    return row;
   }
 
   function appendAssistantShell() {
@@ -413,12 +447,171 @@
     return { content, reasoning };
   }
 
-  async function sendMessage(text) {
+
+  const CAPTURE_MODES = {
+    face: {
+      title: "AI 面诊 · 拍照上传",
+      desc: "请正对光线，拍清面部（演示流程，不替代诊疗）",
+      submitText: "帮我做一次AI面诊示意",
+      demoSrc: "./assets/home/home-tab-avatar-v2.png",
+    },
+    tongue: {
+      title: "AI 舌诊 · 拍照上传",
+      desc: "自然伸出舌头，拍清舌面与舌苔（演示）",
+      submitText: "帮我做一次AI舌诊示意",
+      demoSrc: "./assets/cover-nutrition-meal.png",
+    },
+    report: {
+      title: "体检报告 · 上传",
+      desc: "上传报告关键页照片或相册扫描件（演示解析）",
+      submitText: "我上传了体检报告，帮我解读",
+      demoSrc: "./assets/cover-health-check.png",
+    },
+    camera: {
+      title: "拍照识别 · 体检报告",
+      desc: "现场拍照或从相册选择报告页，识别后生成轻档案",
+      submitText: "拍照识别体检报告",
+      demoSrc: "./assets/cover-bp-monitor.png",
+    },
+  };
+
+  let captureMode = null;
+  let captureDataUrl = null;
+
+  function isCaptureIntent(text) {
+    const t = (text || "").trim();
+    if (/面诊/.test(t)) return "face";
+    if (/舌诊/.test(t)) return "tongue";
+    if (/拍照识别|打开相机|拍一下报告|拍照.*报告/.test(t)) return "camera";
+    if (/体检报告|上传报告|报告解读/.test(t) && !/睡眠监测报告/.test(t)) return "report";
+    return null;
+  }
+
+  function setCaptureStep(step) {
+    const items = $("captureSteps")?.querySelectorAll("li") || [];
+    items.forEach((li, i) => li.classList.toggle("on", i === step));
+  }
+
+  function closeCaptureSheet() {
+    $("captureMask").hidden = true;
+    $("captureSheet").hidden = true;
+    captureMode = null;
+    captureDataUrl = null;
+    const cam = $("captureFileCamera");
+    const alb = $("captureFileAlbum");
+    if (cam) cam.value = "";
+    if (alb) alb.value = "";
+  }
+
+  function showCaptureEmpty() {
+    captureDataUrl = null;
+    $("captureEmpty").hidden = false;
+    $("capturePreview").hidden = true;
+    $("capturePreview").removeAttribute("src");
+    $("captureActions").hidden = false;
+    $("captureConfirm").hidden = true;
+    setCaptureStep(0);
+  }
+
+  function showCapturePreview(dataUrl) {
+    captureDataUrl = dataUrl;
+    $("captureEmpty").hidden = true;
+    const img = $("capturePreview");
+    img.hidden = false;
+    img.src = dataUrl;
+    $("captureActions").hidden = true;
+    $("captureConfirm").hidden = false;
+    setCaptureStep(1);
+  }
+
+  function openCaptureSheet(mode) {
+    const cfg = CAPTURE_MODES[mode];
+    if (!cfg) return;
+    if (busy) {
+      toast("小护还在回答，请稍等…");
+      return;
+    }
+    captureMode = mode;
+    $("captureTitle").textContent = cfg.title;
+    $("captureDesc").textContent = cfg.desc;
+    showCaptureEmpty();
+    $("captureMask").hidden = false;
+    $("captureSheet").hidden = false;
+  }
+
+  function readFileAsDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error("读取图片失败"));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function onCaptureFile(file) {
+    if (!file) return;
+    if (!/^image\//.test(file.type || "")) {
+      toast("请选择图片文件");
+      return;
+    }
+    try {
+      const url = await readFileAsDataUrl(file);
+      showCapturePreview(url);
+    } catch (err) {
+      toast(err.message || "读取失败");
+    }
+  }
+
+  async function submitCapture() {
+    const mode = captureMode;
+    const cfg = CAPTURE_MODES[mode];
+    const imageUrl = captureDataUrl;
+    if (!cfg || !imageUrl) {
+      toast("请先拍照或选择图片");
+      return;
+    }
+    setCaptureStep(2);
+    closeCaptureSheet();
+    await sendMessage(cfg.submitText, { imageUrl, skipCaptureGate: true });
+  }
+
+  $("captureClose")?.addEventListener("click", closeCaptureSheet);
+  $("captureMask")?.addEventListener("click", closeCaptureSheet);
+  $("btnCaptureCamera")?.addEventListener("click", () => $("captureFileCamera")?.click());
+  $("btnCaptureAlbum")?.addEventListener("click", () => $("captureFileAlbum")?.click());
+  $("btnCaptureDemo")?.addEventListener("click", () => {
+    const cfg = CAPTURE_MODES[captureMode];
+    if (!cfg) return;
+    showCapturePreview(cfg.demoSrc);
+  });
+  $("btnCaptureRetake")?.addEventListener("click", showCaptureEmpty);
+  $("btnCaptureSubmit")?.addEventListener("click", () => {
+    submitCapture();
+  });
+  $("captureFileCamera")?.addEventListener("change", (e) => {
+    const file = e.target.files && e.target.files[0];
+    onCaptureFile(file);
+  });
+  $("captureFileAlbum")?.addEventListener("change", (e) => {
+    const file = e.target.files && e.target.files[0];
+    onCaptureFile(file);
+  });
+
+  async function sendMessage(text, opts) {
     const content = (text || "").trim();
+    const options = opts || {};
     console.log("[send] content=", content, "busy=", busy);
     if (!content || busy) {
       if (busy) toast("小护还在回答，请稍等…");
       return;
+    }
+    // 面诊/舌诊/报告/拍照：先走拍照上传，再解读
+    if (!options.skipCaptureGate) {
+      const mode = isCaptureIntent(content) || (CAPTURE_MODES[options.captureMode] && options.captureMode);
+      if (mode && CAPTURE_MODES[mode]) {
+        openCaptureSheet(mode);
+        return;
+      }
     }
     enterChat();
     showText();
@@ -426,8 +619,11 @@
     console.log("[send] locked busy=", busy);
 
     clearFollowups();
-    appendUser(content);
-    history.push({ role: "user", content });
+    const userRow = appendUser(content, options.imageUrl || "");
+    history.push({
+      role: "user",
+      content: options.imageUrl ? `[图片] ${content}` : content,
+    });
     const ui = appendAssistantShell();
 
     const canned =
@@ -446,7 +642,7 @@
         renderAnswer(ui.bubble, canned.content);
         history.push({ role: "assistant", content: canned.content });
         appendFollowups(ui.row, canned.followups);
-        scrollChat();
+        scrollAfterAnswer(userRow, ui.bubble);
       } finally {
         const input = $("textInput");
         if (input) input.value = "";
@@ -465,7 +661,7 @@
         ui.bubble.textContent = "（思考完成，但未返回正文）";
       }
       history.push({ role: "assistant", content: result.content || "" });
-      scrollChat();
+      scrollAfterAnswer(userRow, ui.bubble);
     } catch (err) {
       ui.row.classList.remove("is-loading");
       ui.bubble.classList.remove("is-empty");
@@ -505,6 +701,12 @@
     if (!btn) return;
     const q = btn.dataset.q || btn.textContent.trim();
     console.log("[guess] click q=", q, "busy=", busy);
+    const mode = isCaptureIntent(q);
+    if (mode) {
+      toast("请拍照或上传图片…");
+      openCaptureSheet(mode);
+      return;
+    }
     toast(busy ? "小护还在回答，请稍等…" : "正在问小护…");
     sendMessage(q);
   });
@@ -515,12 +717,17 @@
     const btn = e.target.closest("[data-act]");
     if (!btn) return;
     const act = btn.dataset.act;
+    if (act === "face" || act === "tongue" || act === "report" || act === "camera") {
+      toast("请拍照或上传图片…");
+      openCaptureSheet(act);
+      return;
+    }
     if (act === "family") {
       sendMessage("帮我看看爸妈现在最需要什么照护？");
       return;
     }
-    if (act === "canteen") {
-      sendMessage("附近哪家食堂的控糖套餐更合适？");
+    if (act === "canteen" || act === "food") {
+      sendMessage("帮我寻找附近美食");
       return;
     }
     if (act === "care") {
@@ -717,16 +924,63 @@
     toast("复制 llm.env.example → llm.env，填入 API Key，再运行 python3 scripts/llm_server.py");
   });
 
+
+  function applyAvatar(av) {
+    if (window.AgentAvatar) window.AgentAvatar.apply(av);
+  }
+
+  function openAvatarSheet() {
+    window.AgentAvatar?.renderOptions("avatarOptions");
+    const mask = $("avatarMask");
+    const sheet = $("avatarSheet");
+    if (mask) mask.hidden = false;
+    if (sheet) sheet.hidden = false;
+  }
+  function closeAvatarSheet() {
+    const mask = $("avatarMask");
+    const sheet = $("avatarSheet");
+    if (mask) mask.hidden = true;
+    if (sheet) sheet.hidden = true;
+  }
+  $("btnAvatarSwitch")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    openAvatarSheet();
+  });
+  $("btnAvatarClose")?.addEventListener("click", closeAvatarSheet);
+  $("avatarMask")?.addEventListener("click", closeAvatarSheet);
+  $("avatarOptions")?.addEventListener("click", (e) => {
+    const btn = e.target.closest(".avatar-opt");
+    if (!btn || !window.AgentAvatar) return;
+    const av = window.AgentAvatar.LIST.find((a) => a.id === btn.dataset.id);
+    if (av) {
+      applyAvatar(av);
+      toast(`已切换为「${av.name}」`);
+    }
+  });
+
+  applyAvatar();
   syncClock();
   renderQuestions(QUESTION_POOL[0]);
   checkLlmStatus();
   setInterval(syncClock, 30_000);
 
-  // 支持从首页卡片「猜你想问」直接带入问题开始对话
+  // 支持从首页卡片「猜你想问」/采集按钮带入问题开始对话
   try {
     const params = new URLSearchParams(location.search);
-    const initialQ = params.get("q")?.trim();
-    if (initialQ) {
+    const action = params.get("action")?.trim();
+    let initialQ = params.get("q")?.trim() || "";
+    const actionQ = {
+      face: "帮我做一次AI面诊示意",
+      tongue: "帮我做一次AI舌诊示意",
+      report: "我上传了体检报告，帮我解读",
+      camera: "拍照识别体检报告",
+    };
+    if (!initialQ && action && actionQ[action]) initialQ = actionQ[action];
+    if (action && CAPTURE_MODES[action]) {
+      history.replaceState({}, "", location.pathname + location.hash);
+      setTimeout(() => openCaptureSheet(action), 160);
+    } else if (initialQ) {
       history.replaceState({}, "", location.pathname + location.hash);
       setTimeout(() => sendMessage(initialQ), 120);
     }

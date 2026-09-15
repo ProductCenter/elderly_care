@@ -25,15 +25,15 @@
       receiverName: "安辉",
       receiverPhone: "15810633897",
       detailAddress:
-        "北京市北京市东城区东华门街道大新纺织(朝阳门内大街店)南28米007",
+        "山东省济南市历下区姚家街道科技金融大厦",
     },
     store: {
       storeId: "store_cy001",
-      storeName: "春风社区中心站 · 朝阳门店",
-      storeAddress: "北京市东城区朝阳门内大街100号",
+      storeName: "春风康养 · 历下旗舰店",
+      storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
       storePhone: "010-64001234",
       businessHours: "09:00 – 21:00",
-      // 朝阳门附近坐标（用于地图导航）
+      // 科技金融大厦附近坐标（用于地图导航）
       storeLat: 39.9245,
       storeLng: 116.4345,
     },

@@ -3,7 +3,7 @@
   const FAMILY = {
     title: "林家双老",
     child: "子女双职工，不与老人同住，周末探望、远程盯健康",
-    station: "春风驿站 · 望京站",
+    station: "春风驿站 · 历下旗舰（科技金融大厦）",
     updatedAt: "2026-09-11",
     mother: {
       name: "林秀珍",
@@ -229,7 +229,7 @@
       summary: "母亲控糖关键是把早餐换成低 GI；父亲先把钠压到 2000mg 以内，汤要打稠防呛。",
       actions: [
         { label: "制定控糖计划", q: "帮我制定一个控糖饮食计划" },
-        { label: "看食堂套餐", q: "附近哪家食堂的控糖套餐更合适？" },
+        { label: "寻找美食", q: "帮我寻找附近美食" },
       ],
     },
     dietPlan: {
@@ -245,7 +245,7 @@
       summary: "全日碳水压到 130g 左右，晚 8 点服药后不再进食。父亲同桌吃软食版，汤打稠、少盐。",
       actions: [
         { label: "看营养缺口", q: "两位老人的营养够不够？" },
-        { label: "去订控糖餐", q: "附近哪家食堂的控糖套餐更合适？" },
+        { label: "寻找美食", q: "帮我寻找附近美食" },
       ],
     },
     exercise: {
@@ -360,8 +360,8 @@
       items: [
         { day: "每日", time: "09:30", name: "母亲居家手指操 / 近事回忆", location: "目标 10 分钟 · 本周完成 4/7" },
         { day: "每日", time: "15:00", name: "父亲注意与找词练习", location: "日托日改在站内认知角" },
-        { day: "周六", time: "10:00", name: "认知训练小组课", location: "望京站 · 林建国 · 已完成" },
-        { day: "周二", time: "14:30", name: "认知训练小组课", location: "望京站 · 林建国 · 已完成" },
+        { day: "周六", time: "10:00", name: "认知训练小组课", location: "历下旗舰 · 林建国 · 已完成" },
+        { day: "周二", time: "14:30", name: "认知训练小组课", location: "历下旗舰 · 林建国 · 已完成" },
         { day: "周二", time: "14:30", name: "音乐疗愈旁听", location: "林秀珍减压 · 已完成半场" },
         { day: "周四", time: "10:30", name: "日托认知角", location: "读报 + 拼图 20 分 · 已完成" },
         { day: "下周六", time: "10:00", name: "认知小组课续约", location: "子女可旁听 · 待确认" },
@@ -378,7 +378,7 @@
         {
           name: "认知训练小组课",
           tags: ["记忆游戏", "手指操", "社交"],
-          distance: "望京站 · 520m",
+          distance: "历下旗舰 · 520m",
           rating: "4.9",
           orders: "9.9 元体验",
           actions: [{ label: "去预约", action: "link", href: "./detail.html?id=cognitive_group" }],
@@ -386,7 +386,7 @@
         {
           name: "音乐疗愈体验",
           tags: ["情绪", "节奏", "放松"],
-          distance: "望京站 · 同场馆",
+          distance: "历下旗舰 · 同场馆",
           rating: "4.8",
           orders: "60 分钟",
           actions: [{ label: "去看看", action: "link", href: "./detail.html?id=music_therapy" }],
@@ -458,12 +458,12 @@
         { day: "每日", time: "07:10", name: "父亲晨起血压", location: "7/7 完成，连续偏高" },
         { day: "每日", time: "09:30", name: "认知训练（居家/日托）", location: "母手指操 4/7；父日托认知角已完成" },
         { day: "每日", time: "20:00", name: "用药提醒回传", location: "母亲晚饭漏服 1 次" },
-        { day: "周二", time: "14:30", name: "认知训练小组课", location: "林建国 · 望京站 · 已完成" },
+        { day: "周二", time: "14:30", name: "认知训练小组课", location: "林建国 · 历下旗舰 · 已完成" },
         { day: "周二", time: "15:00", name: "上门助浴", location: "李护师 · 已完成" },
         { day: "周三", time: "10:00", name: "王康复师上门", location: "左侧支撑 · 已完成" },
-        { day: "周四", time: "09:00", name: "父亲日托喘息", location: "望京站 · 含认知角 · 已完成" },
+        { day: "周四", time: "09:00", name: "父亲日托喘息", location: "历下旗舰 · 含认知角 · 已完成" },
         { day: "周五", time: "10:00", name: "王康复师上门", location: "加平衡训练 · 已完成" },
-        { day: "周六", time: "10:00", name: "认知训练小组课", location: "林建国 · 望京站 · 已完成" },
+        { day: "周六", time: "10:00", name: "认知训练小组课", location: "林建国 · 历下旗舰 · 已完成" },
         { day: "下周二", time: "08:30", name: "神经内科复诊", location: "儿子请假陪诊 · 待办" },
       ],
       actions: [
@@ -476,7 +476,7 @@
       title: "日托喘息 · 周四已闭环",
       lines: [
         "对象：林建国（中度，防跌 + 轻度认知下降）",
-        "时段：9月11日 09:00–16:00 · 望京驿站日间照料",
+        "时段：9月11日 09:00–16:00 · 历下旗舰驿站日间照料",
         "当日：坐站 8 次、认知角读报拼图 20 分、软食午晚餐、血压 148/86 已回传",
         "母亲：在家歇了半天，陪读报 15 分，血糖 7.3，未再漏药",
         "子女：工作日远程看板，异常推送 0 条",
@@ -620,7 +620,7 @@
           distance: "社区食堂 / 上门送餐",
           rating: "需",
           orders: "一日三餐",
-          actions: [{ label: "看控糖套餐", q: "附近哪家食堂的控糖套餐更合适？" }],
+          actions: [{ label: "寻找美食", q: "帮我寻找附近美食" }],
         },
         {
           name: "卒中康复包",
@@ -633,7 +633,7 @@
         {
           name: "认知友好包",
           tags: ["小组课", "音乐疗愈", "防走失"],
-          distance: "望京站可约",
+          distance: "历下旗舰可约",
           rating: "需",
           orders: "每周 2 课",
           actions: [{ label: "看认知训练", q: "附近有没有合适的认知训练课？" }],
@@ -691,27 +691,122 @@
         { label: "看匹配闭环", q: "怎么把爸妈的需求和供给对上？" },
       ],
     },
+
+    faceCheck: {
+      type: "table",
+      title: "AI 面诊示意（演示，不替代诊疗）",
+      headers: ["观察项", "示意结果", "建议"],
+      rows: [
+        ["气色", "偏黄少泽", "关注睡眠与营养"],
+        ["眼神疲态", "轻", "午休控制 30 分钟内"],
+        ["唇色", "略淡", "查铁与蛋白摄入"],
+      ],
+      summary: "一期无智能设备时，面诊示意可作「轻档案」补充。正式诊断请就医。",
+      actions: [
+        { label: "看控糖科普", q: "推一篇控糖科普给我" },
+        { label: "上传体检报告", q: "我上传了体检报告，帮我解读" },
+      ],
+    },
+    tongueCheck: {
+      type: "table",
+      title: "AI 舌诊示意（演示，不替代诊疗）",
+      headers: ["观察项", "示意结果", "建议"],
+      rows: [
+        ["舌质", "淡红", "整体尚可"],
+        ["舌苔", "薄白略厚", "少油腻，晚间不加点心"],
+        ["齿痕", "轻", "可关注脾胃负担"],
+      ],
+      summary: "舌诊结果仅作演示标签，用于触发饮食与科普推送，不构成中医辨证结论。",
+      actions: [
+        { label: "看三日软食", q: "按爸妈情况给个三日控糖软食计划" },
+        { label: "打开朋友圈", action: "link", href: "./moments.html" },
+      ],
+    },
+    reportParse: {
+      type: "table",
+      title: "体检报告解读 · 演示解析",
+      headers: ["指标", "数值", "判断"],
+      rows: [
+        ["空腹血糖", "7.1 mmol/L", "偏高"],
+        ["收缩压", "146 mmHg", "偏高"],
+        ["糖化血红蛋白", "7.2%", "未达标"],
+        ["BMI", "24.4", "正常偏高"],
+      ],
+      summary: "无设备也能形成轻档案：报告 → 风险标签 → 事找人推送科普/套餐/办事提醒。",
+      actions: [
+        { label: "推控糖科普", q: "推一篇控糖科普给我" },
+        { label: "看控糖套餐店", action: "link", href: "./shop.html?id=store_cy001" },
+      ],
+    },
+    broadcastPush: {
+      type: "content",
+      title: "事找人 · 广播站内容",
+      source: "广播站",
+      badge: "科普",
+      mediaType: "article",
+      id: "bc_policy_sugar",
+      href: "./broadcast-detail.html?id=bc_policy_sugar",
+      cover: "./assets/cover-nutrition-meal.png",
+      headline: "长者控糖饮食三原则，餐后血糖更稳",
+      summary: "顺序吃、控主食、晚间不加餐。可分享给爸妈。",
+      actions: [
+        { label: "打开图文", action: "link", href: "./broadcast-detail.html?id=bc_policy_sugar" },
+        { label: "看认知视频", q: "推一个认知训练视频" },
+      ],
+    },
+    broadcastVideo: {
+      type: "content",
+      title: "事找人 · 视频推送",
+      source: "广播站",
+      badge: "视频",
+      mediaType: "video",
+      id: "bc_video_cog",
+      href: "./broadcast-detail.html?id=bc_video_cog",
+      cover: "./assets/cover-calligraphy.png",
+      headline: "认知训练手指操示范（3 分钟）",
+      summary: "居家无设备也能跟练，子女可旁听。",
+      actions: [
+        { label: "打开视频", action: "link", href: "./broadcast-detail.html?id=bc_video_cog" },
+        { label: "约小组课", action: "link", href: "./detail.html?id=cognitive_group" },
+      ],
+    },
+    banshiTip: {
+      type: "info",
+      title: "办事通 · 补贴入口",
+      lines: [
+        "高龄津贴：历下区示意，待补居住证明",
+        "居家养老服务补贴：可覆盖助浴助洁",
+        "适老化改造：卫生间扶手待申请",
+        "地址示意：济南市历下区姚家街道科技金融大厦",
+      ],
+      actions: [
+        { label: "打开办事通", action: "link", href: "./banshi.html" },
+        { label: "看政策广播", action: "link", href: "./broadcast-detail.html?id=bc_policy_subsidy" },
+      ],
+    },
     mapCanteen: {
       type: "map",
-      title: "为林家推荐 · 附近食堂",
-      you: { label: "林家" },
+      title: "为林家推荐 · 济南美食",
+      you: { label: "林家 · 科技金融大厦" },
       from: { x: 22, y: 74 },
-      pin: { x: 70, y: 38 },
+      pin: { x: 48, y: 42 },
       place: {
-        name: "春风社区食堂 · 朝阳门一食堂",
-        badge: "最合适",
+        name: "春风鲁味食堂 · 科技金融大厦店",
+        badge: "最近最合适",
         rating: "4.8",
-        distance: "步行 6 分钟 · 320m",
-        walk: "沿朝阳门内大街向东",
-        address: "北京市东城区朝阳门内大街100号",
-        hours: "午餐 10:30–13:30",
-        remain: "今日控糖餐余 18 份",
-        tags: ["控糖午餐", "软食防呛", "包月核销"],
-        reason: "距望京站最近。母亲能控糖，父亲有软食汤，包月到站核销，不用两家来回比。",
+        distance: "步行 2 分钟 · 120m",
+        walk: "大厦一层东侧，出电梯右转即达",
+        address: "山东省济南市历下区姚家街道科技金融大厦 1F",
+        hours: "午餐 10:30–13:30 · 晚餐 16:30–19:00",
+        remain: "今日控糖餐余 18 份 · 可预约",
+        tags: ["鲁菜软食", "控糖少油", "包月核销"],
+        reason:
+          "固化推荐以「山东省济南市历下区姚家街道科技金融大厦」为主：同楼层春风鲁味食堂，清蒸鱼、软烂炖菜与控糖套餐齐备，母亲控糖、父亲软食可同桌，不用跨区奔波。",
       },
       actions: [
-        { label: "去订控糖餐", action: "link", href: "./detail.html?id=package_meal_month" },
+        { label: "去看控糖套餐", action: "link", href: "./detail.html?id=package_meal_month" },
         { label: "看三日软食", q: "按爸妈情况给个三日控糖软食计划" },
+        { label: "导航过去", action: "link", href: "https://uri.amap.com/search?keyword=山东省济南市历下区姚家街道科技金融大厦" },
       ],
     },
   };
@@ -769,7 +864,7 @@
       block(CUI.cognitionPlan) +
       "\n下周先把周六课续上，子女可以旁听一次，心里更有数。",
     cognitionClass:
-      "按父亲 MoCA 22 和母亲边缘近记忆，小护优先推望京站的认知友好供给：小组课主训、音乐疗愈减压、必要时再看防走失手环。\n\n" +
+      "按父亲 MoCA 22 和母亲边缘近记忆，小护优先推历下旗舰（山东省济南市历下区姚家街道科技金融大厦）的认知友好供给：小组课主训、音乐疗愈减压、必要时再看防走失手环。\n\n" +
       block(CUI.cognitionSupply) +
       "\n认知训练小组课单次体验 9.9 元，记忆游戏 + 手指操 + 社交，到站核销。点下面就能预约。",
     nodes:
@@ -816,10 +911,36 @@
       "讲产品，就讲这三句话：需智能看清家里的事，供智能备好用得上的资源，需供匹配把对的服务接到人。\n\n" +
       block(CUI.pillars) +
       "\n林家就是最好的例子：不是卖一台血糖仪或一次按摩，而是让母亲少慌、父亲少倒、子女上班时心里有数。",
+
+    face:
+      "已收到面部照片，正在按演示流程做**AI 面诊示意**。一期无设备时的轻采集，只生成风险标签，不替代医生。\n\n" +
+      block(CUI.faceCheck) +
+      "\n也可以继续上传体检报告，或让我从朋友圈公开动态里跟进。",
+    tongue:
+      "已收到舌象照片，开始**AI 舌诊示意**。结果用于匹配饮食建议与科普推送。\n\n" +
+      block(CUI.tongueCheck),
+    report:
+      "已收到您上传的体检报告页，按演示流程解析。形成轻档案后，小护可以主动「事找人」。\n\n" +
+      block(CUI.reportParse) +
+      "\n" +
+      block(CUI.broadcastPush),
+    camera:
+      "已收到拍照/相册图片，完成**拍照识别**（演示）。识别到报告关键页后，按固化指标生成轻档案：\n\n" +
+      block(CUI.reportParse) +
+      "\n无设备时，拍照识别是智伴采集体征的重要入口；结果可推送科普、套餐与办事提醒。",
+    broadcast:
+      "除了商品，小护也会推广播站的图文和视频。按你刚关心的控糖主题，先推这篇：\n\n" +
+      block(CUI.broadcastPush),
+    broadcastVideo:
+      "这里有一条认知训练短视频，适合居家无设备跟练：\n\n" +
+      block(CUI.broadcastVideo),
+    banshi:
+      "办事通是民政补贴与政务申请入口，也承接 B 端合作供需。\n\n" +
+      block(CUI.banshiTip),
     canteen:
-      "按林家两位老人的情况，小护先锁一家最近、又能控糖又有软食的食堂，不让你在三家之间来回比。\n\n" +
+      "按林家两位老人的情况，小护以 **山东省济南市历下区姚家街道科技金融大厦** 为中心只锁一家：**春风鲁味食堂 · 科技金融大厦店**——同楼层可到，控糖少油与软食齐备，不用跨区奔波。\n\n" +
       block(CUI.mapCanteen) +
-      "\n朝阳门一食堂距离 320 米，午餐有控糖套餐和父亲能喝的软食汤。点下面就能订这周的餐，或先看三日软食怎么搭。",
+      "\n出电梯右转即到 1F 食堂。想先订包月控糖餐，点「去看控糖套餐」即可。",
   };
 
   function norm(s) {
@@ -944,6 +1065,42 @@
       q("针对爸妈这种情况，平台要准备哪些供给？", F),
       q("怎么把爸妈的需求和供给对上？", F),
     ],
+
+    face: [
+      q("我上传了体检报告，帮我解读", H),
+      q("推一篇控糖科普给我", { ...B, icon: "📢" }),
+      q("高龄津贴怎么申请？", B),
+    ],
+    tongue: [
+      q("按爸妈情况给个三日控糖软食计划", { ...H, icon: "🍲" }),
+      q("推一篇控糖科普给我", { ...B, icon: "📢" }),
+      q("附近有没有合适的认知训练课？", B),
+    ],
+    report: [
+      q("推一篇控糖科普给我", { ...B, icon: "📢" }),
+      q("爸妈的认知训练怎么安排的？", { ...H, icon: "🧩" }),
+      q("高龄津贴怎么申请？", B),
+    ],
+    camera: [
+      q("帮我做一次AI面诊示意", { ...H, icon: "🙂" }),
+      q("推一篇控糖科普给我", { ...B, icon: "📢" }),
+      q("高龄津贴怎么申请？", B),
+    ],
+    broadcast: [
+      q("推一个认知训练视频", { ...B, icon: "🎬" }),
+      q("高龄津贴怎么申请？", B),
+      q("怎么把爸妈的需求和供给对上？", F),
+    ],
+    broadcastVideo: [
+      q("爸妈的认知训练怎么安排的？", { ...H, icon: "🧩" }),
+      q("推一篇控糖科普给我", { ...B, icon: "📢" }),
+      q("附近有没有合适的认知训练课？", B),
+    ],
+    banshi: [
+      q("家里适老化改造怎么申请？", B),
+      q("推一篇控糖科普给我", { ...B, icon: "📢" }),
+      q("帮我看看爸妈现在最需要什么照护？", F),
+    ],
     canteen: [
       q("按爸妈情况给个三日控糖软食计划", { ...H, icon: "🍲" }),
       q("两位老人的营养够不够？", H),
@@ -954,6 +1111,14 @@
   function matchKey(text) {
     const t = norm(text);
     if (!t) return null;
+
+    if (/面诊/.test(t)) return "face";
+    if (/舌诊/.test(t)) return "tongue";
+    if (/拍照识别|打开相机|拍一下报告|拍照.*报告/.test(t)) return "camera";
+    if (/体检报告|上传报告|报告解读/.test(t)) return "report";
+    if (/认知训练视频|推一个.*视频|手指操视频/.test(t)) return "broadcastVideo";
+    if (/控糖科普|推一篇|广播站|图文|科普给我/.test(t)) return "broadcast";
+    if (/高龄津贴|办事通|居家养老服务补贴|适老化改造怎么申请|政务/.test(t)) return "banshi";
     if (/需智能|供智能|需供匹配|产品价值|三个智能|讲明白|讲清/.test(t)) return "value";
     if (/业务节点|关键节点|办理到哪|节点全览/.test(t)) return "nodes";
     if (/能力评估|评估结果|barthel|失能等级|adl/.test(t)) return "assess";
@@ -982,7 +1147,7 @@
       return /趋势|这一周|控制得/.test(t) ? "vitals" : "archive";
     }
     if (/需求|最需要|要什么照护|缺口|风险/.test(t)) return "demand";
-    if (/附近食堂|哪家食堂|食堂的控糖|控糖套餐更合适|去订控糖餐|看控糖套餐|看食堂套餐/.test(t)) {
+    if (/寻找美食|附近美食|哪家餐厅|附近食堂|哪家食堂|食堂的控糖|控糖套餐更合适|去订控糖餐|看控糖套餐|看食堂套餐|鲁味食堂|科技金融大厦/.test(t)) {
       return "canteen";
     }
     if (/爸妈|父母|双老|林家|家庭档案|我家|老人/.test(t)) return "overview";
@@ -1005,6 +1170,10 @@
   }
 
   const QUESTIONS = [
+    { q: "帮我做一次AI面诊示意", cat: "health", icon: "🙂", color: "#5a8fc7" },
+    { q: "帮我做一次AI舌诊示意", cat: "health", icon: "👅", color: "#5a8fc7" },
+    { q: "我上传了体检报告，帮我解读", cat: "health", icon: "📄", color: "#5a8fc7" },
+    { q: "拍照识别体检报告", cat: "health", icon: "📷", color: "#5a8fc7" },
     { q: "打开爸妈的健康档案", cat: "health", icon: "📋", color: "#5a8fc7" },
     { q: "我这一周血压控制得怎么样？", cat: "health", icon: "🩺", color: "#5a8fc7" },
     { q: "睡眠监测报告出来后怎么看？", cat: "health", icon: "😴", color: "#5a8fc7" },
@@ -1014,6 +1183,8 @@
     { q: "爸妈的认知训练怎么安排的？", cat: "health", icon: "🧩", color: "#5a8fc7" },
     { q: "爸妈这周认知训练完成得怎么样？", cat: "health", icon: "🧩", color: "#5a8fc7" },
     { q: "附近有没有合适的认知训练课？", cat: "biz", icon: "🎯", color: "#6b8f71" },
+    { q: "推一篇控糖科普给我", cat: "biz", icon: "📢", color: "#6b8f71" },
+    { q: "高龄津贴怎么申请？", cat: "biz", icon: "🏛️", color: "#6b8f71" },
     { q: "爸爸的病程和康复运动记到哪了？", cat: "health", icon: "🧾", color: "#5a8fc7" },
     { q: "林家这周有哪些关键业务节点？", cat: "biz", icon: "📌", color: "#6b8f71" },
     { q: "爸妈的能力评估结果是什么？", cat: "biz", icon: "📝", color: "#6b8f71" },
@@ -1044,8 +1215,9 @@
     "用药：氨氯地平5mg晨，阿司匹林100mg晚饭后，阿托伐他汀20mg晚。2024-11夜间险跌。" +
     "关键业务节点：9/1能力评估（母轻度Barthel90/父中度65，含认知筛查）；本周护理计划执行中；用药漏1次；助餐控糖软食；上门康复三/五；认知训练二/六；周四日托已完成；夜灯已装卫生间扶手待装；9/16复诊请假待确认；本月账单850元（含认知课20元）待子女确认。" +
     "用户问健康档案/体征/血压/血糖/睡眠/营养/运动/认知/病程/用药/评估/护理计划/日托/请假/巡查/账单/业务节点时，必须用上述固化数字，不得编造。" +
-    "用户问认知训练、认知课、MoCA、记性、健忘时，必须用上述MoCA/MMSE与本周到课数据，推荐望京站认知训练小组课（商品cognitive_group），可附带音乐疗愈；强调非药物干预、不替代神经内科诊断。" +
-    "用户问附近食堂、哪家食堂、控糖套餐时，必须推荐春风社区食堂·朝阳门一食堂（朝阳门内大街100号，步行6分钟/320m，评分4.8，今日控糖餐余18份），用 map 卡片，不得另荐二食堂或柳东食堂。" +
+    "用户问AI面诊、AI舌诊、上传体检报告、拍照识别时，必须走对应固化示意流程与表格数据，明确不替代诊疗；无设备场景下强调报告/面诊舌诊/朋友圈是轻档案采集入口。" +
+    "用户问认知训练、认知课、MoCA、记性、健忘时，必须用上述MoCA/MMSE与本周到课数据，推荐历下旗舰（山东省济南市历下区姚家街道科技金融大厦）认知训练小组课（商品cognitive_group），可附带音乐疗愈；强调非药物干预、不替代神经内科诊断。" +
+    "用户问寻找美食、附近美食、附近食堂、哪家餐厅、控糖套餐时，必须以「山东省济南市历下区姚家街道科技金融大厦」为主推荐「春风鲁味食堂·科技金融大厦店」（同址1F，步行2分钟/120m，评分4.8，控糖少油/软食/包月核销），用 map 卡片，不得另荐其他餐厅。" +
     "优先 CUI：profile、vitals、trend、sleep、timeline、table、schedule、nodes、service、pillars、map。" +
     "讲解产品时落到需智能、供智能、需供匹配。涉及诊疗和用药只做提醒与转介，不替代医生。";
 

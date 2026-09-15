@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#f6eee2" />
+    <title>办事通 · 春风康养</title>
+    <link rel="stylesheet" href="./css/mall.css?v=20260915-hub1" />
+    <link rel="stylesheet" href="./css/app-shell.css?v=20260912-covers5" />
+    <style>
+      .page-wrap { padding: 12px 12px 88px; }
+      .page-title { font-size: 18px; font-weight: 750; margin: 8px 0 4px; }
+      .page-sub { font-size: 12px; color: #8a7a68; margin-bottom: 12px; }
+      .tabs { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; }
+      .tabs button { flex: 0 0 auto; padding: 6px 12px; border-radius: 3px; border: 1px solid rgba(184,126,62,.25); background: #fff; font-size: 12px; color: #5a4a3a; }
+      .tabs button.on { background: #f08a2a; color: #fff; border-color: #f08a2a; }
+      .biz-card { background: #fffef9; border: 1px solid rgba(184,126,62,.2); border-radius: 3px; padding: 12px; margin-bottom: 10px; }
+      .biz-card h3 { margin: 0 0 4px; font-size: 14px; }
+      .biz-card p { margin: 0; font-size: 12px; color: #8a7a68; line-height: 1.45; }
+      .biz-meta { display: flex; gap: 8px; margin-top: 8px; font-size: 11px; color: #e36a12; }
+      .biz-card a { display: inline-block; margin-top: 8px; font-size: 12px; color: #e36a12; font-weight: 650; text-decoration: none; }
+      .nav-back { border:0; background:transparent; font-size:28px; line-height:1; padding:0 8px; color:#2b241c; }
+    </style>
+  </head>
+  <body>
+    <div class="phone" id="app">
+      <div class="status-bar" aria-hidden="true"><span class="status-time">14:20</span></div>
+      <header class="nav-bar">
+        <button type="button" class="nav-back" id="btnBack" aria-label="返回">‹</button>
+        <h1 class="nav-title">办事通</h1>
+        <div class="mp-capsule" aria-hidden="true"></div>
+      </header>
+      <main class="page-wrap">
+        <h2 class="page-title">济南办事与合作大厅</h2>
+        <p class="page-sub">补贴政务入口 · B 端闲置与人才供需（演示）</p>
+        <div class="tabs" id="bizTabs" role="tablist">
+          <button type="button" class="on" data-tab="gov">补贴政务</button>
+          <button type="button" data-tab="coop">合作供需</button>
+          <button type="button" data-tab="talent">人才培训</button>
+        </div>
+        <div id="bizList"></div>
+      </main>
+      <nav class="tabbar" aria-label="主导航">
+        <a class="tab" href="./home.html"><span>首页</span></a>
+        <a class="tab" href="./health-service/index.html"><span>健康</span></a>
+        <a class="tab active" href="./index.html"><span>商城</span></a>
+        <a class="tab" href="./mine.html"><span>我的</span></a>
+      </nav>
+    </div>
+    <script src="./js/banshi.js?v=20260915-p1"></script>
+      <script src="./js/agent-avatar.js?v=20260915-tabagent"></script>
+    <script src="./js/app-shell.js?v=20260915-tabagent"></script>
+  </body>
+</html>

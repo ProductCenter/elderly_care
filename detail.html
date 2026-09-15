@@ -72,7 +72,10 @@
         <section class="card" id="storeSection">
           <div class="sec-hd">
             <h3 class="sec-title">适用门店</h3>
-            <button type="button" class="store-switch-btn" id="btnSwitchStore" hidden>切换门店</button>
+            <div class="store-hd-actions">
+              <button type="button" class="store-enter-btn" id="btnEnterShop">进店</button>
+              <button type="button" class="store-switch-btn" id="btnSwitchStore" hidden>切换门店</button>
+            </div>
           </div>
           <div class="store-block" id="storeBlock">
             <div class="store-name" id="storeName"></div>
@@ -95,9 +98,9 @@
       </main>
 
       <footer class="action-bar">
-        <button class="act-home" type="button" id="btnHome">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-          <span>首页</span>
+        <button class="act-home" type="button" id="btnShop" aria-label="进店铺">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 7h16l-1.2 12.2A2 2 0 0 1 16.81 21H7.19a2 2 0 0 1-1.99-1.8L4 7zm3.5-4h9l1 2H6.5l1-2zM7 9v10h2V9H7zm4 0v10h2V9h-2zm4 0v10h2V9h-2z"/></svg>
+          <span>店铺</span>
         </button>
         <button class="btn-ghost" type="button" id="btnCart">加入购物车</button>
         <button class="btn-primary" type="button" id="btnBuy">立即购买</button>
@@ -117,7 +120,7 @@
     </div>
 
     <script src="./js/products.js?v=20260912-covers7"></script>
-    <script src="./js/detail.js"></script>
+    <script src="./js/detail.js?v=20260915-shopbtn"></script>
     <script src="./js/app-shell.js?v=20260912-covers5"></script>
 
   </body>
