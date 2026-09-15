@@ -1,0 +1,2 @@
+# llm_server.py 仅用 Python 标准库；此文件供云平台识别为 Python 服务。
+# 如需额外依赖可写在下方。

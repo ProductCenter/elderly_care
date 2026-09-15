@@ -20,6 +20,38 @@ python3 scripts/llm_server.py
 
 默认走 DeepSeek / 千帆 OpenAI 兼容接口（`LLM_BASE_URL` / `LLM_MODEL` 可改）。未配置密钥时进入演示模式，页面仍可对话。
 
+## 云端发布（必须含 Python）
+
+纯静态托管（仅 HTML）**不能**跑智伴大模型。完整发布请用 **Python 同端口服务**（`scripts/llm_server.py` 既托管页面又提供 `/api/chat`）。
+
+### 方式 1：Render（推荐，含 Python）
+
+1. 把本仓库同步到 GitHub（或在 Render 直接连仓库）
+2. 打开 https://dashboard.render.com → New → Blueprint → 选本仓库（读取 `render.yaml`）
+3. 在环境变量填入 `LLM_API_KEY`（可选 `LLM_BASE_URL` / `LLM_MODEL`）
+4. 部署完成后访问：`https://<服务名>.onrender.com/index.html` 与 `/agent.html`
+
+### 方式 2：Docker（任意云主机 / 容器服务）
+
+```bash
+docker build -t kangyang-mall .
+docker run --rm -p 8091:8091 \
+  -e LLM_API_KEY=sk-xxx \
+  -e LLM_BASE_URL=https://api.deepseek.com/v1 \
+  -e LLM_MODEL=deepseek-chat \
+  kangyang-mall
+```
+
+### 方式 3：Linux 云主机
+
+```bash
+git clone <仓库地址> && cd kangyang-mall
+cp llm.env.example llm.env   # 填写密钥
+HOST=0.0.0.0 PORT=8091 python3 scripts/llm_server.py
+```
+
+> 不要用 Vercel 纯静态部署本项目的智伴能力；Vercel Hobby 也无法部署 Origin 私有仓。
+
 | 页面 | 地址 |
 |------|------|
 | 商城 | http://127.0.0.1:8091/ |

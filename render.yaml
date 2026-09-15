@@ -1,0 +1,21 @@
+# Render Blueprint：含 Python 智伴服务的完整站点
+# 在 https://dashboard.render.com 新建 Blueprint，连接本仓库后一键部署
+services:
+  - type: web
+    name: kangyang-mall
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python scripts/llm_server.py"
+    healthCheckPath: /api/llm/status
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: PYTHON_VERSION
+        value: "3.12.8"
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_BASE_URL
+        sync: false
+      - key: LLM_MODEL
+        sync: false
