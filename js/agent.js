@@ -26,8 +26,8 @@
       ? familyBatch
       : [
           { q: "帮我看看爸妈现在最需要什么照护？", cat: "family", icon: "👨‍👩‍👧", color: "#e36a12" },
-          { q: "针对爸妈这种情况，平台要准备哪些供给？", cat: "family", icon: "🧺", color: "#e36a12" },
-          { q: "怎么把爸妈的需求和供给对上？", cat: "family", icon: "🔗", color: "#e36a12" },
+          { q: "平台要准备哪些供给？", cat: "family", icon: "🧺", color: "#e36a12" },
+          { q: "怎么把需求和供给对上？", cat: "family", icon: "🔗", color: "#e36a12" },
         ]),
     { q: "帮我推荐附近合适的上门照护服务", cat: "care", icon: "🏠", color: "#7b9e6c" },
     { q: "预约下周的上门助浴", cat: "care", icon: "🛁", color: "#7b9e6c" },
@@ -113,6 +113,9 @@
 
   function resetChat() {
     if (busy) return;
+    if (window.AgentHuman) {
+      window.AgentHuman.reset(humanAdapters());
+    }
     history = [];
     app?.classList.remove("is-chatting");
     $("chatPane").hidden = true;
@@ -120,7 +123,69 @@
     $("pageBody")?.scrollTo({ top: 0, behavior: "smooth" });
     const input = $("textInput");
     if (input) input.value = "";
+    if (input) input.placeholder = "问问康小护…";
     showVoice();
+  }
+
+  function appendSystem(text) {
+    const stream = $("chatStream");
+    if (!stream) return null;
+    const row = document.createElement("div");
+    row.className = "msg is-sys";
+    const tip = document.createElement("div");
+    tip.className = "msg-sys";
+    tip.textContent = text;
+    row.appendChild(tip);
+    stream.appendChild(row);
+    scrollChat();
+    return row;
+  }
+
+  function appendHuman(text) {
+    const stream = $("chatStream");
+    if (!stream) return null;
+    const row = document.createElement("div");
+    row.className = "msg is-human";
+    const col = document.createElement("div");
+    col.className = "msg-col";
+    const tag = document.createElement("div");
+    tag.className = "msg-human-tag";
+    tag.textContent = (window.AgentHuman && window.AgentHuman.agentLabel()) || "人工客服";
+    const bubble = document.createElement("div");
+    bubble.className = "msg-bubble";
+    bubble.textContent = text;
+    col.appendChild(tag);
+    col.appendChild(bubble);
+    row.appendChild(col);
+    stream.appendChild(row);
+    scrollChat();
+    return row;
+  }
+
+  function humanAdapters() {
+    return {
+      appendSystem,
+      appendHuman,
+      scroll: scrollChat,
+      setComposerHint(text) {
+        const input = $("textInput");
+        if (!input) return;
+        input.placeholder = text || "问问康小护…";
+      },
+      onModeChange(active, meta) {
+        const banner = $("humanBanner");
+        const bannerText = $("humanBannerText");
+        const title = $("navTitle");
+        if (banner) banner.hidden = !active;
+        if (bannerText) {
+          bannerText.textContent = active
+            ? (meta && meta.label ? meta.label + " 服务中" : "人工客服服务中")
+            : "人工客服服务中";
+        }
+        if (title) title.textContent = active ? "人工客服" : "AI 智伴";
+        app?.classList.toggle("is-human", !!active);
+      },
+    };
   }
 
   function showVoice() {
@@ -153,32 +218,47 @@
     if (body) body.scrollTop = body.scrollHeight;
   }
 
-  /** CUI 调出时，把对应问题滚到可视区顶部，方便对照解读 */
-  function scrollToQuestion(userRow) {
+  /** 只在 CUI 高过一屏时，把问题或卡片标题停在阅读起点。短卡片仍贴在底部。 */
+  function scrollToRead(anchor, userRow) {
     const body = $("pageBody");
-    if (!body || !userRow) {
+    if (!body || !anchor) {
       scrollChat();
       return;
     }
     document.querySelectorAll("#chatStream .msg.is-user.is-focus").forEach((el) => {
       el.classList.remove("is-focus");
     });
-    userRow.classList.add("is-focus");
+    if (userRow && anchor === userRow) userRow.classList.add("is-focus");
     const apply = () => {
       const bodyRect = body.getBoundingClientRect();
-      const rowRect = userRow.getBoundingClientRect();
-      const nextTop = body.scrollTop + (rowRect.top - bodyRect.top) - 10;
+      const rect = anchor.getBoundingClientRect();
+      const scale = bodyRect.height / body.clientHeight || 1;
+      const nextTop = body.scrollTop + (rect.top - bodyRect.top) / scale - 10;
       body.scrollTo({ top: Math.max(0, nextTop), behavior: "smooth" });
     };
     requestAnimationFrame(() => requestAnimationFrame(apply));
-    clearTimeout(scrollToQuestion._timer);
-    scrollToQuestion._timer = setTimeout(() => userRow.classList.remove("is-focus"), 1600);
+    clearTimeout(scrollToRead._timer);
+    scrollToRead._timer = setTimeout(() => {
+      document.querySelectorAll("#chatStream .msg.is-user.is-focus").forEach((el) => {
+        el.classList.remove("is-focus");
+      });
+    }, 1600);
   }
 
   function scrollAfterAnswer(userRow, bubble) {
-    const hasCui = !!(bubble && bubble.querySelector && bubble.querySelector(".cui-block"));
-    if (hasCui && userRow) scrollToQuestion(userRow);
-    else scrollChat();
+    const body = $("pageBody");
+    const cui = bubble && bubble.querySelector && bubble.querySelector(".cui-block");
+    const tooTall = !!(body && cui && cui.offsetHeight >= body.clientHeight * 0.82);
+    if (!tooTall) {
+      scrollChat();
+      return;
+    }
+    let anchor = cui;
+    if (userRow) {
+      const lead = cui.getBoundingClientRect().top - userRow.getBoundingClientRect().top;
+      if (lead > 0 && lead < body.clientHeight * 0.42) anchor = userRow;
+    }
+    scrollToRead(anchor, userRow);
   }
 
   function renderAnswer(el, markdown) {
@@ -605,6 +685,56 @@
       if (busy) toast("小护还在回答，请稍等…");
       return;
     }
+
+    const AH = window.AgentHuman;
+    // 人工会话中：用户消息交由人工客服回复（不走大模型）
+    if (AH && (AH.isActive() || AH.isConnecting())) {
+      if (AH.isConnecting()) {
+        toast("正在转接人工客服，请稍候…");
+        return;
+      }
+      enterChat();
+      showText();
+      lockInput();
+      clearFollowups();
+      appendUser(content, options.imageUrl || "");
+      history.push({
+        role: "user",
+        content: options.imageUrl ? `[图片] ${content}` : content,
+      });
+      try {
+        await AH.replyAsHuman(humanAdapters(), content);
+      } finally {
+        const input = $("textInput");
+        if (input) input.value = "";
+        unlockInput();
+        if (input && document.activeElement === input) input.focus();
+      }
+      return;
+    }
+
+    // 转人工意图
+    if (AH && AH.isHandoffIntent(content) && !options.skipHumanHandoff) {
+      enterChat();
+      showText();
+      lockInput();
+      clearFollowups();
+      appendUser(content, options.imageUrl || "");
+      history.push({
+        role: "user",
+        content: options.imageUrl ? `[图片] ${content}` : content,
+      });
+      try {
+        await AH.startHandoff(humanAdapters(), content);
+      } finally {
+        const input = $("textInput");
+        if (input) input.value = "";
+        unlockInput();
+        if (input && document.activeElement === input) input.focus();
+      }
+      return;
+    }
+
     // 面诊/舌诊/报告/拍照：先走拍照上传，再解读
     if (!options.skipCaptureGate) {
       const mode = isCaptureIntent(content) || (CAPTURE_MODES[options.captureMode] && options.captureMode);
@@ -636,7 +766,21 @@
           })());
     if (canned) {
       try {
-        await new Promise((r) => setTimeout(r, 240));
+        if (canned.reasoning) {
+          ui.thinkBox.hidden = false;
+          ui.thinkBox.open = true;
+          ui.thinkLabel.textContent = "思考中";
+          const thinkText = canned.reasoning;
+          let ti = 0;
+          while (ti < thinkText.length) {
+            ti = Math.min(thinkText.length, ti + 8);
+            ui.thinkBody.textContent = thinkText.slice(0, ti);
+            await new Promise((r) => setTimeout(r, 16));
+          }
+          ui.thinkLabel.textContent = "已思考";
+        } else {
+          await new Promise((r) => setTimeout(r, 240));
+        }
         ui.row.classList.remove("is-loading");
         ui.bubble.classList.remove("is-empty");
         renderAnswer(ui.bubble, canned.content);
@@ -728,6 +872,10 @@
     }
     if (act === "canteen" || act === "food") {
       sendMessage("帮我寻找附近美食");
+      return;
+    }
+    if (act === "human") {
+      sendMessage("请转人工客服");
       return;
     }
     if (act === "care") {
@@ -899,6 +1047,24 @@
   $("btnKeyboard")?.addEventListener("click", showText);
   $("btnToVoice")?.addEventListener("click", showVoice);
   $("btnMenu")?.addEventListener("click", resetChat);
+
+  $("btnEndHuman")?.addEventListener("click", async () => {
+    if (!window.AgentHuman || (!window.AgentHuman.isActive() && !window.AgentHuman.isConnecting())) {
+      toast("当前不在人工会话中");
+      return;
+    }
+    if (busy) {
+      toast("请稍等…");
+      return;
+    }
+    enterChat();
+    lockInput();
+    try {
+      await window.AgentHuman.endSession(humanAdapters(), "button");
+    } finally {
+      unlockInput();
+    }
+  });
 
   $("textBar")?.addEventListener("submit", (e) => {
     e.preventDefault();

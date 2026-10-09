@@ -68,7 +68,7 @@ img {
   --hero-h: min(38dvh, 300px);
   --kk-overlap: 44px;
   position: relative;
-  width: min(100vw, 390px);
+  width: min(100vw, 440px);
   min-height: 100dvh;
   margin: 0 auto;
   display: flex;
@@ -610,11 +610,13 @@ img {
   flex: 0 0 100%;
   width: 100%;
   box-sizing: border-box;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-around;
-  gap: 4px;
-  padding: 0 6px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, auto);
+  align-content: start;
+  justify-items: center;
+  gap: 8px 4px;
+  padding: 0 6px 2px;
   scroll-snap-align: start;
 }
 
@@ -626,7 +628,8 @@ img {
   align-items: center;
   gap: 5px;
   min-width: 0;
-  width: 58px;
+  width: 100%;
+  max-width: 64px;
   flex-shrink: 0;
   box-sizing: border-box;
   padding: 4px 2px 2px;
@@ -637,7 +640,6 @@ img {
   color: #2b241c;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  scroll-snap-align: start;
 }
 
 .kk-item:active .kk-icon {
@@ -1210,56 +1212,72 @@ img {
 }
 
 .hub-card-ico {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 2px;
   display: grid;
   place-items: center;
-  color: #e36a12;
-  background: rgba(240, 138, 42, 0.1);
-  border: 1px solid rgba(240, 138, 42, 0.12);
+  color: #ea6c2f;
+  background: #fff3eb;
+  border: 0;
   box-shadow: none;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 .hub-card-ico svg {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   display: block;
 }
 
 .hub-card--quan .hub-card-ico {
-  color: #4f8a5c;
-  background: rgba(79, 138, 92, 0.1);
-  border-color: rgba(79, 138, 92, 0.14);
+  color: #1f9d57;
+  background: #e9f9ef;
+  border: 0;
   box-shadow: none;
 }
 
 .hub-card--bo .hub-card-ico {
-  color: #4a7fb0;
-  background: rgba(74, 127, 176, 0.1);
-  border-color: rgba(74, 127, 176, 0.14);
+  color: #3478f6;
+  background: #eef4ff;
+  border: 0;
   box-shadow: none;
 }
 
 .hub-card--xue .hub-card-ico {
-  color: #b06a45;
-  background: rgba(176, 106, 69, 0.1);
-  border-color: rgba(176, 106, 69, 0.14);
+  color: #c9950a;
+  background: #fff8e5;
+  border: 0;
   box-shadow: none;
 }
 
+.hub-card--ban .hub-card-ico {
+  color: #ea6c2f;
+  background: #fff3eb;
+}
+
 .hub-card strong {
+  display: block;
+  width: 100%;
   font-size: 13px;
   font-weight: 780;
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .hub-card em {
+  display: block;
+  width: 100%;
   font-style: normal;
   font-size: 10px;
   color: #8a7a68;
   line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .hub-card-mark,
@@ -2276,6 +2294,11 @@ img {
   background: rgba(240, 138, 42, 0.12);
 }
 
+.site-item-name .badge.is-tag {
+  color: #6b5a48;
+  background: rgba(90, 62, 32, 0.08);
+}
+
 .site-item-addr {
   margin-top: 4px;
   font-size: 12px;
@@ -2323,7 +2346,7 @@ img {
   transition: transform 0.2s ease;
 }
 
-@media (min-width: 420px) {
+@media (min-width: 460px) {
   body {
     display: grid;
     place-items: center;
@@ -2332,8 +2355,11 @@ img {
   }
 
   .phone {
-    min-height: 844px;
-    height: min(844px, 94dvh);
+    --phone-h: min(956px, calc(100dvh - 48px));
+    height: var(--phone-h);
+    max-height: calc(100dvh - 48px);
+    min-height: 0;
+    width: min(440px, calc(var(--phone-h) * 440 / 956), calc(100vw - 24px));
     border-radius: 40px;
     box-shadow:
       0 0 0 11px #0a0a0a,
@@ -2402,7 +2428,7 @@ img {
   bottom: 0;
   transform: translateX(-50%);
   z-index: 71;
-  width: min(100vw, 430px);
+  width: min(100vw, 440px);
   padding: 14px 14px calc(14px + var(--safe-bottom, 0px));
   border-radius: 14px 14px 0 0;
   background: #fffef9;

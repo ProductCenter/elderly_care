@@ -17,7 +17,7 @@ body {
 .phone.hub-phone {
   display: flex;
   flex-direction: column;
-  width: min(100vw, 430px);
+  width: min(100vw, 440px);
   min-height: 100dvh;
   margin: 0 auto;
   overflow: hidden;

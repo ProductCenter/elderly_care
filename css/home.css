@@ -50,7 +50,7 @@ img {
 
 .phone {
   position: relative;
-  width: min(100vw, 390px);
+  width: min(100vw, 440px);
   min-height: 100dvh;
   margin: 0 auto;
   display: flex;
@@ -739,7 +739,7 @@ img {
   font-weight: 650;
 }
 
-@media (min-width: 420px) {
+@media (min-width: 460px) {
   body {
     display: grid;
     place-items: center;
@@ -747,8 +747,11 @@ img {
   }
 
   .phone {
-    height: min(844px, calc(100dvh - 48px));
+    --phone-h: min(956px, calc(100dvh - 48px));
+    height: var(--phone-h);
+    max-height: calc(100dvh - 48px);
     min-height: 0;
+    width: min(440px, calc(var(--phone-h) * 440 / 956), calc(100vw - 24px));
     border-radius: 28px;
     box-shadow:
       0 0 0 1px rgba(255, 255, 255, 0.06),

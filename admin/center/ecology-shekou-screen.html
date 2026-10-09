@@ -1,0 +1,2480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>蛇口街道颐养服务体验中心运营平台</title>
+  <style>
+    :root {
+      --bg: #000b1d;
+      --cyan: #00e5ff;
+      --blue: #3b9eff;
+      --orange: #ff9a1a;
+      --pink: #c44dff;
+      --green: #3ddea8;
+      --violet: #8b7cff;
+      --red: #ff4d4f;
+      --text: #ffffff;
+      --muted: #7fa3c4;
+      --label: #9ec0de;
+      --font: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+      --font-num: "DIN Alternate", "DIN Condensed", "Helvetica Neue", "Arial", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --metric-n: 31px;
+      --metric-n-sm: 26px;
+      --metric-unit: 19px;
+      --metric-label: 18px;
+      --metric-weight: 700;
+      --header-h: clamp(56px, 7.2vh, 88px);
+      --ui-title: 24px;
+      --ui-pill: 20px;
+      --ui-sub: 18px;
+      --ui-body: 19px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; font-family: var(--font); color: var(--text); background: var(--bg); }
+    body {
+      background:
+        linear-gradient(180deg, rgba(0, 10, 28, 0.28) 0%, transparent 16%),
+        url("./assets/screen-body.png") center center / cover no-repeat,
+        #000814;
+    }
+
+    .screen {
+      position: relative; z-index: 1; height: 100vh;
+      display: grid; grid-template-rows: var(--header-h) minmax(0, 1fr);
+      padding: 0 14px 10px; gap: 8px;
+      overflow: hidden;
+    }
+
+    /* ===== Header（素材顶栏） ===== */
+    .header {
+      position: relative; display: flex; align-items: center; justify-content: center;
+      isolation: isolate; overflow: hidden; z-index: 6; flex-shrink: 0;
+    }
+    .header-bg {
+      position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background: url("./assets/screen-header.png") center bottom / 100% 100% no-repeat;
+    }
+    .header-bg::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 36%;
+      background: linear-gradient(180deg, transparent, rgba(0, 8, 20, 0.22));
+      pointer-events: none;
+    }
+    .title-box {
+      position: relative; z-index: 1;
+      padding: 0 48px 6px; text-align: center;
+      background: none; clip-path: none; box-shadow: none;
+    }
+    .title-box::before { content: none; }
+    .title-box h1 {
+      font-size: clamp(27px, 2.4vw, 41px); font-weight: 700;
+      letter-spacing: 0.16em; text-indent: 0.16em;
+      text-align: center; color: #fff; white-space: nowrap;
+      text-shadow:
+        0 0 18px rgba(0, 229, 255, 0.55),
+        0 0 40px rgba(40, 140, 255, 0.35),
+        0 2px 0 rgba(0, 30, 60, 0.45);
+    }
+
+    /* 机构切换 · 标题后图标触发弹出 */
+    .org-picker {
+      position: relative; z-index: 20; flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .org-picker-name {
+      font-size: 11px; color: rgba(180,220,255,.88);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      max-width: 100%;
+      letter-spacing: .3px;
+    }
+    .org-picker-btn {
+      appearance: none; border: 0; cursor: pointer;
+      width: 18px; height: 18px; padding: 0; flex-shrink: 0;
+      border-radius: 3px; color: #b8e8ff;
+      background: rgba(0,120,200,.28);
+      box-shadow: inset 0 0 0 1px rgba(0,220,255,.4);
+      display: inline-grid; place-items: center;
+      transition: background .15s, color .15s, box-shadow .15s, transform .15s;
+    }
+    .org-picker-btn:hover {
+      color: #fff; background: rgba(0,150,230,.42);
+      box-shadow: inset 0 0 0 1px rgba(0,240,255,.7);
+    }
+    .org-picker-btn svg { width: 11px; height: 11px; transition: transform .15s; }
+    .org-picker.open .org-picker-btn {
+      color: #fff; background: rgba(0,160,255,.45);
+    }
+    .org-picker.open .org-picker-btn svg { transform: rotate(180deg); }
+    .org-pop {
+      display: none; position: absolute; top: calc(100% + 6px); right: 0; left: auto; min-width: 220px;
+      max-height: 220px; overflow: auto; padding: 6px;
+      background: rgba(4, 18, 42, .96);
+      box-shadow: 0 12px 32px rgba(0,0,0,.45), inset 0 0 0 1px rgba(0,200,255,.28), 0 0 24px rgba(0,140,255,.15);
+      backdrop-filter: blur(10px); z-index: 40;
+    }
+    .org-picker.open .org-pop { display: block; }
+    .org-pop button {
+      appearance: none; border: 0; cursor: pointer; width: 100%;
+      text-align: left; padding: 8px 10px; margin-bottom: 2px;
+      font-size: 11px; color: rgba(200,220,240,.88); background: transparent;
+      border-radius: 3px; line-height: 1.35;
+    }
+    .org-pop button:hover { background: rgba(0,140,255,.16); color: #fff; }
+    .org-pop button.on {
+      background: linear-gradient(90deg, rgba(0,160,255,.35), rgba(0,100,180,.18));
+      color: #fff; box-shadow: inset 3px 0 0 #00d4ff;
+    }
+    .btn-exit {
+      height: 28px; padding: 0 12px; border-radius: 3px; cursor: pointer;
+      border: 1px solid rgba(0,229,255,.4); background: rgba(4,24,52,.55);
+      color: #b8e0ff; font-size: 12px; display: inline-flex; align-items: center; gap: 5px;
+      text-decoration: none; backdrop-filter: blur(4px);
+      transition: border-color .15s, background .15s, box-shadow .15s;
+    }
+    .btn-exit:hover {
+      border-color: rgba(0,229,255,.7);
+      background: rgba(8,40,80,.72);
+      box-shadow: 0 0 14px rgba(0,180,255,.25);
+    }
+    .btn-exit svg { width: 13px; height: 13px; }
+
+    /* header side actions */
+    .header-left,
+    .header-right {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      z-index: 2; display: flex; align-items: center; gap: 8px;
+    }
+    .header-left { left: 12px; max-width: min(42vw, 480px); }
+    .header-right { right: 12px; }
+
+    .body {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      gap: 10px;
+      padding: 4px 4px 4px;
+      position: relative; z-index: 2;
+    }
+    .col { min-height: 0; min-width: 0; display: grid; gap: 8px; }
+    .col-left,
+    .col-right { grid-template-rows: minmax(0, 1.05fr) minmax(0, 1.12fr); }
+
+    /* soft panels — light tech border */
+    .panel {
+      min-height: 0; overflow: hidden;
+      display: flex; flex-direction: column;
+      background: linear-gradient(180deg, rgba(4,22,48,.28), rgba(2,12,32,.12));
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      position: relative;
+    }
+    .panel::before {
+      content: ""; position: absolute; left: 8px; right: 8px; top: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,220,255,.45), transparent);
+      opacity: .7; pointer-events: none; z-index: 0;
+    }
+    .ph {
+      flex-shrink: 0; min-height: 36px; height: auto; padding: 8px 12px 6px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px; position: relative; z-index: 2;
+      background: linear-gradient(180deg, rgba(2,14,32,.55), rgba(2,14,32,.12) 85%, transparent);
+    }
+    .ph .ph-actions {
+      display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
+      margin-left: auto;
+    }
+    .ph h3 {
+      font-size: var(--ui-title); font-weight: 700; letter-spacing: 2px; color: #fff;
+      display: flex; align-items: center; gap: 8px;
+      white-space: nowrap; min-width: 0; line-height: 1.2;
+      text-shadow: 0 1px 2px rgba(0,0,0,.45);
+    }
+    .ph h3::before {
+      content: ""; width: 0; height: 0;
+      border-left: 7px solid var(--cyan);
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      filter: drop-shadow(0 0 5px rgba(0,229,255,.7));
+    }
+    .ph h3::after { content: none; }
+
+    .pb {
+      flex: 1; min-height: 0;
+      padding: 4px 8px 8px;
+      display: flex; flex-direction: column; gap: 8px;
+      overflow: hidden;
+    }
+
+    .panel.panel-biz { overflow: hidden; }
+    .panel.panel-biz .pb { overflow: hidden; }
+    .panel.panel-biz .biz-layout { overflow: hidden; min-height: 0; }
+
+    /* —— 四级网络网格 ——
+       上：中心 | 站 | 点
+       中：居家（宽）| 助餐
+       下：党建+（通栏五列）
+    */
+    .biz-layout {
+      flex: 1; min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1.05fr) minmax(0, 1fr) minmax(0, 0.95fr);
+      gap: 8px;
+    }
+    .biz-layout .biz.c1 { grid-column: 1; grid-row: 1; }
+    .biz-layout .biz.c2 { grid-column: 2; grid-row: 1; }
+    .biz-layout .biz.c3 { grid-column: 3; grid-row: 1; }
+    .biz-layout .biz.c4 { grid-column: 1 / 3; grid-row: 2; }
+    .biz-layout .biz.c5 { grid-column: 3; grid-row: 2; }
+    .biz-layout .biz.c6 { grid-column: 1 / -1; grid-row: 3; }
+    .biz-top, .biz-bottom { display: contents; }
+    .biz-charts { display: none; }
+
+    .biz {
+      display: flex; flex-direction: column; gap: 5px;
+      min-height: 0; min-width: 0; height: 100%;
+      padding: 8px 10px;
+      background: linear-gradient(160deg, rgba(8,36,72,.42), rgba(4,16,40,.16));
+      border: 0; border-radius: 0;
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(0,220,255,.22);
+    }
+    .biz .tool-row {
+      height: auto; flex-shrink: 0;
+      display: flex; align-items: center;
+      font-size: var(--ui-sub); color: rgba(170,210,240,.78);
+      letter-spacing: .2px; line-height: 1.3;
+    }
+    .biz.c3 { overflow: hidden; z-index: 1; }
+    .biz.c3 .hd, .biz.c3 .hd .name { overflow: hidden; }
+    .biz::after { content: none; }
+    .biz .hd {
+      display: flex; align-items: center; gap: 6px;
+      min-height: 26px; height: auto; flex-shrink: 0; overflow: hidden;
+    }
+    .biz .ico {
+      width: 24px; height: 24px; border-radius: 4px; flex-shrink: 0;
+      display: grid; place-items: center;
+    }
+    .biz .ico svg { width: 14px; height: 14px; color: #fff; }
+    .biz.c1 .ico { background: linear-gradient(145deg, #3b9eff, #1565c0); box-shadow: 0 0 10px rgba(59,158,255,.45); }
+    .biz.c2 .ico { background: linear-gradient(145deg, #2dd4bf, #0d9488); box-shadow: 0 0 10px rgba(45,212,191,.4); }
+    .biz.c3 .ico { background: linear-gradient(145deg, #4ade80, #16a34a); box-shadow: 0 0 10px rgba(74,222,128,.4); }
+    .biz.c4 .ico { background: linear-gradient(145deg, #a78bfa, #7c3aed); box-shadow: 0 0 10px rgba(167,139,250,.4); }
+    .biz .hd .name { flex: 1; min-width: 0; display: flex; flex-wrap: nowrap; align-items: center; gap: 4px; overflow: hidden; }
+    .biz .hd .pill {
+      display: inline-flex; align-items: center; gap: 3px;
+      max-width: 100%; padding: 3px 8px; border-radius: 3px;
+      font-size: var(--ui-pill); font-weight: 650; color: #fff; line-height: 1.25;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .biz .hd > a { display: none; }
+    .biz .hd .pill small { font-size: 12px; font-weight: 600; opacity: .9; margin-left: 2px; }
+    .biz.c1 .pill { background: linear-gradient(90deg, rgba(40,120,220,.75), rgba(30,90,180,.45)); box-shadow: inset 0 0 0 1px rgba(100,180,255,.35); }
+    .biz.c2 .pill { background: linear-gradient(90deg, rgba(20,140,130,.75), rgba(15,100,95,.45)); box-shadow: inset 0 0 0 1px rgba(80,220,200,.35); }
+    .biz.c3 .pill { background: linear-gradient(90deg, rgba(40,150,80,.7), rgba(20,110,60,.4)); box-shadow: inset 0 0 0 1px rgba(100,220,140,.35); }
+    .biz.c4 .pill { background: linear-gradient(90deg, rgba(110,80,200,.75), rgba(80,50,160,.45)); box-shadow: inset 0 0 0 1px rgba(180,150,255,.35); }
+    .biz .hd .list-btn {
+      appearance: none; border: 0; cursor: pointer; background: transparent;
+      font-size: 12px; color: var(--cyan); text-decoration: none; white-space: nowrap;
+      padding: 0; font-family: inherit; flex-shrink: 0;
+    }
+    .biz .hd .list-btn:hover { color: #fff; text-shadow: 0 0 8px rgba(0,229,255,.5); }
+    .biz.c5 .ico { background: linear-gradient(145deg, #ff9a1a, #c2410c); box-shadow: 0 0 10px rgba(255,154,26,.4); }
+    .biz.c5 .pill { background: linear-gradient(90deg, rgba(200,110,20,.75), rgba(150,70,10,.45)); box-shadow: inset 0 0 0 1px rgba(255,180,80,.35); }
+    .biz.c6 .ico { background: linear-gradient(145deg, #f472b6, #be185d); box-shadow: 0 0 10px rgba(244,114,182,.4); }
+    .biz.c6 .pill { background: linear-gradient(90deg, rgba(190,40,100,.75), rgba(140,20,70,.45)); box-shadow: inset 0 0 0 1px rgba(255,140,190,.35); }
+
+    .biz .metrics {
+      flex: 1; min-height: 0;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 6px 10px; align-content: start;
+    }
+    .biz .metrics.dense { grid-template-columns: 1fr 1fr 1fr; gap: 6px 8px; }
+    .biz .metrics.dense .m .n { font-size: calc(var(--metric-n-sm) + 1px); }
+    .biz .metrics.dense .m .k { font-size: var(--metric-label); }
+
+    .biz-mini-list {
+      flex: 1; min-height: 0; overflow: hidden;
+      display: flex; flex-direction: column; gap: 6px; justify-content: center;
+    }
+    .biz-mini-list .row {
+      display: grid; grid-template-columns: 1fr auto; gap: 8px;
+      align-items: center; padding: 8px 10px;
+      background: rgba(0,80,140,.16);
+      box-shadow: inset 0 0 0 1px rgba(0,200,255,.14);
+      font-size: var(--ui-body);
+    }
+    .biz-mini-list .row b { color: #fff; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .biz-mini-list .row span { display: none; }
+    .biz-mini-list .row em { font-style: normal; font-family: var(--font-num); color: var(--cyan); font-weight: 700; white-space: nowrap; }
+
+    .biz-home-lines {
+      flex: 1; min-height: 0; overflow: hidden;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+      font-size: var(--ui-sub); color: rgba(180,210,235,.9); line-height: 1.4;
+      align-content: start;
+    }
+    .biz-home-lines .hl {
+      padding: 7px 9px;
+      background: rgba(0,80,140,.14);
+      box-shadow: inset 0 0 0 1px rgba(0,200,255,.12);
+      display: flex; flex-direction: column; gap: 3px; min-width: 0;
+    }
+    .biz-home-lines .hl b { color: #fff; font-weight: 700; font-size: calc(var(--ui-sub) + 1px); }
+    .biz-home-lines .hl span { color: rgba(180,210,235,.88); }
+    .biz-home-lines .hl i { font-style: normal; color: var(--cyan); font-family: var(--font-num); font-weight: 700; }
+
+    .biz.c6 { padding: 8px 10px 10px; }
+    .biz-party {
+      flex: 1; min-height: 0; overflow: hidden;
+      display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 6px; padding-right: 0;
+    }
+    .biz-party::-webkit-scrollbar { display: none; }
+    .party-block {
+      padding: 8px;
+      background: rgba(0,60,110,.2);
+      box-shadow: inset 0 0 0 1px rgba(0,200,255,.14);
+      min-width: 0; display: flex; flex-direction: column; gap: 4px;
+    }
+    .party-block .pt {
+      font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 0;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .party-block .pt::before {
+      content: ""; width: 5px; height: 5px; border-radius: 1px; background: var(--cyan);
+      box-shadow: 0 0 6px rgba(0,229,255,.7); flex-shrink: 0;
+    }
+    .party-block .pd {
+      font-size: 17px; color: rgba(170,205,235,.92); line-height: 1.35;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .party-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: auto; }
+    .party-tags span {
+      font-size: 11px; padding: 1px 5px;
+      color: rgba(200,230,255,.92);
+      background: rgba(0,140,220,.18);
+      box-shadow: inset 0 0 0 1px rgba(0,200,255,.22);
+    }
+    .party-block:not(:first-child) .party-tags { display: none; }
+
+    .biz.wide { height: 100%; }
+
+    /* 业态列表模态框 */
+    .list-mask {
+      position: fixed; inset: 0; z-index: 85;
+      display: none; align-items: center; justify-content: center;
+      padding: clamp(12px, 2.5vh, 28px);
+      background: rgba(0, 4, 14, .72);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      opacity: 0; transition: opacity .2s ease;
+    }
+    .list-mask.on { display: flex; opacity: 1; }
+    .list-mask.on .list-modal {
+      animation: drillIn .26s cubic-bezier(.2,.8,.2,1) both;
+    }
+    .list-modal {
+      position: relative;
+      width: min(920px, 94vw); max-height: min(78vh, 680px);
+      display: flex; flex-direction: column; overflow: hidden;
+      background:
+        radial-gradient(ellipse 60% 40% at 8% 0%, rgba(0,140,255,.16), transparent 55%),
+        linear-gradient(180deg, rgba(8,36,72,.98) 0%, rgba(2,12,30,.99) 100%);
+      border: 1px solid rgba(0,229,255,.42);
+      box-shadow: 0 24px 64px rgba(0,0,0,.45), 0 0 50px rgba(0,120,220,.2);
+    }
+    .list-hd {
+      flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 12px 16px;
+      background: linear-gradient(180deg, rgba(0,80,150,.28), transparent);
+      border-bottom: 1px solid rgba(0,180,255,.2);
+    }
+    .list-hd h2 {
+      font-size: 16px; letter-spacing: 3px; font-weight: 700;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .list-hd h2::before {
+      content: ""; width: 0; height: 0;
+      border-left: 7px solid var(--cyan);
+      border-top: 5px solid transparent; border-bottom: 5px solid transparent;
+      filter: drop-shadow(0 0 5px rgba(0,229,255,.7));
+    }
+    .list-hd .meta {
+      margin-top: 4px; font-size: 11px; color: var(--muted);
+    }
+    .list-close {
+      width: 30px; height: 30px; border-radius: 3px; cursor: pointer; flex-shrink: 0;
+      border: 1px solid rgba(0,229,255,.4); background: rgba(4,24,52,.55);
+      color: #b8e0ff; font-size: 18px; line-height: 1;
+    }
+    .list-close:hover {
+      border-color: rgba(0,229,255,.75); background: rgba(8,40,80,.75);
+    }
+    .list-bd {
+      flex: 1; min-height: 0; overflow: auto; padding: 10px 14px 14px;
+    }
+    .list-bd::-webkit-scrollbar { width: 4px; height: 4px; }
+    .list-bd::-webkit-scrollbar-thumb { background: rgba(0,180,255,.35); border-radius: 2px; }
+    .list-table {
+      width: 100%; border-collapse: collapse; font-size: 12px;
+    }
+    .list-table th {
+      position: sticky; top: 0; z-index: 1;
+      text-align: left; padding: 9px 10px; font-weight: 650; letter-spacing: .5px;
+      color: #9ec8ef; background: rgba(4, 22, 48, .96);
+      border-bottom: 1px solid rgba(0,180,255,.28);
+      white-space: nowrap;
+    }
+    .list-table td {
+      padding: 9px 10px; color: #d8e8f8;
+      border-bottom: 1px solid rgba(0,140,200,.12);
+      white-space: nowrap;
+    }
+    .list-table tbody tr:hover td {
+      background: rgba(0,120,200,.12);
+    }
+    .list-table .st {
+      display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px;
+      font-size: 11px; font-weight: 650;
+    }
+    .list-table .st.on {
+      color: #7dffe0; background: rgba(61,222,168,.14);
+      box-shadow: inset 0 0 0 1px rgba(61,222,168,.35);
+    }
+    .list-table .st.off {
+      color: #ffb0b2; background: rgba(255,77,79,.12);
+      box-shadow: inset 0 0 0 1px rgba(255,77,79,.35);
+    }
+    .list-table .st.warn {
+      color: #ffd086; background: rgba(255,154,26,.12);
+      box-shadow: inset 0 0 0 1px rgba(255,154,26,.35);
+    }
+    .list-ft {
+      flex-shrink: 0; padding: 8px 16px 12px;
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      border-top: 1px solid rgba(0,180,255,.16);
+      font-size: 11px; color: var(--muted);
+    }
+    .biz .metrics {
+      flex: 1;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4px 8px; align-content: start;
+      min-height: 0;
+    }
+    .biz .m {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 0;
+      line-height: 1.2; min-width: 0; padding-left: 10px; position: relative;
+    }
+    .biz .m::before {
+      content: ""; position: absolute; left: 0; top: 4px;
+      width: 5px; height: 5px; border-radius: 50%;
+      border: 1.5px solid var(--cyan); box-shadow: 0 0 6px rgba(0,229,255,.7);
+    }
+    .biz .m .n {
+      font-family: var(--font-num);
+      font-size: var(--metric-n-sm); font-weight: var(--metric-weight);
+      color: #fff; font-variant-numeric: tabular-nums; white-space: nowrap;
+      letter-spacing: .2px; line-height: 1.15;
+    }
+    .biz .m .n em {
+      font-style: normal; font-family: var(--font);
+      font-size: var(--metric-unit); color: rgba(190,220,245,.88); margin-left: 2px;
+      font-weight: 500;
+    }
+    .biz .m .k {
+      font-size: var(--metric-label); color: rgba(160,195,225,.88);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+      display: inline-flex; align-items: center; gap: 4px; margin-top: 1px;
+    }
+    .biz .m.key .n {
+      font-size: var(--metric-n); font-weight: var(--metric-weight); color: #fff;
+      text-shadow: 0 0 10px rgba(0,200,255,.28);
+    }
+    .biz .m.key .n em { font-size: var(--metric-unit); color: rgba(190,220,245,.9); }
+    .biz .m.key .k { font-size: var(--metric-label); color: rgba(200,225,245,.92); }
+    .biz .m.key::before {
+      width: 6px; height: 6px; top: 6px;
+      border-color: #5ee7ff; box-shadow: 0 0 8px rgba(0,229,255,.85);
+    }
+    .m.flash .n, .sc .kpi-row .item.flash .n {
+      animation: metricFlash .55s ease;
+    }
+    @keyframes metricFlash {
+      0% { text-shadow: 0 0 0 transparent; }
+      35% { text-shadow: 0 0 12px rgba(0,229,255,.75); color: #e8fbff; }
+      100% { text-shadow: 0 0 0 transparent; }
+    }
+    .biz-charts .funnel-h {
+      justify-content: flex-start; gap: 2px;
+    }
+    .funnel-h {
+      min-height: 0; display: flex; flex-direction: column;
+      padding: 4px 6px;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+    }
+    .funnel-h .fh-cap {
+      font-size: 10px; color: var(--muted); margin-bottom: 2px; flex-shrink: 0;
+      height: 14px; line-height: 14px;
+    }
+    .funnel-h .fh-plot {
+      flex: 1; min-height: 0; width: 100%;
+    }
+
+    /* —— 场景：健康 | 营养 | 运动 —— */
+    .scene-grid {
+      flex: 1; min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr);
+      gap: 8px;
+    }
+    .sc {
+      background: transparent;
+      border: 0; border-radius: 0;
+      padding: 2px 6px 4px;
+      display: flex; flex-direction: column; min-height: 0; overflow: hidden;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .sc::before {
+      content: ""; position: absolute; left: 0; top: 4px; bottom: 4px; width: 1px;
+      background: linear-gradient(180deg, rgba(0,210,255,.4), transparent 85%);
+      opacity: .55;
+    }
+    .sc .hd {
+      display: block; align-self: flex-start;
+      font-size: 20px; font-weight: 650; color: #fff;
+      margin-bottom: 4px; flex-shrink: 0; height: 26px; line-height: 26px;
+      padding: 0; border-radius: 0; background: none; box-shadow: none;
+    }
+    .sc .kpi-row {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2px 6px; margin-bottom: 2px; flex-shrink: 0;
+      min-height: 0; align-content: start;
+    }
+    .sc .kpi-row.kpi-1 { grid-template-columns: 1fr; }
+    .sc-health .plot {
+      flex: 1; min-height: 0;
+      background: linear-gradient(180deg, rgba(0,100,180,.12), rgba(0,40,90,.03) 65%, transparent);
+      box-shadow: inset 0 0 0 1px rgba(0,200,255,.12);
+      padding: 4px 4px 2px;
+    }
+    .sc-health .hd {
+      font-size: 19px; letter-spacing: 1px;
+    }
+    .sc .kpi-row .item {
+      display: flex; flex-direction: column; gap: 1px;
+    }
+    .sc .kpi-row .item .n {
+      font-family: var(--font-num);
+      font-size: var(--metric-n-sm); font-weight: var(--metric-weight); color: #fff;
+      display: flex; align-items: baseline; gap: 2px; white-space: nowrap;
+      font-variant-numeric: tabular-nums; letter-spacing: .2px; line-height: 1.15;
+    }
+    .sc .kpi-row .item .k {
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: var(--metric-label); color: rgba(160,195,225,.88); padding-left: 13px; margin-top: 1px;
+    }
+    .sc .kpi-row .item.key .n {
+      font-size: var(--metric-n); font-weight: var(--metric-weight); color: #fff;
+      text-shadow: 0 0 10px rgba(0,200,255,.25);
+    }
+    .sc .kpi-row .item.key .n em,
+    .sc .kpi-row .item .n em {
+      font-style: normal; font-family: var(--font);
+      font-size: var(--metric-unit); color: rgba(190,220,245,.9); font-weight: 500;
+    }
+    .sc .kpi-row .item.key .k { font-size: var(--metric-label); color: rgba(190,220,245,.9); }
+    .sc .kpi-row .item.key .n::before {
+      width: 8px; height: 8px; border-color: #5ee7ff;
+      box-shadow: 0 0 8px rgba(0,229,255,.85);
+    }
+    .sc .kpi-row .item .n::before {
+      content: ""; width: 7px; height: 7px; border-radius: 50%;
+      border: 1.5px solid var(--cyan); box-shadow: 0 0 6px rgba(0,229,255,.75);
+      margin-right: 3px; align-self: center; background: transparent;
+    }
+    .sc .sub { font-size: var(--metric-label); color: var(--muted); margin-bottom: 2px; min-height: 18px; line-height: 18px; }
+    .sc .plot { flex: 1; min-height: 0; }
+    .sport-list {
+      display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(4, minmax(0, 1fr));
+      grid-auto-flow: column; gap: 2px 10px;
+      font-size: var(--metric-label); color: var(--muted); flex: 1; align-content: stretch; padding-top: 2px; min-height: 0;
+      overflow: hidden;
+    }
+    .sport-list div { display: flex; justify-content: space-between; gap: 4px; line-height: 1.45; }
+    .sport-list b {
+      font-family: var(--font-num); font-size: var(--metric-n-sm); font-weight: var(--metric-weight);
+      color: #fff; font-variant-numeric: tabular-nums; letter-spacing: .2px;
+    }
+    .sport-list i {
+      display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+      border: 1.5px solid var(--cyan); background: transparent; margin-right: 4px; vertical-align: middle;
+      box-shadow: 0 0 5px rgba(0,229,255,.55);
+    }
+
+    /* —— 个人动态画像 —— */
+    .portrait {
+      flex: 1; min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(150px, 168px) 1px minmax(0, 1fr);
+      gap: 0 8px;
+      align-items: stretch;
+      position: relative;
+      overflow: hidden;
+    }
+    .dir-wrap { min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+    .dir-wrap .sec-label { justify-content: space-between; }
+    .dir-wrap .sec-label .gear { opacity: .55; font-size: 12px; }
+    .dir-foot {
+      flex-shrink: 0; padding: 6px 4px 0; text-align: right;
+    }
+    .dir-foot a { font-size: 11px; color: var(--cyan); text-decoration: none; }
+    .v-split {
+      width: 1px; background: linear-gradient(180deg, transparent, rgba(0,229,255,.65), transparent);
+      box-shadow: 0 0 10px rgba(0,229,255,.45); align-self: stretch;
+    }
+    .dir {
+      flex: 1; min-height: 0; overflow: auto;
+      border: none; border-radius: 2px;
+      background: transparent;
+    }
+    .dir::-webkit-scrollbar { width: 2px; }
+    .dir::-webkit-scrollbar-thumb { background: rgba(0,180,255,.3); }
+    .dir-item {
+      position: relative;
+      display: flex; align-items: baseline; justify-content: space-between; gap: 6px;
+      padding: 7px 8px 7px 10px; cursor: pointer; border-bottom: none;
+      transition: background .12s; border-radius: 2px; margin-bottom: 1px;
+      min-width: 0;
+    }
+    .dir-item:hover { background: rgba(30,100,180,.22); }
+    .dir-item.on {
+      background: linear-gradient(90deg, #1a6fd4 0%, #1e78e0 55%, rgba(30,120,220,.55) 100%);
+      box-shadow: 0 0 14px rgba(30,120,220,.4);
+    }
+    .dir-item.on::before {
+      content: ""; position: absolute; left: 0; top: 3px; bottom: 3px; width: 3px;
+      border-radius: 0 2px 2px 0; background: #5ec8ff;
+      box-shadow: 0 0 8px rgba(94,200,255,.8);
+    }
+    .dir-item .nm { font-size: 13px; font-weight: 600; color: #fff; flex-shrink: 0; }
+    .dir-item .tm {
+      font-size: 10px; color: rgba(180,210,235,.8); white-space: nowrap; text-align: right;
+      min-width: 0; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .profile {
+      min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 6px;
+      padding-right: 40px; /* 预留收起态侧栏，避免贴边裁切 */
+      position: relative; min-width: 0;
+      transition: padding-right .2s ease;
+    }
+    .sec-label {
+      font-size: 13px; color: #e0f0ff; margin-bottom: 4px; min-height: 18px;
+      display: flex; align-items: center; gap: 6px; font-weight: 650; flex-shrink: 0;
+    }
+    .sec-label::before { content: none; }
+    .pinfo {
+      display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: var(--metric-label); color: var(--muted);
+    }
+    .pinfo b {
+      font-family: var(--font-num); font-size: var(--metric-n-sm); font-weight: var(--metric-weight);
+      color: #fff; margin-left: 2px; font-variant-numeric: tabular-nums;
+    }
+    .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag {
+      font-size: 11px; padding: 2px 7px; border-radius: 2px;
+      background: rgba(20, 60, 110, 0.35); color: #c0d8f0;
+      box-shadow: inset 0 0 0 1px rgba(100,170,220,.18);
+      border: none; white-space: nowrap;
+    }
+    .judge-box {
+      border: 0; border-radius: 4px;
+      padding: 7px 10px; min-height: 0; color: #c8dff5; font-size: 12px;
+      background: linear-gradient(90deg, rgba(8,36,72,.4), rgba(4,18,40,.15));
+      box-shadow: inset 0 0 0 1px rgba(70,150,210,.18);
+      line-height: 1.5;
+    }
+    .vitals {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;
+      margin-top: 2px; align-content: start;
+    }
+    .vt {
+      background: linear-gradient(160deg, rgba(10,40,80,.45), rgba(4,16,40,.2));
+      border: 0; border-radius: 4px; padding: 6px 8px; min-height: 56px; height: auto;
+      box-sizing: border-box; min-width: 0;
+      box-shadow: inset 0 0 0 1px rgba(0,180,255,.12);
+    }
+    .vt .top {
+      display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--label);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .vt .top svg { width: 12px; height: 12px; color: var(--cyan); flex-shrink: 0; }
+    .vt .mid { margin-top: 4px; display: flex; align-items: baseline; gap: 5px; flex-wrap: wrap; }
+    .vt .mid .n {
+      font-family: var(--font-num);
+      font-size: var(--metric-n); font-weight: var(--metric-weight); color: #fff; line-height: 1;
+      font-variant-numeric: tabular-nums; letter-spacing: .2px;
+    }
+    .vt .mid .n.bad { color: var(--red); text-shadow: 0 0 10px rgba(255,77,79,.35); }
+    .vt .mid .st {
+      font-size: var(--metric-label); padding: 0; border-radius: 0;
+      background: transparent; color: #d8e8f8; white-space: nowrap;
+    }
+    .vt .mid .st.bad { background: transparent; color: var(--red); font-weight: 700; }
+    .vt .u { margin-top: 2px; font-size: var(--metric-unit); color: var(--muted); }
+    .vt.empty .mid .n { color: var(--muted); font-size: var(--metric-n-sm); }
+
+    /* 需供分析：侧栏入口，跳转本目录 home-shekou.html */
+    .ai-nav {
+      position: absolute;
+      right: 6px; top: 50%; transform: translateY(-50%); z-index: 9;
+      display: inline-flex; align-items: center; justify-content: center;
+      writing-mode: vertical-rl; letter-spacing: 2px;
+      width: 26px; min-height: 96px; padding: 10px 0;
+      box-sizing: border-box; text-decoration: none;
+      font-size: 10px; color: #b8e8ff; font-weight: 650;
+      background: rgba(4,24,52,.88); box-shadow: inset 0 0 0 1px rgba(0,220,255,.4);
+      border-radius: 6px 0 0 6px; white-space: nowrap;
+    }
+    .ai-nav:hover { color: #fff; box-shadow: inset 0 0 0 1px rgba(0,240,255,.7); }
+    .drill, .ph-chev {
+      width: 22px; height: 22px; border-radius: 50%; border: none; cursor: pointer;
+      background: linear-gradient(145deg, #2eb8ff, #1565c0);
+      display: inline-grid; place-items: center; color: #fff; text-decoration: none;
+      box-shadow: 0 0 10px rgba(0,180,255,.35); flex-shrink: 0;
+      line-height: 1; font-size: 13px;
+    }
+    .drill svg { width: 12px; height: 12px; }
+
+    /* 下钻详情模态框 */
+    .drill-mask {
+      position: fixed; inset: 0; z-index: 80;
+      display: none; align-items: center; justify-content: center;
+      padding: clamp(12px, 2.5vh, 28px);
+      background: rgba(0, 4, 14, .72);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      opacity: 0; transition: opacity .22s ease;
+    }
+    .drill-mask.on { display: flex; opacity: 1; }
+    .drill-mask.on .drill-modal {
+      animation: drillIn .28s cubic-bezier(.2,.8,.2,1) both;
+    }
+    @keyframes drillIn {
+      from { opacity: 0; transform: translateY(14px) scale(.98); }
+      to { opacity: 1; transform: none; }
+    }
+    .drill-modal {
+      position: relative;
+      width: min(1180px, 96vw); height: min(86vh, 820px);
+      display: flex; flex-direction: column; overflow: hidden;
+      background:
+        radial-gradient(ellipse 70% 50% at 10% 0%, rgba(0,140,255,.18), transparent 55%),
+        radial-gradient(ellipse 50% 40% at 90% 100%, rgba(0,100,180,.12), transparent 50%),
+        linear-gradient(180deg, rgba(8,36,72,.98) 0%, rgba(2,12,30,.99) 100%);
+      border: 1px solid rgba(0,229,255,.42);
+      box-shadow:
+        0 0 0 1px rgba(0,40,80,.5),
+        0 24px 64px rgba(0,0,0,.45),
+        0 0 60px rgba(0,120,220,.22);
+    }
+    .drill-modal::before,
+    .drill-modal::after {
+      content: ""; position: absolute; width: 18px; height: 18px; pointer-events: none; z-index: 2;
+      border-color: rgba(0,229,255,.75); border-style: solid;
+    }
+    .drill-modal::before { left: 0; top: 0; border-width: 2px 0 0 2px; }
+    .drill-modal::after { right: 0; bottom: 0; border-width: 0 2px 2px 0; }
+    .drill-hd {
+      flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 12px 18px 12px;
+      background: linear-gradient(180deg, rgba(0,80,150,.28), transparent);
+      border-bottom: 1px solid rgba(0,180,255,.2);
+    }
+    .drill-hd-main { min-width: 0; display: flex; align-items: center; gap: 14px; }
+    .drill-avatar {
+      width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+      display: grid; place-items: center;
+      font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 1px;
+      background: linear-gradient(145deg, rgba(0,180,255,.55), rgba(20,80,160,.85));
+      box-shadow: 0 0 0 2px rgba(0,229,255,.35), 0 0 18px rgba(0,160,255,.35);
+    }
+    .drill-hd h2 {
+      font-size: 18px; letter-spacing: 4px; font-weight: 700; line-height: 1.2;
+    }
+    .drill-hd .sub {
+      margin-top: 5px; font-size: 12px; color: rgba(170,210,240,.85);
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    }
+    .drill-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 650;
+      background: rgba(61,222,168,.15); color: #7dffe0;
+      box-shadow: inset 0 0 0 1px rgba(61,222,168,.4);
+    }
+    .drill-badge.warn {
+      background: rgba(255,77,79,.16); color: #ffb0b2;
+      box-shadow: inset 0 0 0 1px rgba(255,77,79,.45);
+    }
+    .drill-close {
+      width: 32px; height: 32px; border-radius: 4px; cursor: pointer; flex-shrink: 0;
+      border: 1px solid rgba(0,229,255,.4); background: rgba(4,24,52,.55);
+      color: #b8e0ff; font-size: 20px; line-height: 1;
+      transition: border-color .15s, background .15s, box-shadow .15s;
+    }
+    .drill-close:hover {
+      border-color: rgba(0,229,255,.75); background: rgba(8,40,80,.75);
+      box-shadow: 0 0 12px rgba(0,180,255,.25);
+    }
+    .drill-bd {
+      flex: 1; min-height: 0; overflow: hidden;
+      display: grid; grid-template-columns: minmax(300px, .92fr) minmax(0, 1.2fr);
+      gap: 0;
+    }
+    .drill-col {
+      min-height: 0; overflow: auto; padding: 14px 16px 16px;
+    }
+    .drill-col::-webkit-scrollbar { width: 4px; }
+    .drill-col::-webkit-scrollbar-thumb { background: rgba(0,180,255,.35); border-radius: 2px; }
+    .drill-col-left {
+      border-right: 1px solid rgba(0,180,255,.16);
+      background: linear-gradient(90deg, rgba(0,40,80,.18), transparent);
+    }
+    .drill-col-right { padding-left: 14px; }
+    .drill-sec {
+      font-size: 12px; color: #9ec8ef; margin: 14px 0 8px; font-weight: 700; letter-spacing: 2px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .drill-sec::before {
+      content: ""; width: 3px; height: 12px; border-radius: 1px;
+      background: linear-gradient(180deg, var(--cyan), rgba(0,180,255,.2));
+      box-shadow: 0 0 8px rgba(0,229,255,.5);
+    }
+    .drill-sec:first-child { margin-top: 2px; }
+    .drill-pinfo {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    }
+    .drill-pi {
+      padding: 8px 10px; border-radius: 6px;
+      background: rgba(6, 24, 52, 0.5);
+      border: 1px solid rgba(0,170,255,.14);
+      font-size: 12px; color: var(--muted);
+    }
+    .drill-pi b {
+      display: block; margin-top: 2px; color: #fff;
+      font-family: var(--font-num); font-size: var(--metric-n-sm); font-weight: var(--metric-weight);
+      font-variant-numeric: tabular-nums;
+    }
+    .drill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .drill-tags span {
+      font-size: 11px; padding: 4px 10px; border-radius: 999px;
+      background: rgba(20, 55, 100, 0.65); color: #c8def2;
+      box-shadow: inset 0 0 0 1px rgba(100,170,230,.22);
+    }
+    .drill-judge {
+      border: 1px solid rgba(70,150,210,.28); border-radius: 8px;
+      padding: 12px 14px; color: #c7d7eb; font-size: 12px; line-height: 1.65;
+      background: rgba(4,18,40,.55);
+      position: relative;
+    }
+    .drill-judge.warn {
+      border-color: rgba(255,154,26,.4);
+      background: linear-gradient(90deg, rgba(255,120,40,.12), rgba(4,18,40,.55));
+    }
+    .drill-judge strong { color: var(--orange); }
+    .drill-vitals {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    }
+    .drill-vt {
+      background: rgba(6, 24, 52, 0.62);
+      border: 1px solid rgba(0,180,255,.2);
+      border-radius: 8px; padding: 10px 12px;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .drill-vt.bad {
+      border-color: rgba(255,77,79,.45);
+      box-shadow: 0 0 16px rgba(255,77,79,.12), inset 0 0 20px rgba(255,60,60,.06);
+    }
+    .drill-vt .t {
+      font-size: 11px; color: var(--label); margin-bottom: 6px;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .drill-vt .t svg { width: 12px; height: 12px; color: var(--cyan); flex-shrink: 0; }
+    .drill-vt .row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+    .drill-vt .n {
+      font-family: var(--font-num);
+      font-size: var(--metric-n); font-weight: var(--metric-weight); color: #fff; line-height: 1;
+      font-variant-numeric: tabular-nums; letter-spacing: .2px;
+    }
+    .drill-vt .n em {
+      font-style: normal; font-family: var(--font);
+      font-size: var(--metric-unit); color: var(--muted); margin-left: 3px; font-weight: 500;
+    }
+    .drill-vt .n.bad { color: var(--red); text-shadow: 0 0 10px rgba(255,77,79,.35); }
+    .drill-vt .st { font-size: var(--metric-label); color: #d8e8f8; }
+    .drill-vt .st.bad { color: var(--red); font-weight: 700; }
+    .drill-charts {
+      display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+      gap: 10px; height: 100%; min-height: 0;
+    }
+    .drill-chart {
+      border: 1px solid rgba(0,180,255,.18); border-radius: 8px;
+      background: rgba(4,16,36,.5); padding: 8px 10px 6px;
+      display: flex; flex-direction: column; min-height: 0;
+      box-shadow: inset 0 0 24px rgba(0,60,120,.12);
+    }
+    .drill-chart .cap {
+      font-size: 11px; color: #c8e2f8; margin-bottom: 4px; flex-shrink: 0;
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 8px;
+      font-weight: 650;
+    }
+    .drill-chart .cap .leg {
+      display: flex; gap: 8px; font-size: 10px; color: var(--muted); font-weight: 500;
+    }
+    .drill-chart .cap .leg i {
+      display: inline-block; width: 8px; height: 3px; border-radius: 1px;
+      margin-right: 3px; vertical-align: middle;
+    }
+    .drill-chart .plot { flex: 1; min-height: 120px; }
+    @media (max-width: 980px) {
+      .drill-bd { grid-template-columns: 1fr; overflow: auto; }
+      .drill-col-left { border-right: 0; border-bottom: 1px solid rgba(0,180,255,.16); }
+      .drill-charts { min-height: 420px; }
+      .drill-modal { height: auto; max-height: 92vh; }
+    }
+    .btn-fs {
+      height: 28px; min-width: 28px; padding: 0 10px; border-radius: 3px; cursor: pointer;
+      border: 1px solid rgba(0,229,255,.4); background: rgba(4,24,52,.55);
+      color: #b8e0ff; font-size: 12px; display: inline-flex; align-items: center; gap: 5px;
+    }
+    .btn-fs:hover {
+      border-color: rgba(0,229,255,.7); background: rgba(8,40,80,.72);
+      box-shadow: 0 0 14px rgba(0,180,255,.25);
+    }
+    .btn-fs svg { width: 14px; height: 14px; }
+
+    /* —— 群体动态分析 —— */
+    .group-grid {
+      flex: 1; min-height: 0;
+      display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8px;
+    }
+    .gch {
+      background: transparent;
+      border: 0; border-radius: 0;
+      padding: 4px 6px;
+      display: flex; flex-direction: column; min-height: 0;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .gch::before {
+      content: ""; position: absolute; left: 0; top: 2px; bottom: 2px; width: 1px;
+      background: linear-gradient(180deg, rgba(0,210,255,.35), transparent);
+      opacity: .45;
+    }
+    .gch .cap {
+      font-size: 11px; color: #e0f0ff; margin-bottom: 4px; flex-shrink: 0;
+      min-height: 20px;
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 2px 8px;
+      line-height: 1.3;
+    }
+    .gch .cap .leg { display: flex; flex-wrap: wrap; gap: 6px 8px; font-size: 9px; color: var(--muted); justify-content: flex-end; }
+    .gch .cap .leg i {
+      display: inline-block; width: 8px; height: 3px; border-radius: 1px; margin-right: 3px;
+      vertical-align: middle;
+    }
+    .sc .sub .leg { display: inline-flex; flex-wrap: wrap; gap: 4px 8px; vertical-align: middle; }
+    .sc .sub .leg i {
+      display: inline-block; width: 7px; height: 7px; border-radius: 2px; margin-right: 2px; vertical-align: 0;
+    }
+    .gch .plot { flex: 1; min-height: 0; }
+
+    /* ===== 1024×800：大字号可读 + 三场景横排 ===== */
+    @media (max-width: 1100px) and (max-height: 860px) {
+      :root {
+        --metric-n: 27px;
+        --metric-n-sm: 24px;
+        --metric-unit: 17px;
+        --metric-label: 17px;
+        --header-h: 50px;
+        --ui-title: 21px;
+        --ui-pill: 18px;
+        --ui-sub: 17px;
+        --ui-body: 18px;
+      }
+      .screen {
+        height: 100vh; height: 100dvh;
+        padding: 0 6px 4px; gap: 4px;
+        overflow: hidden;
+      }
+      body { overflow: hidden; }
+      .title-box { padding: 0 36px 2px; max-width: min(78vw, 760px); }
+      .title-box h1 {
+        font-size: 20px; letter-spacing: 0.02em; text-indent: 0.02em;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .header-right { right: 6px; }
+      .btn-fs, .btn-exit { height: 28px; padding: 0 9px; font-size: 14px; }
+      .btn-fs svg, .btn-exit svg { width: 13px; height: 13px; }
+
+      .body {
+        grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+        gap: 5px; padding: 2px 2px 2px;
+      }
+      .col { gap: 4px; }
+      .col-left { grid-template-rows: minmax(0, 1.22fr) minmax(0, 1fr); }
+      .col-right { grid-template-rows: minmax(0, 1.05fr) minmax(0, 1fr); }
+
+      .ph { min-height: 30px; height: auto; padding: 4px 6px 2px; }
+      .ph h3 { font-size: var(--ui-title); letter-spacing: 1px; gap: 4px; }
+      .ph h3::before { border-left-width: 6px; border-top-width: 5px; border-bottom-width: 5px; }
+      .pb { padding: 2px 4px 4px; gap: 3px; }
+
+      .biz-layout {
+        grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 0.82fr);
+        gap: 4px;
+      }
+      .biz-top, .biz-bottom { display: contents; }
+      .biz { padding: 5px 6px; gap: 2px; }
+      .biz .hd { min-height: 26px; height: auto; gap: 4px; overflow: visible; }
+      .biz .hd .name { overflow: hidden; }
+      .biz .ico { width: 22px; height: 22px; border-radius: 3px; flex-shrink: 0; }
+      .biz .ico svg { width: 13px; height: 13px; }
+      .biz .hd .pill { font-size: var(--ui-pill); padding: 2px 6px; line-height: 1.2; }
+      .biz .tool-row { display: none; }
+      .biz .hd .list-btn { font-size: 14px; flex-shrink: 0; }
+      .biz .metrics { gap: 2px 5px; }
+      .biz .metrics.dense { grid-template-columns: 1fr 1fr; gap: 2px 5px; }
+      .biz.c1 .metrics.dense .m:nth-child(n+5) { display: none; }
+      .biz .metrics.dense .m .n { font-size: var(--metric-n-sm); }
+      .biz .m { padding-left: 8px; }
+      .biz .m::before { width: 5px; height: 5px; top: 6px; }
+      .biz .m .n { font-size: var(--metric-n); line-height: 1.12; }
+      .biz .m .k { font-size: var(--metric-label); line-height: 1.15; margin-top: 0; }
+      .biz-mini-list { gap: 4px; }
+      .biz-mini-list .row { font-size: var(--ui-body); padding: 5px 7px; gap: 5px; }
+      .biz-home-lines { gap: 3px; font-size: 15px; }
+      .biz-home-lines .hl { padding: 3px 5px; gap: 1px; }
+      .biz-home-lines .hl b { font-size: 16px; }
+      .biz-home-lines .hl span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .biz-party { gap: 4px; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+      .party-block { padding: 5px 4px; gap: 3px; }
+      .party-block .pt { font-size: 19px; }
+      .party-block .pd { font-size: 16px; line-height: 1.3; -webkit-line-clamp: 2; }
+      .party-tags { display: none !important; }
+
+      .scene-grid {
+        gap: 4px;
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1.05fr);
+        grid-template-rows: minmax(0, 1fr);
+      }
+      .sc { padding: 2px 4px 2px; }
+      .sc .hd { font-size: 18px; height: 22px; line-height: 22px; margin-bottom: 2px; }
+      .sc-health .hd { font-size: 18px; }
+      .sc .kpi-row { gap: 2px 4px; margin-bottom: 2px; }
+      .sc .kpi-row .item .n { font-size: 23px; }
+      .sc .kpi-row .item.key .n { font-size: 27px; }
+      .sc .sub { min-height: 16px; line-height: 16px; margin-bottom: 1px; font-size: 15px; }
+      .sc-health .plot { padding: 2px; }
+      .sport-list {
+        gap: 1px 6px; padding-top: 0; font-size: 15px;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: repeat(4, minmax(0, 1fr));
+      }
+      .sport-list div { line-height: 1.2; align-items: center; }
+      .sport-list b { font-size: 17px; }
+
+      .portrait {
+        grid-template-columns: minmax(118px, 136px) 1px minmax(0, 1fr);
+        gap: 5px; padding: 2px 3px 3px;
+      }
+      .dir { font-size: 15px; }
+      .dir-item { padding: 4px 5px; }
+      .dir-item .nm { font-size: 16px; }
+      .dir-item .tm { font-size: 13px; }
+      .sec-label { font-size: 16px; margin-bottom: 2px; }
+      .pinfo { gap: 2px 6px; font-size: 15px; }
+      .tags { gap: 3px; }
+      .tags span, .tag { font-size: 14px; padding: 2px 6px; }
+      .judge-box { font-size: 15px; padding: 5px 7px; line-height: 1.35; }
+      .vitals { gap: 4px; }
+      .vt { padding: 5px 6px; min-height: 52px; }
+      .vt .top { font-size: 14px; }
+      .ai-nav { font-size: 14px; padding: 4px 9px; bottom: 3px; right: 3px; }
+
+      .group-grid { gap: 3px; }
+      .gch .cap { font-size: 15px; line-height: 1.25; min-height: 0; }
+      .gch .cap .leg { font-size: 14px; }
+      .region-label { font-size: 14px; padding: 0 4px; }
+
+      .list-modal { width: min(860px, 96vw); max-height: min(88vh, 720px); }
+      .drill-modal { width: min(920px, 96vw); max-height: min(90vh, 740px); }
+      .drill-bd { grid-template-columns: minmax(240px, .9fr) minmax(0, 1.2fr); gap: 8px; }
+    }
+
+    /* 更窄：单列滚动兜底 */
+    @media (max-width: 860px) {
+      body { overflow: auto; }
+      .screen { height: auto; min-height: 100vh; overflow: visible; }
+      .body { grid-template-columns: 1fr; }
+      .col { grid-template-rows: auto; }
+      .col-left, .col-right { grid-template-rows: auto; }
+      .biz-top { display: contents; }
+      .biz-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: none;
+        height: auto;
+      }
+      .biz-layout .biz.c1,
+      .biz-layout .biz.c2,
+      .biz-layout .biz.c3,
+      .biz-layout .biz.c4,
+      .biz-layout .biz.c5,
+      .biz-layout .biz.c6 { grid-column: auto; grid-row: auto; min-height: 140px; }
+      .biz .tool-row { display: block; }
+      .scene-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: none;
+        min-height: 420px;
+      }
+      .group-grid { min-height: 280px; }
+      .portrait { min-height: 360px; }
+      .title-box h1 {
+        font-size: 18px; letter-spacing: 0.03em; text-indent: 0.03em; white-space: normal;
+      }
+    }
+
+    /* 1024×800：大字号三场景 */
+    @media (width: 1024px) and (height: 800px),
+           (max-width: 1024px) and (max-height: 800px) and (min-width: 900px) {
+      :root {
+        --metric-n: 27px;
+        --metric-n-sm: 24px;
+        --metric-unit: 17px;
+        --metric-label: 17px;
+        --header-h: 48px;
+        --ui-title: 21px;
+        --ui-pill: 18px;
+        --ui-sub: 17px;
+        --ui-body: 18px;
+      }
+      .screen { padding: 0 5px 3px; gap: 3px; }
+      .title-box { padding: 0 32px 0; max-width: min(76vw, 740px); }
+      .title-box h1 { font-size: 19px; letter-spacing: 0.01em; text-indent: 0.01em; }
+      .ph { min-height: 28px; height: auto; padding: 3px 6px 2px; }
+      .ph h3 { font-size: 20px; }
+      .body { padding-top: 2px; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+      .col-left { grid-template-rows: minmax(0, 1.18fr) minmax(0, 1fr); }
+      .biz-layout {
+        gap: 3px;
+        grid-template-rows: minmax(0, 1.15fr) minmax(0, 1.05fr) minmax(0, 0.8fr);
+      }
+      .biz .tool-row { display: none; }
+      .biz.c1 .metrics.dense .m:nth-child(n+5) { display: none; }
+      .biz.c5 .metrics .m .k { font-size: 15px; }
+      .biz-home-lines { grid-template-columns: 1fr 1fr; gap: 3px; font-size: 15px; }
+      .biz-home-lines .hl b { font-size: 16px; }
+      .biz-party { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 3px; }
+      .biz.c6 { padding: 5px 6px; }
+      .party-block { padding: 4px 3px; gap: 2px; }
+      .party-block .pt { font-size: 19px; }
+      .party-block .pd { font-size: 16px; line-height: 1.3; -webkit-line-clamp: 2; }
+      .party-tags { display: none !important; }
+      .scene-grid {
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1.05fr);
+        grid-template-rows: minmax(0, 1fr);
+      }
+      .sc .sub { display: none; }
+      .sc .hd { font-size: 18px; height: 22px; line-height: 22px; }
+      .sport-list { font-size: 15px; gap: 1px 5px; }
+      .sport-list div { line-height: 1.18; }
+      .sport-list b { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="header">
+      <div class="header-bg" aria-hidden="true"></div>
+      <div class="title-box"><h1 id="mainTitle">蛇口街道颐养服务体验中心运营平台</h1></div>
+      <div class="header-right">
+        <button class="btn-fs" type="button" id="btnFullscreen" title="全屏切换" aria-pressed="false">
+          <svg id="fsIconEnter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg>
+          <svg id="fsIconExit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M3 8h5V3M16 3v5h5M3 16h5v5M16 21v-5h5"/></svg>
+          <span id="fsLabel">全屏</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="body">
+      <!-- ===== 左：业态 + 场景 ===== -->
+      <div class="col col-left">
+        <section class="panel panel-biz">
+          <div class="ph"><h3>四级网络</h3></div>
+          <div class="pb">
+            <div class="biz-layout">
+              <div class="biz-top">
+                <!-- L1 街道长者服务中心 -->
+                <div class="biz c1">
+                  <div class="hd">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z"/></svg></div>
+                    <div class="name"><span class="pill">街道长者服务中心<small id="orgCountBadge">(1)</small></span></div>
+                    <button type="button" class="list-btn" data-list="org">详情 ›</button>
+                  </div>
+                  <div class="tool-row">街道一级 · 综合服务枢纽</div>
+                  <div class="metrics dense">
+                    <div class="m"><span class="n" data-k="centerCnt">1<em>个</em></span><span class="k">中心</span></div>
+                    <div class="m key"><span class="n" data-k="archiveNum">28281<em>人</em></span><span class="k">档案</span></div>
+                    <div class="m key"><span class="n" data-k="elderlyHigh">334<em>人</em></span><span class="k">高龄</span></div>
+                    <div class="m"><span class="n" data-k="assistElder">11<em>人</em></span><span class="k">助老</span></div>
+                    <div class="m key"><span class="n" data-k="actCnt">36<em>场</em></span><span class="k">活动</span></div>
+                    <div class="m"><span class="n" data-k="actPeople">900<em>人次</em></span><span class="k">参与</span></div>
+                  </div>
+                </div>
+
+                <!-- L2 社区长者服务站 -->
+                <div class="biz c2">
+                  <div class="hd">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l9 6v12h-6v-7H9v7H3V9l9-6z"/></svg></div>
+                    <div class="name"><span class="pill">社区长者服务站<small id="siteCountBadge">(2)</small></span></div>
+                    <button type="button" class="list-btn" data-list="site">站点列表 ›</button>
+                  </div>
+                  <div class="tool-row">社区二级 · 属地服务站</div>
+                  <div class="biz-mini-list">
+                    <div class="row"><b>深圳湾社区</b><span>蛇口街道</span><em>建档 0</em></div>
+                    <div class="row"><b>海岸社区</b><span>蛇口街道</span><em>建档 0</em></div>
+                  </div>
+                </div>
+
+                <!-- L3 小区长者服务点 -->
+                <div class="biz c3">
+                  <div class="hd">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3-7-7-7zm0 9.5A2.5 2.5 0 119.5 9 2.5 2.5 0 0112 11.5z"/></svg></div>
+                    <div class="name"><span class="pill">小区长者服务点<small id="pointCountBadge">(15)</small></span></div>
+                    <button type="button" class="list-btn" data-list="point">服务点列表 ›</button>
+                  </div>
+                  <div class="tool-row">小区三级 · 就近微站点</div>
+                  <div class="metrics">
+                    <div class="m key"><span class="n" data-k="pointCnt">15<em>个</em></span><span class="k">服务点</span></div>
+                    <div class="m key"><span class="n" data-k="pointArchive">5174<em>人</em></span><span class="k">建档</span></div>
+                    <div class="m key"><span class="n" data-k="pointActPeople">5751<em>人</em></span><span class="k">活动</span></div>
+                    <div class="m"><span class="n" data-k="pointComm">2<em>个</em></span><span class="k">社区站</span></div>
+                  </div>
+                </div>
+
+                <!-- L4 居家养老服务 -->
+                <div class="biz c4">
+                  <div class="hd">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
+                    <div class="name"><span class="pill">居家养老服务</span></div>
+                    <button type="button" class="list-btn" data-list="home">项目详情 ›</button>
+                  </div>
+                  <div class="tool-row">居家四级 · 南山区养老服务消费补贴</div>
+                  <div class="biz-home-lines">
+                    <div class="hl"><b>家庭养老床位</b><span>签约 <i>48</i> · <i>1436</i> 人次 · <i>7246.5</i> h</span></div>
+                    <div class="hl"><b>护老者喘息</b><span>签约 <i>112</i> · <i>1060</i> 次 · <i>2701</i> h</span></div>
+                    <div class="hl"><b>失能消费补贴</b><span>800元 · <i>14</i> 人 / <i>55</i> 人次</span></div>
+                    <div class="hl"><b>专业消费券</b><span>200元 · <i>109</i> 人次</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="biz-bottom">
+                <!-- 助餐服务 -->
+                <div class="biz c5 wide">
+                  <div class="hd">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.1 13.34l2.83-2.83L3.91 3.5a4.008 4.008 0 000 5.66l4.19 4.18zm6.78-1.81c1.53.71 3.68.21 5.27-1.38 1.91-1.91 2.28-4.65.81-6.12-1.46-1.47-4.2-1.1-6.12.81-1.59 1.59-2.09 3.74-1.38 5.27L3.7 19.87l1.41 1.41L12 14.41l6.88 6.88 1.41-1.41L13.41 13l1.47-1.47z"/></svg></div>
+                    <div class="name"><span class="pill">助餐服务</span></div>
+                  </div>
+                  <div class="tool-row">社区食堂 1 个 · 社区助餐点 8 个</div>
+                  <div class="metrics">
+                    <div class="m key"><span class="n" data-k="canteenCnt">1<em>个</em></span><span class="k">食堂</span></div>
+                    <div class="m key"><span class="n" data-k="canteenDaily">800<em>人</em></span><span class="k">日均用餐</span></div>
+                    <div class="m"><span class="n" data-k="mealPts">8<em>个</em></span><span class="k">助餐点</span></div>
+                    <div class="m key"><span class="n" data-k="mealDaily">200<em>人</em></span><span class="k">日均用餐</span></div>
+                  </div>
+                </div>
+
+                <!-- 党建+智慧养老 -->
+                <div class="biz c6 wide">
+                  <div class="hd">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2H22l-6 4.8 2.3 7L12 16.8 5.7 21l2.3-7-6-4.8h7.6L12 2z"/></svg></div>
+                    <div class="name"><span class="pill">党建+智慧养老</span></div>
+                  </div>
+                  <div class="tool-row">党建书吧 · 红色服务队伍赋能</div>
+                  <div class="biz-party">
+                    <div class="party-block">
+                      <div class="pt">老有所康</div>
+                      <div class="pd">健康驿站 · 康复助力 · 颐脑空间</div>
+                    </div>
+                    <div class="party-block">
+                      <div class="pt">老有所助</div>
+                      <div class="pd">膳食管理 · 家庭床位 · MDT上门</div>
+                    </div>
+                    <div class="party-block">
+                      <div class="pt">老有所安</div>
+                      <div class="pd">独居陪伴 · 银龄金融守护</div>
+                    </div>
+                    <div class="party-block">
+                      <div class="pt">老有所乐</div>
+                      <div class="pd">1旗舰体验区 + N微站点</div>
+                    </div>
+                    <div class="party-block">
+                      <div class="pt">老有所为</div>
+                      <div class="pd">志愿队 · 体验官 · 银发产业</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="ph"><h3>场景</h3></div>
+          <div class="pb">
+            <div class="scene-grid">
+              <div class="sc sc-health">
+                <div class="hd">健康监测</div>
+                <div class="kpi-row">
+                  <div class="item key"><div class="n" data-k="monitorCnt">135<em>次</em></div><div class="k">监测次数</div></div>
+                  <div class="item key"><div class="n" data-k="monitorAbn">28<em>次</em></div><div class="k">异常次数</div></div>
+                  <div class="item"><div class="n" data-k="monitorRpt">41<em>次</em></div><div class="k">报告次数</div></div>
+                </div>
+                <div class="sub">年龄段 · 监测/异常/报告
+                  <span class="leg" style="margin-left:6px">
+                    <span><i style="background:#3b9eff"></i>监测</span>
+                    <span><i style="background:#e85cff"></i>异常</span>
+                    <span><i style="background:#3ddea8"></i>报告</span>
+                  </span>
+                </div>
+                <div class="plot" id="chHealthAge"></div>
+              </div>
+              <div class="sc sc-nutri">
+                <div class="hd">营养</div>
+                <div class="sub">风险分布</div>
+                <div class="plot" id="chNutri"></div>
+              </div>
+              <div class="sc sc-sport">
+                <div class="hd">运动</div>
+                <div class="sub">运动情况</div>
+                <div class="sport-list">
+                  <div><span><i></i>握力评分</span><b>16分</b></div>
+                  <div><span><i></i>睁眼平衡</span><b>15秒</b></div>
+                  <div><span><i></i>五次坐站</span><b>11秒</b></div>
+                  <div><span><i></i>原地踏步</span><b>47次</b></div>
+                  <div><span><i></i>肺活量</span><b>3012ml</b></div>
+                  <div><span><i></i>功能性前伸</span><b>33cm</b></div>
+                  <div><span><i></i>站立行走</span><b>26秒</b></div>
+                  <div><span><i></i>2分钟踏步</span><b>47次</b></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===== 右：个人画像 + 群体分析 ===== -->
+      <div class="col col-right">
+        <section class="panel">
+          <div class="ph">
+            <h3>个体动态</h3>
+            <div class="ph-actions">
+              <button type="button" class="drill" id="drillLink" title="下钻详情" aria-label="下钻详情" aria-haspopup="dialog">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="pb">
+            <div class="portrait">
+              <div class="dir-wrap">
+                <div class="sec-label">长者数据目录<span class="gear">⚙</span></div>
+                <div class="dir" id="dirList"></div>
+                <div class="dir-foot"><a href="javascript:;">人员列表 ›</a></div>
+              </div>
+              <div class="v-split" aria-hidden="true"></div>
+              <div class="profile" id="profilePane">
+                <div>
+                  <div class="sec-label">基础信息</div>
+                  <div class="pinfo" id="pinfo"></div>
+                </div>
+                <div>
+                  <div class="sec-label">长者标签</div>
+                  <div class="tags" id="ptags"></div>
+                </div>
+                <div>
+                  <div class="sec-label">最新数据研判</div>
+                  <div class="judge-box" id="pjudge">—</div>
+                </div>
+                <div class="vitals" id="pvitals"></div>
+              </div>
+              <a class="ai-nav" href="./home-shekou.html" title="打开蛇口需供分析">需供分析</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="ph">
+            <h3>群体动态</h3>
+            <div class="ph-actions">
+              <span class="ph-chev" aria-hidden="true">›</span>
+            </div>
+          </div>
+          <div class="pb">
+            <div class="group-grid">
+              <div class="gch">
+                <div class="cap">
+                  <span class="region-label">蛇口区</span>老年人口总量与老龄化率变化曲线
+                  <span class="leg"><span><i style="background:#00d4ff"></i>总量(左轴)</span><span><i style="background:#e85cff"></i>老龄化率%(右轴)</span></span>
+                </div>
+                <div class="plot" id="gPop"></div>
+              </div>
+              <div class="gch">
+                <div class="cap">
+                  <span class="region-label">蛇口区</span>老年人服务次数变化曲线
+                  <span class="leg"><span><i style="background:#ff9a1a"></i>服务次数</span></span>
+                </div>
+                <div class="plot" id="gSvc"></div>
+              </div>
+              <div class="gch">
+                <div class="cap">
+                  <span class="region-label">蛇口区</span>老年人群体血压变化趋势
+                  <span class="leg"><span><i style="background:#e85cff"></i>高压</span><span><i style="background:#3ddea8"></i>低压</span><span><i style="background:rgba(255,255,255,.45)"></i>基准线</span></span>
+                </div>
+                <div class="plot" id="gBp"></div>
+              </div>
+              <div class="gch">
+                <div class="cap">
+                  <span class="region-label">蛇口区</span>老年人评估次数变化曲线
+                  <span class="leg">
+                    <span><i style="background:#3b9eff"></i>运动</span>
+                    <span><i style="background:#ff9a1a"></i>营养</span>
+                    <span><i style="background:#3ddea8"></i>监测</span>
+                    <span><i style="background:#8b7cff"></i>睡眠</span>
+                  </span>
+                </div>
+                <div class="plot" id="gEval"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div class="list-mask" id="listMask" role="dialog" aria-modal="true" aria-labelledby="listTitle" hidden>
+    <div class="list-modal">
+      <div class="list-hd">
+        <div>
+          <h2 id="listTitle">列表</h2>
+          <div class="meta" id="listMeta">模拟演示数据</div>
+        </div>
+        <button type="button" class="list-close" id="listClose" aria-label="关闭">×</button>
+      </div>
+      <div class="list-bd">
+        <table class="list-table">
+          <thead id="listHead"></thead>
+          <tbody id="listBody"></tbody>
+        </table>
+      </div>
+      <div class="list-ft">
+        <span id="listCount">共 0 条</span>
+        <span>演示数据 · 仅供大屏展示</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="drill-mask" id="drillMask" role="dialog" aria-modal="true" aria-labelledby="drillTitle" hidden>
+    <div class="drill-modal">
+      <div class="drill-hd">
+        <div class="drill-hd-main">
+          <div class="drill-avatar" id="drillAvatar">陈</div>
+          <div>
+            <h2 id="drillTitle">长者健康详情</h2>
+            <div class="sub" id="drillSub">
+              <span id="drillSubText">个体动态健康分析</span>
+              <span class="drill-badge" id="drillBadge">体征平稳</span>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="drill-close" id="drillClose" aria-label="关闭">×</button>
+      </div>
+      <div class="drill-bd">
+        <div class="drill-col drill-col-left">
+          <div class="drill-sec">基础信息</div>
+          <div class="drill-pinfo" id="drillPinfo"></div>
+          <div class="drill-sec">长者标签</div>
+          <div class="drill-tags" id="drillTags"></div>
+          <div class="drill-sec">最新数据研判</div>
+          <div class="drill-judge" id="drillJudge"></div>
+          <div class="drill-sec">最新体征</div>
+          <div class="drill-vitals" id="drillVitals"></div>
+        </div>
+        <div class="drill-col drill-col-right">
+          <div class="drill-charts">
+            <div class="drill-chart">
+              <div class="cap">
+                <span>近7日血压趋势</span>
+                <span class="leg"><span><i style="background:#3b9eff"></i>收缩压</span><span><i style="background:#8b7cff"></i>舒张压</span></span>
+              </div>
+              <div class="plot" id="drillBp"></div>
+            </div>
+            <div class="drill-chart">
+              <div class="cap">
+                <span>近7日脉率 / 血氧</span>
+                <span class="leg"><span><i style="background:#ff4d4f"></i>脉率</span><span><i style="background:#3ddea8"></i>血氧</span></span>
+              </div>
+              <div class="plot" id="drillPulse"></div>
+            </div>
+            <div class="drill-chart">
+              <div class="cap"><span>本月到站场景使用（次）</span></div>
+              <div class="plot" id="drillScene"></div>
+            </div>
+            <div class="drill-chart">
+              <div class="cap">
+                <span>服务履约与评价回流</span>
+                <span class="leg"><span><i style="background:#3b9eff"></i>履约</span><span><i style="background:#3ddea8"></i>评价</span></span>
+              </div>
+              <div class="plot" id="drillOrder"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const C = {
+        cyan: "#00d4ff", blue: "#3b9eff", orange: "#ff9a1a",
+        pink: "#e85cff", green: "#3ddea8", violet: "#8b7cff", red: "#ff4d4f"
+      };
+
+      const svgPut = (el, html) => { if (el) el.innerHTML = html; };
+
+      function bars(el, data, color, labels) {
+        if (!el) return;
+        const w = el.clientWidth || 140, h = el.clientHeight || 78;
+        const max = Math.max(...data, 1);
+        const pad = { t: 22, r: 4, b: 16, l: 26 };
+        const n = data.length;
+        const slot = (w - pad.l - pad.r) / n;
+        const bw = Math.min(20, slot * 0.48);
+        let g = "";
+        for (let i = 0; i <= 4; i++) {
+          const y = pad.t + (i / 4) * (h - pad.t - pad.b);
+          const val = Math.round(max - (i / 4) * max);
+          g += `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="rgba(140,180,220,.16)" stroke-dasharray="2 3"/>`;
+          g += `<text x="${pad.l-3}" y="${y+3}" fill="rgba(142,176,208,.72)" font-size="8" text-anchor="end">${val}</text>`;
+        }
+        data.forEach((v, i) => {
+          const fullH = h - pad.t - pad.b;
+          const bh = Math.max(4, (v / max) * fullH);
+          const x = pad.l + i * slot + (slot - bw) / 2;
+          const y = h - pad.b - bh;
+          const r = bw / 2;
+          // ghost full-height glass bar
+          g += `<rect x="${x}" y="${pad.t}" width="${bw}" height="${fullH}" rx="${r}" fill="${color}" opacity=".08"/>`;
+          // value bar + cylindrical sheen
+          g += `<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="${r}" fill="url(#g${el.id})"/>`;
+          g += `<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="${r}" fill="url(#gs${el.id})"/>`;
+          // bright elliptical cap + soft glow
+          g += `<ellipse cx="${x+bw/2}" cy="${y}" rx="${bw/2+2}" ry="${Math.max(4, bw*0.36)}" fill="${color}" opacity=".28"/>`;
+          g += `<ellipse cx="${x+bw/2}" cy="${y}" rx="${bw/2}" ry="${Math.max(3.5, bw*0.3)}" fill="${color}" opacity=".98"/>`;
+          g += `<ellipse cx="${x+bw/2}" cy="${y}" rx="${bw/2-1.5}" ry="${Math.max(2, bw*0.18)}" fill="#fff" opacity=".5"/>`;
+          g += `<circle cx="${x+bw/2}" cy="${y-11}" r="9" fill="rgba(4,18,40,.72)" stroke="${color}" stroke-width="1" opacity=".95"/>`;
+          g += `<text x="${x+bw/2}" y="${y-8}" fill="#e8f4ff" font-size="8" text-anchor="middle">${v}</text>`;
+          if (labels?.[i]) {
+            g += `<text x="${x+bw/2}" y="${h-2}" fill="rgba(160,190,220,.85)" font-size="8" text-anchor="middle">${labels[i]}</text>`;
+          }
+        });
+        svgPut(el, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="g${el.id}" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="${color}" stop-opacity="1"/>
+              <stop offset="35%" stop-color="${color}" stop-opacity=".78"/>
+              <stop offset="100%" stop-color="${color}" stop-opacity=".18"/>
+            </linearGradient>
+            <linearGradient id="gs${el.id}" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#fff" stop-opacity=".22"/>
+              <stop offset="45%" stop-color="#fff" stop-opacity="0"/>
+              <stop offset="100%" stop-color="#000" stop-opacity=".18"/>
+            </linearGradient>
+          </defs>${g}</svg>`);
+      }
+
+      function line(el, series, opts = {}) {
+        if (!el) return;
+        const dual = !!opts.dualY && series.length > 1;
+        const w = el.clientWidth || 200, h = el.clientHeight || 90;
+        const pad = { t: 8, r: dual ? 30 : 8, b: 16, l: 28 };
+        const leftData = dual ? series[0].data : series.flatMap(s => s.data);
+        const max = opts.max ?? Math.max(...leftData, 1);
+        const min = opts.min ?? 0;
+        const max2 = opts.max2 ?? (dual ? Math.max(...series[1].data, 1) : max);
+        const min2 = opts.min2 ?? 0;
+        const n = series[0].data.length;
+        const xAt = i => pad.l + (i / Math.max(n - 1, 1)) * (w - pad.l - pad.r);
+        const yAt = (v, useRight) => {
+          const lo = useRight ? min2 : min, hi = useRight ? max2 : max;
+          return pad.t + (1 - (v - lo) / (hi - lo || 1)) * (h - pad.t - pad.b);
+        };
+        const smooth = pts => {
+          if (pts.length < 2) return "";
+          let d = `M${pts[0][0]},${pts[0][1]}`;
+          for (let i = 0; i < pts.length - 1; i++) {
+            const p0 = pts[i - 1] || pts[i];
+            const p1 = pts[i];
+            const p2 = pts[i + 1];
+            const p3 = pts[i + 2] || p2;
+            const cp1x = p1[0] + (p2[0] - p0[0]) / 6;
+            const cp1y = p1[1] + (p2[1] - p0[1]) / 6;
+            const cp2x = p2[0] - (p3[0] - p1[0]) / 6;
+            const cp2y = p2[1] - (p3[1] - p1[1]) / 6;
+            d += ` C${cp1x},${cp1y} ${cp2x},${cp2y} ${p2[0]},${p2[1]}`;
+          }
+          return d;
+        };
+        let g = "";
+        const ticks = 4;
+        for (let i = 0; i <= ticks; i++) {
+          const y = pad.t + (i / ticks) * (h - pad.t - pad.b);
+          const val = Math.round(max - (i / ticks) * (max - min));
+          g += `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="rgba(140,180,220,.14)" stroke-dasharray="2 3"/>`;
+          g += `<text x="${pad.l-4}" y="${y+3}" fill="rgba(142,176,208,.7)" font-size="9" text-anchor="end">${val}</text>`;
+          if (dual) {
+            const val2 = (max2 - (i / ticks) * (max2 - min2));
+            const txt = Number.isInteger(val2) ? val2 : val2.toFixed(1);
+            g += `<text x="${w-pad.r+4}" y="${y+3}" fill="rgba(232,92,255,.75)" font-size="9" text-anchor="start">${txt}</text>`;
+          }
+        }
+        for (let i = 0; i < n; i++) {
+          g += `<line x1="${xAt(i)}" y1="${pad.t}" x2="${xAt(i)}" y2="${h-pad.b}" stroke="rgba(140,180,220,.08)" stroke-dasharray="2 3"/>`;
+        }
+        (opts.refs || []).forEach(ref => {
+          const y = yAt(ref.value, !!ref.right);
+          g += `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="${ref.color || "rgba(255,255,255,.45)"}" stroke-width="1.2" stroke-dasharray="4 3" opacity=".85"/>`;
+          if (ref.label) {
+            g += `<text x="${w-pad.r-2}" y="${y-3}" fill="${ref.color || "rgba(255,255,255,.55)"}" font-size="8" text-anchor="end">${ref.label}</text>`;
+          }
+        });
+        series.forEach((s, si) => {
+          const useRight = dual && si > 0;
+          const pts = s.data.map((v, i) => [xAt(i), yAt(v, useRight)]);
+          const d = smooth(pts);
+          if (opts.area) {
+            const op = typeof opts.area === "number" ? opts.area : .18;
+            g += `<path d="${d} L${xAt(n-1)},${h-pad.b} L${xAt(0)},${h-pad.b} Z" fill="${s.color}" opacity="${op}"/>`;
+          }
+          const sw = opts.strokeWidth || 2;
+          g += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="${sw}" stroke-linejoin="round" filter="drop-shadow(0 0 3px ${s.color})"/>`;
+          const showDots = n <= 12 || opts.dots;
+          if (showDots) {
+            s.data.forEach((v, i) => {
+              g += `<circle cx="${xAt(i)}" cy="${yAt(v, useRight)}" r="2.8" fill="#000b1d" stroke="${s.color}" stroke-width="1.8"/>`;
+            });
+          }
+        });
+        (opts.labels || []).forEach((lb, i) => {
+          if (!lb) return;
+          g += `<text x="${xAt(i)}" y="${h-2}" fill="rgba(142,176,208,.85)" font-size="9" text-anchor="middle">${lb}</text>`;
+        });
+        if (opts.endLabel && series[0]) {
+          const last = series[0].data.length - 1;
+          g += `<text x="${Math.min(xAt(last)+2, w-48)}" y="${yAt(series[0].data[last])-8}" fill="#f0d080" font-size="10">${opts.endLabel}</text>`;
+        }
+        svgPut(el, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${g}</svg>`);
+      }
+
+      function groupBars(el, seriesList, cats, colors) {
+        if (!el) return;
+        const w = el.clientWidth || 200, h = el.clientHeight || 90;
+        const pad = { t: 10, r: 6, b: 16, l: 26 };
+        const n = cats.length;
+        const m = seriesList.length;
+        const max = Math.max(...seriesList.flat(), 1);
+        const slot = (w - pad.l - pad.r) / n;
+        const gap = 2;
+        const bw = Math.min(10, (slot * 0.72 - gap * (m - 1)) / m);
+        let g = "";
+        for (let i = 0; i <= 3; i++) {
+          const y = pad.t + (i / 3) * (h - pad.t - pad.b);
+          const val = Math.round(max - (i / 3) * max);
+          g += `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="rgba(140,180,220,.14)" stroke-dasharray="2 3"/>`;
+          g += `<text x="${pad.l-3}" y="${y+3}" fill="rgba(142,176,208,.7)" font-size="8" text-anchor="end">${val}</text>`;
+        }
+        cats.forEach((cat, i) => {
+          const groupW = m * bw + (m - 1) * gap;
+          const x0 = pad.l + i * slot + (slot - groupW) / 2;
+          seriesList.forEach((arr, j) => {
+            const v = arr[i] || 0;
+            const bh = Math.max(2, (v / max) * (h - pad.t - pad.b));
+            const x = x0 + j * (bw + gap);
+            const y = h - pad.b - bh;
+            const color = colors[j];
+            g += `<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="2" fill="${color}" opacity=".92"/>`;
+            g += `<rect x="${x}" y="${y}" width="${bw}" height="${Math.min(bh, 4)}" rx="2" fill="#fff" opacity=".22"/>`;
+          });
+          g += `<text x="${pad.l + i * slot + slot / 2}" y="${h-2}" fill="rgba(160,190,220,.85)" font-size="8" text-anchor="middle">${cat}</text>`;
+        });
+        svgPut(el, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${g}</svg>`);
+      }
+
+      function renderFunnel(el, values) {
+        if (!el) return;
+        const labels = ["到店", "体验", "付费下单", "订单核销", "复购"];
+        const colors = ["#3b9eff", "#00d4ff", "#3ddea8", "#ff9a1a", "#e85cff"];
+        const vals = (values || []).map((v) => Number(v) || 0);
+        const topVal = Math.max(vals[0] || 0, 1);
+        el.innerHTML = `<div class="fh-cap">服务商运营转化漏斗</div><div class="fh-plot"></div>`;
+        const plot = el.querySelector(".fh-plot");
+        const w = Math.max(plot.clientWidth || 220, 160);
+        const h = Math.max(plot.clientHeight || 200, 140);
+        const n = labels.length;
+        const leftPad = 52;
+        const rightPad = 42;
+        const topPad = 2;
+        const botPad = 2;
+        const gap = 2.5;
+        const rowH = (h - topPad - botPad - gap * (n - 1)) / n;
+        const cx = leftPad + (w - leftPad - rightPad) / 2;
+        const maxHalf = (w - leftPad - rightPad) * 0.48;
+        const minHalf = maxHalf * 0.22;
+        const halfOf = (v) => minHalf + (Math.sqrt(Math.max(v, 0) / topVal)) * (maxHalf - minHalf);
+        let g = "";
+        vals.forEach((v, i) => {
+          const y0 = topPad + i * (rowH + gap);
+          const y1 = y0 + rowH;
+          const topHalf = halfOf(v);
+          const next = i < n - 1 ? vals[i + 1] : v * 0.72;
+          const botHalf = halfOf(next);
+          const pts = [
+            [cx - topHalf, y0],
+            [cx + topHalf, y0],
+            [cx + botHalf, y1],
+            [cx - botHalf, y1]
+          ].map((p) => p.join(",")).join(" ");
+          const midY = (y0 + y1) / 2;
+          const rate = Math.round((v / topVal) * 100);
+          g += `<polygon points="${pts}" fill="${colors[i]}" opacity=".9"/>`;
+          g += `<polygon points="${pts}" fill="url(#fnGlow${i})"/>`;
+          g += `<line x1="${cx - topHalf}" y1="${y0 + 0.5}" x2="${cx + topHalf}" y2="${y0 + 0.5}" stroke="#fff" stroke-opacity=".3" stroke-width="1"/>`;
+          g += `<text x="${leftPad - 6}" y="${midY + 3.5}" fill="rgba(200,225,245,.92)" font-size="10" text-anchor="end">${labels[i]}</text>`;
+          g += `<text x="${w - 6}" y="${midY + 3.5}" fill="#fff" font-size="15" font-weight="700" font-family="DIN Alternate, DIN Condensed, Helvetica Neue, Arial, sans-serif" text-anchor="end">${v}</text>`;
+          g += `<text x="${cx}" y="${midY + 3.5}" fill="rgba(255,255,255,.95)" font-size="11" font-weight="650" font-family="DIN Alternate, DIN Condensed, Helvetica Neue, Arial, sans-serif" text-anchor="middle">${rate}%</text>`;
+        });
+        const defs = colors.map((c, i) =>
+          `<linearGradient id="fnGlow${i}" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fff" stop-opacity=".26"/>
+            <stop offset="70%" stop-color="${c}" stop-opacity="0"/>
+          </linearGradient>`
+        ).join("");
+        svgPut(plot, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><defs>${defs}</defs>${g}</svg>`);
+      }
+
+      function stackBars(el, groups, cats, colors) {
+        if (!el) return;
+        const w = el.clientWidth || 160, h = el.clientHeight || 70;
+        const pad = { t: 6, r: 4, b: 14, l: 22 };
+        const n = groups.length;
+        const slot = (w - pad.l - pad.r) / n;
+        const bw = Math.min(14, slot * 0.38);
+        const max = Math.max(...groups.map(g => g.reduce((a, b) => a + b, 0)), 1);
+        let g = "";
+        for (let i = 0; i <= 3; i++) {
+          const y = pad.t + (i / 3) * (h - pad.t - pad.b);
+          const val = Math.round(max - (i / 3) * max);
+          g += `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="rgba(140,180,220,.12)" stroke-dasharray="2 3"/>`;
+          g += `<text x="${pad.l-3}" y="${y+3}" fill="rgba(142,176,208,.7)" font-size="8" text-anchor="end">${val}</text>`;
+        }
+        groups.forEach((vals, i) => {
+          const total = vals.reduce((a, b) => a + b, 0);
+          const fullH = (total / max) * (h - pad.t - pad.b);
+          const x = pad.l + i * slot + (slot - bw) / 2;
+          const topY = h - pad.b - fullH;
+          // ghost capsule
+          g += `<rect x="${x}" y="${pad.t}" width="${bw}" height="${h-pad.t-pad.b}" rx="${bw/2}" fill="${colors[0]}" opacity=".07"/>`;
+          // clip stacked fill into capsule
+          const clipId = `sc${el.id}_${i}`;
+          g += `<defs><clipPath id="${clipId}"><rect x="${x}" y="${topY}" width="${bw}" height="${fullH}" rx="${bw/2}"/></clipPath></defs>`;
+          let y = h - pad.b;
+          vals.forEach((v, j) => {
+            const bh = (v / max) * (h - pad.t - pad.b);
+            y -= bh;
+            g += `<rect x="${x}" y="${y}" width="${bw}" height="${bh+0.5}" fill="${colors[j]}" opacity=".95" clip-path="url(#${clipId})"/>`;
+          });
+          g += `<ellipse cx="${x+bw/2}" cy="${topY}" rx="${bw/2}" ry="${Math.max(2.5, bw*0.28)}" fill="${colors[vals.length-1]}"/>`;
+          g += `<text x="${x+bw/2}" y="${h-2}" fill="rgba(142,176,208,.85)" font-size="8" text-anchor="middle">${cats[i]}</text>`;
+        });
+        svgPut(el, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${g}</svg>`);
+      }
+
+      function hBars(el, items, color) {
+        if (!el) return;
+        const w = el.clientWidth || 160, h = el.clientHeight || 80;
+        const max = Math.max(...items.map(i => i.v), 1);
+        const rowH = (h - 4) / items.length;
+        let g = "";
+        items.forEach((it, i) => {
+          const y = 4 + i * rowH;
+          const bh = Math.max(10, rowH - 12);
+          const trackX = 92, trackW = w - trackX - 8;
+          const bw = Math.max(bh, (it.v / max) * (trackW - bh * 0.2));
+          g += `<text x="0" y="${y+bh*.72}" fill="rgba(168,200,232,.9)" font-size="10">${it.l}</text>`;
+          g += `<rect x="${trackX}" y="${y}" width="${trackW}" height="${bh}" rx="${bh/2}" fill="rgba(120,160,200,.1)"/>`;
+          g += `<rect x="${trackX}" y="${y}" width="${bw}" height="${bh}" rx="${bh/2}" fill="url(#hg${el.id})"/>`;
+          const cx = trackX + bw - bh / 2;
+          g += `<circle cx="${cx}" cy="${y+bh/2}" r="${bh/2 - 0.5}" fill="${color}" stroke="rgba(255,255,255,.35)" stroke-width="1"/>`;
+          g += `<text x="${cx}" y="${y+bh*.72}" fill="#041428" font-size="9" font-weight="700" text-anchor="middle">${it.v}</text>`;
+        });
+        svgPut(el, `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+          <defs><linearGradient id="hg${el.id}" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="${color}" stop-opacity=".3"/>
+            <stop offset="100%" stop-color="${color}" stop-opacity=".95"/>
+          </linearGradient></defs>${g}</svg>`);
+      }
+
+      /* —— 平台 / 机构演示数据（左侧随切换变化，右侧固定） —— */
+      const mkDays = (n, seed, base) => {
+        const out = [];
+        let v = base;
+        for (let i = 0; i < n; i++) {
+          v = Math.max(1, Math.round(v + Math.sin((i + seed) * 0.55) * 3 + ((i * 7 + seed) % 5) - 2));
+          out.push(v);
+        }
+        return out;
+      };
+      const dayLabels = (() => {
+        const lbs = Array(30).fill("");
+        for (let i = 0; i < 30; i += 5) {
+          const d = new Date(2026, 6, 10 + i); // 近30天示意
+          lbs[i] = `${d.getMonth() + 1}/${d.getDate()}`;
+        }
+        lbs[29] = "今";
+        return lbs;
+      })();
+
+      let ecoOrg = "shekou";
+
+      const ORG_META = {
+        shekou: { short: "蛇口驿站", name: "蛇口社区康养驿站" },
+        zhaoshang: { short: "招商康养站", name: "招商街道智慧康养站" },
+        wanxia: { short: "湾厦驿站", name: "湾厦社区康养驿站" },
+        haibin: { short: "海滨医养", name: "海滨嵌入式医养中心" },
+        chiwan: { short: "赤湾照护中心", name: "赤湾长者照护中心" },
+        nanyou: { short: "南油服务点", name: "南油康养服务点" }
+      };
+
+      const SCREEN = {
+        title: "蛇口街道颐养服务体验中心运营平台",
+        orgBadge: "(1)", siteBadge: "(2)", pointBadge: "(15)",
+        metrics: {
+          centerCnt: ["1", "个"], archiveNum: ["28281", "人"], elderlyHigh: ["334", "人"],
+          assistElder: ["11", "人"], actCnt: ["36", "场"], actPeople: ["900", "人次"],
+          pointCnt: ["15", "个"], pointArchive: ["5174", "人"], pointActPeople: ["5751", "人"], pointComm: ["2", "社区"],
+          canteenCnt: ["1", "个"], canteenDaily: ["800", "人"], mealPts: ["8", "个"], mealDaily: ["200", "人"],
+          monitorCnt: ["286", "次"], monitorAbn: ["34", "次"], monitorRpt: ["96", "次"]
+        },
+        healthAge: [[58, 72, 46, 18], [12, 18, 14, 6], [16, 22, 12, 5]]
+      };
+
+      const setMetric = (key, pair, flash) => {
+        const el = document.querySelector(`[data-k="${key}"]`);
+        if (!el || !pair) return;
+        const prev = el.dataset.v;
+        const next = String(pair[0]);
+        el.innerHTML = `${pair[0]}<em>${pair[1]}</em>`;
+        el.dataset.v = next;
+        if (flash && prev != null && prev !== next) {
+          const wrap = el.closest(".m, .item");
+          if (wrap) {
+            wrap.classList.remove("flash");
+            void wrap.offsetWidth;
+            wrap.classList.add("flash");
+          }
+        }
+      };
+
+      const applyLeftMetrics = (flash) => {
+        const p = SCREEN;
+        Object.entries(p.metrics).forEach(([k, v]) => setMetric(k, v, flash));
+        const ob = document.getElementById("orgCountBadge");
+        const sb = document.getElementById("siteCountBadge");
+        const pb = document.getElementById("pointCountBadge");
+        if (ob) ob.textContent = p.orgBadge;
+        if (sb) sb.textContent = p.siteBadge;
+        if (pb) pb.textContent = p.pointBadge;
+      };
+
+      const drawLeftCharts = () => {
+        const p = SCREEN;
+        const healthEl = document.getElementById("chHealthAge");
+        if (healthEl) {
+          groupBars(healthEl, p.healthAge, ["60-69", "70-79", "80-89", "90以上"], [C.blue, C.pink, C.green]);
+        }
+        const funnelEl = document.getElementById("ecoFunnel");
+        if (funnelEl && p.funnel && p.funnel[ecoOrg]) {
+          renderFunnel(funnelEl, p.funnel[ecoOrg]);
+        }
+      };
+
+      const drawRightCharts = () => {
+        /* 右侧个体/群体分析 */
+        line(document.getElementById("gPop"), [
+          { color: C.cyan, data: [72, 84, 92, 100, 111] },
+          { color: C.pink, data: [12.0, 13.5, 15.0, 16.5, 18.2] }
+        ], { labels: ["2020", "2021", "2022", "2023", "2024"], dualY: true, max: 120, max2: 25 });
+
+        line(document.getElementById("gSvc"), [
+          { color: C.orange, data: [280, 420, 510, 680, 816, 480] }
+        ], { labels: ["3月", "4月", "5月", "6月", "7月", "8月"], max: 1087, area: 0.28, strokeWidth: 2.4 });
+
+        line(document.getElementById("gBp"), [
+          { color: C.pink, data: [168, 150, 118, 130, 158, 152] },
+          { color: C.green, data: [96, 86, 68, 74, 90, 88] }
+        ], {
+          labels: ["3月", "4月", "5月", "6月", "7月", "8月"], max: 192,
+          refs: [
+            { value: 140, color: "rgba(255,154,26,.75)", label: "高压基准140" },
+            { value: 90, color: "rgba(61,222,168,.65)", label: "低压基准90" }
+          ]
+        });
+
+        line(document.getElementById("gEval"), [
+          { color: C.blue, data: [10, 14, 12] },
+          { color: C.orange, data: [16, 48, 20] },
+          { color: C.green, data: [8, 11, 9] },
+          { color: C.violet, data: [5, 7, 6] }
+        ], { labels: ["6月", "7月", "8月"], max: 51 });
+      };
+
+      const drawSceneRest = () => {
+        hBars(document.getElementById("chNutri"), [
+          { l: "肌力下降高风险", v: 28 },
+          { l: "营养不良风险", v: 41 },
+          { l: "营养不良高风险", v: 19 }
+        ], C.green);
+      };
+
+      const drawAll = () => {
+        applyLeftMetrics();
+        drawLeftCharts();
+        drawSceneRest();
+        drawRightCharts();
+      };
+
+      /* —— 个人画像数据 —— */
+      const elders = [
+        {
+          id: "chen", name: "陈*", gender: "男", age: 72, weight: "76.0kg", height: "171.5cm",
+          time: "2026-09-23 17:33:25",
+          tags: ["偶尔睡不好", "食欲良好", "体重稳定", "近一年无跌倒", "可独立行走"],
+          judge: "脉率偏低，建议复核监测设备并关注心律异常风险。",
+          vitals: [
+            { k: "收缩压", n: "105", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "72", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "35", u: "次/分", st: "偏低", bad: true, icon: "pulse" },
+            { k: "血氧", n: "99", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.4", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "7.1", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        {
+          id: "zhao", name: "赵*", gender: "女", age: 78, weight: "52.0kg", height: "156cm",
+          time: "2026-09-23 15:42:20",
+          tags: ["起夜偏多", "近一年跌倒", "食欲下降", "行动需辅助", "偶有困倦"],
+          judge: "血压偏高，建议复测并关注用药依从性。",
+          vitals: [
+            { k: "收缩压", n: "152", u: "mmHg", st: "偏高", bad: true, icon: "heart" },
+            { k: "舒张压", n: "90", u: "mmHg", st: "偏高", bad: true, icon: "heart" },
+            { k: "脉率", n: "82", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧", n: "95", u: "%", st: "关注", bad: true, icon: "o2" },
+            { k: "空腹血糖", n: "5.8", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "7.6", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        {
+          id: "wei", name: "韦*奇", gender: "男", age: 69, weight: "70kg", height: "168cm",
+          time: "2026-09-23 15:18:48",
+          tags: ["体重稳定", "食欲良好", "可独立行走", "睡眠良好"],
+          judge: "体征平稳，建议保持现有运动方案。",
+          vitals: [
+            { k: "收缩压", n: "128", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "78", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "68", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧", n: "98", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.1", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "6.8", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        { id: "peng", name: "彭*超", gender: "男", age: 72, weight: "65kg", height: "170cm", time: "2026-09-23 14:57:43",
+          tags: ["体重稳定", "吞咽正常", "可独立行走"], judge: "—",
+          vitals: [
+            { k: "收缩压", n: "132", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "80", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "72", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧", n: "97", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.6", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "7.2", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        { id: "cheng", name: "成*姣", gender: "女", age: 66, weight: "58kg", height: "160cm", time: "2026-09-23 10:28:08",
+          tags: ["食欲良好", "几乎不起夜", "可独立行走"], judge: "—",
+          vitals: [
+            { k: "收缩压", n: "118", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "74", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "70", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧", n: "99", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.0", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "6.4", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        { id: "hu", name: "胡*", gender: "男", age: 81, weight: "61kg", height: "165cm", time: "2026-09-23 10:22:16",
+          tags: ["偶有困倦", "起夜偏多", "行动能力一般"], judge: "夜间睡眠质量偏低，建议睡眠评估。",
+          vitals: [
+            { k: "收缩压", n: "140", u: "mmHg", st: "关注", bad: true, icon: "heart" },
+            { k: "舒张压", n: "85", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "64", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧", n: "96", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "6.0", u: "mmol/L", st: "关注", bad: true, icon: "drop" },
+            { k: "餐后血糖", n: "8.1", u: "mmol/L", st: "关注", bad: true, icon: "meal" }
+          ]
+        },
+        { id: "mo", name: "莫*钧", gender: "男", age: 74, weight: "68kg", height: "169cm", time: "2026-09-23 09:17:44",
+          tags: ["体重稳定", "近一年无跌倒", "可独立行走"], judge: "—",
+          vitals: [
+            { k: "收缩压", n: "126", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "76", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "66", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧", n: "98", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.3", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "6.9", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        { id: "shi", name: "史*珍", gender: "女", age: 83, weight: "48kg", height: "152cm", time: "2026-09-23 06:12:24",
+          tags: ["食欲下降", "近一年跌倒", "行动需辅助"], judge: "低体重风险，建议营养专项评估。",
+          vitals: [
+            { k: "收缩压", n: "136", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "82", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "78", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧", n: "95", u: "%", st: "关注", bad: true, icon: "o2" },
+            { k: "空腹血糖", n: "5.5", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "7.0", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        { id: "zheng", name: "郑*艳", gender: "女", age: 70, weight: "60kg", height: "158cm", time: "2026-09-23 05:48:10",
+          tags: ["体重稳定", "食欲良好", "可独立行走"], judge: "—",
+          vitals: [
+            { k: "收缩压", n: "122", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "75", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "71", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧", n: "99", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.2", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "6.6", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        },
+        { id: "fan", name: "范*", gender: "男", age: 67, weight: "73kg", height: "172cm", time: "2026-09-23 04:55:32",
+          tags: ["几乎不起夜", "吞咽正常", "可独立行走"], judge: "—",
+          vitals: [
+            { k: "收缩压", n: "130", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "舒张压", n: "79", u: "mmHg", st: "正常", icon: "heart" },
+            { k: "脉率", n: "69", u: "次/分", st: "正常", icon: "pulse" },
+            { k: "血氧", n: "98", u: "%", st: "正常", icon: "o2" },
+            { k: "空腹血糖", n: "5.4", u: "mmol/L", st: "正常", icon: "drop" },
+            { k: "餐后血糖", n: "7.1", u: "mmol/L", st: "正常", icon: "meal" }
+          ]
+        }
+      ];
+
+      const icons = {
+        heart: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.35-9.5-8.5C.5 8.5 3 5 6.5 5c2 0 3.5 1.2 4.5 2.5C12 6.2 13.5 5 15.5 5 19 5 21.5 8.5 19.5 12.5 17 16.65 12 21 12 21z"/></svg>`,
+        pulse: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h3l2-5 3 10 2-5h8"/></svg>`,
+        o2: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14c2-4 4-6 8-6s6 2 8 6"/><circle cx="12" cy="16" r="2"/></svg>`,
+        drop: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2s6 7 6 12a6 6 0 11-12 0c0-5 6-12 6-12z"/></svg>`,
+        meal: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 2v9a3 3 0 01-3 3H4v2h1a5 5 0 005-5V2H8zm9 0c-1.5 3-2 5.5-2 8.5V22h2V12h2V2h-2z"/></svg>`
+      };
+
+      let active = 0;
+      const shortTime = (t) => {
+        const m = String(t || "").match(/(\d{2})-(\d{2})\s+(\d{2}:\d{2})/);
+        return m ? `${m[1]}-${m[2]} ${m[3]}` : t;
+      };
+      const renderDir = () => {
+        document.getElementById("dirList").innerHTML = elders.map((e, i) => `
+          <div class="dir-item ${i === active ? "on" : ""}" data-i="${i}">
+            <span class="nm">${e.name}</span>
+            <span class="tm" title="${e.time}">${shortTime(e.time)}</span>
+          </div>
+        `).join("");
+        document.querySelectorAll(".dir-item").forEach(el => {
+          el.onclick = () => { active = +el.dataset.i; renderDir(); renderProfile(); };
+        });
+      };
+
+      const renderProfile = () => {
+        const e = elders[active];
+        document.getElementById("pinfo").innerHTML = `
+          <span>姓名：<b>${e.name}</b></span>
+          <span>性别：<b>${e.gender}</b></span>
+          <span>年龄：<b>${e.age}岁</b></span>
+          <span>体重：<b>${e.weight}</b></span>
+          <span>身高：<b>${e.height}</b></span>
+        `;
+        document.getElementById("ptags").innerHTML = e.tags.map(t => `<span class="tag">${t}</span>`).join("");
+        document.getElementById("pjudge").textContent = e.judge || "--";
+        document.getElementById("pvitals").innerHTML = e.vitals.map(v => `
+          <div class="vt ${v.empty ? "empty" : ""}">
+            <div class="top">${icons[v.icon] || ""}${v.k}</div>
+            <div class="mid">
+              <span class="n ${v.bad ? "bad" : ""}">${v.empty ? "" : (v.n || "—")}</span>
+              ${v.st ? `<span class="st ${v.bad ? "bad" : ""}">${v.st}</span>` : ""}
+            </div>
+            <div class="u">${v.u}</div>
+          </div>
+        `).join("");
+      };
+
+      const LIST_DATA = {
+        org: {
+          title: "蛇口街道长者服务中心",
+          meta: "蛇口街道 · 街道一级综合服务枢纽",
+          cols: ["项目", "数值", "说明"],
+          rows: [
+            ["中心数量", "1 个", "蛇口街道长者服务中心"],
+            ["老人档案数", "28,281 人", "街道在册长者档案"],
+            ["高龄老人总数", "334 人", "高龄长者"],
+            ["站点活动", "36 场 / 900 人次", "本期活动场次与参与人次"],
+            ["站点助老服务", "11 人", "助老服务人员"]
+          ],
+          statusCol: -1
+        },
+        site: {
+          title: "社区长者服务站列表",
+          meta: "蛇口街道 · 社区二级属地服务站",
+          cols: ["站点名称", "所属街道", "建档数量", "本月评估", "状态"],
+          rows: [
+            ["深圳湾社区长者服务站", "蛇口街道", "0", "—", "运营中"],
+            ["海岸社区长者服务站", "蛇口街道", "0", "—", "运营中"]
+          ],
+          statusCol: 4
+        },
+        point: {
+          title: "小区长者服务点列表",
+          meta: "蛇口街道 · 小区三级就近微站点（共 15 个）",
+          cols: ["服务点名称", "所属社区", "所属街道", "状态"],
+          rows: [
+            ["深圳湾花园服务点", "深圳湾社区", "蛇口街道", "运营中"],
+            ["湾畔服务点", "深圳湾社区", "蛇口街道", "运营中"],
+            ["望海服务点", "深圳湾社区", "蛇口街道", "运营中"],
+            ["海月服务点", "深圳湾社区", "蛇口街道", "运营中"],
+            ["蔚蓝海岸一服务点", "海岸社区", "蛇口街道", "运营中"],
+            ["蔚蓝海岸二服务点", "海岸社区", "蛇口街道", "运营中"],
+            ["半岛城邦服务点", "海岸社区", "蛇口街道", "运营中"],
+            ["阳光带海滨城服务点", "海岸社区", "蛇口街道", "运营中"],
+            ["太古城服务点", "海岸社区", "蛇口街道", "运营中"],
+            ["海滨广场服务点", "海岸社区", "蛇口街道", "运营中"],
+            ["鲸山别墅服务点", "深圳湾社区", "蛇口街道", "运营中"],
+            ["后海服务点", "深圳湾社区", "蛇口街道", "运营中"],
+            ["海上世界服务点", "海岸社区", "蛇口街道", "运营中"],
+            ["招商花园城服务点", "海岸社区", "蛇口街道", "运营中"],
+            ["太子湾服务点", "海岸社区", "蛇口街道", "运营中"]
+          ],
+          statusCol: 3
+        },
+        home: {
+          title: "居家养老服务项目详情",
+          meta: "南山区养老服务消费补贴项目 · 蛇口街道",
+          cols: ["项目", "签约/服务对象", "服务量", "服务时长", "备注"],
+          rows: [
+            ["家庭养老床位服务", "签约 48 人", "1,436 人次", "7,246.5 小时", "家庭养老床位"],
+            ["家庭护老者喘息服务", "签约 112 人", "1,060 次", "2,701 小时", "喘息服务"],
+            ["中度以上失能老年人消费补贴", "服务 14 人", "55 人次", "—", "800 元消费券"],
+            ["专业养老服务消费券", "—", "109 人次", "—", "200 元消费券"]
+          ],
+          statusCol: -1
+        }
+      };
+
+      const statusClass = (text) => {
+        const t = String(text || "");
+        if (/维护|暂停|离线|停用/.test(t)) return "off";
+        if (/关注|试运营|预警|偏高|风险/.test(t)) return "warn";
+        if (/运营|在线|服务中|正常/.test(t)) return "on";
+        return "on";
+      };
+
+      const listMask = document.getElementById("listMask");
+      const openListModal = (key) => {
+        const conf = LIST_DATA[key];
+        if (!conf || !listMask) return;
+        document.getElementById("listTitle").textContent = conf.title;
+        document.getElementById("listMeta").textContent = conf.meta;
+        document.getElementById("listHead").innerHTML = `<tr>${conf.cols.map(c => `<th>${c}</th>`).join("")}</tr>`;
+        document.getElementById("listBody").innerHTML = conf.rows.map(row => `
+          <tr>${row.map((cell, i) => {
+            if (i === conf.statusCol) {
+              return `<td><span class="st ${statusClass(cell)}">${cell}</span></td>`;
+            }
+            return `<td>${cell}</td>`;
+          }).join("")}</tr>
+        `).join("");
+        document.getElementById("listCount").textContent = `共 ${conf.rows.length} 条`;
+        listMask.hidden = false;
+        requestAnimationFrame(() => listMask.classList.add("on"));
+      };
+      const closeListModal = () => {
+        listMask?.classList.remove("on");
+        setTimeout(() => { if (listMask && !listMask.classList.contains("on")) listMask.hidden = true; }, 200);
+      };
+      document.querySelectorAll(".list-btn").forEach((btn) => {
+        btn.addEventListener("click", () => openListModal(btn.dataset.list));
+      });
+      document.getElementById("listClose")?.addEventListener("click", closeListModal);
+      listMask?.addEventListener("click", (ev) => { if (ev.target === listMask) closeListModal(); });
+
+      const seedSeries = (base, n, wobble) => {
+        const out = [];
+        let v = Number(base) || 70;
+        for (let i = 0; i < n; i++) {
+          v = Math.max(1, Math.round(v + Math.sin(i * 0.9) * (wobble || 3) + ((i % 3) - 1)));
+          out.push(v);
+        }
+        out[n - 1] = Number(base) || out[n - 1];
+        return out;
+      };
+
+      const drawDrillMiniLine = (el, series, labels, max) => {
+        if (!el) return;
+        const w = el.clientWidth || 420, h = el.clientHeight || 140;
+        const pad = { t: 10, r: 8, b: 18, l: 28 };
+        const all = series.flatMap(s => s.data);
+        const ymax = max || Math.max(...all, 1) * 1.15;
+        const n = labels.length;
+        const xAt = i => pad.l + (i / Math.max(n - 1, 1)) * (w - pad.l - pad.r);
+        const yAt = v => pad.t + (1 - v / ymax) * (h - pad.t - pad.b);
+        let g = "";
+        for (let i = 0; i <= 3; i++) {
+          const y = pad.t + (i / 3) * (h - pad.t - pad.b);
+          g += `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="rgba(140,180,220,.14)" stroke-dasharray="2 3"/>`;
+          g += `<text x="${pad.l-4}" y="${y+3}" fill="rgba(142,176,208,.7)" font-size="9" text-anchor="end">${Math.round(ymax*(1-i/3))}</text>`;
+        }
+        series.forEach(s => {
+          const d = s.data.map((v, i) => `${i ? "L" : "M"}${xAt(i)},${yAt(v)}`).join(" ");
+          const area = `${d} L${xAt(n-1)},${h-pad.b} L${xAt(0)},${h-pad.b} Z`;
+          g += `<path d="${area}" fill="${s.color}" opacity=".08"/>`;
+          g += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2.2" filter="drop-shadow(0 0 3px ${s.color})"/>`;
+          s.data.forEach((v, i) => {
+            g += `<circle cx="${xAt(i)}" cy="${yAt(v)}" r="3" fill="#041428" stroke="${s.color}" stroke-width="1.8"/>`;
+          });
+        });
+        labels.forEach((lb, i) => {
+          g += `<text x="${xAt(i)}" y="${h-3}" fill="rgba(142,176,208,.85)" font-size="9" text-anchor="middle">${lb}</text>`;
+        });
+        el.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${g}</svg>`;
+      };
+
+      const drawDrillMiniBars = (el, labels, data, colors) => {
+        if (!el) return;
+        const w = el.clientWidth || 420, h = el.clientHeight || 140;
+        const pad = { t: 18, r: 8, b: 20, l: 8 };
+        const max = Math.max(...data, 1) * 1.25;
+        const slot = (w - pad.l - pad.r) / labels.length;
+        const bw = Math.min(26, slot * 0.42);
+        let g = "";
+        for (let i = 0; i <= 3; i++) {
+          const y = pad.t + (i / 3) * (h - pad.t - pad.b);
+          g += `<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="rgba(140,180,220,.12)" stroke-dasharray="2 3"/>`;
+        }
+        labels.forEach((lb, i) => {
+          const bh = (data[i] / max) * (h - pad.t - pad.b);
+          const x = pad.l + i * slot + (slot - bw) / 2;
+          const y = h - pad.b - bh;
+          const color = colors[i % colors.length];
+          g += `<rect x="${x}" y="${pad.t}" width="${bw}" height="${h-pad.t-pad.b}" rx="${bw/2}" fill="${color}" opacity=".08"/>`;
+          g += `<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="${bw/2}" fill="${color}" opacity=".9"/>`;
+          g += `<ellipse cx="${x+bw/2}" cy="${y}" rx="${bw/2}" ry="3" fill="${color}"/>`;
+          g += `<text x="${x+bw/2}" y="${y-5}" fill="#e8f4ff" font-size="10" text-anchor="middle">${data[i]}</text>`;
+          g += `<text x="${x+bw/2}" y="${h-4}" fill="rgba(142,176,208,.85)" font-size="9" text-anchor="middle">${lb}</text>`;
+        });
+        el.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${g}</svg>`;
+      };
+
+      const drillMask = document.getElementById("drillMask");
+      const openDrillModal = () => {
+        const e = elders[active];
+        if (!e || !drillMask) return;
+        const av = document.getElementById("drillAvatar");
+        if (av) av.textContent = String(e.name).replace(/\*/g, "").slice(0, 1) || "长";
+        document.getElementById("drillTitle").textContent = `${e.name} · 健康详情`;
+        document.getElementById("drillSubText").textContent = `${e.time} · 档案 ${String(e.id).toUpperCase()}-MZ01`;
+        const alert = e.vitals.find(v => v.bad);
+        const badge = document.getElementById("drillBadge");
+        if (badge) {
+          badge.textContent = alert ? `${alert.k}${alert.st}` : "体征平稳";
+          badge.classList.toggle("warn", !!alert);
+        }
+        document.getElementById("drillPinfo").innerHTML = [
+          ["姓名", e.name], ["性别", e.gender], ["年龄", `${e.age}岁`],
+          ["体重", e.weight], ["身高", e.height], ["最近采集", e.time]
+        ].map(([k, v]) => `<div class="drill-pi">${k}<b>${v}</b></div>`).join("");
+        document.getElementById("drillTags").innerHTML = e.tags.map(t => `<span>${t}</span>`).join("");
+        const judge = (e.judge && e.judge !== "—" && e.judge !== "--")
+          ? e.judge
+          : "体征整体平稳，建议按现有方案持续随访。";
+        const judgeEl = document.getElementById("drillJudge");
+        judgeEl.classList.toggle("warn", !!alert);
+        judgeEl.innerHTML = alert
+          ? `<strong>研判提醒：</strong>${alert.k} ${alert.n}${alert.u}（${alert.st}），建议复核后复测；其余指标请结合最新数据持续观察。`
+          : `<strong>研判提醒：</strong>${judge}`;
+        document.getElementById("drillVitals").innerHTML = e.vitals.map(v => `
+          <div class="drill-vt ${v.bad ? "bad" : ""}">
+            <div class="t">${icons[v.icon] || ""}${v.k}</div>
+            <div class="row">
+              <div class="n ${v.bad ? "bad" : ""}">${v.empty || !v.n ? "—" : v.n}${v.u && v.n ? `<em>${v.u}</em>` : ""}</div>
+              ${v.st ? `<div class="st ${v.bad ? "bad" : ""}">${v.st}</div>` : ""}
+            </div>
+          </div>
+        `).join("");
+
+        const sys = Number(e.vitals.find(v => v.k === "收缩压")?.n) || 120;
+        const dia = Number(e.vitals.find(v => v.k === "舒张压")?.n) || 75;
+        const pulse = Number(e.vitals.find(v => v.k.includes("脉"))?.n) || 70;
+        const spo2 = Number(e.vitals.find(v => v.k.includes("血氧"))?.n) || 98;
+        const days = ["D-6", "D-5", "D-4", "D-3", "D-2", "D-1", "今"];
+
+        drillMask.hidden = false;
+        requestAnimationFrame(() => {
+          drillMask.classList.add("on");
+          requestAnimationFrame(() => {
+            drawDrillMiniLine(document.getElementById("drillBp"), [
+              { color: "#3b9eff", data: seedSeries(sys, 7, 4) },
+              { color: "#8b7cff", data: seedSeries(dia, 7, 2) }
+            ], days, Math.max(sys, 160));
+            drawDrillMiniLine(document.getElementById("drillPulse"), [
+              { color: "#ff4d4f", data: seedSeries(pulse, 7, 3) },
+              { color: "#3ddea8", data: seedSeries(spo2, 7, 1) }
+            ], days, 110);
+            drawDrillMiniBars(
+              document.getElementById("drillScene"),
+              ["监测", "运动", "营养", "睡眠", "理疗"],
+              [6, 3, 8, 2, 4],
+              ["#3b9eff", "#3ddea8", "#2dd4bf", "#8b7cff", "#3b82f6"]
+            );
+            drawDrillMiniLine(document.getElementById("drillOrder"), [
+              { color: "#3b9eff", data: [1, 2, 2, 3, 3, 4] },
+              { color: "#3ddea8", data: [1, 1, 2, 2, 3, 3] }
+            ], ["3月", "4月", "5月", "6月", "7月", "8月"], 6);
+          });
+        });
+      };
+
+      const closeDrillModal = () => {
+        drillMask?.classList.remove("on");
+        setTimeout(() => { if (drillMask && !drillMask.classList.contains("on")) drillMask.hidden = true; }, 220);
+      };
+
+      document.getElementById("drillLink")?.addEventListener("click", (ev) => {
+        ev.preventDefault();
+        openDrillModal();
+      });
+      document.getElementById("drillClose")?.addEventListener("click", closeDrillModal);
+      drillMask?.addEventListener("click", (ev) => {
+        if (ev.target === drillMask) closeDrillModal();
+      });
+      window.addEventListener("keydown", (ev) => {
+        if (ev.key !== "Escape") return;
+        if (listMask?.classList.contains("on")) closeListModal();
+        else if (drillMask?.classList.contains("on")) closeDrillModal();
+      });
+
+      renderDir();
+      renderProfile();
+
+      document.title = SCREEN.title;
+      const mt = document.getElementById("mainTitle");
+      if (mt) mt.textContent = SCREEN.title;
+
+      /* 生态服务商 · 标题后图标触发下拉 */
+      const picker = document.getElementById("ecoOrgPicker");
+      const orgBtn = document.getElementById("ecoOrgBtn");
+      const orgPop = document.getElementById("ecoOrgPop");
+      const orgName = document.getElementById("ecoOrgName");
+      const setEcoOrg = (key) => {
+        ecoOrg = key;
+        const meta = ORG_META[key] || { short: key, name: key };
+        if (orgName) orgName.textContent = meta.short;
+        if (orgPop) {
+          orgPop.querySelectorAll("button").forEach((b) => {
+            b.classList.toggle("on", b.dataset.org === key);
+          });
+        }
+        applyLeftMetrics(true);
+        const funnelEl = document.getElementById("ecoFunnel");
+        if (funnelEl && SCREEN.funnel) {
+          renderFunnel(funnelEl, SCREEN.funnel[key] || [0,0,0,0,0]);
+        }
+        picker?.classList.remove("open");
+        orgBtn?.setAttribute("aria-expanded", "false");
+      };
+      orgBtn?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const open = picker?.classList.toggle("open");
+        orgBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+      orgPop?.querySelectorAll("button").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          setEcoOrg(btn.dataset.org);
+        });
+      });
+      document.addEventListener("click", () => {
+        picker?.classList.remove("open");
+        orgBtn?.setAttribute("aria-expanded", "false");
+      });
+
+      /* 全屏切换 */
+      const btnFs = document.getElementById("btnFullscreen");
+      const syncFs = () => {
+        const on = !!document.fullscreenElement;
+        btnFs?.setAttribute("aria-pressed", on ? "true" : "false");
+        const enter = document.getElementById("fsIconEnter");
+        const exit = document.getElementById("fsIconExit");
+        const lab = document.getElementById("fsLabel");
+        if (enter) enter.style.display = on ? "none" : "block";
+        if (exit) exit.style.display = on ? "block" : "none";
+        if (lab) lab.textContent = on ? "退出全屏" : "全屏";
+      };
+      btnFs?.addEventListener("click", async () => {
+        try {
+          if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+          else await document.exitFullscreen();
+        } catch (err) { console.warn(err); }
+      });
+      document.addEventListener("fullscreenchange", () => {
+        syncFs();
+        setTimeout(drawAll, 120);
+      });
+
+      requestAnimationFrame(() => {
+        drawAll();
+        setTimeout(drawAll, 80);
+      });
+      let t;
+      window.addEventListener("resize", () => {
+        clearTimeout(t);
+        t = setTimeout(drawAll, 180);
+      });
+    })();
+  </script>
+</body>
+</html>

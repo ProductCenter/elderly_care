@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>智慧康养 · 需供匹配运营大屏</title>
+<meta name="description" content="看清谁需要什么、手里有什么服务、怎样把服务接到人——覆盖认知训练、营养膳食、睡眠疗愈、科学运动、健康监测、智能照护六大业务的运营总览。">
+<link rel="stylesheet" href="assets/css/dashboard.css?v=20260924-eco">
+</head>
+<body>
+<div id="viewport">
+  <div id="stage">
+
+    <!-- ==================== 顶栏（对齐生态运营大屏） ==================== -->
+    <header class="hd">
+      <div class="header-bg" aria-hidden="true"></div>
+      <div class="header-left">
+        <a class="backbtn" href="./ecology-blank-screen.html" title="返回生态运营大屏">
+          <svg class="icn" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+          返回
+        </a>
+      </div>
+      <div class="title-box">
+        <h1>智慧康养需供匹配运营中心</h1>
+        <div class="sub">看需求 · 备供给 · 对接服务 · 跟进效果</div>
+      </div>
+      <div class="header-right">
+        <div class="vswitch">
+          <button class="vsbtn on" data-v="main">运营态势</button>
+          <button class="vsbtn" data-v="analysis">对接分析</button>
+        </div>
+        <div class="albtn" id="btnAlert">
+          <svg class="icn" style="width:14px;height:14px" viewBox="0 0 24 24"><path d="M12 8v5M12 16.5v.5M10.3 3.9 2.6 17.2A2 2 0 0 0 4.3 20h15.4a2 2 0 0 0 1.7-2.8L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+          待处理异常 <span class="cnt" id="alertCnt">29</span>
+        </div>
+        <button class="tbtn" id="btnFlow">暂停刷新</button>
+        <button class="tbtn" id="btnSpeed">1×</button>
+        <button class="tbtn" id="btnFull">全屏</button>
+        <div class="clock">
+          <b id="clockTime">--:--:--</b>
+          <span id="clockDate">----</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ==================== 视图一：运营态势 ==================== -->
+    <div class="view on" id="viewMain">
+
+    <!-- ==================== KPI 带（需 / 供 / 配） ==================== -->
+    <div class="kpirow kpi-7" id="kpiRow"></div>
+
+    <!-- ==================== 主体 ==================== -->
+    <div class="body">
+
+      <!-- ========== 左列 · 需求侧 ========== -->
+      <div class="col-l">
+        <div class="colcap need"><b>需求侧</b>谁需要什么服务</div>
+
+        <section class="card">
+          <div class="ch">
+            <i class="bar" style="background:linear-gradient(180deg,#3b9eff,#00e5ff);box-shadow:0 0 8px #00e5ff"></i>
+            <b>服务对象概况</b>
+            <span class="rt">多病共存 62.8% · 慢病为主</span>
+          </div>
+          <div class="people">
+            <div class="pl">
+              <div class="pstat">
+                <div class="k">在册服务长者</div>
+                <div class="v">1,286<small> 人</small></div>
+              </div>
+              <div class="pstat">
+                <div class="k">平均年龄</div>
+                <div class="v">76.4<small> 岁</small></div>
+              </div>
+              <div class="pstat">
+                <div class="k">高危待安排</div>
+                <div class="v" style="color:var(--red)">203<small> 项</small></div>
+              </div>
+            </div>
+            <div class="bars" id="diseaseBars"></div>
+          </div>
+          <div style="display:flex;gap:6px" id="ageBars"></div>
+        </section>
+
+        <section class="card grow">
+          <div class="ch">
+            <i class="bar" style="background:linear-gradient(180deg,#8b7cff,#8b7cff);box-shadow:0 0 8px #8b7cff"></i>
+            <b>本周热门需求</b>
+            <span class="rt">近 7 日 · <em id="demandSum">3,454</em> 项</span>
+          </div>
+          <div class="ranklist" id="demandTop"></div>
+        </section>
+
+        <section class="card">
+          <div class="ch">
+            <i class="bar" style="background:linear-gradient(180deg,#00e5ff,#3ddea8);box-shadow:0 0 8px #3ddea8"></i>
+            <b>需求从哪来</b>
+            <span class="rt">占比 %</span>
+          </div>
+          <div class="srcgrid" id="demandSrc"></div>
+        </section>
+      </div>
+
+      <!-- ========== 中列 · 需供对接 ========== -->
+      <div class="col-c">
+        <div class="colcap match"><b>需供对接看板</b>从发现需求到服务回访的六步</div>
+
+        <div class="loopbar" id="loopBar"></div>
+        <div class="matrix" id="engineGrid"></div>
+
+        <section class="card trendwrap">
+          <div class="ch">
+            <i class="bar" style="background:linear-gradient(180deg,#ff9a1a,#ff4d4f);box-shadow:0 0 8px #ff9a1a"></i>
+            <b>需求量与服务量走势</b>
+            <span class="rt">近 30 天 · 缺口=需求多于已安排的部分</span>
+          </div>
+          <div class="lgd" id="trendLgd"></div>
+          <canvas id="trendChart"></canvas>
+        </section>
+      </div>
+
+      <!-- ========== 右列 · 供给侧 ========== -->
+      <div class="col-r">
+        <div class="colcap supply"><b>供给侧</b>手里有什么服务资源</div>
+
+        <section class="card">
+          <div class="ch">
+            <i class="bar" style="background:linear-gradient(180deg,#3ddea8,#00e5ff);box-shadow:0 0 8px #3ddea8"></i>
+            <b>可用服务资源</b>
+            <span class="rt">当前在岗 / 在线</span>
+          </div>
+          <div class="resgrid" id="resGrid"></div>
+          <div class="agentsum" id="agentSum"></div>
+        </section>
+
+        <section class="card">
+          <div class="ch">
+            <i class="bar" style="background:linear-gradient(180deg,#00e5ff,#3b9eff);box-shadow:0 0 8px #00e5ff"></i>
+            <b>六大服务履约</b>
+            <span class="rt">今日 <em id="supplySum">4,732</em> 人次</span>
+          </div>
+          <div class="ranklist" id="rankList"></div>
+        </section>
+
+        <section class="card grow">
+          <div class="ch">
+            <i class="bar" style="background:linear-gradient(180deg,#ff4d4f,#8b7cff);box-shadow:0 0 8px #ff4d4f"></i>
+            <b>待跟进异常</b>
+            <span class="rt">缺口 · 安排不当 · 超时 · <em id="alertToday">29</em> 项</span>
+          </div>
+          <div class="alerts"><div class="track" id="alertTrack"></div></div>
+        </section>
+      </div>
+
+    </div>
+    <!-- ==================== 底部滚动条 ==================== -->
+    <div class="ticker">
+      <div class="lb">运营动态播报</div>
+      <div class="vp"><div class="tr" id="tickerTrack"></div></div>
+    </div>
+
+    </div><!-- /viewMain -->
+
+    <!-- ==================== 视图二：对接分析 ==================== -->
+    <div class="view" id="viewAnalysis">
+      <div class="kpirow kpi-7" id="kpiRow2"></div>
+
+      <div class="body">
+
+        <!-- 左列：对接质量 -->
+        <div class="col-l">
+          <div class="colcap match"><b>对接质量</b>服务接得怎么样</div>
+
+          <section class="card">
+            <div class="ch">
+              <i class="bar" style="background:linear-gradient(180deg,#3ddea8,#00e5ff);box-shadow:0 0 8px #3ddea8"></i>
+              <b>对接结果分布</b>
+              <span class="rt">全部 <em>3,454</em> 项需求</span>
+            </div>
+            <div class="donutwrap">
+              <div class="donutbox"><canvas id="qualityDonut"></canvas></div>
+              <div class="donutlgd" id="qualityLgd"></div>
+            </div>
+          </section>
+
+          <section class="card grow">
+            <div class="ch">
+              <i class="bar" style="background:linear-gradient(180deg,#ff4d4f,#ff9a1a);box-shadow:0 0 8px #ff4d4f"></i>
+              <b>未安排原因</b>
+              <span class="rt">203 项 · 为什么还没接上</span>
+            </div>
+            <div class="reasonlist" id="gapReason"></div>
+          </section>
+        </div>
+
+        <!-- 中列：四象限 -->
+        <div class="col-c">
+          <div class="colcap match"><b>供需对照</b>哪里紧、哪里松</div>
+
+          <section class="card grow">
+            <div class="ch">
+              <i class="bar" style="background:linear-gradient(180deg,#ff4d4f,#3ddea8);box-shadow:0 0 8px #3ddea8"></i>
+              <b>轻重缓急与服务能力</b>
+              <span class="rt">100 = 能力刚好够用</span>
+            </div>
+            <canvas id="quadChart"></canvas>
+            <div class="quadstrat" id="quadStrat"></div>
+          </section>
+        </div>
+
+        <!-- 右列：余力与复盘 -->
+        <div class="col-r">
+          <div class="colcap supply"><b>余力与复盘</b>缺口能不能消化掉</div>
+
+          <section class="card">
+            <div class="ch">
+              <i class="bar" style="background:linear-gradient(180deg,#ff4d4f,#3ddea8);box-shadow:0 0 8px #ff4d4f"></i>
+              <b>缺口与剩余服务能力</b>
+              <span class="rt">看看哪里接不上</span>
+            </div>
+            <div class="caplist" id="capList"></div>
+            <div class="capnote" id="capNote"></div>
+          </section>
+
+          <section class="card grow">
+            <div class="ch">
+              <i class="bar" style="background:linear-gradient(180deg,#ff9a1a,#8b7cff);box-shadow:0 0 8px #ff9a1a"></i>
+              <b>效果不理想的复盘</b>
+              <span class="rt">已安排但效果未达标</span>
+            </div>
+            <div class="lowlist" id="lowEff"></div>
+          </section>
+        </div>
+
+      </div>
+
+      <div class="ticker">
+        <div class="lb">运营洞察播报</div>
+        <div class="vp"><div class="tr" id="tickerTrack2"></div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== 详情弹窗 ==================== -->
+<div class="mask" id="mask"><div class="dlg" id="dlg"></div></div>
+
+<script src="assets/js/data.js?v=20260924-eco"></script>
+<script src="assets/js/dashboard.js?v=20260924-eco"></script>
+</body>
+</html>

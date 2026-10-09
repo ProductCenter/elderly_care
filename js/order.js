@@ -607,4 +607,22 @@
   }
 
   applyServiceType(lockedType);
+
+  /* 子女代下单 / 代支付 */
+  (function initProxyPay() {
+    let proxy = false;
+    try {
+      const q = new URLSearchParams(location.search);
+      proxy = q.get("proxy") === "1" || localStorage.getItem("kangyang-mall:family-proxy") === "1";
+    } catch {
+      proxy = false;
+    }
+    const banner = document.getElementById("proxyBanner");
+    const btn = document.getElementById("btnSubmit");
+    const tip = document.getElementById("payTip");
+    if (!proxy) return;
+    if (banner) banner.hidden = false;
+    if (btn) btn.textContent = "确认代支付";
+    if (tip) tip.textContent = "本单为他人代购：确认后由代购人账户完成支付，服务记在长者名下";
+  })();
 })();

@@ -260,6 +260,7 @@ window.ADMIN_NAV = {
       icon: "system",
       children: [
         { id: "user", label: "用户管理", href: "../system/user.html", seq: 33, status: "done" },
+        { id: "lin-family", label: "林家家长", href: "../system/lin-family.html", seq: "33b", status: "done" },
         { id: "role", label: "权限管理", href: "../system/role.html", seq: 34, status: "done" },
         { id: "export", label: "数据导出", href: "../system/export.html", seq: "C33", status: "done" },
       ],

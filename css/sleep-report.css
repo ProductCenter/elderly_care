@@ -50,7 +50,7 @@ a {
 
 .phone {
   position: relative;
-  width: min(100vw, 390px);
+  width: min(100vw, 440px);
   min-height: 100dvh;
   margin: 0 auto;
   display: flex;
@@ -2167,7 +2167,7 @@ a {
   border-color: #4a7dff;
 }
 
-@media (min-width: 420px) {
+@media (min-width: 460px) {
   body {
     display: grid;
     place-items: center;
@@ -2176,8 +2176,11 @@ a {
   }
 
   .phone {
-    min-height: 844px;
-    height: min(844px, 94dvh);
+    --phone-h: min(956px, calc(100dvh - 48px));
+    height: var(--phone-h);
+    max-height: calc(100dvh - 48px);
+    min-height: 0;
+    width: min(440px, calc(var(--phone-h) * 440 / 956), calc(100vw - 24px));
     border-radius: 40px;
     box-shadow:
       0 0 0 11px #0a0a0a,

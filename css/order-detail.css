@@ -1,14 +1,16 @@
 :root {
-  --text: #191919;
-  --text-2: #888;
-  --bg: #f5f6f8;
-  --card: #fff;
-  --blue: #3b82f6;
-  --price: #fa5151;
-  --line: rgba(0, 0, 0, 0.06);
+  --text: #1f1a14;
+  --text-2: #8a7a68;
+  --text-3: #b8a894;
+  --bg: #f6eee2;
+  --card: rgba(255, 255, 255, 0.9);
+  --blue: #f08a2a;
+  --orange: #f08a2a;
+  --orange-deep: #e36a12;
+  --price: #e36a12;
+  --line: rgba(90, 62, 32, 0.08);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --font: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue",
-    "Microsoft YaHei", sans-serif;
+  --font: "PingFang SC", "Noto Sans SC", "Helvetica Neue", sans-serif;
 }
 
 *,
@@ -23,7 +25,7 @@ body {
   min-height: 100%;
   font-family: var(--font);
   color: var(--text);
-  background: #111;
+  background: #e8dfc9;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
 }
@@ -50,12 +52,14 @@ img {
 
 .phone {
   position: relative;
-  width: min(100vw, 390px);
+  width: min(100vw, 440px);
   min-height: 100dvh;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  background: var(--bg);
+  background:
+    radial-gradient(120% 70% at 100% 8%, #ffe6c4 0%, transparent 52%),
+    linear-gradient(180deg, #fcf6e8 0%, #f6eee2 42%, #f3e6d4 100%);
   overflow: hidden;
 }
 
@@ -65,18 +69,30 @@ img {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fff;
+  background: transparent;
+  flex-shrink: 0;
 }
 
 .status-time {
   font-size: 15px;
   font-weight: 600;
+  min-width: 54px;
 }
 
 .status-right {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-signal {
+  width: 17px;
+  height: 11px;
+}
+
+.status-net {
   font-size: 12px;
   font-weight: 600;
 }
@@ -84,8 +100,8 @@ img {
 .status-battery {
   width: 24px;
   height: 11px;
-  border: 1.2px solid rgba(0, 0, 0, 0.35);
-  border-radius: 3px;
+  border: 1.2px solid currentColor;
+  border-radius: 2px;
   padding: 1px;
   position: relative;
 }
@@ -97,16 +113,16 @@ img {
   top: 3px;
   width: 2px;
   height: 4px;
-  background: rgba(0, 0, 0, 0.35);
-  border-radius: 0 1px 1px 0;
+  background: currentColor;
+  border-radius: 0 2px 2px 0;
 }
 
 .battery-level {
   display: block;
-  width: 55%;
+  width: 72%;
   height: 100%;
-  background: #34c759;
-  border-radius: 1px;
+  background: currentColor;
+  border-radius: 2px;
 }
 
 .nav-bar {
@@ -115,8 +131,9 @@ img {
   display: grid;
   grid-template-columns: 44px 1fr auto;
   align-items: center;
-  background: #fff;
-  border-bottom: 0.5px solid var(--line);
+  background: transparent;
+  border-bottom: 0;
+  flex-shrink: 0;
 }
 
 .nav-back {
@@ -142,9 +159,13 @@ img {
   width: 87px;
   height: 32px;
   border-radius: 16px;
-  border: 0.5px solid rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(120, 80, 30, 0.08);
   display: flex;
   align-items: center;
+  margin-right: 4px;
 }
 
 .capsule-more {
@@ -213,8 +234,11 @@ img {
 
 .card {
   background: var(--card);
-  border-radius: 10px;
+  border-radius: 16px;
   padding: 14px 14px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 6px 18px rgba(120, 80, 30, 0.06);
+  backdrop-filter: blur(8px);
 }
 
 .card[hidden] {
@@ -235,8 +259,9 @@ img {
 }
 
 .status-card {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  background: linear-gradient(135deg, #ffb14a, #e36a12);
   color: #fff;
+  box-shadow: 0 10px 24px rgba(227, 106, 18, 0.28);
 }
 
 .status-text {
@@ -642,16 +667,20 @@ img {
   line-height: 1.3;
 }
 
+.timeline-next[hidden] {
+  display: none;
+}
+
 .timeline-next {
   display: block;
   width: 100%;
   margin-top: 14px;
   height: 40px;
-  border-radius: 8px;
-  background: #eff6ff;
-  color: var(--blue);
+  border-radius: 12px;
+  background: #fff5eb;
+  color: var(--orange-deep);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 /* —— 门店地图导航 —— */
@@ -681,10 +710,10 @@ img {
   height: 28px;
   padding: 0 12px;
   border-radius: 14px;
-  background: #eff6ff;
-  color: var(--blue);
+  background: #fff5eb;
+  color: var(--orange-deep);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   flex-shrink: 0;
 }
 
@@ -692,9 +721,9 @@ img {
   position: relative;
   margin-top: 12px;
   height: 160px;
-  border-radius: 10px;
+  border-radius: 14px;
   overflow: hidden;
-  background: linear-gradient(160deg, #e8f0fe 0%, #f0f4f8 55%, #e2e8f0 100%);
+  background: linear-gradient(160deg, #fff5eb 0%, #f7eee2 55%, #efe4d4 100%);
   border: 0.5px solid var(--line);
 }
 
@@ -722,7 +751,7 @@ img {
   width: 28px;
   height: 28px;
   border-radius: 50% 50% 50% 0;
-  background: #fa5151;
+  background: #e36a12;
   transform: rotate(-45deg);
   position: relative;
 }
@@ -747,16 +776,19 @@ img {
 
 .map-action {
   height: 40px;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 14px;
-  font-weight: 500;
-  background: #f3f4f6;
-  color: var(--text);
+  font-weight: 600;
+  background: #fff5eb;
+  color: var(--orange-deep);
+  border: 1px solid #f0d0a0;
 }
 
 .map-action.primary {
-  background: var(--blue);
+  background: linear-gradient(180deg, #ffb14a 0%, #e36a12 100%);
   color: #fff;
+  border: 0;
+  box-shadow: 0 6px 14px rgba(227, 106, 18, 0.28);
 }
 
 .nav-sheet {
@@ -843,6 +875,7 @@ img {
 
 .info-card > .info-row:first-child,
 .workorder-card > .info-row:first-of-type,
+.rental-card > .info-row:first-of-type,
 .logistics-card > .info-row:first-of-type {
   border-top: 0;
   margin-top: 0;
@@ -975,10 +1008,11 @@ img {
   transform: translate(-50%, -50%);
   max-width: 72%;
   padding: 12px 18px;
-  border-radius: 8px;
-  background: rgba(17, 17, 17, 0.78);
+  border-radius: 14px;
+  background: rgba(31, 26, 20, 0.88);
   color: #fff;
   font-size: 14px;
+  font-weight: 700;
   text-align: center;
   opacity: 0;
   pointer-events: none;
@@ -988,22 +1022,4 @@ img {
 
 .wx-toast.show {
   opacity: 1;
-}
-
-@media (min-width: 420px) {
-  body {
-    display: grid;
-    place-items: center;
-    padding: 24px 0;
-  }
-
-  .phone {
-    min-height: 844px;
-    height: min(844px, 94dvh);
-    border-radius: 40px;
-    box-shadow:
-      0 0 0 11px #0a0a0a,
-      0 0 0 13px #333,
-      0 28px 60px rgba(0, 0, 0, 0.5);
-  }
 }

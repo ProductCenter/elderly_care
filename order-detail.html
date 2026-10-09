@@ -6,212 +6,235 @@
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
     />
+    <meta name="theme-color" content="#FCF6E8" />
     <title>订单详情</title>
-    <link rel="stylesheet" href="./css/order-detail.css" />
-    <script src="./vendor/qrcode-generator.js"></script>    <link rel="stylesheet" href="./css/app-shell.css?v=20260912-covers5" />
-
+    <link rel="stylesheet" href="./css/app-shell.css?v=20260929-orderv10" />
+    <link rel="stylesheet" href="./css/order-detail.css?v=20260929-detailv10" />
+    <script src="./vendor/qrcode-generator.js"></script>
   </head>
-  <body>
-    <div class="phone" id="app">
-      <div class="status-bar" aria-hidden="true">
-        <span class="status-time">15:27</span>
-        <div class="status-right">
-          <span class="status-net">5G</span>
-          <div class="status-battery"><span class="battery-level"></span></div>
+  <body class="app-page-v10">
+    <div class="ip-stage">
+      <div class="ip-body">
+        <span class="ip-key k-mute"></span>
+        <span class="ip-key k-vup"></span>
+        <span class="ip-key k-vdn"></span>
+        <span class="ip-key k-pwr"></span>
+        <div class="phone app-theme" id="app" data-no-tabbar>
+          <div class="blob blob-1" aria-hidden="true"></div>
+          <div class="blob blob-2" aria-hidden="true"></div>
+          <div class="status-bar" aria-hidden="true">
+            <span class="status-time">15:27</span>
+            <div class="status-right">
+              <svg class="status-signal" viewBox="0 0 18 12">
+                <rect x="0" y="8" width="3" height="4" rx="0.5" fill="currentColor" />
+                <rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="currentColor" />
+                <rect x="9" y="2.5" width="3" height="9.5" rx="0.5" fill="currentColor" />
+                <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="currentColor" opacity=".35" />
+              </svg>
+              <span class="status-net">5G</span>
+              <div class="status-battery"><span class="battery-level"></span></div>
+            </div>
+          </div>
+
+          <header class="nav-bar">
+            <button class="nav-back" type="button" id="btnBack" aria-label="返回">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </button>
+            <h1 class="nav-title">订单详情</h1>
+            <div class="mp-capsule" aria-hidden="true">
+              <span class="capsule-more"><i></i><i></i><i></i></span>
+              <i class="capsule-divider"></i>
+              <span class="capsule-home"><i class="ring"></i></span>
+            </div>
+          </header>
+
+          <main class="page-body">
+            <section class="card status-card">
+              <div class="status-text" id="statusText">已支付</div>
+              <div class="status-sub" id="statusSub">请到店出示核销码完成服务</div>
+            </section>
+
+            <section class="card verify-card" id="verifyCard" hidden>
+              <div class="verify-hd">
+                <h3>到店核销码</h3>
+                <span class="verify-count" id="verifyCount" hidden></span>
+              </div>
+
+              <p class="verify-tip" id="verifyTip">请到店后向工作人员出示此核销码</p>
+
+              <div class="verify-pager" id="verifyPager" hidden>
+                <button type="button" class="pager-btn" id="btnPrevCode" aria-label="上一张">‹</button>
+                <span class="pager-idx" id="pagerIdx">1 / 1</span>
+                <button type="button" class="pager-btn" id="btnNextCode" aria-label="下一张">›</button>
+              </div>
+
+              <div class="verify-stage" id="verifyStage">
+                <div class="qr-wrap" id="qrWrap">
+                  <canvas id="qrCanvas" width="200" height="200"></canvas>
+                  <div class="qr-used" id="qrUsed" hidden>已使用</div>
+                </div>
+              </div>
+
+              <div class="verify-dots" id="verifyDots" hidden></div>
+
+              <button type="button" class="zoom-btn" id="btnZoom">点击放大查看</button>
+
+              <div class="code-no">
+                核销码编号 <strong id="codeNo">—</strong>
+              </div>
+            </section>
+
+            <section class="card verify-card" id="packageCard" hidden>
+              <div class="verify-hd">
+                <h3>套餐权益码</h3>
+                <span class="verify-count" id="pkgRemainBadge">—</span>
+              </div>
+              <p class="verify-tip">到站出示此码，店员勾选今日项目后按次扣减</p>
+              <div class="verify-stage">
+                <div class="qr-wrap">
+                  <canvas id="pkgQrCanvas" width="200" height="200"></canvas>
+                </div>
+              </div>
+              <button type="button" class="zoom-btn" id="btnRefreshPkg">刷新权益码</button>
+              <ul class="pkg-remain-list" id="pkgRemainList"></ul>
+              <a class="link" id="linkPkgMerchant" href="./merchant-verify.html">打开商家核销（套餐）</a>
+            </section>
+
+            <section class="card goods-card">
+              <div class="goods-row">
+                <img id="goodsCover" src="" alt="" />
+                <div class="goods-meta">
+                  <div class="goods-name" id="goodsName"></div>
+                  <div class="goods-sku" id="goodsSku"></div>
+                  <div class="goods-pay">实付 <em id="payAmount"></em></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="card timeline-card" id="timelineCard" hidden>
+              <div class="timeline-hd">
+                <h3 id="timelineTitle">服务进度</h3>
+              </div>
+              <ol class="timeline" id="homeTimeline" aria-label="履约进度"></ol>
+              <button type="button" class="timeline-next" id="btnHomeNext" hidden>
+                模拟推进进度
+              </button>
+            </section>
+
+            <section class="card rental-card" id="rentalCard" hidden>
+              <div class="wo-hd">
+                <h3>租赁信息</h3>
+                <span class="wo-status" id="rentStatus">租赁中</span>
+              </div>
+              <div class="info-row"><span>设备</span><span id="rentDevice">—</span></div>
+              <div class="info-row"><span>租期</span><span id="rentTerm">—</span></div>
+              <div class="info-row"><span>月租</span><span id="rentFee">—</span></div>
+              <div class="info-row"><span>安装</span><span id="rentInstall">—</span></div>
+              <div class="info-row"><span>到期</span><span id="rentReturn">—</span></div>
+            </section>
+
+            <section class="card workorder-card" id="workOrderCard" hidden>
+              <div class="wo-hd">
+                <h3>服务工单</h3>
+                <span class="wo-status" id="woStatus">待派工</span>
+              </div>
+              <div class="info-row"><span>工单号</span><span id="woId">—</span></div>
+              <div class="info-row"><span>服务人员</span><span id="woStaff">待指派</span></div>
+              <div class="info-row"><span>联系电话</span><span id="woPhone">—</span></div>
+              <div class="info-row"><span>创建时间</span><span id="woCreated">—</span></div>
+            </section>
+
+            <section class="card logistics-card" id="logisticsCard" hidden>
+              <div class="log-hd">
+                <h3>物流明细</h3>
+                <span class="log-status" id="logStatus">—</span>
+              </div>
+              <div class="info-row"><span>物流公司</span><span id="logCompany">—</span></div>
+              <div class="info-row"><span>运单号</span><span id="logTracking">—</span></div>
+              <ol class="log-traces" id="logTraces"></ol>
+              <a class="link" id="linkLogisticsTrack" href="./logistics-track.html">查看完整物流轨迹 ›</a>
+            </section>
+
+            <section class="card address-info-card" id="addressInfoCard" hidden>
+              <h3>上门地址</h3>
+              <div class="addr-info-name" id="homeAddrUser">—</div>
+              <div class="addr-info-detail" id="homeAddrDetail">—</div>
+            </section>
+
+            <section class="card map-card" id="mapCard" hidden>
+              <div class="map-hd">
+                <h3>门店位置</h3>
+                <button type="button" class="map-nav-btn" id="btnNavigate">导航</button>
+              </div>
+              <div class="map-store">
+                <div class="map-store-name" id="mapStoreName">—</div>
+                <div class="map-store-addr" id="mapStoreAddr">—</div>
+                <a class="map-store-phone" id="mapStorePhone" href="tel:" hidden></a>
+              </div>
+              <div class="map-preview" id="mapPreview">
+                <iframe
+                  id="mapFrame"
+                  title="门店地图"
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                  allowfullscreen
+                ></iframe>
+                <div class="map-pin" aria-hidden="true">
+                  <span></span>
+                </div>
+              </div>
+              <div class="map-actions">
+                <button type="button" class="map-action" id="btnOpenMap">查看大图</button>
+                <button type="button" class="map-action primary" id="btnNavigate2">导航到店</button>
+              </div>
+            </section>
+
+            <section class="card info-card">
+              <div class="info-row"><span>订单编号</span><span id="orderId"></span></div>
+              <div class="info-row"><span>服务类型</span><span id="serviceType"></span></div>
+              <div class="info-row" id="storeRow"><span>适用门店</span><span id="storeName"></span></div>
+              <div class="info-row" id="appointRow"><span>预约时间</span><span id="appointTime">—</span></div>
+              <div class="info-row" id="verifiedRow" hidden>
+                <span>核销时间</span><span id="verifiedAt"></span>
+              </div>
+              <div class="info-row" id="operatorRow" hidden>
+                <span>核销人</span><span id="verifiedBy"></span>
+              </div>
+            </section>
+
+            <div class="dev-actions" id="devActions">
+              <a class="link" id="linkMerchant" href="./merchant-verify.html">打开商家核销页</a>
+              <a class="link" id="linkAftersale" href="./aftersale-apply.html">申请售后</a>
+              <button type="button" class="link danger" id="btnRefund">模拟退款</button>
+            </div>
+          </main>
+
+          <div class="lightbox" id="lightbox" hidden>
+            <button type="button" class="lb-close" id="lbClose">关闭</button>
+            <div class="lb-body">
+              <canvas id="lbQr" width="280" height="280"></canvas>
+              <p class="lb-code" id="lbCodeNo"></p>
+              <p class="lb-tip">请到店后向工作人员出示此核销码</p>
+            </div>
+          </div>
+
+          <div class="nav-sheet" id="navSheet" hidden>
+            <div class="nav-sheet-mask" id="navSheetMask"></div>
+            <div class="nav-sheet-panel" role="dialog" aria-label="选择地图导航">
+              <div class="nav-sheet-title">导航到门店</div>
+              <div class="nav-sheet-addr" id="navSheetAddr"></div>
+              <button type="button" class="nav-sheet-item" data-map="amap">高德地图</button>
+              <button type="button" class="nav-sheet-item" data-map="baidu">百度地图</button>
+              <button type="button" class="nav-sheet-item" data-map="qq">腾讯地图</button>
+              <button type="button" class="nav-sheet-item" data-map="apple">Apple 地图</button>
+              <button type="button" class="nav-sheet-item" data-map="copy">复制地址</button>
+              <button type="button" class="nav-sheet-cancel" id="navSheetCancel">取消</button>
+            </div>
+          </div>
+
+          <div class="wx-toast" id="toast" hidden></div>
         </div>
       </div>
-
-      <header class="nav-bar">
-        <button class="nav-back" type="button" id="btnBack" aria-label="返回">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-        </button>
-        <h1 class="nav-title">订单详情</h1>
-        <div class="mp-capsule" aria-hidden="true">
-          <span class="capsule-more"><i></i><i></i><i></i></span>
-          <i class="capsule-divider"></i>
-          <span class="capsule-home"><i class="ring"></i></span>
-        </div>
-      </header>
-
-      <main class="page-body">
-        <section class="card status-card">
-          <div class="status-text" id="statusText">已支付</div>
-          <div class="status-sub" id="statusSub">请到店出示核销码完成服务</div>
-        </section>
-
-        <section class="card verify-card" id="verifyCard" hidden>
-          <div class="verify-hd">
-            <h3>到店核销码</h3>
-            <span class="verify-count" id="verifyCount" hidden></span>
-          </div>
-
-          <p class="verify-tip" id="verifyTip">请到店后向工作人员出示此核销码</p>
-
-          <div class="verify-pager" id="verifyPager" hidden>
-            <button type="button" class="pager-btn" id="btnPrevCode" aria-label="上一张">‹</button>
-            <span class="pager-idx" id="pagerIdx">1 / 1</span>
-            <button type="button" class="pager-btn" id="btnNextCode" aria-label="下一张">›</button>
-          </div>
-
-          <div class="verify-stage" id="verifyStage">
-            <div class="qr-wrap" id="qrWrap">
-              <canvas id="qrCanvas" width="200" height="200"></canvas>
-              <div class="qr-used" id="qrUsed" hidden>已使用</div>
-            </div>
-          </div>
-
-          <div class="verify-dots" id="verifyDots" hidden></div>
-
-          <button type="button" class="zoom-btn" id="btnZoom">点击放大查看</button>
-
-          <div class="code-no">
-            核销码编号 <strong id="codeNo">—</strong>
-          </div>
-        </section>
-
-        <section class="card verify-card" id="packageCard" hidden>
-          <div class="verify-hd">
-            <h3>套餐权益码</h3>
-            <span class="verify-count" id="pkgRemainBadge">—</span>
-          </div>
-          <p class="verify-tip">到站出示此码，店员勾选今日项目后按次扣减</p>
-          <div class="verify-stage">
-            <div class="qr-wrap">
-              <canvas id="pkgQrCanvas" width="200" height="200"></canvas>
-            </div>
-          </div>
-          <button type="button" class="zoom-btn" id="btnRefreshPkg">刷新权益码</button>
-          <ul class="pkg-remain-list" id="pkgRemainList"></ul>
-          <a class="link" id="linkPkgMerchant" href="./merchant-verify.html">打开商家核销（套餐）</a>
-        </section>
-
-        <section class="card goods-card">
-          <div class="goods-row">
-            <img id="goodsCover" src="" alt="" />
-            <div class="goods-meta">
-              <div class="goods-name" id="goodsName"></div>
-              <div class="goods-sku" id="goodsSku"></div>
-              <div class="goods-pay">实付 <em id="payAmount"></em></div>
-            </div>
-          </div>
-        </section>
-
-        <!-- 到家/实物：履约进度时间轴 -->
-        <section class="card timeline-card" id="timelineCard" hidden>
-          <div class="timeline-hd">
-            <h3 id="timelineTitle">服务进度</h3>
-          </div>
-          <ol class="timeline" id="homeTimeline" aria-label="履约进度"></ol>
-          <button type="button" class="timeline-next" id="btnHomeNext" hidden>
-            模拟推进进度
-          </button>
-        </section>
-
-        <!-- 到家：工单信息（REQ-07） -->
-        <section class="card workorder-card" id="workOrderCard" hidden>
-          <div class="wo-hd">
-            <h3>服务工单</h3>
-            <span class="wo-status" id="woStatus">待派工</span>
-          </div>
-          <div class="info-row"><span>工单号</span><span id="woId">—</span></div>
-          <div class="info-row"><span>服务人员</span><span id="woStaff">待指派</span></div>
-          <div class="info-row"><span>联系电话</span><span id="woPhone">—</span></div>
-          <div class="info-row"><span>创建时间</span><span id="woCreated">—</span></div>
-        </section>
-
-        <!-- 实物：物流明细（到家服务不展示） -->
-        <section class="card logistics-card" id="logisticsCard" hidden>
-          <div class="log-hd">
-            <h3>物流明细</h3>
-            <span class="log-status" id="logStatus">—</span>
-          </div>
-          <div class="info-row"><span>物流公司</span><span id="logCompany">—</span></div>
-          <div class="info-row"><span>运单号</span><span id="logTracking">—</span></div>
-          <ol class="log-traces" id="logTraces"></ol>
-          <a class="link" id="linkLogisticsTrack" href="./logistics-track.html">查看完整物流轨迹 ›</a>
-        </section>
-
-        <!-- 到家服务地址 -->
-        <section class="card address-info-card" id="addressInfoCard" hidden>
-          <h3>上门地址</h3>
-          <div class="addr-info-name" id="homeAddrUser">—</div>
-          <div class="addr-info-detail" id="homeAddrDetail">—</div>
-        </section>
-
-        <!-- 到店：门店地图与导航 -->
-        <section class="card map-card" id="mapCard" hidden>
-          <div class="map-hd">
-            <h3>门店位置</h3>
-            <button type="button" class="map-nav-btn" id="btnNavigate">导航</button>
-          </div>
-          <div class="map-store">
-            <div class="map-store-name" id="mapStoreName">—</div>
-            <div class="map-store-addr" id="mapStoreAddr">—</div>
-            <a class="map-store-phone" id="mapStorePhone" href="tel:" hidden></a>
-          </div>
-          <div class="map-preview" id="mapPreview">
-            <iframe
-              id="mapFrame"
-              title="门店地图"
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-              allowfullscreen
-            ></iframe>
-            <div class="map-pin" aria-hidden="true">
-              <span></span>
-            </div>
-          </div>
-          <div class="map-actions">
-            <button type="button" class="map-action" id="btnOpenMap">查看大图</button>
-            <button type="button" class="map-action primary" id="btnNavigate2">导航到店</button>
-          </div>
-        </section>
-
-        <section class="card info-card">
-          <div class="info-row"><span>订单编号</span><span id="orderId"></span></div>
-          <div class="info-row"><span>服务类型</span><span id="serviceType"></span></div>
-          <div class="info-row" id="storeRow"><span>适用门店</span><span id="storeName"></span></div>
-          <div class="info-row" id="appointRow"><span>预约时间</span><span id="appointTime">—</span></div>
-          <div class="info-row" id="verifiedRow" hidden>
-            <span>核销时间</span><span id="verifiedAt"></span>
-          </div>
-          <div class="info-row" id="operatorRow" hidden>
-            <span>核销人</span><span id="verifiedBy"></span>
-          </div>
-        </section>
-
-        <div class="dev-actions" id="devActions">
-          <a class="link" id="linkMerchant" href="./merchant-verify.html">打开商家核销页</a>
-          <a class="link" id="linkAftersale" href="./aftersale-apply.html">申请售后</a>
-          <button type="button" class="link danger" id="btnRefund">模拟退款</button>
-        </div>
-      </main>
-
-      <div class="lightbox" id="lightbox" hidden>
-        <button type="button" class="lb-close" id="lbClose">关闭</button>
-        <div class="lb-body">
-          <canvas id="lbQr" width="280" height="280"></canvas>
-          <p class="lb-code" id="lbCodeNo"></p>
-          <p class="lb-tip">请到店后向工作人员出示此核销码</p>
-        </div>
-      </div>
-
-      <!-- 导航 App 选择 -->
-      <div class="nav-sheet" id="navSheet" hidden>
-        <div class="nav-sheet-mask" id="navSheetMask"></div>
-        <div class="nav-sheet-panel" role="dialog" aria-label="选择地图导航">
-          <div class="nav-sheet-title">导航到门店</div>
-          <div class="nav-sheet-addr" id="navSheetAddr"></div>
-          <button type="button" class="nav-sheet-item" data-map="amap">高德地图</button>
-          <button type="button" class="nav-sheet-item" data-map="baidu">百度地图</button>
-          <button type="button" class="nav-sheet-item" data-map="qq">腾讯地图</button>
-          <button type="button" class="nav-sheet-item" data-map="apple">Apple 地图</button>
-          <button type="button" class="nav-sheet-item" data-map="copy">复制地址</button>
-          <button type="button" class="nav-sheet-cancel" id="navSheetCancel">取消</button>
-        </div>
-      </div>
-
-      <div class="wx-toast" id="toast" hidden></div>
     </div>
 
     <script src="./js/products.js?v=20260912-covers5"></script>
@@ -219,7 +242,23 @@
     <script src="./js/verify-code.js"></script>
     <script src="./js/package-entitlement.js"></script>
     <script src="./js/order-detail.js"></script>
-    <script src="./js/app-shell.js?v=20260912-covers5"></script>
-
+    <script src="./js/app-shell.js?v=20260917-home2tab"></script>
+    <script>
+      (function () {
+        var bd = document.querySelector(".ip-body");
+        if (!bd) return;
+        function fit() {
+          bd.style.zoom = "1";
+          var r = bd.getBoundingClientRect();
+          if (!r.width || !r.height) return;
+          var k = Math.min(1, (window.innerWidth - 108) / r.width, (window.innerHeight - 56) / r.height);
+          if (!isFinite(k) || k <= 0) k = 1;
+          k = Math.max(0.42, Math.round(k * 10000) / 10000);
+          bd.style.zoom = String(k);
+        }
+        fit();
+        window.addEventListener("resize", fit);
+      })();
+    </script>
   </body>
 </html>

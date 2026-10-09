@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>林家家长 · 天津康养运营平台</title>
+    <link rel="stylesheet" href="../css/admin-shell.css" />
+    <link rel="stylesheet" href="../css/admin-list.css" />
+    <style>
+      .status-warn { background: #fff7e6; color: #d46b08; }
+      .need-sec { margin: 0 0 14px; }
+      .need-sec h4 { margin: 0 0 6px; font-size: 14px; }
+      .need-sec p, .need-sec li { margin: 0; font-size: 13px; line-height: 1.65; color: #434343; }
+      .need-sec ul { margin: 0; padding-left: 18px; }
+      .need-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+      .need-tag { height: 24px; padding: 0 8px; border-radius: 4px; background: #e6f4ff; color: #1677ff; font-size: 12px; line-height: 24px; }
+      .need-tag.is-main { background: #fff7e6; color: #d46b08; font-weight: 650; }
+      .need-llm { white-space: pre-wrap; font-size: 13px; line-height: 1.7; color: #262626; min-height: 7.2em; max-height: 240px; overflow: auto; }
+      .need-llm.is-think { color: #8c8c8c; font-size: 12px; }
+      .need-h { margin: 8px 0 2px; font-weight: 650; color: #262626; }
+      .need-llm.is-live::after {
+        content: "▍";
+        color: #1677ff;
+        animation: need-caret 0.8s steps(1) infinite;
+      }
+      .need-status { margin-left: 8px; font-size: 12px; font-weight: 500; color: #1677ff; }
+      @keyframes need-caret { 50% { opacity: 0; } }
+    </style>
+  </head>
+  <body
+    data-primary="system"
+    data-sub="lin-family"
+    data-tab="林家家长"
+    data-asset-prefix="../../assets"
+    data-index-href="../index.html"
+  >
+    <div id="admin-root"></div>
+    <template id="page-content">
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">用户列表</h1>
+          <p class="page-desc">林家家长 · 春风驿站 · 历下旗舰 · 数据截至 2026-09-11</p>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="k">家长人数</div><div class="v" id="stTotal">0</div></div>
+        <div class="stat-card"><div class="k">需关注</div><div class="v" id="stWatch">0</div></div>
+        <div class="stat-card"><div class="k">母亲</div><div class="v" id="stMother">0</div></div>
+        <div class="stat-card"><div class="k">父亲</div><div class="v" id="stFather">0</div></div>
+      </div>
+      <div class="filter-card">
+        <div class="filter-grid">
+          <div class="filter-item">
+            <label>姓名 / 情况</label>
+            <input class="ctrl" id="qKeyword" placeholder="模糊查询" />
+          </div>
+          <div class="filter-item">
+            <label>家庭角色</label>
+            <select class="ctrl" id="qRole">
+              <option value="">全部</option>
+              <option value="母亲">母亲</option>
+              <option value="父亲">父亲</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label>状态</label>
+            <select class="ctrl" id="qStatus">
+              <option value="">全部</option>
+              <option value="需关注">需关注</option>
+            </select>
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
+            <button type="button" class="btn btn-default" id="btnReset">重置</button>
+          </div>
+        </div>
+      </div>
+      <div class="list-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>姓名</th>
+                <th>家庭角色</th>
+                <th>性别</th>
+                <th>年龄</th>
+                <th>主要情况</th>
+                <th>需求分层</th>
+                <th>今日关注</th>
+                <th>站点</th>
+                <th>状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="body"></tbody>
+          </table>
+        </div>
+        <div class="pager">
+          <span id="pagerInfo">共 0 条</span>
+          <div class="pager-btns"><button type="button" class="active">1</button></div>
+        </div>
+      </div>
+      <div class="drawer-mask" data-drawer-mask="listDrawer" data-close-drawer="listDrawer"></div>
+      <aside class="drawer" id="listDrawer">
+        <div class="drawer-head">
+          <h3 id="drawerTitle">家长档案</h3>
+          <button type="button" class="drawer-close" data-close-drawer="listDrawer">×</button>
+        </div>
+        <div class="drawer-body">
+          <div class="form-grid">
+            <div class="form-field"><label>姓名</label><input class="ctrl" id="fName" /></div>
+            <div class="form-field">
+              <label>家庭角色</label>
+              <select class="ctrl" id="fRole"><option value="母亲">母亲</option><option value="父亲">父亲</option></select>
+            </div>
+            <div class="form-field">
+              <label>性别</label>
+              <select class="ctrl" id="fGender"><option value="女">女</option><option value="男">男</option></select>
+            </div>
+            <div class="form-field"><label>年龄</label><input class="ctrl" id="fAge" /></div>
+            <div class="form-field full"><label>主要情况</label><input class="ctrl" id="fCond" /></div>
+            <div class="form-field full"><label>今日关注</label><input class="ctrl" id="fFocus" /></div>
+            <div class="form-field"><label>站点</label><input class="ctrl" id="fStation" /></div>
+            <div class="form-field">
+              <label>状态</label>
+              <select class="ctrl" id="fStatus"><option value="需关注">需关注</option><option value="平稳">平稳</option></select>
+            </div>
+          </div>
+        </div>
+        <div class="drawer-foot">
+          <button type="button" class="btn btn-default" data-close-drawer="listDrawer">取消</button>
+          <button type="button" class="btn btn-primary" id="btnSave">保存</button>
+        </div>
+      </aside>
+      <div class="drawer-mask" data-drawer-mask="needDrawer" data-close-drawer="needDrawer"></div>
+      <aside class="drawer wide" id="needDrawer">
+        <div class="drawer-head">
+          <h3 id="needTitle">需求认知</h3>
+          <button type="button" class="drawer-close" data-close-drawer="needDrawer">×</button>
+        </div>
+        <div class="drawer-body" id="needBody"></div>
+        <div class="drawer-foot">
+          <button type="button" class="btn btn-default" data-close-drawer="needDrawer">关闭</button>
+        </div>
+      </aside>
+    </template>
+    <script src="../js/admin-nav.js?v=20260923-lin"></script>
+    <script src="../js/admin-shell.js?v=20260923-lin"></script>
+    <script src="../js/admin-ui.js"></script>
+    <script src="../js/admin-page-list.js"></script>
+    <script>
+      AdminPageList.mount({
+        persist: false,
+        addTitle: "新增家长",
+        editTitle: "编辑家长",
+        rows: [
+          {
+            name: "林秀珍",
+            role: "母亲",
+            gender: "女",
+            age: "70",
+            cond: "高血糖（2型糖尿病）",
+            segment: "慢病管理型",
+            focus: "空腹血糖 7.3 mmol/L",
+            station: "历下旗舰",
+            status: "需关注",
+            need: {
+              layer: "慢病管理型",
+              also: ["家庭照护者型", "预防型"],
+              body: "2型糖尿病。9月11日空腹血糖 7.3 mmol/L，周一冲到 8.2；夜间起夜两次，周日 3 次。9月1日 MoCA 26，近事偶有忘，未到认知障碍诊断。",
+              ability: "日常生活仍可自理，出行尚可。近7日步数都低于 5000，抗阻训练 0 次。容易漏测血糖、漏服药。健康看板要靠子女远程看。",
+              family: "子女双职工，不与老人同住，周末探望。母亲还在兼顾父亲起居，属于老老照护，照护者负担中等。",
+              psyche: "要的是夜里安心、白天不用一个人把两个人的日子扛下来，血糖稳住，自己仍能把生活过明白。",
+              journey: "问题已经发现，驿站评估和控糖计划在执行。当前卡在漏测、漏药和起夜，复购取决于子女能不能看见周报。",
+              jtbd: "子女雇这套服务，是为了确认母亲没有悄悄把血糖和照护负担一起扛崩。",
+            },
+          },
+          {
+            name: "林建国",
+            role: "父亲",
+            gender: "男",
+            age: "70",
+            cond: "脑卒中后遗症（左侧轻偏瘫）",
+            segment: "康复照护型",
+            focus: "血压 148/86 mmHg",
+            station: "历下旗舰",
+            status: "需关注",
+            need: {
+              layer: "康复照护型",
+              also: ["慢病管理型", "认知照护型"],
+              body: "脑卒中后左侧轻偏瘫，高血压。9月11日血压 148/86，近7日收缩压多数天在 140 以上。吞咽偶发呛咳。MoCA 22、MMSE 24，卒中后轻度认知下降，不是痴呆诊断。",
+              ability: "评估为中度失能风险、跌倒高风险。坐站次数在康复日以外下降，左侧支撑变差。注意力和执行功能偏弱，有走失风险。",
+              family: "配偶承担日常照护，子女工作日不在身边。异常需要推给子女，账单和扶手改造还等子女确认。",
+              psyche: "要安全，也要尊严：少跌倒、少走失，康复被看见，而不是被当成只能躺着的病人。",
+              journey: "评估已出、康复和认知课在执行。卡在血压压不下来、床边扶手还没装、子女还没点头确认账单。",
+              jtbd: "子女雇这套服务，是为了即使不在身边，也能确认父亲安全、有尊严地生活，并且训练有回传。",
+            },
+          },
+        ],
+        columns: [
+          { key: "name" },
+          { key: "role" },
+          { key: "gender" },
+          { key: "age" },
+          { key: "cond" },
+          { key: "segment" },
+          { key: "focus" },
+          { key: "station" },
+          { key: "status", status: true },
+        ],
+        filters: [
+          { id: "qKeyword", match: (r, v) => !v || `${r.name}${r.cond}${r.focus}`.includes(v) },
+          { id: "qRole", match: (r, v) => !v || r.role === v },
+          { id: "qStatus", match: (r, v) => !v || r.status === v },
+        ],
+        formFields: [
+          { id: "fName", key: "name", type: "text", label: "姓名", required: true },
+          { id: "fRole", key: "role", type: "select", label: "家庭角色" },
+          { id: "fGender", key: "gender", type: "select", label: "性别" },
+          { id: "fAge", key: "age", type: "text", label: "年龄" },
+          { id: "fCond", key: "cond", type: "text", label: "主要情况" },
+          { id: "fFocus", key: "focus", type: "text", label: "今日关注" },
+          { id: "fStation", key: "station", type: "text", label: "站点" },
+          { id: "fStatus", key: "status", type: "select", label: "状态" },
+        ],
+        stats: [
+          { id: "stTotal", html: false, value: (l) => l.length },
+          { id: "stWatch", html: false, value: (l) => l.filter((r) => r.status === "需关注").length },
+          { id: "stMother", html: false, value: (l) => l.filter((r) => r.role === "母亲").length },
+          { id: "stFather", html: false, value: (l) => l.filter((r) => r.role === "父亲").length },
+        ],
+        getStatus: (r) => ({ text: r.status, cls: r.status === "需关注" ? "status-warn" : "status-on" }),
+        rowActions: (r, i) =>
+          `<button type="button" class="link" data-act="need" data-i="${i}">需求认知</button>`,
+        onAction: (act, i, rows) => {
+          if (act === "need") openNeed(rows[i]);
+        },
+      });
+
+      function esc(s) {
+        return String(s ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      function solidifiedHtml(person) {
+        const n = person.need || {};
+        const tags = [`<span class="need-tag is-main">主层 · ${esc(n.layer)}</span>`]
+          .concat((n.also || []).map((t) => `<span class="need-tag">兼层 · ${esc(t)}</span>`))
+          .join("");
+        return `
+          <section class="need-sec">
+            <h4>已固化需求</h4>
+            <div class="need-tags">${tags}</div>
+            <ul>
+              <li>身体状况：${esc(n.body)}</li>
+              <li>生活能力：${esc(n.ability)}</li>
+              <li>家庭结构：${esc(n.family)}</li>
+              <li>心理与人生目标：${esc(n.psyche)}</li>
+              <li>当前旅程卡点：${esc(n.journey)}</li>
+              <li>待完成任务：${esc(n.jtbd)}</li>
+            </ul>
+          </section>`;
+      }
+
+      let needSeq = 0;
+
+      async function openNeed(person) {
+        const title = document.getElementById("needTitle");
+        const body = document.getElementById("needBody");
+        if (!person || !body) return;
+        const seq = ++needSeq;
+        if (title) title.textContent = `需求认知 · ${person.name}`;
+        body.innerHTML =
+          `<section class="need-sec"><h4>大模型需求认知<span class="need-status" id="needStatus">连接中</span></h4><div class="need-llm is-live" id="needLlm"></div></section>` +
+          solidifiedHtml(person);
+        AdminUI.openDrawer("needDrawer");
+        const box = document.getElementById("needLlm");
+        const status = document.getElementById("needStatus");
+        const pane = body;
+        box.scrollIntoView({ block: "nearest" });
+        try {
+          const res = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "text/event-stream" },
+            body: JSON.stringify({
+              stream: true,
+              messages: [
+                {
+                  role: "system",
+                  content:
+                    "你是康养需智能分析师。只依据给定的已固化事实写需求认知，不要编造新的检查数值，不要替代诊疗。不要只按年龄下结论。用中文，按五个小标题输出：四类因素、人群分层、旅程卡点、待完成任务、本周三条可执行需求。每条需求必须是照护动作，不是商品推销。",
+                },
+                {
+                  role: "user",
+                  content:
+                    `请为${person.name}（${person.role}，${person.age}岁）写需求认知。\n` +
+                    "分层只能从这六类里选主层和兼层：活力型、预防型、慢病管理型、康复照护型、认知照护型、家庭照护者型。\n" +
+                    "已固化事实：\n" +
+                    JSON.stringify(person.need || {}, null, 2),
+                },
+              ],
+            }),
+          });
+          if (seq !== needSeq) return;
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.error || `请求失败 ${res.status}`);
+          }
+          const ctype = res.headers.get("content-type") || "";
+          if (!ctype.includes("text/event-stream") || !res.body) {
+            const data = await res.json().catch(() => ({}));
+            if (!data.content) throw new Error(data.error || "大模型没有返回内容");
+            if (box && seq === needSeq) box.textContent = data.content;
+            return;
+          }
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
+          let content = "";
+          let think = "";
+          let queue = "";
+          let started = false;
+          let pumping = false;
+          const paint = (stick) => {
+            if (!box || seq !== needSeq) return;
+            box.innerHTML = esc(content)
+              .replace(/^###\s+(.+)$/gm, '<div class="need-h">$1</div>')
+              .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+            if (stick !== false) box.scrollTop = box.scrollHeight;
+          };
+          const pump = () => {
+            if (pumping) return;
+            pumping = true;
+            const tick = () => {
+              if (seq !== needSeq) {
+                pumping = false;
+                return;
+              }
+              if (!queue) {
+                pumping = false;
+                return;
+              }
+              const n = Math.min(6, queue.length);
+              content += queue.slice(0, n);
+              queue = queue.slice(n);
+              paint();
+              if (queue) setTimeout(tick, 16);
+              else pumping = false;
+            };
+            tick();
+          };
+          if (status) status.textContent = "思考中";
+          if (box) box.classList.add("is-think");
+          while (true) {
+            const chunk = await reader.read();
+            if (seq !== needSeq) {
+              reader.cancel();
+              return;
+            }
+            if (chunk.done) break;
+            buffer += decoder.decode(chunk.value, { stream: true });
+            const parts = buffer.split("\n\n");
+            buffer = parts.pop() || "";
+            for (const part of parts) {
+              const line = part
+                .split("\n")
+                .map((l) => l.trim())
+                .find((l) => l.startsWith("data:"));
+              if (!line) continue;
+              const raw = line.slice(5).trim();
+              if (!raw || raw === "[DONE]") continue;
+              let ev;
+              try {
+                ev = JSON.parse(raw);
+              } catch {
+                continue;
+              }
+              if (ev.type === "reasoning" && ev.delta) {
+                think += ev.delta;
+                if (!started && box && seq === needSeq) {
+                  box.textContent = think;
+                  box.scrollTop = box.scrollHeight;
+                  if (status) status.textContent = "思考中";
+                }
+              } else if (ev.type === "content" && ev.delta) {
+                if (!started) {
+                  started = true;
+                  content = "";
+                  if (box) {
+                    box.classList.remove("is-think");
+                    box.textContent = "";
+                  }
+                  if (status) status.textContent = "输出中";
+                }
+                queue += ev.delta;
+                pump();
+              } else if (ev.type === "error") {
+                throw new Error(ev.error || "大模型生成失败");
+              }
+            }
+          }
+          if (!started && !think) throw new Error("大模型没有返回内容");
+          while ((queue || pumping) && seq === needSeq) {
+            await new Promise((resolve) => setTimeout(resolve, 20));
+          }
+          if (!started && think && box && seq === needSeq) {
+            box.classList.remove("is-think");
+            box.textContent = think;
+          }
+          if (box) {
+            box.classList.remove("is-live");
+            box.scrollTop = 0;
+          }
+          if (status) status.textContent = "已完成";
+        } catch (err) {
+          if (seq !== needSeq) return;
+          if (box) {
+            box.classList.remove("is-live");
+            box.textContent = `大模型暂不可用：${err.message || "请确认 8091 服务已启动"}。下方已固化需求仍可直接用于评审。`;
+          }
+          if (status) status.textContent = "未完成";
+        }
+      }
+
+      AdminUI.onReady(() => AdminUI.bindDrawer("needDrawer"));
+    </script>
+  </body>
+</html>

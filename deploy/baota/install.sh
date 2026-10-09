@@ -9,13 +9,28 @@ set -euo pipefail
 SITE_DIR="${SITE_DIR:-/www/wwwroot/kangyang-mall}"
 APP_PORT="${APP_PORT:-8091}"
 DOMAIN="${DOMAIN:-}"
-PY="${PYTHON:-python3}"
+# systemd 的 ExecStart 必须是绝对路径，不能写 python3
+if [[ -n "${PYTHON:-}" && "${PYTHON}" = /* ]]; then
+  PY="$PYTHON"
+else
+  PY="$(command -v "${PYTHON:-python3}" 2>/dev/null || true)"
+fi
+if [[ -z "$PY" || "$PY" != /* ]]; then
+  for c in /usr/bin/python3 /usr/local/bin/python3 /bin/python3; do
+    [[ -x "$c" ]] && PY="$c" && break
+  done
+fi
+if [[ -z "$PY" || "$PY" != /* ]]; then
+  echo "找不到可用的 python3 绝对路径，请先安装 Python3" >&2
+  exit 1
+fi
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 
 echo "==> 部署目录: $SITE_DIR"
 echo "==> 源码目录: $ROOT"
 echo "==> 端口: $APP_PORT"
+echo "==> Python: $PY"
 
 if [[ "$(id -u)" -ne 0 ]]; then
   echo "建议用 root 或 sudo 执行（写 /www、装 systemd）"
@@ -39,40 +54,60 @@ if [[ ! -f llm.env ]]; then
   echo "==> 已生成 llm.env，请编辑填入 LLM_API_KEY"
 fi
 
-# systemd 守护
-SERVICE=/etc/systemd/system/kangyang-mall.service
-cat > "$SERVICE" <<EOF
-[Unit]
-Description=Kangyang Mall H5 + LLM proxy
-After=network.target
-
-[Service]
-Type=simple
-WorkingDirectory=$SITE_DIR
-Environment=HOST=0.0.0.0
-Environment=PORT=$APP_PORT
-EnvironmentFile=-$SITE_DIR/llm.env
-ExecStart=$PY $SITE_DIR/scripts/llm_server.py
-Restart=always
-RestartSec=3
-User=www
-Group=www
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-# www 用户可能不存在时回退 root
-if ! id www >/dev/null 2>&1; then
-  sed -i 's/^User=www/User=root/; s/^Group=www/Group=root/' "$SERVICE"
+# systemd 对 EnvironmentFile 较严：去掉 export、空行保留、值勿含未转义空格问题
+if [[ -f llm.env ]]; then
+  tmp_env="$(mktemp)"
+  # 仅保留 KEY=VALUE；去掉 export 前缀与行内注释外的非法行
+  grep -E '^[A-Za-z_][A-Za-z0-9_]*=' llm.env | sed 's/^export //' >"$tmp_env" || true
+  # 空文件时不要挂 EnvironmentFile，避免解析失败
+  if [[ -s "$tmp_env" ]]; then
+    cp "$tmp_env" llm.env.systemd
+  else
+    rm -f llm.env.systemd
+  fi
+  rm -f "$tmp_env"
 fi
 
-chown -R www:www "$SITE_DIR" 2>/dev/null || chown -R root:root "$SITE_DIR"
+RUN_USER=www
+RUN_GROUP=www
+if ! id www >/dev/null 2>&1; then
+  RUN_USER=root
+  RUN_GROUP=root
+fi
+
+# systemd 守护
+SERVICE=/etc/systemd/system/kangyang-mall.service
+{
+  echo "[Unit]"
+  echo "Description=Kangyang Mall H5 + LLM proxy"
+  echo "After=network.target"
+  echo
+  echo "[Service]"
+  echo "Type=simple"
+  echo "WorkingDirectory=$SITE_DIR"
+  echo "Environment=HOST=0.0.0.0"
+  echo "Environment=PORT=$APP_PORT"
+  if [[ -f "$SITE_DIR/llm.env.systemd" ]]; then
+    echo "EnvironmentFile=-$SITE_DIR/llm.env.systemd"
+  fi
+  echo "ExecStart=$PY $SITE_DIR/scripts/llm_server.py"
+  echo "Restart=always"
+  echo "RestartSec=3"
+  echo "User=$RUN_USER"
+  echo "Group=$RUN_GROUP"
+  echo
+  echo "[Install]"
+  echo "WantedBy=multi-user.target"
+} >"$SERVICE"
+
+chown -R "$RUN_USER:$RUN_GROUP" "$SITE_DIR" 2>/dev/null || true
 systemctl daemon-reload
 systemctl enable kangyang-mall
 systemctl restart kangyang-mall
 sleep 1
-systemctl --no-pager --full status kangyang-mall | head -20 || true
+systemctl --no-pager --full status kangyang-mall | head -25 || true
+echo
+echo "==> 若仍失败可执行: journalctl -u kangyang-mall -n 50 --no-pager"
 
 # Nginx 反代片段（宝塔可「配置文件」粘贴）
 NGX_SNIPPET="$SITE_DIR/deploy/baota/nginx.site.conf"

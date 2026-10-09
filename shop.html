@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#f6eee2" />
     <title>商家店铺 · 春风康养</title>
     <link rel="stylesheet" href="./css/community.css?v=20260915-shop3" />
-    <link rel="stylesheet" href="./css/app-shell.css?v=20260912-covers5" />
+    <link rel="stylesheet" href="./css/app-shell.css?v=20260917-tabfix1" />
     <style>
       .phone.shop-phone {
         display: flex;
@@ -218,7 +218,7 @@
     </style>
   </head>
   <body>
-    <div class="phone shop-phone app-theme" id="app">
+    <div class="phone shop-phone app-theme" id="app" data-no-tabbar>
       <div class="status-bar" aria-hidden="true"><span class="status-time" id="statusTime">14:20</span></div>
       <header class="nav-bar">
         <button type="button" class="nav-back" id="btnBack" aria-label="返回">‹</button>
@@ -235,16 +235,11 @@
           <div class="shop-grid" id="shopGrid"></div>
         </section>
       </main>
-      <nav class="tabbar" aria-label="主导航">
-        <a class="tab" href="./home.html"><span>首页</span></a>
-        <a class="tab" href="./health-service/index.html"><span>健康</span></a>
-        <a class="tab active" href="./index.html"><span>商城</span></a>
-        <a class="tab" href="./mine.html"><span>我的</span></a>
-      </nav>
+            <nav class="tabbar has-agent" aria-label="主导航"></nav>
     </div>
     <script src="./js/products.js?v=20260915-shop3"></script>
     <script src="./js/shop.js?v=20260915-shop3"></script>
       <script src="./js/agent-avatar.js?v=20260915-tabagent"></script>
-    <script src="./js/app-shell.js?v=20260915-tabagent"></script>
+    <script src="./js/app-shell.js?v=20260917-notab"></script>
   </body>
 </html>

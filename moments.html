@@ -4,21 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <title>朋友圈 · 春风康养</title>
-    <link rel="stylesheet" href="./css/mall.css?v=20260915-hub1" />
-    <link rel="stylesheet" href="./css/app-shell.css?v=20260912-covers5" />
+    <link rel="stylesheet" href="./css/mall.css?v=20260916-nowrap1" />
+    <link rel="stylesheet" href="./css/section-articles.css?v=20260916-nowrap1" />
+    <link rel="stylesheet" href="./css/app-shell.css?v=20260917-tabfix1" />
     <style>
       .page-wrap { padding: 12px 12px 88px; }
       .page-title { font-size: 18px; font-weight: 750; margin: 8px 0 4px; }
       .page-sub { font-size: 12px; color: #8a7a68; margin-bottom: 12px; }
-      .moment { background: #fffef9; border: 1px solid rgba(184,126,62,.2); border-radius: 3px; padding: 12px; margin-bottom: 10px; }
+      .moment { background: #fffef9; border: 1px solid rgba(184,126,62,.2); border-radius: 3px; padding: 17px 12px; margin-bottom: 10px; }
       .moment-hd { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
-      .moment-hd img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+      .moment-hd img { width: 36px; height: 36px; border-radius: 2px; object-fit: cover; border: 0; box-shadow: none; }
       .moment-hd strong { font-size: 13px; display: block; }
       .moment-hd span { font-size: 11px; color: #8a7a68; }
-      .moment p { margin: 0 0 8px; font-size: 13px; line-height: 1.45; color: #2b241c; }
-      .moment-cover { width: 100%; border-radius: 3px; display: block; margin-bottom: 8px; }
+      .moment p { margin: 0 0 8px; font-size: 13px; line-height: 1.45; color: #2b241c; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .moment-cover { width: 100%; border-radius: 2px; border: 0; display: block; margin-bottom: 8px; box-shadow: none; }
       .moment-flag { display: inline-block; font-size: 11px; color: #e36a12; background: rgba(240,138,42,.12); padding: 2px 6px; border-radius: 2px; margin-bottom: 6px; }
-      .moment a { font-size: 12px; color: #e36a12; font-weight: 650; text-decoration: none; }
+      .moment a { font-size: 12px; color: #e36a12; font-weight: 650; text-decoration: none; margin-right: 12px; }
       .nav-back { border:0; background:transparent; font-size:28px; line-height:1; padding:0 8px; color:#2b241c; }
     </style>
   </head>
@@ -28,22 +29,30 @@
       <header class="nav-bar">
         <button type="button" class="nav-back" id="btnBack" aria-label="返回">‹</button>
         <h1 class="nav-title">朋友圈</h1>
-        <div class="mp-capsule" aria-hidden="true"></div>
+        <div class="mp-capsule" aria-hidden="true">
+          <span class="capsule-more"><span></span><span></span><span></span></span>
+          <i class="capsule-divider"></i>
+          <span class="capsule-home"><i class="ring"></i></span>
+        </div>
       </header>
       <main class="page-wrap">
         <h2 class="page-title">社区朋友圈</h2>
-        <p class="page-sub">公开动态可供智伴引用（非隐私医疗数据）</p>
+        <p class="page-sub">公开动态可供智伴引用 · 精选可展开全文</p>
         <div id="momentList"></div>
+        <section class="sec-art-block" aria-label="朋友圈精选文章">
+          <div class="sec-art-head">
+            <h3>精选延伸阅读</h3>
+            <span>动态全文</span>
+          </div>
+          <div id="articleList"></div>
+        </section>
       </main>
-      <nav class="tabbar" aria-label="主导航">
-        <a class="tab" href="./home.html"><span>首页</span></a>
-        <a class="tab" href="./health-service/index.html"><span>健康</span></a>
-        <a class="tab active" href="./index.html"><span>商城</span></a>
-        <a class="tab" href="./mine.html"><span>我的</span></a>
-      </nav>
+            <nav class="tabbar has-agent" aria-label="主导航"></nav>
     </div>
-    <script src="./js/moments.js?v=20260915-p1"></script>
-      <script src="./js/agent-avatar.js?v=20260915-tabagent"></script>
-    <script src="./js/app-shell.js?v=20260915-tabagent"></script>
+    <script src="./js/mall-links.js?v=20260916-card10"></script>
+    <script src="./js/section-articles.js?v=20260916-card10"></script>
+    <script src="./js/moments.js?v=20260916-card10"></script>
+    <script src="./js/agent-avatar.js?v=20260915-tabagent"></script>
+    <script src="./js/app-shell.js?v=20260917-home2tab"></script>
   </body>
 </html>

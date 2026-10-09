@@ -1,93 +1,105 @@
 /**
- * 首页服务站点选择
- * - 默认：长者绑定机构
- * - 未绑定：取小程序租户下距离最近的 6 个站点
+ * 首页用户住址选择
+ * - 默认：长者默认住址
+ * - 无默认：按距离推荐最近的住址
  */
 (() => {
-  const SELECTED_KEY = "kangyang-mall:selected-site-id";
+  const SELECTED_KEY = "kangyang-mall:selected-address-id";
 
   /** 小程序上下文（正式由 wx 注入；此处为演示） */
   window.MALL_MP_CONTEXT = window.MALL_MP_CONTEXT || {
     tenantId: "tenant_chunfeng",
-    /** 长者绑定站点；设为 null / "" 表示未绑定 */
-    elderBoundSiteId: "store_cy001",
+    /** 长者默认住址；设为 null / "" 表示无默认 */
+    elderBoundSiteId: "addr_home",
+    elderDefaultAddressId: "addr_home",
     userLat: 36.6666,
     userLng: 117.1205,
   };
 
-  /** 租户站点池（济南演示） */
-  window.MALL_TENANT_SITES = window.MALL_TENANT_SITES || [
+  /** 用户住址簿（济南演示） */
+  window.MALL_USER_ADDRESSES = window.MALL_USER_ADDRESSES || [
     {
-      siteId: "store_cy001",
-      tenantId: "tenant_chunfeng",
-      name: "春风康养 · 历下旗舰店",
-      shortName: "历下旗舰",
-      address: "山东省济南市历下区姚家街道科技金融大厦",
+      addressId: "addr_home",
+      siteId: "addr_home",
+      name: "王秀兰 · 家",
+      shortName: "家",
+      contact: "王秀兰",
+      phone: "138****6218",
+      tag: "家",
+      address: "山东省济南市历下区姚家街道科技金融大厦 A座 1208",
       lat: 36.6666,
       lng: 117.1205,
-      meters: 420,
+      meters: 120,
     },
     {
-      siteId: "store_wj001",
-      tenantId: "tenant_chunfeng",
-      name: "春风康养 · 高新区店",
-      shortName: "高新区店",
-      address: "山东省济南市高新区舜华路1500号附近",
+      addressId: "addr_daughter",
+      siteId: "addr_daughter",
+      name: "王丽 · 女儿家",
+      shortName: "女儿家",
+      contact: "王丽",
+      phone: "186****9032",
+      tag: "女儿家",
+      address: "山东省济南市高新区舜华路万象新天 3 号楼 2 单元 502",
       lat: 36.675,
       lng: 117.135,
       meters: 2800,
     },
     {
-      siteId: "store_hd001",
-      tenantId: "tenant_chunfeng",
-      name: "春风康养 · 市中店",
-      shortName: "市中店",
-      address: "山东省济南市市中区经四路附近",
+      addressId: "addr_son",
+      siteId: "addr_son",
+      name: "王强 · 儿子家",
+      shortName: "儿子家",
+      contact: "王强",
+      phone: "159****4471",
+      tag: "儿子家",
+      address: "山东省济南市市中区经四路阳光100 一期 8-1-1601",
       lat: 36.651,
       lng: 117.0,
       meters: 6100,
     },
     {
-      siteId: "store_tz001",
-      tenantId: "tenant_chunfeng",
-      name: "春风康养 · 天桥店",
-      shortName: "天桥店",
-      address: "山东省济南市天桥区北园大街附近",
+      addressId: "addr_clinic",
+      siteId: "addr_clinic",
+      name: "王秀兰 · 社区日托",
+      shortName: "社区日托",
+      contact: "王秀兰",
+      phone: "138****6218",
+      tag: "日托",
+      address: "山东省济南市历下区解放路街道社区日间照料中心",
+      lat: 36.67,
+      lng: 117.13,
+      meters: 1500,
+    },
+    {
+      addressId: "addr_sister",
+      siteId: "addr_sister",
+      name: "李秀珍 · 妹妹家",
+      shortName: "妹妹家",
+      contact: "李秀珍",
+      phone: "135****2280",
+      tag: "亲戚",
+      address: "山东省济南市天桥区北园大街盛世名门 12 号楼",
       lat: 36.688,
       lng: 117.05,
       meters: 7400,
     },
     {
-      siteId: "store_ft001",
-      tenantId: "tenant_chunfeng",
-      name: "春风康养 · 槐荫店",
-      shortName: "槐荫店",
-      address: "山东省济南市槐荫区经十西路附近",
-      lat: 36.651,
-      lng: 116.95,
-      meters: 9800,
-    },
-    {
-      siteId: "store_sjs001",
-      tenantId: "tenant_chunfeng",
-      name: "春风康养 · 历城店",
-      shortName: "历城店",
-      address: "山东省济南市历城区洪楼南路附近",
-      lat: 36.69,
-      lng: 117.15,
-      meters: 5200,
-    },
-    {
-      siteId: "store_cp001",
-      tenantId: "tenant_chunfeng",
-      name: "春风康养 · 章丘店",
-      shortName: "章丘店",
-      address: "山东省济南市章丘区双山街道附近",
-      lat: 36.72,
-      lng: 117.53,
-      meters: 28500,
+      addressId: "addr_work",
+      siteId: "addr_work",
+      name: "王丽 · 公司",
+      shortName: "公司",
+      contact: "王丽",
+      phone: "186****9032",
+      tag: "公司",
+      address: "山东省济南市历下区经十路齐鲁软件园创业广场 B 座",
+      lat: 36.668,
+      lng: 117.128,
+      meters: 900,
     },
   ];
+
+  /** 兼容旧引用：站点池映射为住址簿 */
+  window.MALL_TENANT_SITES = window.MALL_USER_ADDRESSES;
 
   function haversineMeters(lat1, lng1, lat2, lng2) {
     const toRad = (d) => (d * Math.PI) / 180;
@@ -110,18 +122,22 @@
     const ctx = { ...(window.MALL_MP_CONTEXT || {}) };
     try {
       const q = new URLSearchParams(location.search);
-      if (q.get("unbound") === "1") ctx.elderBoundSiteId = "";
-      if (q.get("bound")) ctx.elderBoundSiteId = q.get("bound");
+      if (q.get("unbound") === "1") {
+        ctx.elderBoundSiteId = "";
+        ctx.elderDefaultAddressId = "";
+      }
+      if (q.get("bound")) {
+        ctx.elderBoundSiteId = q.get("bound");
+        ctx.elderDefaultAddressId = q.get("bound");
+      }
     } catch {
       /* ignore */
     }
     return ctx;
   }
 
-  function listTenantSites(tenantId) {
-    const tid = tenantId || getMpContext().tenantId;
-    return (window.MALL_TENANT_SITES || [])
-      .filter((s) => !tid || s.tenantId === tid)
+  function listAddresses() {
+    return (window.MALL_USER_ADDRESSES || [])
       .map((s) => {
         const ctx = getMpContext();
         let meters = s.meters;
@@ -134,37 +150,39 @@
   }
 
   function findSite(siteId) {
-    return listTenantSites().find((s) => s.siteId === siteId) || null;
+    const id = String(siteId || "").trim();
+    return listAddresses().find((s) => s.siteId === id || s.addressId === id) || null;
   }
 
   function getBoundSite() {
-    const id = String(getMpContext().elderBoundSiteId || "").trim();
+    const ctx = getMpContext();
+    const id = String(ctx.elderDefaultAddressId || ctx.elderBoundSiteId || "").trim();
     if (!id) return null;
     return findSite(id);
   }
 
-  /** 选择列表：绑定机构优先单独标出；未绑定则最近 6 个 */
+  /** 选择列表：默认住址优先；否则最近 6 个 */
   function getSitePickerOptions() {
     const bound = getBoundSite();
-    const all = listTenantSites();
+    const all = listAddresses();
     if (bound) {
       const others = all.filter((s) => s.siteId !== bound.siteId).slice(0, 5);
       return {
         mode: "bound",
         bound,
-        list: [{ ...bound, isBound: true }, ...others.map((s) => ({ ...s, isBound: false }))],
+        list: [{ ...bound, isBound: true, isDefault: true }, ...others.map((s) => ({ ...s, isBound: false, isDefault: false }))],
       };
     }
     return {
       mode: "nearest",
       bound: null,
-      list: all.slice(0, 6).map((s) => ({ ...s, isBound: false })),
+      list: all.slice(0, 6).map((s) => ({ ...s, isBound: false, isDefault: false })),
     };
   }
 
   function getSelectedSiteId() {
     try {
-      return localStorage.getItem(SELECTED_KEY) || "";
+      return localStorage.getItem(SELECTED_KEY) || localStorage.getItem("kangyang-mall:selected-site-id") || "";
     } catch {
       return "";
     }
@@ -173,6 +191,7 @@
   function setSelectedSiteId(id) {
     try {
       localStorage.setItem(SELECTED_KEY, id);
+      localStorage.setItem("kangyang-mall:selected-site-id", id);
     } catch {
       /* ignore */
     }
@@ -182,8 +201,15 @@
     const options = getSitePickerOptions();
     const saved = getSelectedSiteId();
     if (saved) {
-      const hit = options.list.find((s) => s.siteId === saved) || findSite(saved);
+      const hit = options.list.find((s) => s.siteId === saved || s.addressId === saved) || findSite(saved);
       if (hit) return hit;
+      // 清除旧站点 id 等失效缓存
+      try {
+        localStorage.removeItem(SELECTED_KEY);
+        localStorage.removeItem("kangyang-mall:selected-site-id");
+      } catch {
+        /* ignore */
+      }
     }
     if (options.bound) return options.bound;
     return options.list[0] || null;
@@ -191,7 +217,8 @@
 
   window.MALL_SITES = {
     getMpContext,
-    listTenantSites,
+    listTenantSites: listAddresses,
+    listAddresses,
     getBoundSite,
     getSitePickerOptions,
     resolveCurrentSite,

@@ -15,7 +15,7 @@ body {
   color: var(--ink);
 }
 .phone {
-  max-width: 430px;
+  max-width: 440px;
   margin: 0 auto;
   min-height: 100vh;
   background: var(--bg);

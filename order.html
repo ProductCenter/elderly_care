@@ -6,176 +6,187 @@
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
     />
-    <meta name="theme-color" content="#f5f6f8" />
+    <meta name="theme-color" content="#FCF6E8" />
     <title>填写订单</title>
-    <link rel="stylesheet" href="./css/order.css" />    <link rel="stylesheet" href="./css/app-shell.css?v=20260912-covers5" />
-
+    <link rel="stylesheet" href="./css/app-shell.css?v=20260929-orderv10" />
+    <link rel="stylesheet" href="./css/order.css?v=20260929-orderv10" />
   </head>
-  <body>
-    <div class="phone" id="app" data-service-type="instore">
-      <div class="status-bar" aria-hidden="true">
-        <span class="status-time">21:57</span>
-        <div class="status-right">
-          <svg class="status-signal" viewBox="0 0 18 12">
-            <rect x="0" y="8" width="3" height="4" rx="0.5" fill="currentColor" />
-            <rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="currentColor" />
-            <rect x="9" y="2.5" width="3" height="9.5" rx="0.5" fill="currentColor" />
-            <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="currentColor" opacity=".35" />
-          </svg>
-          <span class="status-net">5G</span>
-          <div class="status-battery"><span class="battery-level"></span></div>
-        </div>
-      </div>
-
-      <header class="nav-bar">
-        <button class="nav-back" type="button" aria-label="返回" id="btnBack">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-        </button>
-        <h1 class="nav-title">填写订单</h1>
-        <div class="mp-capsule" aria-hidden="true">
-          <span class="capsule-more"><i></i><i></i><i></i></span>
-          <i class="capsule-divider"></i>
-          <span class="capsule-home"><i class="ring"></i></span>
-        </div>
-      </header>
-
-      <!-- 服务类型由商品决定，不可切换 -->
-      <div class="type-badge-bar" id="typeBadgeBar">
-        <span class="type-badge" id="typeBadge">到店服务</span>
-        <span class="type-badge-tip" id="typeBadgeTip">本商品仅支持到店服务</span>
-      </div>
-
-      <main class="page-body" id="pageBody">
-        <!-- 到家：收货地址（到店时不渲染） -->
-        <section class="card address-card" id="addressCard" hidden>
-          <button class="address-row" type="button" id="btnAddress">
-            <svg class="addr-pin" viewBox="0 0 24 24" aria-hidden="true">
-              <path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/>
-            </svg>
-            <div class="addr-content">
-              <div class="addr-user">
-                <strong id="addrName">安辉</strong>
-                <span id="addrPhone">15810633897</span>
-                <span class="addr-tag">男 18岁</span>
-              </div>
-              <p class="addr-detail" id="addrDetail">
-                山东省济南市历下区姚家街道科技金融大厦
-              </p>
-            </div>
-            <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true">
-              <path fill="currentColor" d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
-            </svg>
-          </button>
-        </section>
-
-        <!-- 到店：门店信息 -->
-        <section class="card store-card" id="storeCard">
-          <div class="store-main">
-            <svg class="store-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path fill="currentColor" d="M20 4H4v2h16V4zm1 10v-2l-1-5H4l-1 5v2h1v6h10v-6h4v6h2v-6h1zm-9 4H6v-4h6v4z"/>
-            </svg>
-            <div class="store-info">
-              <h2 id="storeName">春风康养 · 历下旗舰店</h2>
-              <ul class="store-lines">
-                <li class="store-line">
-                  <span class="label">地址</span>
-                  <span id="storeAddress">山东省济南市历下区姚家街道科技金融大厦</span>
-                </li>
-                <li class="store-line">
-                  <span class="label">电话</span>
-                  <a id="storePhone" href="tel:01064001234">010-64001234</a>
-                </li>
-                <li class="store-line">
-                  <span class="label">营业</span>
-                  <span id="storeHours">09:00 – 21:00</span>
-                </li>
-              </ul>
+  <body class="app-page-v10">
+    <div class="ip-stage">
+      <div class="ip-body">
+        <span class="ip-key k-mute"></span>
+        <span class="ip-key k-vup"></span>
+        <span class="ip-key k-vdn"></span>
+        <span class="ip-key k-pwr"></span>
+        <div class="phone app-theme" id="app" data-service-type="instore" data-no-tabbar>
+          <div class="blob blob-1" aria-hidden="true"></div>
+          <div class="blob blob-2" aria-hidden="true"></div>
+          <div class="status-bar" aria-hidden="true">
+            <span class="status-time">21:57</span>
+            <div class="status-right">
+              <svg class="status-signal" viewBox="0 0 18 12">
+                <rect x="0" y="8" width="3" height="4" rx="0.5" fill="currentColor" />
+                <rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="currentColor" />
+                <rect x="9" y="2.5" width="3" height="9.5" rx="0.5" fill="currentColor" />
+                <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="currentColor" opacity=".35" />
+              </svg>
+              <span class="status-net">5G</span>
+              <div class="status-battery"><span class="battery-level"></span></div>
             </div>
           </div>
-        </section>
 
-        <!-- 商品详情 -->
-        <section class="card goods-card">
-          <h3 class="card-title">商品详情</h3>
-          <div class="goods-row">
-            <img class="goods-thumb" src="./assets/therapy-device.png" alt="中频理疗按摩仪" />
-            <div class="goods-meta">
-              <div class="goods-name" id="goodsName">中频理疗按摩仪</div>
-              <span class="sku-tag" id="goodsSku">003</span>
-              <div class="goods-bottom">
-                <span class="goods-price">¥ <em id="unitPrice">299</em></span>
-                <div class="stepper" aria-label="数量">
-                  <button type="button" class="step-btn" id="qtyMinus" aria-label="减少">−</button>
-                  <span class="step-val" id="qtyVal">1</span>
-                  <button type="button" class="step-btn" id="qtyPlus" aria-label="增加">+</button>
+          <header class="nav-bar">
+            <button class="nav-back" type="button" aria-label="返回" id="btnBack">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </button>
+            <h1 class="nav-title">填写订单</h1>
+            <div class="mp-capsule" aria-hidden="true">
+              <span class="capsule-more"><i></i><i></i><i></i></span>
+              <i class="capsule-divider"></i>
+              <span class="capsule-home"><i class="ring"></i></span>
+            </div>
+          </header>
+
+          <div class="type-badge-bar" id="typeBadgeBar">
+            <span class="type-badge" id="typeBadge">到店服务</span>
+            <span class="type-badge-tip" id="typeBadgeTip">本商品仅支持到店服务</span>
+          </div>
+
+          <section class="card proxy-banner" id="proxyBanner" hidden>
+            <strong>为他人代购 · 代支付</strong>
+            <p>服务对象为指定长者，本单由代购人确认并完成支付</p>
+            <div class="proxy-meta">
+              <span>服务对象：王秀兰（母亲）</span>
+              <span>支付人：王丽（女儿）</span>
+            </div>
+          </section>
+
+          <main class="page-body" id="pageBody">
+            <section class="card address-card" id="addressCard" hidden>
+              <button class="address-row" type="button" id="btnAddress">
+                <svg class="addr-pin" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/>
+                </svg>
+                <div class="addr-content">
+                  <div class="addr-user">
+                    <strong id="addrName">安辉</strong>
+                    <span id="addrPhone">15810633897</span>
+                    <span class="addr-tag">男 18岁</span>
+                  </div>
+                  <p class="addr-detail" id="addrDetail">
+                    山东省济南市历下区姚家街道科技金融大厦
+                  </p>
+                </div>
+                <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+                </svg>
+              </button>
+            </section>
+
+            <section class="card store-card" id="storeCard">
+              <div class="store-main">
+                <svg class="store-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="M20 4H4v2h16V4zm1 10v-2l-1-5H4l-1 5v2h1v6h10v-6h4v6h2v-6h1zm-9 4H6v-4h6v4z"/>
+                </svg>
+                <div class="store-info">
+                  <h2 id="storeName">春风康养 · 历下旗舰店</h2>
+                  <ul class="store-lines">
+                    <li class="store-line">
+                      <span class="label">地址</span>
+                      <span id="storeAddress">山东省济南市历下区姚家街道科技金融大厦</span>
+                    </li>
+                    <li class="store-line">
+                      <span class="label">电话</span>
+                      <a id="storePhone" href="tel:01064001234">010-64001234</a>
+                    </li>
+                    <li class="store-line">
+                      <span class="label">营业</span>
+                      <span id="storeHours">09:00 – 21:00</span>
+                    </li>
+                  </ul>
                 </div>
               </div>
+            </section>
+
+            <section class="card goods-card">
+              <h3 class="card-title">商品详情</h3>
+              <div class="goods-row">
+                <img class="goods-thumb" src="./assets/therapy-device.png" alt="中频理疗按摩仪" />
+                <div class="goods-meta">
+                  <div class="goods-name" id="goodsName">中频理疗按摩仪</div>
+                  <span class="sku-tag" id="goodsSku">003</span>
+                  <div class="goods-bottom">
+                    <span class="goods-price">¥ <em id="unitPrice">299</em></span>
+                    <div class="stepper" aria-label="数量">
+                      <button type="button" class="step-btn" id="qtyMinus" aria-label="减少">−</button>
+                      <span class="step-val" id="qtyVal">1</span>
+                      <button type="button" class="step-btn" id="qtyPlus" aria-label="增加">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="card appoint-card" id="appointCard">
+              <button class="appoint-row" type="button" id="btnAppoint">
+                <span class="appoint-label">预约时间</span>
+                <span class="appoint-value" id="appointValue">请选择到店时间</span>
+                <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+                </svg>
+              </button>
+            </section>
+
+            <section class="card fee-card">
+              <div class="fee-row"><span>商品金额</span><span id="feeGoods">¥ 310</span></div>
+              <div class="fee-row" id="feeShipRow"><span>运费</span><span id="feeShip">0</span></div>
+              <div class="fee-row"><span>立减</span><span class="fee-minus" id="feeDiscount">- ¥ 11.00</span></div>
+              <p class="member-pay-tip" id="memberPayTip" hidden></p>
+              <button class="fee-row fee-link" type="button" id="btnCoupon">
+                <span>优惠券</span>
+                <span class="fee-right">无可用 <svg class="chevron sm" viewBox="0 0 24 24"><path fill="currentColor" d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></span>
+              </button>
+              <div class="fee-total">
+                合计 <strong id="feeTotal">¥ 299</strong>
+              </div>
+            </section>
+
+            <section class="card pay-card" id="payCard">
+              <h3 class="card-title">支付方式</h3>
+              <label class="pay-option is-active">
+                <span class="pay-left">
+                  <span class="pay-icon wechat" aria-hidden="true"></span>
+                  <span>微信支付</span>
+                </span>
+                <input type="radio" name="payMethod" value="wechat" checked />
+              </label>
+              <p class="pay-tip" id="payTip">到店服务仅支持线上支付，提交后直接拉起微信支付</p>
+            </section>
+          </main>
+
+          <footer class="submit-bar">
+            <div class="submit-sum">
+              合计 <strong id="barTotal">¥ 299</strong>
+            </div>
+            <button class="submit-btn" type="button" id="btnSubmit">微信支付</button>
+          </footer>
+
+          <div class="sheet-mask" id="appointMask" hidden></div>
+          <div class="sheet" id="appointSheet" hidden>
+            <div class="sheet-hd">
+              <button type="button" id="appointCancel">取消</button>
+              <strong>选择预约时间</strong>
+              <button type="button" class="ok" id="appointOk">确定</button>
+            </div>
+            <div class="sheet-bd">
+              <div class="day-tabs" id="dayTabs"></div>
+              <div class="slot-grid" id="slotGrid"></div>
             </div>
           </div>
-        </section>
 
-        <!-- 预约时间（到店/到家均保留，到店必填） -->
-        <section class="card appoint-card" id="appointCard">
-          <button class="appoint-row" type="button" id="btnAppoint">
-            <span class="appoint-label">预约时间</span>
-            <span class="appoint-value" id="appointValue">请选择到店时间</span>
-            <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true">
-              <path fill="currentColor" d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
-            </svg>
-          </button>
-        </section>
-
-        <!-- 费用明细 -->
-        <section class="card fee-card">
-          <div class="fee-row"><span>商品金额</span><span id="feeGoods">¥ 310</span></div>
-          <div class="fee-row" id="feeShipRow"><span>运费</span><span id="feeShip">0</span></div>
-          <div class="fee-row"><span>立减</span><span class="fee-minus" id="feeDiscount">- ¥ 11.00</span></div>
-          <p class="member-pay-tip" id="memberPayTip" hidden></p>
-          <button class="fee-row fee-link" type="button" id="btnCoupon">
-            <span>优惠券</span>
-            <span class="fee-right">无可用 <svg class="chevron sm" viewBox="0 0 24 24"><path fill="currentColor" d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></span>
-          </button>
-          <div class="fee-total">
-            合计 <strong id="feeTotal">¥ 299</strong>
-          </div>
-        </section>
-
-        <!-- 支付方式：仅线上支付（REQ-03 / REQ-07） -->
-        <section class="card pay-card" id="payCard">
-          <h3 class="card-title">支付方式</h3>
-          <label class="pay-option is-active">
-            <span class="pay-left">
-              <span class="pay-icon wechat" aria-hidden="true"></span>
-              <span>微信支付</span>
-            </span>
-            <input type="radio" name="payMethod" value="wechat" checked />
-          </label>
-          <p class="pay-tip" id="payTip">到店服务仅支持线上支付，提交后直接拉起微信支付</p>
-        </section>
-      </main>
-
-      <footer class="submit-bar">
-        <div class="submit-sum">
-          合计 <strong id="barTotal">¥ 299</strong>
-        </div>
-        <button class="submit-btn" type="button" id="btnSubmit">微信支付</button>
-      </footer>
-
-      <!-- 预约时间面板 -->
-      <div class="sheet-mask" id="appointMask" hidden></div>
-      <div class="sheet" id="appointSheet" hidden>
-        <div class="sheet-hd">
-          <button type="button" id="appointCancel">取消</button>
-          <strong>选择预约时间</strong>
-          <button type="button" class="ok" id="appointOk">确定</button>
-        </div>
-        <div class="sheet-bd">
-          <div class="day-tabs" id="dayTabs"></div>
-          <div class="slot-grid" id="slotGrid"></div>
+          <div class="wx-toast" id="toast" hidden></div>
         </div>
       </div>
-
-      <div class="wx-toast" id="toast" hidden></div>
     </div>
 
     <script src="./js/products.js?v=20260912-covers5"></script>
@@ -184,7 +195,23 @@
     <script src="./js/package-entitlement.js"></script>
     <script src="./js/member.js"></script>
     <script src="./js/order.js"></script>
-    <script src="./js/app-shell.js?v=20260912-covers5"></script>
-
+    <script src="./js/app-shell.js?v=20260917-home2tab"></script>
+    <script>
+      (function () {
+        var bd = document.querySelector(".ip-body");
+        if (!bd) return;
+        function fit() {
+          bd.style.zoom = "1";
+          var r = bd.getBoundingClientRect();
+          if (!r.width || !r.height) return;
+          var k = Math.min(1, (window.innerWidth - 108) / r.width, (window.innerHeight - 56) / r.height);
+          if (!isFinite(k) || k <= 0) k = 1;
+          k = Math.max(0.42, Math.round(k * 10000) / 10000);
+          bd.style.zoom = String(k);
+        }
+        fit();
+        window.addEventListener("resize", fit);
+      })();
+    </script>
   </body>
 </html>

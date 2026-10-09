@@ -173,6 +173,8 @@
       document.getElementById("woStaff").textContent = wo.staffName || "待指派";
       document.getElementById("woPhone").textContent = wo.staffPhone || "—";
       document.getElementById("woCreated").textContent = fmt(wo.createdAt);
+      const woTitle = woCard.querySelector("h3");
+      if (woTitle) woTitle.textContent = o.fulfillment === "rental" ? "安装工单" : "服务工单";
     }
 
     // 物流明细：仅实物商品展示（到家服务不展示）
@@ -228,7 +230,13 @@
       document.getElementById("homeAddrUser").textContent = `${name} ${phone}`;
       document.getElementById("homeAddrDetail").textContent = detail;
       const addrTitle = addrCard.querySelector("h3");
-      if (addrTitle) addrTitle.textContent = isGoods ? "收货地址" : "上门地址";
+      if (addrTitle) {
+        addrTitle.textContent = o.fulfillment === "rental"
+          ? "安装地址"
+          : isGoods
+            ? "收货地址"
+            : "上门地址";
+      }
     }
   }
 
@@ -271,6 +279,7 @@
       nextBtn.textContent = nextMeta
         ? `模拟：进入「${nextMeta.title}」`
         : "模拟推进进度";
+      if (o.fulfillment === "rental" && titleEl) titleEl.textContent = "租赁进度";
     }
 
     list.innerHTML = steps
@@ -389,6 +398,26 @@
     activeIndex = open >= 0 ? open : 0;
   }
 
+  function renderRental(o) {
+    const card = document.getElementById("rentalCard");
+    if (!card) return;
+    const show = o.fulfillment === "rental";
+    card.hidden = !show;
+    if (!show) return;
+    const rent = o.rental || {};
+    const set = (id, text) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text || "—";
+    };
+    set("rentDevice", rent.device || o.goodsName);
+    set("rentTerm", rent.term);
+    set("rentFee", rent.fee);
+    set("rentInstall", rent.install);
+    set("rentReturn", rent.returnAt);
+    const badge = document.getElementById("rentStatus");
+    if (badge) badge.textContent = o.statusText || "租赁中";
+  }
+
   function render(o) {
     order = o;
     tickets = VerifyCode.getTickets(o).slice(0, VerifyCode.MAX_VERIFY_CODES);
@@ -430,6 +459,12 @@
         tickets.length > 1
           ? `请到店出示核销码（${pendingN}/${tickets.length} 待核销）`
           : "请到店出示核销码完成服务";
+    } else if (o.fulfillment === "rental") {
+      document.getElementById("statusText").textContent = o.statusText || "已完成";
+      const rent = o.rental || {};
+      sub.textContent = rent.term
+        ? `租期 ${rent.term}。${rent.install || "设备已安装"}`
+        : "辅具已安装，可按月续租或到期回收";
     } else if (o.serviceType === "home") {
       const step = o.homeStep ?? 0;
       if (o.status === "refunded") {
@@ -446,7 +481,7 @@
     } else if (o.serviceType === "goods") {
       const step = o.goodsStep ?? 0;
       if (o.status === "refunded") {
-        sub.textContent = "订单已退款";
+        sub.textContent = o.fulfillment === "mail" ? "邮寄订单已退款，款项原路返回" : "订单已退款";
       } else if (step >= 3) {
         sub.textContent = "已确认收货，交易成功";
       } else if (step === 2) {
@@ -515,17 +550,23 @@
     document.getElementById("payAmount").textContent = `¥ ${o.payAmount ?? "—"}`;
     document.getElementById("orderId").textContent = o.orderId;
     document.getElementById("serviceType").textContent =
-      (window.getProductAttr &&
-        window.getProductAttr(o.productAttr || o.serviceType).label) ||
-      (o.serviceType === "instore"
-        ? "到店服务"
-        : o.serviceType === "goods"
-          ? "实物商品"
-          : o.serviceType === "package"
-            ? "服务套餐"
-            : "到家服务");
+      o.fulfillment === "rental"
+        ? "辅具租赁"
+        : o.fulfillment === "mail"
+          ? "邮寄到家"
+          : (window.getProductAttr &&
+              window.getProductAttr(o.productAttr || o.serviceType).label) ||
+            (o.serviceType === "instore"
+              ? "到店服务"
+              : o.serviceType === "goods"
+                ? "实物商品"
+                : o.serviceType === "package"
+                  ? "服务套餐"
+                  : "到家服务");
     document.getElementById("storeName").textContent = o.storeName || "—";
     document.getElementById("appointTime").textContent = o.appointmentTime || "—";
+    const appointLabel = document.querySelector("#appointRow span");
+    if (appointLabel) appointLabel.textContent = o.fulfillment === "rental" ? "安装时间" : "预约时间";
     document.getElementById("storeRow").hidden =
       o.serviceType !== "instore" && o.serviceType !== "package" && o.fulfillment !== "package";
     document.getElementById("appointRow").hidden =
@@ -534,6 +575,7 @@
     renderMap(o);
     renderHomeTimeline(o);
     renderHomeExtras(o);
+    renderRental(o);
 
     const verifiedRow = document.getElementById("verifiedRow");
     const operatorRow = document.getElementById("operatorRow");
@@ -560,19 +602,191 @@
     }
   }
 
-  const orderId = new URLSearchParams(location.search).get("orderId");
+  function at(iso) {
+    const n = Date.parse(iso);
+    return Number.isNaN(n) ? Date.now() : n;
+  }
+
+  async function ensureDemoOrder(orderId) {
+    const existing = VerifyCode.getOrder(orderId);
+    if (existing && existing.demoKind) {
+      if (
+        orderId === "KY-DEMO-HOME" &&
+        existing.cover &&
+        existing.cover.indexOf("image-1e56f3c7") >= 0
+      ) {
+        existing.cover = "./assets/cover-neck-massage.png";
+        return VerifyCode.upsertOrder(existing);
+      }
+      return existing;
+    }
+    const store = {
+      storeId: "store_cy001",
+      storeName: "春风康养 · 历下旗舰店",
+      storeAddress: "山东省济南市历下区姚家街道科技金融大厦",
+      storeLat: 36.6666,
+      storeLng: 117.1205,
+    };
+    const homeAddr = {
+      receiverName: "林秀珍",
+      receiverPhone: "158****3897",
+      detailAddress: "山东省济南市历下区姚家街道科技金融大厦 2 单元 801",
+    };
+    if (orderId === "KY-DEMO-INSTORE") {
+      const o = await VerifyCode.createPaidOrder({
+        orderId,
+        serviceType: "instore",
+        goodsId: "ai_massage",
+        goodsName: "AI舒压理疗服务",
+        sku: "AI-01",
+        quantity: 1,
+        payAmount: 15,
+        cover: "./assets/cover-ai-massage.png",
+        appointmentTime: "2026-09-18 10:00",
+        expireAt: at("2026-10-13T16:00:00+08:00"),
+        ...store,
+      });
+      o.demoKind = "instore";
+      o.createdAt = at("2026-09-13T09:20:00+08:00");
+      o.paidAt = o.createdAt;
+      return VerifyCode.upsertOrder(o);
+    }
+    if (orderId === "KY-DEMO-HOME") {
+      const created = at("2026-09-12T11:00:00+08:00");
+      const assigned = at("2026-09-12T15:30:00+08:00");
+      const o = await VerifyCode.createPaidOrder({
+        orderId,
+        serviceType: "home",
+        goodsId: "neck_massage",
+        goodsName: "颈椎按摩服务",
+        sku: "NK-03",
+        quantity: 1,
+        payAmount: 39,
+        cover: "./assets/cover-neck-massage.png",
+        appointmentTime: "2026-09-16 14:00",
+        ...homeAddr,
+      });
+      o.demoKind = "home";
+      o.homeStep = 1;
+      o.status = "assigned";
+      o.statusText = "已派工";
+      o.createdAt = created;
+      o.paidAt = created;
+      o.homeTimeline = { orderedAt: created, assignedAt: assigned, confirmedAt: null, completedAt: null };
+      o.workOrder = {
+        workOrderId: "WO20260912001",
+        status: "assigned",
+        statusText: "已派工",
+        staffName: "王康复师",
+        staffPhone: "138****6688",
+        createdAt: created,
+        assignedAt: assigned,
+      };
+      return VerifyCode.upsertOrder(o);
+    }
+    if (orderId === "KY-DEMO-RENT") {
+      const created = at("2026-09-02T10:00:00+08:00");
+      const assigned = at("2026-09-02T16:00:00+08:00");
+      const confirmed = at("2026-09-03T09:40:00+08:00");
+      const done = at("2026-09-03T11:00:00+08:00");
+      const o = await VerifyCode.createPaidOrder({
+        orderId,
+        serviceType: "home",
+        goodsId: "bed_rental_home",
+        goodsName: "护理床租赁月付",
+        sku: "BR-L01",
+        quantity: 1,
+        payAmount: 128,
+        cover: "./assets/cover-wellness-kit.png",
+        appointmentTime: "2026-09-03 09:30",
+        receiverName: "林建国",
+        receiverPhone: homeAddr.receiverPhone,
+        detailAddress: homeAddr.detailAddress,
+      });
+      o.demoKind = "rental";
+      o.fulfillment = "rental";
+      o.homeStep = 3;
+      o.status = "completed";
+      o.statusText = "已完成";
+      o.createdAt = created;
+      o.paidAt = created;
+      o.completedAt = done;
+      o.homeTimeline = { orderedAt: created, assignedAt: assigned, confirmedAt: confirmed, completedAt: done };
+      o.workOrder = {
+        workOrderId: "WO20260902008",
+        status: "completed",
+        statusText: "已安装",
+        staffName: "安装组 · 赵师傅",
+        staffPhone: "138****6688",
+        createdAt: created,
+        assignedAt: assigned,
+        completedAt: done,
+      };
+      o.rental = {
+        device: "多功能护理床",
+        term: "2026-09-03 至 2026-10-02",
+        fee: "¥128 / 月",
+        install: "2026-09-03 已上门安装",
+        returnAt: "2026-10-02 前可续租或回收",
+      };
+      return VerifyCode.upsertOrder(o);
+    }
+    if (orderId === "KY-DEMO-MAIL") {
+      const created = at("2026-08-28T08:40:00+08:00");
+      const shipped = at("2026-08-28T18:20:00+08:00");
+      const refunded = at("2026-08-29T09:10:00+08:00");
+      const o = await VerifyCode.createPaidOrder({
+        orderId,
+        serviceType: "goods",
+        goodsId: "herbal_tea",
+        goodsName: "药食同源养生茶",
+        sku: "GD-HT01",
+        quantity: 1,
+        payAmount: 58,
+        cover: "./assets/cover-nutrition-meal.png",
+        freight: 0,
+        shipFrom: "廊坊仓",
+        ...homeAddr,
+      });
+      o.demoKind = "mail";
+      o.fulfillment = "mail";
+      o.goodsStep = 1;
+      o.status = "refunded";
+      o.statusText = "已退款";
+      o.createdAt = created;
+      o.paidAt = created;
+      o.goodsTimeline = { orderedAt: created, shippedAt: shipped, deliveringAt: null, receivedAt: null };
+      o.logistics = {
+        company: "顺丰速运",
+        trackingNo: "SF2026082801",
+        statusText: "已退款",
+        traces: [
+          { time: refunded, text: "退款已原路返回" },
+          { time: shipped, text: "廊坊仓已发出，运单 SF2026082801" },
+          { time: created, text: "订单已支付，等待仓库拣货发货" },
+        ],
+      };
+      return VerifyCode.upsertOrder(o);
+    }
+    return null;
+  }
+
+  const pageParams = new URLSearchParams(location.search);
+  const orderId = pageParams.get("orderId");
+  const backToV10 = pageParams.get("from") === "v10";
   if (!orderId) {
     toast("缺少订单号");
     setTimeout(() => {
-      location.href = "./index.html";
+      location.href = backToV10 ? "./app-v10.html#orders" : "./index.html";
     }, 800);
   } else {
     (async () => {
-      let o = VerifyCode.getOrder(orderId);
+      let o = await ensureDemoOrder(orderId);
+      if (!o) o = VerifyCode.getOrder(orderId);
       if (!o) {
         toast("订单不存在");
         setTimeout(() => {
-          location.href = "./index.html";
+          location.href = backToV10 ? "./app-v10.html#orders" : "./index.html";
         }, 800);
         return;
       }
@@ -607,6 +821,10 @@
   }
 
   document.getElementById("btnBack")?.addEventListener("click", () => {
+    if (backToV10) {
+      location.href = "./app-v10.html#orders";
+      return;
+    }
     if (history.length > 1) history.back();
     else location.href = "./index.html";
   });

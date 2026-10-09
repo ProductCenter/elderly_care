@@ -272,7 +272,7 @@
     toast("已加入购物车");
   });
 
-  document.getElementById("btnBuy")?.addEventListener("click", () => {
+  function goCheckout(proxy) {
     if (!product) return;
     const attrKey = window.getProductAttrKey(product);
     if (attrKey === "instore" && currentSku && currentSku.stock <= 0) {
@@ -291,8 +291,12 @@
     if (attrKey === "package") {
       qs.set("storeId", product.storeId || currentStoreId || "store_cy001");
     }
+    if (proxy) qs.set("proxy", "1");
     location.href = `./order.html?${qs.toString()}`;
-  });
+  }
+
+  document.getElementById("btnBuy")?.addEventListener("click", () => goCheckout(false));
+  document.getElementById("btnProxyBuy")?.addEventListener("click", () => goCheckout(true));
 
   document.getElementById("btnEnterShop")?.addEventListener("click", () => {
     const btn = document.getElementById("btnEnterShop");

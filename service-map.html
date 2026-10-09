@@ -1,0 +1,1866 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>养老机构护工场景服务地图</title>
+  <style>
+    :root {
+      --bg: #f7f3ec;
+      --paper: #fffdf9;
+      --ink: #1f1a14;
+      --muted: #6b6258;
+      --line: #e4dbcf;
+      --accent: #c45a2c;
+      --accent-soft: #f3e0d4;
+      --green: #2f7d4a;
+      --yellow: #b8891a;
+      --orange: #c45a2c;
+      --red: #b42318;
+      --shadow: 0 10px 30px rgba(31, 26, 20, 0.06);
+      --radius: 14px;
+      --max: 920px;
+      font-family: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 10% -10%, #f8e7d8 0%, transparent 55%),
+        radial-gradient(900px 420px at 100% 0%, #e8f0ea 0%, transparent 50%),
+        var(--bg);
+      line-height: 1.65;
+    }
+
+    .wrap {
+      width: min(100% - 2rem, var(--max));
+      margin: 0 auto;
+      padding: 2.25rem 0 4rem;
+    }
+
+    header.doc-hero {
+      margin-bottom: 1.75rem;
+    }
+    header.doc-hero .eyebrow {
+      margin: 0 0 0.45rem;
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    header.doc-hero h1 {
+      margin: 0 0 0.65rem;
+      font-size: clamp(1.55rem, 3.2vw, 2rem);
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+    }
+    header.doc-hero .lead {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+      max-width: 48rem;
+    }
+
+    nav.toc {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 0.75rem;
+      margin: 1.25rem 0 1.75rem;
+      padding: 0.85rem 1rem;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    nav.toc a {
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 0.9rem;
+      border-bottom: 1px solid transparent;
+    }
+    nav.toc a:hover { border-bottom-color: var(--accent); color: var(--accent); }
+    nav.toc .toc-label {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-right: 0.25rem;
+    }
+
+    section.block {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + 2px);
+      box-shadow: var(--shadow);
+      padding: 1.35rem 1.35rem 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    section.block > h2 {
+      margin: 0 0 0.85rem;
+      font-size: 1.22rem;
+      letter-spacing: -0.01em;
+    }
+    section.block > h3 {
+      margin: 1.35rem 0 0.65rem;
+      font-size: 1.05rem;
+    }
+    section.block p { margin: 0.55rem 0; }
+    section.block .note {
+      margin-top: 0.9rem;
+      padding: 0.85rem 1rem;
+      background: var(--accent-soft);
+      border-radius: 10px;
+      color: var(--ink);
+      font-size: 0.92rem;
+    }
+    section.block a { color: var(--accent); }
+
+    .mode-chain {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+      margin: 0.85rem 0 1rem;
+    }
+    .mode-chain span {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+    .mode-chain i {
+      font-style: normal;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .roles {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin: 0.85rem 0 1.1rem;
+    }
+    @media (max-width: 640px) {
+      .roles { grid-template-columns: 1fr; }
+    }
+    .role-card {
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+    .role-card strong { display: block; margin-bottom: 0.25rem; }
+    .role-card p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+    .flow-wrap {
+      margin-top: 0.75rem;
+      padding: 0.85rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      overflow-x: auto;
+    }
+    .mermaid { margin: 0; }
+
+    .alert-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0.75rem 0;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.28rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    .pill::before {
+      content: "";
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .pill.g { color: var(--green); }
+    .pill.y { color: var(--yellow); }
+    .pill.o { color: var(--orange); }
+    .pill.r { color: var(--red); }
+
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      margin: 0.75rem 0;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+    table.doc {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 640px;
+      font-size: 0.9rem;
+    }
+    table.doc th,
+    table.doc td {
+      padding: 0.7rem 0.8rem;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    table.doc th {
+      background: #faf6f0;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+    table.doc tr:last-child td { border-bottom: 0; }
+    table.doc td:first-child { white-space: nowrap; font-weight: 600; color: var(--accent); }
+
+    .combo-list {
+      margin: 0.5rem 0 0;
+      padding-left: 1.15rem;
+    }
+    .combo-list li { margin: 0.35rem 0; }
+
+    .scene-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.15rem;
+      margin-top: 0.85rem;
+    }
+    .scene-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .scene-card > img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      background: #f0ebe3;
+    }
+    .scene-card .meta {
+      padding: 0.9rem 1rem 1.1rem;
+    }
+    .scene-card .meta .time {
+      margin: 0 0 0.2rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 0.92rem;
+    }
+    .scene-card .meta .route {
+      margin: 0 0 0.55rem;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+    .scene-card .meta .route strong { color: var(--ink); font-weight: 650; }
+    .scene-card .meta h4 {
+      margin: 0.65rem 0 0.3rem;
+      font-size: 1rem;
+    }
+    .scene-card .meta > p.desc {
+      margin: 0 0 0.75rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    /* 上一版：四段架构图 安全硬件→智能体→护工服务→用户价值 */
+    .arch-diagram {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.55rem 0.65rem;
+      margin: 0.35rem 0 0.65rem;
+    }
+    .arch-diagram .node {
+      padding: 0.55rem 0.65rem;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #faf6f0;
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+    .arch-diagram .node b {
+      display: block;
+      margin-bottom: 0.15rem;
+      font-size: 0.78rem;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .arch-diagram .node span { color: var(--ink); }
+    .architecture {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem 0.35rem;
+      align-items: center;
+      margin: 0 0 0.75rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+    .architecture em {
+      font-style: normal;
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .architecture i {
+      font-style: normal;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem 0.9rem;
+      margin: 0;
+    }
+    @media (max-width: 640px) {
+      .service-grid { grid-template-columns: 1fr; }
+      .arch-diagram { grid-template-columns: 1fr; }
+    }
+    .service-grid > div {
+      padding: 0.55rem 0.65rem;
+      border-radius: 10px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+    .service-grid dt {
+      margin: 0 0 0.2rem;
+      font-weight: 700;
+      font-size: 0.82rem;
+      color: var(--accent);
+    }
+    .service-grid dd {
+      margin: 0;
+      font-size: 0.84rem;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    .service-grid .is-hw { border-color: #e8c9b4; background: #fff8f3; }
+    .service-grid .is-agent { border-color: #c9d9c8; background: #f5faf5; }
+    .service-grid .is-digital { border-color: #d5cfe8; background: #f7f5fc; }
+
+    /* —— 核心价值：护工减负 · 自动履约 —— */
+    .value-block {
+      border-color: #d8cfc2;
+      background:
+        linear-gradient(180deg, #fffefb 0%, #fffdf9 100%);
+    }
+    .value-block > h2 {
+      margin-bottom: 0.35rem;
+    }
+    .value-kicker {
+      margin: 0 0 1rem;
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 40rem;
+    }
+    .value-hero {
+      margin: 0 0 1.15rem;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #eef4f2;
+      box-shadow: 0 8px 24px rgba(31, 26, 20, 0.06);
+    }
+    .value-hero img {
+      display: block;
+      width: 100%;
+      height: auto;
+      vertical-align: middle;
+    }
+    .value-flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem 0.55rem;
+      margin: 0 0 1.15rem;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      background: #f3f8f6;
+      border: 1px solid #d5e5df;
+      font-size: 0.92rem;
+    }
+    .value-flow b {
+      color: #1a6b55;
+      font-weight: 750;
+    }
+    .value-flow i {
+      font-style: normal;
+      color: var(--muted);
+    }
+    .value-flow em {
+      font-style: normal;
+      color: var(--ink);
+      font-weight: 650;
+    }
+    .value-pillars {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0.65rem;
+      margin: 0.75rem 0 1.15rem;
+    }
+    @media (max-width: 820px) {
+      .value-pillars { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 520px) {
+      .value-pillars { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    .value-pillar {
+      padding: 0.85rem 0.75rem 0.95rem;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      text-align: center;
+    }
+    .value-pillar .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 3.2rem;
+      height: 1.7rem;
+      margin-bottom: 0.45rem;
+      padding: 0 0.55rem;
+      border-radius: 999px;
+      background: #e8f4ef;
+      color: #1a6b55;
+      font-size: 0.88rem;
+      font-weight: 750;
+      letter-spacing: 0.02em;
+    }
+    .value-pillar strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-size: 0.92rem;
+    }
+    .value-pillar p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+    .value-stakeholders {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin: 0.75rem 0 1rem;
+    }
+    @media (max-width: 720px) {
+      .value-stakeholders { grid-template-columns: 1fr; }
+    }
+    .value-stake {
+      padding: 1rem 1.05rem;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+    .value-stake .who {
+      margin: 0 0 0.2rem;
+      font-size: 0.78rem;
+      font-weight: 650;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+    }
+    .value-stake strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 1.05rem;
+    }
+    .value-stake p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+    .value-banner {
+      margin: 0.35rem 0 0;
+      padding: 0.85rem 1.1rem;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #1a6b55 0%, #2a8a6e 100%);
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 650;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+    .value-quote {
+      margin: 0 0 1.15rem;
+      padding: 1rem 1.15rem;
+      border-radius: 12px;
+      border-left: 4px solid #1a6b55;
+      background: #f3f8f6;
+      color: var(--ink);
+      font-size: 0.98rem;
+      font-weight: 600;
+      line-height: 1.7;
+    }
+    .value-detail {
+      margin: 1.15rem 0 0;
+      padding-top: 0.35rem;
+      border-top: 1px solid var(--line);
+    }
+    .value-detail > h3 {
+      margin: 1.25rem 0 0.55rem;
+      font-size: 1.05rem;
+    }
+    .value-detail > h3:first-child {
+      margin-top: 0.85rem;
+    }
+    .value-detail ol.value-ol {
+      margin: 0.35rem 0 0.75rem;
+      padding-left: 1.25rem;
+    }
+    .value-detail ol.value-ol > li {
+      margin: 0.65rem 0;
+    }
+    .value-detail ol.value-ol > li strong {
+      color: var(--ink);
+    }
+    .value-detail ol.value-ol > li p {
+      margin: 0.3rem 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .value-detail ul.value-ul {
+      margin: 0.35rem 0 0.75rem;
+      padding-left: 1.2rem;
+    }
+    .value-detail ul.value-ul li {
+      margin: 0.35rem 0;
+      color: var(--ink);
+      font-size: 0.92rem;
+    }
+    .value-chain {
+      margin: 0.55rem 0 0.85rem;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      background: #fff8f3;
+      border: 1px solid #e8c9b4;
+      font-size: 0.9rem;
+      font-weight: 650;
+      color: var(--ink);
+      line-height: 1.65;
+      overflow-x: auto;
+    }
+    .value-chain span {
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .value-conds {
+      margin: 0.5rem 0 0.85rem;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.45rem;
+    }
+    .value-conds li {
+      position: relative;
+      padding: 0.55rem 0.75rem 0.55rem 2rem;
+      border-radius: 10px;
+      background: #fff;
+      border: 1px solid var(--line);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .value-conds li::before {
+      content: "✓";
+      position: absolute;
+      left: 0.7rem;
+      top: 0.55rem;
+      color: #1a6b55;
+      font-weight: 750;
+    }
+    .value-success {
+      margin: 0.65rem 0 0;
+      padding: 0.95rem 1.1rem;
+      border-radius: 12px;
+      background: #faf6f0;
+      border: 1px solid var(--line);
+      font-size: 0.94rem;
+      line-height: 1.7;
+    }
+    .value-success strong.final {
+      display: block;
+      margin-top: 0.65rem;
+      color: #1a6b55;
+      font-size: 1.02rem;
+    }
+
+    /* —— 自动履约机制（整合服务设计方案） —— */
+    .fulfill-block .phase-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin: 0.75rem 0 1.1rem;
+    }
+    @media (max-width: 640px) {
+      .fulfill-block .phase-grid { grid-template-columns: 1fr; }
+    }
+    .fulfill-block .phase-card {
+      padding: 0.9rem 1rem;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+    .fulfill-block .phase-card strong {
+      display: block;
+      margin-bottom: 0.3rem;
+      color: #1a6b55;
+      font-size: 0.95rem;
+    }
+    .fulfill-block .phase-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+    .blueprint {
+      display: grid;
+      gap: 0;
+      margin: 0.75rem 0 1.15rem;
+    }
+    .blueprint-step {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 0 0.85rem;
+    }
+    .blueprint-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #1a6b55;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 750;
+      font-size: 0.88rem;
+      position: relative;
+      z-index: 1;
+    }
+    .blueprint-step:not(:last-child) .blueprint-dot::after {
+      content: "";
+      position: absolute;
+      top: 32px;
+      left: 15px;
+      width: 2px;
+      height: calc(100% + 8px);
+      background: #c5ddd4;
+    }
+    .blueprint-body {
+      padding: 0 0 1.1rem;
+    }
+    .blueprint-body h4 {
+      margin: 0.15rem 0 0.35rem;
+      font-size: 1rem;
+    }
+    .blueprint-body p {
+      margin: 0 0 0.45rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .blueprint-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .blueprint-tags span {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border-radius: 6px;
+      background: #e8f4ef;
+      color: #1a6b55;
+      font-size: 0.78rem;
+      font-weight: 650;
+    }
+    .rule-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin: 0.75rem 0 1rem;
+    }
+    @media (max-width: 640px) {
+      .rule-grid { grid-template-columns: 1fr; }
+    }
+    .rule-card {
+      padding: 0.9rem 1rem;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+    .rule-card .rn {
+      display: inline-grid;
+      place-items: center;
+      width: 1.55rem;
+      height: 1.55rem;
+      margin-right: 0.35rem;
+      border-radius: 50%;
+      background: #1a6b55;
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 750;
+      vertical-align: middle;
+    }
+    .rule-card h4 {
+      margin: 0 0 0.4rem;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.15rem;
+    }
+    .rule-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+    .fig-cap {
+      margin: 0.35rem 0 1rem;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+    .diagram-wrap {
+      margin: 0.65rem 0 0.35rem;
+      padding: 0.65rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      overflow-x: auto;
+    }
+    .diagram-wrap img {
+      display: block;
+      width: 100%;
+      min-width: 640px;
+      height: auto;
+    }
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin: 0.75rem 0 0.5rem;
+    }
+    @media (max-width: 640px) {
+      .metric-row { grid-template-columns: 1fr; }
+    }
+    .metric-card {
+      padding: 0.9rem 1rem;
+      border-radius: 12px;
+      background: #f3f8f6;
+      border: 1px solid #d5e5df;
+    }
+    .metric-card .m {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #1a6b55;
+      line-height: 1;
+      margin-bottom: 0.35rem;
+    }
+    .metric-card strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+    .metric-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+    .conf-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 0.5rem 0 0.85rem;
+    }
+    .conf-row span {
+      display: inline-flex;
+      padding: 0.28rem 0.65rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font-size: 0.84rem;
+      font-weight: 650;
+    }
+
+
+    .part-lead {
+      margin: 0 0 1rem;
+      padding: 0.85rem 1.1rem;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #f3f8f6 0%, #fff8f3 100%);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .part-lead strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      color: #1a6b55;
+      font-size: 0.88rem;
+      letter-spacing: 0.04em;
+    }
+    footer.doc-foot {
+      margin-top: 1.5rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="doc-hero">
+      <p class="eyebrow">春风康养 · 机构照护</p>
+      <h1>养老机构护工场景服务地图</h1>
+      <p class="lead">
+        本文先描述护工一天的动线（去哪、做什么），再聚焦照护履约记录：
+        让护工把时间用于照护老人，让系统在后台完成记录整理。
+        诊断、用药和临床处置由护士、医生负责；护工负责照护执行与异常上报。
+      </p>
+    </header>
+
+    <nav class="toc" aria-label="目录">
+      <span class="toc-label">目录</span>
+      <a href="#routes">一、护工一天的动线</a>
+      <a href="#value">二、照护履约记录 · 价值</a>
+      <a href="#fulfill">二、自动履约机制</a>
+      <a href="#overview">三、闭环模式</a>
+      <a href="#devices">四、场景硬件</a>
+      <a href="#insight">五、健康研判</a>
+      <a href="#pilot">六、试点验收</a>
+    </nav>
+    <p class="part-lead" id="part-day">
+      <strong>上篇 · 护工的一天</strong>
+      先看清护工「去哪、做什么」，再理解系统如何在这条动线上自动形成履约记录。
+    </p>
+
+
+    <!-- 分 1 -->
+    <section class="block" id="routes" aria-labelledby="routes-title">
+      <h2 id="routes-title">一、护工一天的动线</h2>
+      <p>
+        动线按时段展开：每段明确「去哪、做什么」。这是机构照护的现实工作流——
+        护工沿护理站、房间、卫浴、餐厅、康复区、户外往返，完成交接、晨间护理、餐食、活动、翻身、夜巡等任务。
+      </p>
+      <p>
+        下表先给出全天节奏；随后各场景卡片展开「护工动线 → 硬件 → 智能体 → 价值」。
+        <strong>系统留痕</strong>列提示「本可自动记什么」，具体如何少填、少扰，见后文「照护履约记录」。
+      </p>
+
+      <div class="table-scroll">
+        <table class="doc">
+          <thead>
+            <tr>
+              <th>时段</th>
+              <th>主要动线</th>
+              <th>护工任务</th>
+              <th>系统留痕</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>06:00–07:30</td>
+              <td>护理站 → 楼层/房间 → 卫浴</td>
+              <td>交接班、晨间巡房、唤醒、离床协助、如厕、晨间清洁；观察精神、皮肤、排泄与异常</td>
+              <td>扫码到房、护理完成、异常上报</td>
+            </tr>
+            <tr>
+              <td>07:30–09:00</td>
+              <td>房间 → 餐厅 → 房间</td>
+              <td>送餐/陪餐、吞咽观察、饮水提醒、餐后口腔清洁、服药协助（按护士医嘱）</td>
+              <td>摄食量、饮水量、呛咳/拒食</td>
+            </tr>
+            <tr>
+              <td>09:00–11:30</td>
+              <td>房间 → 康复区/活动区 → 户外花园</td>
+              <td>转移、康复训练陪护、集体活动、日间健康观察</td>
+              <td>活动时长、步数、转移能力、跌倒险情</td>
+            </tr>
+            <tr>
+              <td>11:30–13:30</td>
+              <td>活动区 → 餐厅 → 房间</td>
+              <td>午餐、如厕、午间清洁、午休安置；高风险老人翻身、皮肤检查</td>
+              <td>午餐摄入、排便、翻身、皮肤异常</td>
+            </tr>
+            <tr>
+              <td>13:30–15:30</td>
+              <td>护理站 → 房间 → 康复区</td>
+              <td>午休巡查、离床/坠床风险处置、康复或认知训练</td>
+              <td>睡眠片段、离床次数、巡检完成</td>
+            </tr>
+            <tr>
+              <td>15:30–17:30</td>
+              <td>房间 → 活动区/户外 → 护理站</td>
+              <td>下午茶与补水、散步/训练、必要时配合护士测量体征</td>
+              <td>补水、运动、体征记录</td>
+            </tr>
+            <tr>
+              <td>17:30–19:30</td>
+              <td>餐厅 → 房间/卫浴</td>
+              <td>晚餐、晚间洗漱、如厕、换衣、舒适护理</td>
+              <td>晚餐摄入、排泄、失禁护理</td>
+            </tr>
+            <tr>
+              <td>19:30–22:00</td>
+              <td>房间 → 护理站</td>
+              <td>睡前照护、卧位摆放、呼叫器确认、夜间风险提示交接</td>
+              <td>睡前状态、翻身计划、风险清单</td>
+            </tr>
+            <tr>
+              <td>22:00–06:00</td>
+              <td>护理站 → 房间/走廊 → 卫浴</td>
+              <td>分级夜巡；失能老人翻身、失智老人走失预防、夜间如厕协助、异常响应</td>
+              <td>巡更、离床、夜间事件、交班</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        动线不应「一刀切」。系统应按老人护理等级、失智/跌倒/压疮/吞咽风险和医嘱，自动生成个人任务卡与巡房优先级。
+        现行《养老机构服务安全基本规范》强调安全风险评估、昼夜巡查、交接班，以及跌倒、噎食、压疮、走失等风险防范。
+        （参考：
+        <a href="https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=D8AB02F0141FE11A4976E0E94FCF58B4" target="_blank" rel="noopener">国家标准 GB 38600-2019</a>）
+      </div>
+
+      <h3 id="scenes">场景示意</h3>
+      <p>
+        以下按一日主场景配图，并沿用上一版分层：
+        <strong>智能硬件（安全兜底）→ 智能体 → 护工服务 → 用户价值</strong>，
+        同时标注数字化能力（健康慢病 / 增效体验）。
+      </p>
+
+      <div class="scene-grid">
+        <!-- 1 晨起 -->
+        <article class="scene-card">
+          <img src="./assets/service-map/01-morning-toilet.jpg" alt="晨起与如厕：护工协助离床" loading="lazy" />
+          <div class="meta">
+            <p class="time">06:00–07:30 · 晨起与如厕</p>
+            <p class="route"><strong>护工动线</strong> 护理站 → 楼层走廊 → 老人房间 → 卫浴 → 护理站</p>
+            <div class="arch-diagram" aria-label="晨起与如厕场景架构">
+              <div class="node"><b>智能硬件</b><span>跌倒雷达 · 智能床垫 · 紧急呼叫</span></div>
+              <div class="node"><b>智能体</b><span>健康监测 · 智能照护</span></div>
+              <div class="node"><b>护工服务</b><span>晨检 · 离床协助 · 如厕清洁</span></div>
+              <div class="node"><b>用户价值</b><span>少等待 · 防跌倒</span></div>
+            </div>
+            <div class="architecture" aria-label="服务链路">
+              <em>住民/房间</em><i>→</i><em>跌倒雷达·床垫·呼叫</em><i>→</i><em>健康监测智能体</em><i>→</i><em>护工 PDA</em><i>→</i><em>护士升级</em>
+            </div>
+            <h4>安全离床，舒适地开始一天</h4>
+            <p class="desc">交接班后到房：唤醒、离床协助、如厕与晨间清洁，观察精神、皮肤与排泄异常。</p>
+            <dl class="service-grid">
+              <div><dt>住民</dt><dd>温和唤醒、离床、如厕、洗漱</dd></div>
+              <div><dt>护工</dt><dd>查看交接重点 → 到房协助 → 观察精神、皮肤、排泄</dd></div>
+              <div><dt>护士/机构</dt><dd>接收异常升级，调整个体护理与巡检计划</dd></div>
+              <div class="is-agent"><dt>智能体</dt><dd>健康监测：晨间状态比对；智能照护：生成优先到房任务</dd></div>
+              <div class="is-hw"><dt>智能硬件 · 安全兜底</dt><dd>跌倒雷达（卫浴无感防护）｜智能床垫（离床/压疮预警）｜紧急呼叫（一键求助）</dd></div>
+              <div class="is-digital"><dt>数字化能力 · 增效体验</dt><dd>健康一体机（血压/血糖/心电）｜护理终端 PDA（查房留痕）｜智慧屏语音（晨间呼叫/训练）</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <!-- 2 早餐 -->
+        <article class="scene-card">
+          <img src="./assets/service-map/02-breakfast-nutrition.jpg" alt="早餐与营养：配餐陪餐" loading="lazy" />
+          <div class="meta">
+            <p class="time">07:30–09:00 · 早餐与营养</p>
+            <p class="route"><strong>护工动线</strong> 护理站 → 房间 → 餐厅 → 房间 → 护理站</p>
+            <div class="arch-diagram" aria-label="早餐与营养场景架构">
+              <div class="node"><b>智能硬件</b><span>药柜 · 餐盘秤/拍照 · 呼叫</span></div>
+              <div class="node"><b>智能体</b><span>营养膳食 · 智能照护</span></div>
+              <div class="node"><b>护工服务</b><span>配餐 · 陪餐 · 吞咽观察</span></div>
+              <div class="node"><b>用户价值</b><span>安全进食 · 营养预警</span></div>
+            </div>
+            <div class="architecture" aria-label="服务链路">
+              <em>住民/餐厅</em><i>→</i><em>药柜·PDA·呼叫</em><i>→</i><em>营养膳食智能体</em><i>→</i><em>护工陪餐</em><i>→</i><em>护士/营养师</em>
+            </div>
+            <h4>吃得对、吃得下、吃得安全</h4>
+            <p class="desc">送餐陪餐、吞咽与饮水观察；服药协助须按护士医嘱执行并留痕。</p>
+            <dl class="service-grid">
+              <div><dt>住民</dt><dd>按忌口安全进食，完成饮水与餐后口腔清洁</dd></div>
+              <div><dt>护工</dt><dd>送餐陪餐 → 吞咽观察 → 饮水提醒 → 异常上报</dd></div>
+              <div><dt>护士/机构</dt><dd>医嘱核对、吞咽风险评估，必要时调整餐形态</dd></div>
+              <div class="is-agent"><dt>智能体</dt><dd>营养膳食：餐次完成度与拒食预警；智能照护：呛咳/少食升级</dd></div>
+              <div class="is-hw"><dt>智能硬件 · 安全兜底</dt><dd>紧急呼叫（一键求助）｜智能药柜（分药核对）｜防噎食观察清单联动</dd></div>
+              <div class="is-digital"><dt>数字化能力 · 增效体验</dt><dd>餐盘识别/称重｜饮水计量｜护理终端 PDA（摄食/呛咳留痕）</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <!-- 3 康复 -->
+        <article class="scene-card">
+          <img src="./assets/service-map/03-rehab-activity.jpg" alt="康复与日间活动：步态训练" loading="lazy" />
+          <div class="meta">
+            <p class="time">09:00–11:30 · 康复与日间活动</p>
+            <p class="route"><strong>护工动线</strong> 护理站 → 房间 → 康复区/活动区 → 户外花园 → 护理站</p>
+            <div class="arch-diagram" aria-label="康复与日间活动场景架构">
+              <div class="node"><b>智能硬件</b><span>腕表 · 定位手环 · 训练屏</span></div>
+              <div class="node"><b>智能体</b><span>科学运动 · 智能照护</span></div>
+              <div class="node"><b>护工服务</b><span>转移 · 陪练 · 活动观察</span></div>
+              <div class="node"><b>用户价值</b><span>功能保持 · 防走失</span></div>
+            </div>
+            <div class="architecture" aria-label="服务链路">
+              <em>住民/康复区</em><i>→</i><em>腕表·定位·智慧屏</em><i>→</i><em>科学运动智能体</em><i>→</i><em>护工陪练</em><i>→</i><em>护士康复评估</em>
+            </div>
+            <h4>安全地动起来，保持功能与社交</h4>
+            <p class="desc">转移、康复陪护与集体活动；记录活动时长、步态变化与跌倒险情。</p>
+            <dl class="service-grid">
+              <div><dt>住民</dt><dd>参与步行、平衡、认知或社交活动</dd></div>
+              <div><dt>护工</dt><dd>按能力分组 → 转移陪护 → 观察步态、疲劳和情绪</dd></div>
+              <div><dt>护士/机构</dt><dd>依据活动耐受与跌倒险情，调整康复目标和安全级别</dd></div>
+              <div class="is-agent"><dt>智能体</dt><dd>科学运动：推荐适配训练与强度；智能照护：防走失守护</dd></div>
+              <div class="is-hw"><dt>智能硬件 · 安全兜底</dt><dd>紧急呼叫（一键求助）｜定位手环（电子围栏）｜步态/平衡评估设备</dd></div>
+              <div class="is-digital"><dt>数字化能力 · 增效体验</dt><dd>智能腕表（白天活动）｜护理终端 PDA（训练记录）｜智慧屏语音（运动引导）</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <!-- 4 午餐午休翻身 -->
+        <article class="scene-card">
+          <img src="./assets/service-map/04-lunch-rest-turn.jpg" alt="午餐午休与翻身：床旁护理" loading="lazy" />
+          <div class="meta">
+            <p class="time">11:30–15:30 · 午餐、午休与翻身</p>
+            <p class="route"><strong>护工动线</strong> 活动区 → 餐厅 → 房间 → 卫浴 → 护理站</p>
+            <div class="arch-diagram" aria-label="午餐午休与翻身场景架构">
+              <div class="node"><b>智能硬件</b><span>床垫 · 跌倒雷达 · 呼叫</span></div>
+              <div class="node"><b>智能体</b><span>智能照护 · 营养膳食</span></div>
+              <div class="node"><b>护工服务</b><span>陪餐 · 翻身 · 皮肤观察</span></div>
+              <div class="node"><b>用户价值</b><span>舒适午休 · 压疮预防</span></div>
+            </div>
+            <div class="architecture" aria-label="服务链路">
+              <em>住民/床旁</em><i>→</i><em>床垫·跌倒雷达·呼叫</em><i>→</i><em>智能照护智能体</em><i>→</i><em>护工翻身巡查</em><i>→</i><em>护士皮肤评估</em>
+            </div>
+            <h4>营养补给、安心午休、皮肤安全</h4>
+            <p class="desc">午餐安置后午休巡查；高风险老人按计划翻身与皮肤检查，关注离床/坠床风险。</p>
+            <dl class="service-grid">
+              <div><dt>住民</dt><dd>完成午餐、如厕清洁，获得适宜体位与安稳午休</dd></div>
+              <div><dt>护工</dt><dd>陪餐 → 安置午休 → 按计划翻身 → 观察皮肤与离床</dd></div>
+              <div><dt>护士/机构</dt><dd>处理皮肤异常、嗜睡或进食风险，更新翻身与营养计划</dd></div>
+              <div class="is-agent"><dt>智能体</dt><dd>营养膳食：汇总午餐完成度；智能照护：翻身与巡查提醒</dd></div>
+              <div class="is-hw"><dt>智能硬件 · 安全兜底</dt><dd>跌倒雷达（卫浴无感防护）｜智能床垫（离床/压疮预警）｜紧急呼叫</dd></div>
+              <div class="is-digital"><dt>数字化能力 · 增效体验</dt><dd>护理终端 PDA（翻身、皮肤、午休记录）｜智慧屏语音（午间放松/呼叫）</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <!-- 5 下午补水 -->
+        <article class="scene-card">
+          <img src="./assets/service-map/05-afternoon-hydrate.jpg" alt="下午补水与活动：花园散步" loading="lazy" />
+          <div class="meta">
+            <p class="time">15:30–17:30 · 下午补水与活动</p>
+            <p class="route"><strong>护工动线</strong> 护理站 → 房间 → 活动区/花园 → 护理站</p>
+            <div class="arch-diagram" aria-label="下午补水与活动场景架构">
+              <div class="node"><b>智能硬件</b><span>一体机 · 腕表 · 定位 · 饮水计量</span></div>
+              <div class="node"><b>智能体</b><span>健康监测 · 科学运动</span></div>
+              <div class="node"><b>护工服务</b><span>补水 · 陪练 · 体征配合</span></div>
+              <div class="node"><b>用户价值</b><span>防脱水 · 个体化调节</span></div>
+            </div>
+            <div class="architecture" aria-label="服务链路">
+              <em>住民/花园</em><i>→</i><em>一体机·腕表·定位</em><i>→</i><em>健康/运动智能体</em><i>→</i><em>护工陪练补水</em><i>→</i><em>护士复核</em>
+            </div>
+            <h4>补水、激活、预防功能退化</h4>
+            <p class="desc">下午茶与补水、散步或训练；必要时配合护士复测体征。</p>
+            <dl class="service-grid">
+              <div><dt>住民</dt><dd>完成补水与适量活动，保持日间功能激活</dd></div>
+              <div><dt>护工</dt><dd>组织补水 → 陪同散步/训练 → 配合护士测量体征</dd></div>
+              <div><dt>护士/机构</dt><dd>复核异常体征，调整当日活动强度与补水目标</dd></div>
+              <div class="is-agent"><dt>智能体</dt><dd>健康监测：体征偏离基线提示；科学运动：推荐下午活动强度</dd></div>
+              <div class="is-hw"><dt>智能硬件 · 安全兜底</dt><dd>定位手环（防走失）｜紧急呼叫｜饮水杯/饮水机计量</dd></div>
+              <div class="is-digital"><dt>数字化能力 · 增效体验</dt><dd>健康一体机｜智能腕表｜护理终端 PDA（补水/运动/体征留痕）</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <!-- 6 晚餐睡前 -->
+        <article class="scene-card">
+          <img src="./assets/service-map/06-evening-bedtime.jpg" alt="晚餐与睡前照护：睡前安置" loading="lazy" />
+          <div class="meta">
+            <p class="time">17:30–22:00 · 晚餐与睡前照护</p>
+            <p class="route"><strong>护工动线</strong> 餐厅 → 房间 → 卫浴 → 护理站</p>
+            <div class="arch-diagram" aria-label="晚餐与睡前照护场景架构">
+              <div class="node"><b>智能硬件</b><span>药柜 · 床垫 · 环境传感</span></div>
+              <div class="node"><b>智能体</b><span>睡眠疗愈 · 智能照护</span></div>
+              <div class="node"><b>护工服务</b><span>晚餐观察 · 睡前安置 · 交接</span></div>
+              <div class="node"><b>用户价值</b><span>舒适入睡 · 夜间风险前置</span></div>
+            </div>
+            <div class="architecture" aria-label="服务链路">
+              <em>住民/房间</em><i>→</i><em>药柜·床垫·环境传感</em><i>→</i><em>睡眠疗愈智能体</em><i>→</i><em>护工睡前照护</em><i>→</i><em>护士调整计划</em>
+            </div>
+            <h4>舒适入睡，把夜间风险提前化解</h4>
+            <p class="desc">晚餐后洗漱如厕、卧位摆放与呼叫器确认；交接夜间风险清单与翻身计划。</p>
+            <dl class="service-grid">
+              <div><dt>住民</dt><dd>完成晚餐、洗漱、如厕和睡前安置</dd></div>
+              <div><dt>护工</dt><dd>晚餐观察 → 清洁与皮肤检查 → 卧位摆放 → 夜间重点交接</dd></div>
+              <div><dt>护士/机构</dt><dd>评估躁动、拒睡、皮肤异常，调整个体夜间方案</dd></div>
+              <div class="is-agent"><dt>智能体</dt><dd>睡眠疗愈：生成睡前环境建议；智能照护：建立夜间风险清单</dd></div>
+              <div class="is-hw"><dt>智能硬件 · 安全兜底</dt><dd>跌倒雷达｜智能床垫（离床/压疮预警）｜紧急呼叫</dd></div>
+              <div class="is-digital"><dt>数字化能力 · 增效体验</dt><dd>智能药柜（晚间提醒）｜环境传感器（烟感/燃气/温湿度）｜护理终端 PDA｜智慧屏语音</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <!-- 7 夜巡 -->
+        <article class="scene-card">
+          <img src="./assets/service-map/07-night-patrol.jpg" alt="夜间巡护：走廊与卫浴协助" loading="lazy" />
+          <div class="meta">
+            <p class="time">22:00–06:00 · 夜间巡护与异常响应</p>
+            <p class="route"><strong>护工动线</strong> 护理站 → 楼层走廊 → 房间/卫浴 → 护理站</p>
+            <div class="arch-diagram" aria-label="夜间巡护与异常响应场景架构">
+              <div class="node"><b>智能硬件</b><span>床垫 · 跌倒雷达 · 巡检机器人</span></div>
+              <div class="node"><b>智能体</b><span>睡眠疗愈 · 健康监测</span></div>
+              <div class="node"><b>护工服务</b><span>分级夜巡 · 如厕协助 · 异常响应</span></div>
+              <div class="node"><b>用户价值</b><span>少打扰 · 快响应</span></div>
+            </div>
+            <div class="architecture" aria-label="服务链路">
+              <em>住民/走廊</em><i>→</i><em>床垫·雷达·巡检机器人</em><i>→</i><em>睡眠/健康智能体</em><i>→</i><em>护工夜巡</em><i>→</i><em>护士/急救</em>
+            </div>
+            <h4>少打扰、快响应，守住整夜安全</h4>
+            <p class="desc">分级夜巡、夜间如厕协助、走失预防与异常响应；完成巡更与交班留痕。</p>
+            <dl class="service-grid">
+              <div><dt>住民</dt><dd>夜间安睡，必要时获得如厕协助与快速响应</dd></div>
+              <div><dt>护工</dt><dd>分级夜巡 → 翻身/走失预防 → 夜间如厕协助 → 异常响应</dd></div>
+              <div><dt>护士/机构</dt><dd>接收红橙告警，启动应急预案或调整夜间护理方案</dd></div>
+              <div class="is-agent"><dt>智能体</dt><dd>睡眠疗愈：夜间风险分级；健康监测：体征异常推送</dd></div>
+              <div class="is-hw"><dt>智能硬件 · 安全兜底</dt><dd>跌倒雷达｜智能床垫｜紧急呼叫｜巡检机器人（少打扰巡查）</dd></div>
+              <div class="is-digital"><dt>数字化能力 · 增效体验</dt><dd>护理终端 PDA（巡更留痕）｜定位手环｜告警大屏/护理站电子白板</dd></div>
+            </dl>
+          </div>
+        </article>
+      </div>
+
+      <p class="note">
+        动线看清之后：日常照护已经付出，记录却常靠事后补录。
+        接下来聚焦<strong>照护履约记录</strong>——如何在这条动线上做到少填、少扰、少漏、有人接、可追溯。
+        <a href="#value">进入履约记录 →</a>
+      </p>
+    </section>
+
+    <p class="part-lead" id="part-record">
+      <strong>下篇 · 照护履约记录</strong>
+      在上述动线之上，聚焦「护工减负 · 自动履约」：正常事项自动记，异常事项有人接。
+    </p>
+
+    <!-- 核心价值：护工减负 · 自动履约 -->
+    <section class="block value-block" id="value" aria-labelledby="value-title">
+      <h2 id="value-title">二、照护履约记录 · 核心价值</h2>
+      <p class="value-kicker">
+        护工减负自动履约记录系统的核心价值是：
+      </p>
+      <blockquote class="value-quote">
+        让护工把时间用于照护老人，让系统在后台完成记录整理；
+        让已经付出的工作能够被准确看见，让尚未完成的照护能够继续有人负责。
+      </blockquote>
+
+      <figure class="value-hero">
+        <img
+          src="./assets/service-map/value-hero-v2.png"
+          alt="护工减负·自动履约系统价值：少填少扰少漏、有人接、可追溯"
+          loading="eager"
+        />
+      </figure>
+
+      <div class="value-flow" aria-label="从计划到记录">
+        <b>照护计划</b>
+        <i>→</i>
+        <em>现场照护自然发生</em>
+        <i>→</i>
+        <b>照护记录自动形成</b>
+        <i>·</i>
+        <em>正常自动完成，异常有人跟进</em>
+      </div>
+
+      <h3>五个价值抓手</h3>
+      <div class="value-pillars" role="list">
+        <article class="value-pillar" role="listitem">
+          <span class="tag">少填</span>
+          <strong>减少重复记录</strong>
+          <p>草稿自动生成，确认后可复用交班与业务系统。</p>
+        </article>
+        <article class="value-pillar" role="listitem">
+          <span class="tag">少扰</span>
+          <strong>减少工作打断</strong>
+          <p>正常照护不频繁开手机；异常才集中待确认。</p>
+        </article>
+        <article class="value-pillar" role="listitem">
+          <span class="tag">少漏</span>
+          <strong>减少遗漏</strong>
+          <p>对照计划与实际记录，识别未完成与即将超时。</p>
+        </article>
+        <article class="value-pillar" role="listitem">
+          <span class="tag">有人接</span>
+          <strong>求助能被承接</strong>
+          <p>待办明确接手人与时限，未解决进入交班。</p>
+        </article>
+        <article class="value-pillar" role="listitem">
+          <span class="tag">可追溯</span>
+          <strong>保护真实劳动</strong>
+          <p>区分计划责任人与实际执行人，可申请更正。</p>
+        </article>
+      </div>
+
+      <p class="value-banner">正常记录自动完成 · 异常事项有人跟进</p>
+
+      <div class="value-detail">
+        <h3 id="value-caregiver">对护工的价值</h3>
+        <ol class="value-ol">
+          <li>
+            <strong>减少重复记录</strong>
+            <p>
+              系统结合排班、照护任务和智护宝采集数据，自动生成履约记录草稿。
+              基础信息自动填写，确认后的记录可复用于交班和业务系统，减少反复补记和多处录入。
+            </p>
+          </li>
+          <li>
+            <strong>减少工作打断</strong>
+            <p>
+              正常照护过程中，护工不需要频繁打开手机、选择老人或填写时间。
+              系统只在无法判断照护结果或发生异常时，集中展示少量待确认内容。
+            </p>
+          </li>
+          <li>
+            <strong>减少遗漏</strong>
+            <p>
+              系统持续对照照护计划和实际记录，帮助护工识别尚未完成、需要协作或即将超时的任务，
+              降低忙碌班次中的遗漏风险。
+            </p>
+          </li>
+          <li>
+            <strong>求助能够得到承接</strong>
+            <p>
+              老人拒绝、需要双人协作或任务无法按时完成时，系统形成待办，明确接手人、处理时限和升级路径。
+              未解决事项会进入交班，不会随着原护工下班而消失。
+            </p>
+          </li>
+          <li>
+            <strong>保护护工的真实劳动</strong>
+            <p>
+              系统分别记录计划责任人和实际执行人，保留代班、协作、中断和老人拒绝等情况。
+              设备故障或数据缺失不会直接认定为护工未履约，错误归属也可以申请更正。
+            </p>
+          </li>
+        </ol>
+
+        <h3 id="value-elder">对老人的价值</h3>
+        <ul class="value-ul">
+          <li>护工减少系统操作，把注意力放在老人身上；</li>
+          <li>老人的需求、拒绝和感受能够进入服务记录；</li>
+          <li>未完成事项有明确的后续安排；</li>
+          <li>临时变化和跨班任务不容易遗漏；</li>
+          <li>照护连续性和响应速度得到改善。</li>
+        </ul>
+
+        <h3 id="value-leader">对护理组长的价值</h3>
+        <p>
+          护理组长看到的是需要管理介入的事项，而不是全部原始数据：
+        </p>
+        <ul class="value-ul">
+          <li>哪些老人还有未完成照护；</li>
+          <li>哪些任务需要增加人员；</li>
+          <li>哪些记录存在归属冲突；</li>
+          <li>哪些待办无人接收或已经超时；</li>
+          <li>哪些问题需要带入下一班。</li>
+        </ul>
+        <p>这使管理工作从事后追问转向及时调度和异常处理。</p>
+
+        <h3 id="value-org">对机构的价值</h3>
+        <ul class="value-ul">
+          <li>自动形成结构化、可追溯的服务记录；</li>
+          <li>关联排班、任务、人员、老人、时间和过程证据；</li>
+          <li>保留确认、更正和复核痕迹；</li>
+          <li>提高交班、质量复核和合规导出的效率；</li>
+          <li>通过异常筛选降低人工检查全部记录的成本；</li>
+          <li>为改进排班和人员配置提供客观依据。</li>
+        </ul>
+
+        <h3 id="value-ltci">对长护险履约管理的价值</h3>
+        <p>系统能够形成较完整的履约证据链：</p>
+        <p class="value-chain" aria-label="履约证据链">
+          照护计划 <span>→</span> 责任安排 <span>→</span> 实际服务时段 <span>→</span>
+          过程证据 <span>→</span> 照护结果 <span>→</span> 异常处理 <span>→</span> 人工确认
+        </p>
+        <p class="note">
+          但系统记录只能作为履约<strong>佐证</strong>，是否符合支付条件仍应依据当地长护险政策、服务项目、人员资质和审核规则判断。
+        </p>
+
+        <h3 id="value-conditions">系统价值成立的必要条件</h3>
+        <p>这套系统只有满足以下条件，才能真正实现减负：</p>
+        <ul class="value-conds">
+          <li>自动记录能够替代原有的相应记录；</li>
+          <li>正常记录不要求护工逐条确认；</li>
+          <li>设备故障由设备管理员处理；</li>
+          <li>归属冲突优先由护理组长复核；</li>
+          <li>数据缺失不直接等于未履约；</li>
+          <li>护工可以查看和更正与本人有关的记录；</li>
+          <li>系统不以活动量或采集时长简单评价护工；</li>
+          <li>老人的安全、意愿和照护质量始终优先于记录完整度。</li>
+        </ul>
+
+        <div class="value-success">
+          <p>
+            判断系统是否成功，不应只看采集率和记录数量，而应看：
+          </p>
+          <blockquote class="value-quote" style="margin:0.55rem 0 0">
+            护工用于系统操作的时间是否下降，老人等待照护的时间是否缩短，
+            未完成事项是否得到跟进，错误归责是否减少。
+          </blockquote>
+          <p>
+            因此，这套系统的最终价值不是「自动生成更多记录」，而是：
+          </p>
+          <strong class="final">少填、少扰、少漏、有人接、可追溯。</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- 自动履约机制：整合《护工减负自动履约场景服务设计方案》 -->
+    <section class="block fulfill-block" id="fulfill" aria-labelledby="fulfill-title">
+      <h2 id="fulfill-title">二、照护履约记录 · 自动履约机制</h2>
+      <p>
+        系统结合排班、照护任务、床位关系与智护宝采集数据，按时间轴自动匹配老人、护工和服务任务，生成履约记录草稿。
+        <strong>正常记录自动完成</strong>；归属冲突优先由组长复核；只有照护结果无法判断时，才请护工集中确认。
+      </p>
+      <p class="note">
+        设计原则：可靠信息自动记录，可能信息清楚标注，必要结果最少确认，异常事项必须闭环。
+        责任安排与实际执行事实分离——排班责任不能直接当成履约事实。
+      </p>
+
+      <h3 id="fulfill-scene">核心场景：床旁晨间照护自动履约</h3>
+      <p>
+        护工按老人需求完成晨间清洁、饮水、穿衣等照护。排班系统提供责任关系与任务窗口，智护宝提供带时间的过程数据，
+        时间轴匹配系统自动生成记录草稿；护工只处理实际结果和必要异常。
+      </p>
+      <figure class="value-hero">
+        <img
+          src="./assets/service-map/scene-bedside-morning.png"
+          alt="床旁照护场景：设备提供过程证据，系统生成记录草稿"
+          loading="lazy"
+        />
+      </figure>
+      <p class="fig-cap">床旁照护场景：设备提供辅助过程证据，系统生成记录草稿，最终结果由照护事实决定。</p>
+
+      <div class="phase-grid">
+        <article class="phase-card">
+          <strong>服务前</strong>
+          <p>排班、老人分工、照护计划和临时调整自动同步。设备管理员完成设备摆放、充电和联网检查。</p>
+        </article>
+        <article class="phase-card">
+          <strong>服务中</strong>
+          <p>护工与老人沟通并实施照护。设备在已验证能力范围内采集服务片段，普通系统提醒不打断照护。</p>
+        </article>
+        <article class="phase-card">
+          <strong>服务后</strong>
+          <p>系统自动匹配人员、老人、任务和时间，生成并整理记录；正常记录无需逐条打开确认。</p>
+        </article>
+        <article class="phase-card">
+          <strong>出现异常</strong>
+          <p>设备故障交管理员，归属冲突先由组长复核，未完成照护明确接手人、时限和处理结果。</p>
+        </article>
+      </div>
+
+      <h3 id="fulfill-blueprint">服务蓝图（六步）</h3>
+      <div class="blueprint" aria-label="服务蓝图">
+        <div class="blueprint-step">
+          <div class="blueprint-dot">1</div>
+          <div class="blueprint-body">
+            <h4>班前准备</h4>
+            <p>系统同步分工、照护计划、床位关系和代班记录；管理员检查设备。护工只看当班重点。</p>
+            <div class="blueprint-tags"><span>后台准备</span><span>零重复录入</span></div>
+          </div>
+        </div>
+        <div class="blueprint-step">
+          <div class="blueprint-dot">2</div>
+          <div class="blueprint-body">
+            <h4>自然照护</h4>
+            <p>护工核对老人并提供照护。自动采集能力未验证时保留现有必要启停，不能假定设备已经完全自动化。</p>
+            <div class="blueprint-tags"><span>老人优先</span><span>少打断</span></div>
+          </div>
+        </div>
+        <div class="blueprint-step">
+          <div class="blueprint-dot">3</div>
+          <div class="blueprint-body">
+            <h4>自动匹配</h4>
+            <p>系统按实际时间匹配老人、护工、任务与设备，输出四种置信状态。</p>
+            <div class="conf-row" aria-label="置信状态">
+              <span>已匹配</span><span>可能匹配</span><span>待复核</span><span>无法匹配</span>
+            </div>
+            <div class="blueprint-tags"><span>责任与事实分离</span></div>
+          </div>
+        </div>
+        <div class="blueprint-step">
+          <div class="blueprint-dot">4</div>
+          <div class="blueprint-body">
+            <h4>自动整理</h4>
+            <p>记录服务自动去重、合并连续片段、拆分服务项目并标注信息来源。正常记录直接进入待归档状态。</p>
+            <div class="blueprint-tags"><span>少填</span><span>来源透明</span></div>
+          </div>
+        </div>
+        <div class="blueprint-step">
+          <div class="blueprint-dot">5</div>
+          <div class="blueprint-body">
+            <h4>异常优先处理</h4>
+            <p>归属冲突交组长，设备异常交管理员；确实无法判断的照护结果，在工作间隙集中向护工确认。</p>
+            <div class="blueprint-tags"><span>例外管理</span><span>少扰</span></div>
+          </div>
+        </div>
+        <div class="blueprint-step">
+          <div class="blueprint-dot">6</div>
+          <div class="blueprint-body">
+            <h4>闭环与复用</h4>
+            <p>未完成事项明确接手人和时限；确认记录复用于交班和机构业务系统，同时取消对应的重复填写。</p>
+            <div class="blueprint-tags"><span>有人接</span><span>可追溯</span></div>
+          </div>
+        </div>
+      </div>
+
+      <h3 id="fulfill-roles">角色与职责边界</h3>
+      <div class="table-scroll">
+        <table class="doc">
+          <thead>
+            <tr>
+              <th>角色</th>
+              <th>核心职责</th>
+              <th>不应承担的工作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>老人</td>
+              <td>接受照护，表达需求、意愿和感受</td>
+              <td>不直接操作履约系统</td>
+            </tr>
+            <tr>
+              <td>护工</td>
+              <td>提供照护；必要时确认实际结果、报告异常或请求支援</td>
+              <td>不承担设备排障，不为系统无法识别的事实背书</td>
+            </tr>
+            <tr>
+              <td>护理组长</td>
+              <td>管理分工、复核冲突、安排接手人并跟进超时事项</td>
+              <td>不逐条人工检查全部正常记录</td>
+            </tr>
+            <tr>
+              <td>设备管理员</td>
+              <td>负责设备摆放、充电、网络、故障和替换</td>
+              <td>不判断照护是否完成</td>
+            </tr>
+            <tr>
+              <td>排班系统</td>
+              <td>提供计划责任人、任务窗口、代班与协作安排</td>
+              <td>排班责任不能直接当成实际执行事实</td>
+            </tr>
+            <tr>
+              <td>智护宝</td>
+              <td>提供设备编号、采集时段、过程数据和设备状态</td>
+              <td>不单独判断具体项目质量和老人感受</td>
+            </tr>
+            <tr>
+              <td>时间轴匹配系统</td>
+              <td>匹配责任与证据、计算置信状态、生成草稿和异常待办</td>
+              <td>低置信记录不能自动认定履约</td>
+            </tr>
+            <tr>
+              <td>机构业务系统</td>
+              <td>复用确认后的记录，生成交班和业务材料</td>
+              <td>不得继续要求填写已被自动记录替代的相同内容</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="fulfill-uml">机制图（UML）</h3>
+      <p>用例图界定参与者与功能边界；活动图表达泳道责任与异常分支；序列图展示一次照护从同步到归档的时间顺序。</p>
+
+      <h4>用例图</h4>
+      <div class="diagram-wrap">
+        <img src="./assets/service-map/uml-usecase.svg" alt="自动履约记录系统 UML 用例图" loading="lazy" />
+      </div>
+      <p class="fig-cap">时间轴匹配、草稿生成与记录整理属于系统核心用例；确认、复核和故障处理只在特定条件下发生。</p>
+
+      <h4>业务活动图</h4>
+      <div class="diagram-wrap">
+        <img src="./assets/service-map/uml-activity.svg" alt="自动履约记录 UML 业务活动图" loading="lazy" />
+      </div>
+      <p class="fig-cap">系统先判断设备与匹配状态，再处理结果确认和未完成事项，最终分别保存照护状态与证据状态。</p>
+
+      <h4>序列图</h4>
+      <div class="diagram-wrap">
+        <img src="./assets/service-map/uml-sequence.svg" alt="自动履约记录 UML 序列图" loading="lazy" />
+      </div>
+      <p class="fig-cap">正常记录后台完成；设备故障、归属冲突、结果不明确和待办超时分别进入对应责任人的处理流程。</p>
+
+      <h3 id="fulfill-rules">核心业务规则</h3>
+      <div class="rule-grid">
+        <article class="rule-card">
+          <h4><span class="rn">1</span>自动记录边界</h4>
+          <p>系统可直接写入采集时段、设备编号和排班信息；候选项目必须标明为推测；实际结果和老人感受不能凭活动数据自动编造。</p>
+        </article>
+        <article class="rule-card">
+          <h4><span class="rn">2</span>两类状态分离</h4>
+          <p>照护状态：已完成 / 部分完成 / 未完成 / 待跟进。证据状态：完整 / 不完整 / 待上传 / 设备故障 / 待复核。</p>
+        </article>
+        <article class="rule-card">
+          <h4><span class="rn">3</span>异常处理顺序</h4>
+          <p>归属问题先由组长处理，设备问题交管理员，只有仍无法核实时才请求护工补充最少信息。</p>
+        </article>
+        <article class="rule-card">
+          <h4><span class="rn">4</span>待办必须闭环</h4>
+          <p>待办经历待接收 → 已接收 → 处理中 → 已完成或重新安排；未解决事项不得因交班自动关闭。</p>
+        </article>
+        <article class="rule-card">
+          <h4><span class="rn">5</span>记录可更正</h4>
+          <p>护工可查看本人记录和匹配依据，申请更正错误归属；系统保留原记录、修改原因、复核人和时间。</p>
+        </article>
+        <article class="rule-card">
+          <h4><span class="rn">6</span>必须替代旧操作</h4>
+          <p>每增加一个系统操作，都要说明替代了哪项旧操作。接口对接并获机构认可后，取消对应纸质或重复录入。</p>
+        </article>
+      </div>
+      <p class="note">
+        设备数据是履约<strong>佐证</strong>，不等于照护质量结论；设备故障或数据缺失，也不等于护工未履约。
+      </p>
+
+      <h3 id="fulfill-product">智护宝产品适配</h3>
+      <div class="table-scroll">
+        <table class="doc">
+          <thead>
+            <tr>
+              <th>已知产品条件</th>
+              <th>服务设计应用</th>
+              <th>上线前需要确认</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>毫米波雷达、麦克风、定位和陀螺仪</td>
+              <td>提供带时间的过程数据和设备状态</td>
+              <td>多人房、遮挡、噪声和场景切换下的有效性</td>
+            </tr>
+            <tr>
+              <td>约 90°、半径 4 米监测范围</td>
+              <td>设置固定摆放标记，减少护工调整</td>
+              <td>每个试点床位实测，不默认覆盖整个房间</td>
+            </tr>
+            <tr>
+              <td>L6 约 1 米高、距老人约 1.5 米</td>
+              <td>纳入床旁布点和培训标准</td>
+              <td>潮湿场景、持续供电和固定部署安全性</td>
+            </tr>
+            <tr>
+              <td>连续服务时间参数为 16 小时以上</td>
+              <td>按班次管理并配置备用设备</td>
+              <td>在真实机构环境验证续航和充电安排</td>
+            </tr>
+            <tr>
+              <td>现有流程包含签到、服务键和签出</td>
+              <td>首期通过一个页面串联提示</td>
+              <td>能否通过接口减少或合并操作；自动启停不能预设为已有能力</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 总：模式总览 -->
+    <section class="block" id="overview" aria-labelledby="overview-title">
+      <h2 id="overview-title">三、闭环模式总述</h2>
+      <p>
+        建议采用
+        <strong>「护工执行 — 设备采集 — 健康研判 — 护士/医生处置 — 闭环留痕」</strong>
+        的模式。
+      </p>
+
+      <div class="mode-chain" aria-label="闭环五段">
+        <span>护工执行</span><i>→</i>
+        <span>设备采集</span><i>→</i>
+        <span>健康研判</span><i>→</i>
+        <span>护士/医生处置</span><i>→</i>
+        <span>闭环留痕</span>
+      </div>
+
+      <div class="roles">
+        <div class="role-card">
+          <strong>护工</strong>
+          <p>照护执行、现场观察、异常上报、交接班与系统留痕。</p>
+        </div>
+        <div class="role-card">
+          <strong>护士 / 医生</strong>
+          <p>诊断、用药、临床处置、应急医疗支持与计划调整。</p>
+        </div>
+      </div>
+
+      <p>告警分级与处置路径如下：数据进入个人基线与趋势研判后，按绿 / 黄橙 / 红分流，最终汇入处置记录与交接班。</p>
+
+      <div class="alert-legend" aria-label="告警色级">
+        <span class="pill g">绿 · 按日常计划</span>
+        <span class="pill y">黄 · 护工复核</span>
+        <span class="pill o">橙 · 通知护士</span>
+        <span class="pill r">红 · 应急/医生</span>
+      </div>
+
+      <div class="flow-wrap">
+        <pre class="mermaid">
+flowchart LR
+  A["护工移动终端<br/>任务/交接/记录"] --> B["房间、卫浴、餐厅<br/>康复区、户外"]
+  B --> C["体征、睡眠、饮食<br/>运动、跌倒等数据"]
+  C --> D["个人基线 + 趋势研判"]
+  D -->|绿| E["按日常照护计划"]
+  D -->|黄/橙| F["护工复核 → 通知护士"]
+  D -->|红| G["应急响应 → 医生/急救"]
+  F --> H["处置记录与交接班"]
+  G --> H
+        </pre>
+      </div>
+    </section>
+
+    <!-- 分 2 -->
+    <section class="block" id="devices" aria-labelledby="devices-title">
+      <h2 id="devices-title">四、护工场景硬件设备</h2>
+      <p>设备按场景配置，服务「采集 → 研判 → 处置」链路；优先保证安全兜底与护工可执行性。</p>
+
+      <div class="table-scroll">
+        <table class="doc">
+          <thead>
+            <tr>
+              <th>场景</th>
+              <th>设备</th>
+              <th>关键能力</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>护理站与交接</td>
+              <td>护工手持终端、NFC/二维码巡更点、电子白板</td>
+              <td>接收任务、身份核验、交接班、异常上报、定位巡检</td>
+            </tr>
+            <tr>
+              <td>房间与床旁</td>
+              <td>智能床垫/睡眠带、离床传感器、床旁毫米波雷达、护理呼叫器</td>
+              <td>睡眠、体动、离床、坠床风险、呼救</td>
+            </tr>
+            <tr>
+              <td>卫浴</td>
+              <td>拉绳报警器、防水呼叫按钮、跌倒雷达、扶手状态传感器</td>
+              <td>如厕呼救、跌倒或长时间滞留提醒；卫浴避免摄像头</td>
+            </tr>
+            <tr>
+              <td>穿戴</td>
+              <td>定位手环、SOS 按键、心率/活动监测腕带</td>
+              <td>室内定位、走失预防、步数、活动趋势、紧急呼叫</td>
+            </tr>
+            <tr>
+              <td>生命体征</td>
+              <td>血压计、血氧仪、体温计、血糖仪、体重秤</td>
+              <td>由护士或经培训人员按医嘱采集，自动回传并识别漏测/异常</td>
+            </tr>
+            <tr>
+              <td>餐饮营养</td>
+              <td>住民身份识别、智能餐盘秤/餐食拍照终端、饮水杯或饮水机计量</td>
+              <td>记录餐别、摄食比例、忌口、补水、呛咳与拒食</td>
+            </tr>
+            <tr>
+              <td>康复运动</td>
+              <td>计步器、步态/平衡评估设备、康复训练屏、轮椅定位标签</td>
+              <td>步数、活动时长、训练完成度、步态变化、离区告警</td>
+            </tr>
+            <tr>
+              <td>公共安全</td>
+              <td>门磁、电子围栏、视频门禁、烟感/燃气/温湿度传感器</td>
+              <td>防走失、区域管理、环境安全；视频仅用于公共区且需权限控制</td>
+            </tr>
+            <tr>
+              <td>平台底座</td>
+              <td>IoT 网关、边缘计算盒、护理管理平台、告警大屏</td>
+              <td>多设备接入、离线缓存、告警分级、数据审计、报表</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <strong>首期优先配置：</strong>护工终端、巡更、床旁离床/呼叫、卫浴报警、基础体征设备、定位手环和营养记录。
+        摄像头、人脸识别、复杂体征雷达可作为二期能力，须先完成告知同意、最小化采集与分级授权。
+      </div>
+    </section>
+
+    <!-- 分 3 -->
+    <section class="block" id="insight" aria-labelledby="insight-title">
+      <h2 id="insight-title">五、老人健康体征研判</h2>
+
+      <h3>研判框架</h3>
+      <p>
+        先为每位老人建立「个人基线」：既往疾病、护理等级、医嘱、用药、功能状态、认知状态、吞咽/跌倒/压疮风险、正常作息和正常摄食量。
+        系统不以单次读数下结论，而以 <strong>个人基线 + 连续趋势 + 护工观察</strong> 研判。
+      </p>
+
+      <div class="table-scroll">
+        <table class="doc">
+          <thead>
+            <tr>
+              <th>维度</th>
+              <th>采集指标</th>
+              <th>典型研判</th>
+              <th>护工动作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>生命体征</td>
+              <td>体温、血压、脉搏、血氧、血糖、体重</td>
+              <td>超出个人医嘱范围，或连续偏离基线</td>
+              <td>复测、记录症状、通知护士；紧急情况启动应急流程</td>
+            </tr>
+            <tr>
+              <td>睡眠</td>
+              <td>入睡/起床时间、总睡眠、清醒次数、夜间离床、夜游</td>
+              <td>连续睡眠变差，叠加夜间频繁离床</td>
+              <td>排查疼痛、如厕、环境、情绪和用药影响；加强防跌倒</td>
+            </tr>
+            <tr>
+              <td>营养与饮食</td>
+              <td>每餐摄入比例、蛋白/能量完成度、饮水量、体重趋势、呛咳、排便</td>
+              <td>连续少食、拒食、体重下降、吞咽异常或脱水风险</td>
+              <td>记录原因，调整陪餐/餐形态；通知营养师、护士评估</td>
+            </tr>
+            <tr>
+              <td>运动与功能</td>
+              <td>步数、活动时长、坐站次数、转移能力、步态稳定性</td>
+              <td>活动量骤降、步态变慢、需更多协助</td>
+              <td>增加陪护，复核跌倒风险，转康复/护士评估</td>
+            </tr>
+            <tr>
+              <td>日常照护</td>
+              <td>如厕频次、失禁、皮肤、情绪、认知、呼叫次数</td>
+              <td>排泄习惯突变、皮肤异常、谵妄样行为、频繁呼救</td>
+              <td>现场观察并同步护士，形成交接重点</td>
+            </tr>
+            <tr>
+              <td>安全事件</td>
+              <td>离床、跌倒险情、走失边界、长时滞留卫浴</td>
+              <td>多次夜间离床或风险事件叠加</td>
+              <td>提升巡视频次，调整床旁/卫浴防护和陪护等级</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>推荐的告警逻辑</h3>
+      <ul class="combo-list">
+        <li><strong style="color:var(--green)">绿色：</strong>数据稳定，按护理计划执行。</li>
+        <li><strong style="color:var(--yellow)">黄色：</strong>单项轻度偏离或数据缺失（如某一餐明显少吃、夜间多次离床）；护工复核并在当班记录。</li>
+        <li><strong style="color:var(--orange)">橙色：</strong>24–72 小时内出现跨场景下降（如睡眠减少 + 摄食下降 + 活动下降）；优先通知护士评估。</li>
+        <li><strong style="color:var(--red)">红色：</strong>体征触及个人医嘱紧急阈值，或伴随意识改变、跌倒、持续胸闷气促、严重呛咳等；立即执行机构应急预案并联系医疗支持。</li>
+      </ul>
+
+      <p>最有价值的是<strong>跨场景组合</strong>，而非单独看某项数据。例如：</p>
+      <ul class="combo-list">
+        <li>睡眠碎片化 + 夜间离床增加 + 步态变差：重点防跌倒。</li>
+        <li>摄食减少 + 饮水不足 + 体重下降：重点评估营养/脱水风险。</li>
+        <li>活动下降 + 体温变化 + 精神变差：提示需要护士尽快进行临床评估。</li>
+        <li>夜间游走 + 白天嗜睡 + 呼叫增多：提示失智照护计划可能需要调整。</li>
+      </ul>
+
+      <div class="note">
+        养老机构的健康管理应包含信息采集、健康监测与能力评估、干预、紧急处理及档案管理；
+        医疗机构也应为入住老人提供膳食、运动、睡眠等健康生活方式指导。
+        （参考：
+        <a href="https://std.samr.gov.cn/db/search/stdDBDetailed?id=A9D11E6625E5A6F1E05397BE0A0AA721" target="_blank" rel="noopener">养老机构健康管理服务规范说明</a>
+        ·
+        <a href="https://www.nhc.gov.cn/wjw/c100175/202012/1a944a58667242709120a91a71164ab8.shtml" target="_blank" rel="noopener">国家卫健委相关指导</a>）
+      </div>
+    </section>
+
+    <!-- 试点实施与验收 -->
+    <section class="block" id="pilot" aria-labelledby="pilot-title">
+      <h2 id="pilot-title">六、试点实施与验收</h2>
+      <p>判断系统是否成功，不看「生成了多少记录」，而看护工操作时间是否下降、照护是否更连续、错误归责是否减少。</p>
+
+      <div class="table-scroll">
+        <table class="doc">
+          <thead>
+            <tr>
+              <th>阶段</th>
+              <th>主要工作</th>
+              <th>通过条件</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>第 1 周 · 基线</td>
+              <td>观察现有记录、交班、设备和支援流程</td>
+              <td>测得护工每班系统与记录耗时、漏记率和异常响应时间</td>
+            </tr>
+            <tr>
+              <td>第 2 周 · 简单场景</td>
+              <td>单床、单护工、明确任务窗口下验证自动匹配和记录生成</td>
+              <td>匹配可靠，正常记录不需逐条操作</td>
+            </tr>
+            <tr>
+              <td>第 3 周 · 复杂场景</td>
+              <td>验证多人房、双人协作、代班、拒绝、断网和设备故障</td>
+              <td>冲突不会自动归责，待办能够接收和闭环</td>
+            </tr>
+            <tr>
+              <td>第 4 周 · 价值评估</td>
+              <td>对比软件辅助与软件加智护宝两种方案</td>
+              <td>确认设备带来的额外减负和证据价值高于新增操作成本</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>核心指标</h3>
+      <div class="metric-row">
+        <article class="metric-card">
+          <div class="m">↓</div>
+          <strong>系统操作时间</strong>
+          <p>护工每班记录、确认、补记和解释时间下降。</p>
+        </article>
+        <article class="metric-card">
+          <div class="m">↑</div>
+          <strong>照护连续性</strong>
+          <p>未完成事项得到接收、跟进和交班的比例提高。</p>
+        </article>
+        <article class="metric-card">
+          <div class="m">↓</div>
+          <strong>错误归责</strong>
+          <p>错误匹配、误判未履约和重复填写持续减少。</p>
+        </article>
+      </div>
+
+      <p class="note" style="margin-top:1rem">
+        方案结论：产品价值最终归结为
+        <strong>少填、少扰、少漏、有人接、可追溯</strong>。
+      </p>
+    </section>
+
+    <footer class="doc-foot">
+      春风康养 · 护工场景服务地图 ·
+      动线 → 履约记录（价值·机制）→ 闭环 → 设备 → 研判 → 试点
+    </footer>
+  </div>
+
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "base",
+      securityLevel: "loose",
+      themeVariables: {
+        primaryColor: "#f3e0d4",
+        primaryTextColor: "#1f1a14",
+        primaryBorderColor: "#c45a2c",
+        lineColor: "#8a7c6e",
+        secondaryColor: "#fffdf9",
+        tertiaryColor: "#f7f3ec",
+        fontFamily: "PingFang SC, Hiragino Sans GB, Noto Sans SC, Microsoft YaHei, sans-serif",
+      },
+    });
+  </script>
+</body>
+</html>

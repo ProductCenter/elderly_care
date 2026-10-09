@@ -44,7 +44,7 @@ a {
 
 .phone {
   position: relative;
-  width: min(100vw, 390px);
+  width: min(100vw, 440px);
   min-height: 100dvh;
   margin: 0 auto;
   display: flex;
@@ -494,30 +494,39 @@ a {
   height: calc(50px + var(--safe-bottom));
   padding-bottom: var(--safe-bottom);
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   background: rgba(255, 255, 255, 0.96);
   border-top: 0.5px solid var(--line);
   backdrop-filter: blur(20px);
   z-index: 20;
 }
 
-.tab-item {
+.tab-item,
+.tab {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1px;
+  min-width: 0;
+  text-decoration: none;
   color: #7a7e83;
   font-size: 10px;
+  line-height: 1.1;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.tab-item svg {
+.tab-item svg,
+.tab svg {
   width: 24px;
   height: 24px;
+  flex-shrink: 0;
+  display: block;
 }
 
-.tab-item.active {
-  color: #4a90e2;
+.tab-item.active,
+.tab.active {
+  color: #f08a2a;
 }
 
 .wx-toast {
@@ -542,7 +551,7 @@ a {
   opacity: 1;
 }
 
-@media (min-width: 420px) {
+@media (min-width: 460px) {
   body {
     display: grid;
     place-items: center;
@@ -550,8 +559,11 @@ a {
   }
 
   .phone {
-    min-height: 844px;
-    height: min(844px, 94dvh);
+    --phone-h: min(956px, calc(100dvh - 48px));
+    height: var(--phone-h);
+    max-height: calc(100dvh - 48px);
+    min-height: 0;
+    width: min(440px, calc(var(--phone-h) * 440 / 956), calc(100vw - 24px));
     border-radius: 40px;
     box-shadow:
       0 0 0 11px #0a0a0a,

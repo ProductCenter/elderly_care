@@ -318,13 +318,75 @@
   renderHistory();
   syncClearBtn();
 
+  /* 语音搜索（Web Speech API，不支持时降级提示） */
+  let recognizing = false;
+  let recognition = null;
+  const btnVoice = $("btnVoice");
+
+  function setVoiceUi(on) {
+    recognizing = on;
+    btnVoice?.classList.toggle("is-listening", on);
+    btnVoice?.setAttribute("aria-pressed", on ? "true" : "false");
+    if (input) input.placeholder = on ? "正在听，请说出服务名称…" : "搜索服务、商品、套餐";
+  }
+
+  function stopVoice() {
+    try {
+      recognition?.stop();
+    } catch {
+      /* ignore */
+    }
+    setVoiceUi(false);
+  }
+
+  function startVoice() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+      alert("当前浏览器暂不支持语音识别，请改用常用服务入口或热门搜索");
+      return;
+    }
+    if (recognizing) {
+      stopVoice();
+      return;
+    }
+    recognition = new SR();
+    recognition.lang = "zh-CN";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.onstart = () => setVoiceUi(true);
+    recognition.onerror = () => {
+      setVoiceUi(false);
+    };
+    recognition.onend = () => setVoiceUi(false);
+    recognition.onresult = (ev) => {
+      const text = ev.results?.[0]?.[0]?.transcript?.trim() || "";
+      if (!text) return;
+      if (input) input.value = text;
+      syncClearBtn();
+      runSearch(text);
+    };
+    try {
+      recognition.start();
+    } catch {
+      setVoiceUi(false);
+    }
+  }
+
+  btnVoice?.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    startVoice();
+  });
+
   const initial = new URLSearchParams(location.search).get("q") || "";
+  const wantVoice = new URLSearchParams(location.search).get("voice") === "1";
   if (initial) {
     input.value = initial;
     syncClearBtn();
     runSearch(initial);
   } else {
     setMode("discover");
-    setTimeout(() => input?.focus(), 160);
+    if (wantVoice) setTimeout(() => startVoice(), 280);
+    else setTimeout(() => input?.focus(), 160);
   }
 })();

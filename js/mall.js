@@ -44,14 +44,16 @@
     return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`;
   }
 
-  const PAGE_BG = "#f6eee2";
+  const PAGE_BG = document.body.classList.contains("mall-v10") ? "#FCF6E8" : "#f6eee2";
+  const PAGE_BG_RGB = document.body.classList.contains("mall-v10") ? "252, 246, 232" : "246, 238, 226";
+  const IS_MALL_V10 = document.body.classList.contains("mall-v10");
 
   function setPageBg() {
     const app = document.getElementById("app");
     if (!app) return;
     app.style.setProperty("--wx-bg", PAGE_BG);
     app.style.backgroundColor = PAGE_BG;
-    app.style.setProperty("--wx-bg-rgb", "246, 238, 226");
+    app.style.setProperty("--wx-bg-rgb", PAGE_BG_RGB);
   }
 
   const FALLBACK_BANNER_BG = ["#ffe0cc", "#c6ebd8", "#c9ddf7"];
@@ -162,11 +164,6 @@
     }
     setPageBg();
 
-    if (cfg.location) {
-      const el = document.querySelector(".loc-name");
-      if (el) el.textContent = cfg.location;
-    }
-
     if (Array.isArray(cfg.kingkong) && Array.isArray(window.MALL_KINGKONG)) {
       cfg.kingkong.forEach((item, i) => {
         if (!window.MALL_KINGKONG[i] || !item) return;
@@ -255,6 +252,14 @@
   }
   tick();
   setInterval(tick, 30_000);
+
+  if (IS_MALL_V10) {
+    const chip = document.getElementById("mallDateChip");
+    if (chip) {
+      const now = new Date();
+      chip.textContent = `${now.getMonth() + 1}月${now.getDate()}日 · 精选`;
+    }
+  }
 
   function goDetail(id) {
     if (!id || isDesigner) return;
@@ -428,7 +433,16 @@
 
     const grid = document.getElementById("goodsGrid");
     if (grid) {
-      const items = Object.values(catalog).filter((p) => !p.featured);
+      let items = Object.values(catalog).filter((p) => !p.featured);
+      const order = loadHomeConfig()?.goodsOrder;
+      if (Array.isArray(order) && order.length) {
+        const rank = new Map(order.map((id, i) => [id, i]));
+        items = items.slice().sort((a, b) => {
+          const ra = rank.has(a.id) ? rank.get(a.id) : 9999;
+          const rb = rank.has(b.id) ? rank.get(b.id) : 9999;
+          return ra - rb;
+        });
+      }
       const cardHtml = (p) => {
         const attr = getAttr(p);
         const ops = opsTag(p);
@@ -482,8 +496,11 @@
       grid.style.height = "";
       return;
     }
-    const h = Math.ceil(page.getBoundingClientRect().height);
-    if (h > 0) grid.style.height = `${h}px`;
+    // 用 offsetHeight（布局坐标），避免 ip-body 的 CSS zoom 把
+    // getBoundingClientRect 读成缩小值，导致 grid 高度被写矮、第二行被裁切。
+    grid.style.height = "auto";
+    const h = Math.max(page.offsetHeight, page.scrollHeight);
+    if (h > 0) grid.style.height = `${Math.ceil(h)}px`;
   }
 
   function renderKingkongDots(activePage) {
@@ -557,8 +574,8 @@
     const list = window.MALL_KINGKONG || [];
     if (!grid) return;
     const keepLeft = grid.scrollLeft;
-    // 金刚区：一行横向翻页滚动，每页为一个 snap 目标
-    const perPage = 5;
+    // 金刚区：每页 5 列 × 2 行，横向翻页
+    const perPage = KK_PER_PAGE;
     const pages = Math.max(1, Math.ceil(list.length / perPage));
     const pageHtml = [];
     for (let p = 0; p < pages; p++) {
@@ -677,6 +694,88 @@
     location.href = "./search.html";
   });
 
+  const PROXY_KEY = "kangyang-mall:family-proxy";
+
+  function setProxyMode(on) {
+    try {
+      localStorage.setItem(PROXY_KEY, on ? "1" : "0");
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function goVoiceSearch() {
+    location.href = "./search.html?voice=1";
+  }
+
+  function goAgentOrder(q) {
+    const qs = new URLSearchParams();
+    qs.set("q", q || "我想找一个适合爸妈的服务，请帮我推荐并代下单");
+    location.href = `./app-v10.html?${qs.toString()}#ai`;
+  }
+
+  function openCsSheet() {
+    if (isDesigner) return;
+    const mask = document.getElementById("csMask");
+    const sheet = document.getElementById("csSheet");
+    if (mask) {
+      mask.hidden = false;
+      mask.removeAttribute("hidden");
+    }
+    if (sheet) {
+      sheet.hidden = false;
+      sheet.removeAttribute("hidden");
+    }
+  }
+
+  function closeCsSheet() {
+    const mask = document.getElementById("csMask");
+    const sheet = document.getElementById("csSheet");
+    if (mask) {
+      mask.hidden = true;
+      mask.setAttribute("hidden", "");
+    }
+    if (sheet) {
+      sheet.hidden = true;
+      sheet.setAttribute("hidden", "");
+    }
+  }
+
+  function scrollToHot() {
+    document.getElementById("hotSection")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  document.getElementById("navVoice")?.addEventListener("click", () => {
+    if (isDesigner) return;
+    goVoiceSearch();
+  });
+  document.getElementById("btnAssistVoice")?.addEventListener("click", () => {
+    if (isDesigner) return;
+    goVoiceSearch();
+  });
+  document.getElementById("btnAssistCs")?.addEventListener("click", openCsSheet);
+  document.getElementById("btnAssistProxy")?.addEventListener("click", () => {
+    if (isDesigner) return;
+    setProxyMode(true);
+    goAgentOrder("请帮我为爸妈代下单：推荐一个合适的到店或到家服务，并说明子女如何代支付");
+  });
+  document.getElementById("csSheetClose")?.addEventListener("click", closeCsSheet);
+  document.getElementById("csMask")?.addEventListener("click", closeCsSheet);
+  document.getElementById("btnCsOnline")?.addEventListener("click", () => {
+    closeCsSheet();
+    location.href = `./app-v10.html?q=${encodeURIComponent("请转人工客服，我需要有人协助下单")}#ai`;
+  });
+  document.getElementById("btnCsAgentOrder")?.addEventListener("click", () => {
+    closeCsSheet();
+    goAgentOrder("请用对话方式帮我完成下单：先确认服务，再一步完成预约");
+  });
+  document.getElementById("btnCsProxy")?.addEventListener("click", () => {
+    closeCsSheet();
+    setProxyMode(true);
+    toast("可在商品详情页勾选「为爸妈代购」");
+    goAgentOrder("子女代下单：帮我给爸妈选一个服务，并引导子女代支付");
+  });
+
   document.querySelector(".claim-btn")?.addEventListener("click", (e) => {
     e.stopPropagation();
     const btn = e.currentTarget;
@@ -739,7 +838,7 @@
 
   document.getElementById("agentMainEntry")?.addEventListener("click", () => {
     if (isDesigner) return;
-    location.href = "./agent.html";
+    location.href = "./app-v10.html#ai";
   });
 
   document.getElementById("agentCard")?.addEventListener("click", (e) => {
@@ -748,11 +847,12 @@
     e.preventDefault();
     e.stopPropagation();
     const act = btn.dataset.agentAct;
-    const goAgent = (action, q) => {
+    const goXiaoXiang = (action, q) => {
       const qs = new URLSearchParams();
       if (action) qs.set("action", action);
       if (q) qs.set("q", q);
-      location.href = `./agent.html?${qs.toString()}`;
+      const s = qs.toString();
+      location.href = s ? `./app-v10.html?${s}#ai` : "./app-v10.html#ai";
     };
     if (act === "package") {
       const feed = document.getElementById("feedFilter");
@@ -767,24 +867,42 @@
       return;
     }
     if (act === "consult" || act === "open") {
-      goAgent("", act === "consult" ? "健康咨询：控糖、血压和认知训练怎么看？" : "");
+      goXiaoXiang("", act === "consult" ? "健康咨询：控糖、血压和认知训练怎么看？" : "");
       return;
     }
-    if (act === "face") return goAgent("face", "帮我做一次AI面诊示意");
-    if (act === "tongue") return goAgent("tongue", "帮我做一次AI舌诊示意");
-    if (act === "report") return goAgent("report", "我上传了体检报告，帮我解读");
-    if (act === "camera") return goAgent("camera", "拍照识别体检报告");
+    if (act === "face") return goXiaoXiang("face", "帮我做一次AI面诊示意");
+    if (act === "tongue") return goXiaoXiang("tongue", "帮我做一次AI舌诊示意");
+    if (act === "report") return goXiaoXiang("report", "我上传了体检报告，帮我解读");
+    if (act === "camera") return goXiaoXiang("camera", "拍照识别体检报告");
+    if (act === "order") {
+      goAgentOrder("请帮我推荐服务并用对话方式代下单，尽量少步骤");
+      return;
+    }
+    if (act === "proxy") {
+      setProxyMode(true);
+      goAgentOrder("请帮我为爸妈代下单：先确认服务对象，再推荐并引导子女代支付");
+      return;
+    }
+    if (act === "hot") {
+      scrollToHot();
+      toast("已定位到热门推荐");
+      return;
+    }
+    if (act === "cs") {
+      openCsSheet();
+      return;
+    }
   });
 
-  // 事找人推送条
-  if (window.MallPushFeed?.renderStrip) {
-    window.MallPushFeed.renderStrip(document.getElementById("pushStripList"));
-  }
+  // 事找人推送条（首页已下线）
+  // if (window.MallPushFeed?.renderStrip) {
+  //   window.MallPushFeed.renderStrip(document.getElementById("pushStripList"));
+  // }
 
   function syncLocName(site) {
     const el = document.getElementById("locName") || document.querySelector(".loc-name");
     if (!el || !site) return;
-    const name = site.shortName || site.name || "选择站点";
+    const name = site.shortName || site.tag || site.name || "选择地址";
     el.textContent = name;
     const agentSite = document.getElementById("agentSiteName");
     if (agentSite) agentSite.textContent = name;
@@ -809,7 +927,7 @@
     if (isDesigner) return;
     const api = window.MALL_SITES;
     if (!api) {
-      toast("站点数据未加载");
+      toast("地址数据未加载");
       return;
     }
     const mask = document.getElementById("siteMask");
@@ -824,17 +942,20 @@
     if (tipEl) {
       tipEl.textContent =
         pack.mode === "bound"
-          ? "默认展示长者绑定机构，也可切换其他站点"
-          : "未绑定机构，已为你推荐距离最近的 6 个站点";
+          ? "默认展示长者常用住址，也可切换其他住址"
+          : "请选择本次服务送达 / 上门的住址";
     }
     listEl.innerHTML = pack.list
       .map((s) => {
-        const on = current && s.siteId === current.siteId;
-        return `<button type="button" class="site-item${on ? " is-on" : ""}" data-site-id="${escapeHtml(s.siteId)}">
+        const on = current && (s.siteId === current.siteId || s.addressId === current.addressId);
+        const phone = s.phone ? ` · ${s.phone}` : "";
+        const tag = s.tag ? `<span class="badge is-tag">${escapeHtml(s.tag)}</span>` : "";
+        const def = s.isDefault || s.isBound ? `<span class="badge">默认</span>` : "";
+        return `<button type="button" class="site-item${on ? " is-on" : ""}" data-site-id="${escapeHtml(s.siteId || s.addressId)}">
           <div class="site-item-main">
             <div class="site-item-name">
-              <span>${escapeHtml(s.name)}</span>
-              ${s.isBound ? `<span class="badge">已绑定</span>` : ""}
+              <span>${escapeHtml(s.contact || s.name || "")}${escapeHtml(phone)}</span>
+              ${tag}${def}
             </div>
             <div class="site-item-addr">${escapeHtml(s.address || "")}</div>
           </div>
@@ -862,9 +983,10 @@
 
     const current = api.resolveCurrentSite();
     if (current) {
-      api.setSelectedSiteId(current.siteId);
+      api.setSelectedSiteId(current.siteId || current.addressId);
       syncLocName(current);
       window.MALL_CURRENT_SITE = current;
+      window.MALL_CURRENT_ADDRESS = current;
     }
 
     document.getElementById("siteSheetClose")?.addEventListener("click", closeSiteSheet);
@@ -877,9 +999,10 @@
       if (!site) return;
       api.setSelectedSiteId(id);
       window.MALL_CURRENT_SITE = site;
+      window.MALL_CURRENT_ADDRESS = site;
       syncLocName(site);
       closeSiteSheet();
-      toast(`已切换至${site.shortName || site.name}`);
+      toast(`已切换至${site.shortName || site.tag || site.name}`);
     });
   }
 
@@ -963,17 +1086,17 @@
     const base = window.MALL_PAGE_BASE || "./";
     if (label === "我的") {
       e.preventDefault();
-      location.href = `${base}mine.html`;
+      location.href = `${base}app-v10.html#me`;
       return;
     }
     if (label === "首页") {
       e.preventDefault();
-      location.href = `${base}home.html`;
+      location.href = `${base}elder_app.html`;
       return;
     }
     if (label === "健康") {
       e.preventDefault();
-      location.href = `${base}health-service/index.html`;
+      location.href = `${base}app-v10.html#health`;
       return;
     }
     if (label === "商城") {
@@ -989,10 +1112,11 @@
     const track = document.getElementById("heroTrack");
     const dotsWrap = document.getElementById("heroDots");
     const content = document.getElementById("mainContent");
-    const swipeSurface =
-      document.getElementById("heroSwipe") ||
-      document.getElementById("heroGap") ||
-      stage;
+    const swipeSurface = IS_MALL_V10
+      ? stage
+      : document.getElementById("heroSwipe") ||
+        document.getElementById("heroGap") ||
+        stage;
     if (!stage || !track || !dotsWrap) return null;
 
     const slides = () => Array.from(track.querySelectorAll(".hero-slide"));
@@ -1069,13 +1193,17 @@
       const slide = slides()[index];
       if (!slide) return;
       const fallback = DEFAULT_BANNER_LINKS[index] || {};
+      const base = window.MALL_PAGE_BASE || "./";
       const href =
         slide.dataset.href ||
         window.resolveMallLinkHref?.(
           slide.dataset.linkType || fallback.linkType,
           slide.dataset.linkId || fallback.linkId,
-          window.MALL_PAGE_BASE || "./"
-        );
+          base
+        ) ||
+        (fallback.linkType === "activity" && fallback.linkId
+          ? `${base}activity.html?id=${encodeURIComponent(fallback.linkId)}`
+          : "");
       if (href) location.href = href;
     }
 
@@ -1206,8 +1334,10 @@
         "scroll",
         () => {
           const y = content.scrollTop;
-          // 与内容区同步上移，Banner 正常滚走（不再慢速视差滞留）
-          stage.style.transform = `translate3d(0, ${-y}px, 0)`;
+          // v10：Banner 在文档流内随内容滚动，不再做通屏视差位移
+          if (!IS_MALL_V10) {
+            stage.style.transform = `translate3d(0, ${-y}px, 0)`;
+          }
           app?.classList.toggle("is-scrolled", y > 48);
         },
         { passive: true }

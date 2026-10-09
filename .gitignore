@@ -3,9 +3,21 @@
 .venv-xlsx/
 .tmp-*
 *.zip
+kangyang-mall-baota.tgz
 node_modules/
 .env
 .env.*
 llm.env
+llm.env.systemd
 # Nested separate repo; publish without flattening its .git
 kangyang-pad/
+# Office lockfiles / local junk
+.~*
+Untitled
+# Over GitHub 100MB limit
+Clife-学前教育数智化服务解决方案—0914V1.0.pptx
+# Accidental local dumps
+323c527c-bd2b-4fb8-a8d1-057f88e56684.png
+ccc9852d-ce62-42da-82aa-7c3ed66378ae.png
+ea0c0d76-8153-4c90-bb2a-2629dfa34971.png
+e9546bec1406fb3d62d2f74102779f6e (1).mp4

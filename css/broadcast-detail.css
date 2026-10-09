@@ -27,7 +27,7 @@ body {
   min-height: 100%;
   font-family: var(--font);
   color: var(--text);
-  background: #111;
+  background: #e8dfc9;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
 }
@@ -53,7 +53,7 @@ img {
 
 .phone {
   position: relative;
-  width: min(100vw, 390px);
+  width: min(100vw, 440px);
   min-height: 100dvh;
   margin: 0 auto;
   display: flex;
@@ -169,25 +169,36 @@ img {
 }
 
 .capsule-more {
-  width: 18px;
-  height: 18px;
+  flex: 1;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 3.5px;
 }
 
-.capsule-more i {
+.capsule-more i,
+.capsule-more span {
   width: 3.5px;
   height: 3.5px;
   border-radius: 50%;
   background: #191919;
+  display: block;
+  flex-shrink: 0;
 }
 
 .capsule-divider {
   width: 1px;
   height: 16px;
   background: rgba(0, 0, 0, 0.12);
+  flex-shrink: 0;
+}
+
+.capsule-home {
+  flex: 1;
+  height: 100%;
+  display: grid;
+  place-items: center;
 }
 
 .capsule-home .ring {
@@ -197,14 +208,20 @@ img {
   border: 1.5px solid #191919;
   border-radius: 50%;
   position: relative;
+  box-sizing: border-box;
 }
 
 .capsule-home .ring::after {
   content: "";
   position: absolute;
-  inset: 3px;
-  border: 1.4px solid #191919;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border: 1.5px solid #191919;
   border-radius: 50%;
+  box-sizing: border-box;
 }
 
 .page-body {
@@ -224,9 +241,10 @@ img {
 .card {
   margin: 12px 12px 0;
   padding: 16px;
-  background: var(--card);
-  border-radius: 2px;
-  box-shadow: 0 1px 4px rgba(120, 80, 30, 0.04);
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 6px 18px rgba(120, 80, 30, 0.06);
 }
 
 .broadcast-title {
@@ -338,9 +356,9 @@ img {
 .btn-primary {
   flex: 1;
   height: 44px;
-  border-radius: 2px;
+  border-radius: 12px;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -364,26 +382,10 @@ img {
   transform: translateX(-50%);
   max-width: 80%;
   padding: 10px 14px;
-  border-radius: 2px;
-  background: rgba(43, 36, 28, 0.82);
+  border-radius: 14px;
+  background: rgba(31, 26, 20, 0.88);
   color: #fff;
   font-size: 13px;
+  font-weight: 700;
   z-index: 20;
-}
-
-@media (min-width: 420px) {
-  body {
-    display: grid;
-    place-items: center;
-    padding: 24px 0;
-  }
-
-  .phone {
-    min-height: 844px;
-    height: min(844px, 94dvh);
-    border-radius: 28px;
-    box-shadow:
-      0 0 0 1px rgba(255, 255, 255, 0.06),
-      0 24px 64px rgba(0, 0, 0, 0.45);
-  }
 }

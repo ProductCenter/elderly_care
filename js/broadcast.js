@@ -3,7 +3,7 @@
 
   function goBack() {
     if (history.length > 1) history.back();
-    else location.href = "./index.html";
+    else location.href = "./discover.html";
   }
 
   function esc(s) {
@@ -28,6 +28,19 @@
     return [when, b.location].filter(Boolean).join(" · ");
   }
 
+  function itemHref(b) {
+    if (b.articleId) {
+      return window.articleDetailHref?.(b.articleId, "broadcast") || `./article.html?id=${encodeURIComponent(b.articleId)}&from=broadcast`;
+    }
+    return `./broadcast-detail.html?id=${encodeURIComponent(b.id)}`;
+  }
+
+  function renderArticles() {
+    const host = $("articleList");
+    if (!host || !window.SectionArticles) return;
+    window.SectionArticles.mountSectionBlock({ section: "broadcast", listId: "articleList" });
+  }
+
   function render() {
     const list = filter ? all.filter((b) => b.badge === filter) : all;
     const tabs = ["", ...badges]
@@ -39,20 +52,26 @@
       .join("");
 
     if (!all.length) {
-      root.innerHTML = `<div class="empty-state">暂无广播消息，稍后再来看看吧。</div>`;
+      root.innerHTML = `<div class="empty-state">暂无广播消息，稍后再来看看吧。</div>
+        <section class="sec-art-block broadcast-art-block" aria-label="广播站文章">
+          <div class="sec-art-head"><h3>图文精选</h3><span>全文阅读</span></div>
+          <div id="articleList"></div>
+        </section>`;
+      renderArticles();
       return;
     }
 
     const cards = list.length
       ? `<div class="broadcast-list">${list
           .map((b) => {
-            const href = `./broadcast-detail.html?id=${encodeURIComponent(b.id)}`;
+            const href = itemHref(b);
             const when = metaLine(b);
+            const kind = b.articleId ? "文章" : b.badge || "广播";
             return `
     <a class="broadcast-card" href="${esc(href)}">
       <img class="broadcast-card__cover" src="${esc(b.cover)}" alt="${esc(b.title)}" />
       <div class="broadcast-card__body">
-        <h2 class="broadcast-card__title">${esc(b.title)}<span class="broadcast-card__badge">${esc(b.badge || "广播")}</span></h2>
+        <h2 class="broadcast-card__title">${esc(b.title)}<span class="broadcast-card__badge">${esc(kind)}</span></h2>
         <p class="broadcast-card__summary">${esc(b.summary)}</p>
         <p class="broadcast-card__meta">${esc(when)}</p>
       </div>
@@ -61,7 +80,11 @@
           .join("")}</div>`
       : `<div class="empty-state">这个分类暂时没有广播。</div>`;
 
-    root.innerHTML = `<div class="broadcast-filter" role="tablist" aria-label="广播分类">${tabs}</div>${cards}`;
+    root.innerHTML = `<div class="broadcast-filter" role="tablist" aria-label="广播分类">${tabs}</div>${cards}
+      <section class="sec-art-block broadcast-art-block" aria-label="广播站文章">
+        <div class="sec-art-head"><h3>图文精选</h3><span>全文阅读</span></div>
+        <div id="articleList"></div>
+      </section>`;
 
     root.querySelectorAll(".broadcast-filter__tab").forEach((tab) => {
       tab.addEventListener("click", () => {
@@ -69,6 +92,8 @@
         render();
       });
     });
+
+    renderArticles();
   }
 
   render();

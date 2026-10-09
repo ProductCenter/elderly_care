@@ -93,12 +93,19 @@
 
   const relatedId = bc.relatedProductId || "";
   const relatedCta = bc.relatedCta || "查看相关服务";
+  const articleHref = bc.articleId
+    ? window.articleDetailHref?.(bc.articleId, "broadcast") ||
+      `./article.html?id=${encodeURIComponent(bc.articleId)}&from=broadcast`
+    : "";
+
   bar.innerHTML = `
     <button class="btn-ghost" type="button" id="btnShare">分享</button>
     ${
-      relatedId
-        ? `<a class="btn-primary" id="btnRelated" href="./detail.html?id=${encodeURIComponent(relatedId)}">${esc(relatedCta)}</a>`
-        : `<button class="btn-primary" type="button" id="btnList">返回列表</button>`
+      articleHref
+        ? `<a class="btn-primary" href="${esc(articleHref)}">阅读完整文章</a>`
+        : relatedId
+          ? `<a class="btn-primary" id="btnRelated" href="./detail.html?id=${encodeURIComponent(relatedId)}">${esc(relatedCta)}</a>`
+          : `<button class="btn-primary" type="button" id="btnList">返回列表</button>`
     }
   `;
 

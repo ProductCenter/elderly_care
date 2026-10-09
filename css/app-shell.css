@@ -69,21 +69,72 @@
   border-color: #191919;
 }
 
-/* tabBar 统一为智伴暖橙主题 */
+/* tabBar：常规高度（约 68px），中间智伴略上浮 */
 .phone.app-theme .tabbar,
-.phone.app-theme nav.tabbar {
-  background: var(--app-bg);
-  border-top: 0.5px solid var(--app-line);
+.phone.app-theme nav.tabbar,
+.phone.app-theme .home-tabbar {
+  --tab-h: 68px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-around;
+  height: var(--tab-h);
+  padding: 8px 4px calc(10px + var(--app-safe-bottom));
+  background: #fffdf7;
+  border-top: 1px solid #f2e9d8;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -6px 18px rgba(120, 80, 0, 0.07);
+  overflow: visible;
+  backdrop-filter: none;
 }
 
 .phone.app-theme .tab,
 .phone.app-theme .tab-item {
-  color: var(--app-text-2);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+  padding-top: 0;
+  text-decoration: none;
+  color: #ab9d86;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.1;
+  cursor: pointer;
+  transition: color 0.18s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.phone.app-theme .tab svg,
+.phone.app-theme .tab-item svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.phone.app-theme .tab span,
+.phone.app-theme .tab-item span {
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.1;
+  white-space: nowrap;
 }
 
 .phone.app-theme .tab.active,
 .phone.app-theme .tab-item.active {
-  color: var(--app-orange);
+  color: #ff8a1e;
+}
+
+.phone.app-theme .tab.active svg,
+.phone.app-theme .tab-item.active svg {
+  stroke-width: 2.3;
 }
 
 /* 底部操作栏统一 */
@@ -99,7 +150,7 @@
 }
 
 /* 桌面端手机框 */
-@media (min-width: 420px) {
+@media (min-width: 460px) {
   body:has(.phone.app-theme) {
     background: #111;
     display: grid;
@@ -108,8 +159,11 @@
   }
 
   .phone.app-theme {
-    height: min(844px, calc(100dvh - 48px));
+    --phone-h: min(956px, calc(100dvh - 48px));
+    height: var(--phone-h);
+    max-height: calc(100dvh - 48px);
     min-height: 0;
+    width: min(440px, calc(var(--phone-h) * 440 / 956), calc(100vw - 24px));
     border-radius: 28px;
     box-shadow:
       0 0 0 1px rgba(255, 255, 255, 0.06),
@@ -117,69 +171,318 @@
   }
 }
 
-
-/* —— 底部中间智伴入口（卡通形象） —— */
+/* —— 中间智伴入口：对齐 app-v10 .tab.center —— */
 .phone.app-theme .tabbar.has-agent,
 .phone.app-theme nav.tabbar.has-agent {
-  grid-template-columns: 1fr 1fr 64px 1fr 1fr;
-  height: calc(62px + var(--app-safe-bottom));
-  padding-top: 0;
   overflow: visible;
-  align-items: end;
 }
 
-.phone.app-theme .tabbar.has-agent .tab,
+.phone.app-theme .tabbar.has-agent .tab:not(.tab-agent),
 .phone.app-theme .tabbar.has-agent .tab-item {
-  height: 50px;
-  padding-bottom: 2px;
+  padding-top: 2px;
 }
 
 .tab-agent {
   position: relative;
   z-index: 2;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
+  gap: 1px;
+  margin-top: -22px;
   text-decoration: none;
-  color: var(--app-orange, #f08a2a);
-  height: 100%;
-  margin-bottom: 0;
+  color: #ff8a1e;
   -webkit-tap-highlight-color: transparent;
 }
 
-.tab-agent-avatar {
-  width: 52px;
-  height: 52px;
+.tab-agent .moko-ring {
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  width: 56px;
+  height: 56px;
+  margin-left: -28px;
   border-radius: 50%;
-  overflow: hidden;
-  border: 3px solid #fff;
-  background: linear-gradient(165deg, #fffef8 0%, #f3e6d4 100%);
-  box-shadow:
-    0 0 0 1.5px rgba(240, 138, 42, 0.28),
-    0 8px 16px rgba(120, 80, 30, 0.18);
-  transform: translateY(-18px);
+  pointer-events: none;
+  z-index: 3;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 201, 64, 0),
+    #ffc940 100deg,
+    #ff8a3d 210deg,
+    rgba(255, 138, 61, 0) 330deg
+  );
+  -webkit-mask: radial-gradient(circle, transparent 0 23px, #000 24px 28px);
+  mask: radial-gradient(circle, transparent 0 23px, #000 24px 28px);
+  animation: app-moko-spin 2.6s linear infinite;
 }
 
-.tab-agent-avatar img {
+@keyframes app-moko-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.tab-agent-avatar,
+.tab-agent .halo {
+  position: relative;
+  z-index: 1;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #fffdf7;
+  background: #fff6e4;
+  box-shadow: 0 8px 18px rgba(255, 150, 40, 0.28);
+}
+
+.tab-agent-avatar img,
+.tab-agent .halo img {
   width: 100%;
   height: 100%;
   display: block;
   object-fit: cover;
-  object-position: 50% 28%;
+  object-position: center 22%;
 }
 
 .tab-agent-label {
   position: relative;
   z-index: 1;
-  margin-top: -14px;
-  margin-bottom: 4px;
+  margin-top: 1px;
   font-size: 10px;
-  font-weight: 700;
-  color: #e36a12;
+  font-weight: 900;
+  color: #ff8a1e;
   line-height: 1;
+  background: transparent;
 }
 
-.tab-agent:active .tab-agent-avatar {
-  transform: translateY(-16px) scale(0.96);
+.tab-agent.active .tab-agent-label {
+  color: #ff8a1e;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .tab-agent .moko-ring {
+    animation: none;
+  }
+}
+
+.phone .app-toast,
+.phone .wx-toast {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  z-index: 80;
+  max-width: 70%;
+  padding: 12px 18px;
+  border-radius: 14px;
+  background: rgba(31, 26, 20, 0.88);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.4;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+/* —— 二级页共用 App 机框舞台（商品详情 / 广播详情等） —— */
+html:has(body.app-page-v10) {
+  background: #e8dfc9 !important;
+}
+
+body.app-page-v10,
+body.app-page-v10:has(.ip-stage),
+body.app-page-v10:has(.phone.app-theme) {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  overflow: hidden;
+  font-family: "PingFang SC", "Noto Sans SC", "Helvetica Neue", sans-serif;
+  color: #1f1a14;
+  background-color: #e8dfc9 !important;
+  background-image: radial-gradient(circle at top right, #f4e8c8 0%, #e8dfc9 100%) !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.app-page-v10 .ip-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+body.app-page-v10 .ip-stage::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 540px;
+  height: 600px;
+  transform: translate(-50%, -47%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(closest-side, rgba(255, 196, 77, 0.32), rgba(255, 196, 77, 0) 72%);
+}
+
+body.app-page-v10 .ip-body {
+  position: relative;
+  z-index: 1;
+  padding: 12px;
+  border-radius: 56px;
+  background: linear-gradient(
+    150deg,
+    #585860 0%,
+    #2c2c33 16%,
+    #141418 42%,
+    #1e1e23 62%,
+    #3e3e46 86%,
+    #5e5e67 100%
+  );
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.26),
+    inset 0 0 0 3px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 4px rgba(255, 255, 255, 0.07),
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    0 26px 60px rgba(58, 32, 0, 0.34),
+    0 60px 120px rgba(58, 32, 0, 0.2);
+}
+
+body.app-page-v10 .ip-key {
+  position: absolute;
+  display: block;
+  border-radius: 2px;
+  z-index: 0;
+  background: linear-gradient(90deg, #4e4e57, #202027);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
+}
+
+body.app-page-v10 .ip-key.k-mute {
+  left: -3px;
+  top: 142px;
+  width: 3px;
+  height: 28px;
+  border-radius: 2px 0 0 2px;
+}
+body.app-page-v10 .ip-key.k-vup {
+  left: -3px;
+  top: 188px;
+  width: 3px;
+  height: 54px;
+  border-radius: 2px 0 0 2px;
+}
+body.app-page-v10 .ip-key.k-vdn {
+  left: -3px;
+  top: 252px;
+  width: 3px;
+  height: 54px;
+  border-radius: 2px 0 0 2px;
+}
+body.app-page-v10 .ip-key.k-pwr {
+  right: -3px;
+  top: 206px;
+  width: 3px;
+  height: 86px;
+  border-radius: 0 2px 2px 0;
+  background: linear-gradient(270deg, #4e4e57, #202027);
+}
+
+body.app-page-v10 .ip-body .phone,
+body.app-page-v10 .ip-body .phone.app-theme {
+  width: 390px;
+  height: 844px;
+  max-height: none;
+  min-height: 0;
+  margin: 0;
+  flex: none;
+  border-radius: 44px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.55), 0 1px 3px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+  background:
+    radial-gradient(120% 70% at 100% 8%, #ffe6c4 0%, transparent 52%),
+    linear-gradient(180deg, #fcf6e8 0%, #f6eee2 42%, #f3e6d4 100%) !important;
+}
+
+body.app-page-v10 .blob {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+body.app-page-v10 .blob-1 {
+  top: -90px;
+  left: -80px;
+  width: 240px;
+  height: 240px;
+  background: #ffe7a0;
+}
+
+body.app-page-v10 .blob-2 {
+  top: 420px;
+  right: -60px;
+  width: 120px;
+  height: 120px;
+  background: #ffe7a0;
+  opacity: 0.7;
+}
+
+body.app-page-v10 .status-bar,
+body.app-page-v10 .phone.app-theme .status-bar {
+  position: relative;
+  z-index: 2;
+  height: 48px;
+  padding: 14px 22px 0;
+  background: transparent !important;
+  color: #1f1a14;
+  flex-shrink: 0;
+}
+
+body.app-page-v10 .nav-bar,
+body.app-page-v10 .phone.app-theme .nav-bar {
+  position: relative;
+  z-index: 2;
+  background: transparent !important;
+  border-bottom: 0 !important;
+}
+
+body.app-page-v10 .page-body {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-height: 960px) {
+  body.app-page-v10 .ip-body {
+    zoom: 0.955;
+  }
+}
+@media (max-height: 880px) {
+  body.app-page-v10 .ip-body {
+    zoom: 0.875;
+  }
+}
+@media (max-height: 800px) {
+  body.app-page-v10 .ip-body {
+    zoom: 0.795;
+  }
+}
+@media (max-height: 720px) {
+  body.app-page-v10 .ip-body {
+    zoom: 0.715;
+  }
+}
+@media (max-height: 640px) {
+  body.app-page-v10 .ip-body {
+    zoom: 0.635;
+  }
+}
+

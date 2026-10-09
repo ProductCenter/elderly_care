@@ -715,7 +715,7 @@ window.MALL_PRODUCTS = {
   neck_massage: {
     id: "neck_massage",
     name: "颈椎按摩服务",
-    cover: "./assets/image-1e56f3c7-93be-4733-a606-b1e159a82907.png",
+    cover: "./assets/cover-neck-massage.png",
     price: 39,
     originPrice: 59,
     sales: 86,

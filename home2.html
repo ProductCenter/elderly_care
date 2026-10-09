@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#FCF6E8" />
+    <title>春风康养 · 首页</title>
+    <link rel="stylesheet" href="./css/home2.css?v=20260918-r2" />
+    <link rel="stylesheet" href="./css/app-shell.css?v=20260921-tab68" />
+    <link rel="stylesheet" href="./css/home2-v10.css?v=20260921-tab68" />
+  </head>
+  <body class="home2-v10">
+    <div class="phone" id="app">
+      <div class="h2-chrome">
+        <div class="status-bar" aria-hidden="true">
+          <span class="status-time" id="statusTime">9:41</span>
+          <div class="status-right">
+            <svg class="status-signal" viewBox="0 0 18 12">
+              <rect x="0" y="8" width="3" height="4" rx="0.5" fill="currentColor" />
+              <rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="currentColor" />
+              <rect x="9" y="2.5" width="3" height="9.5" rx="0.5" fill="currentColor" />
+              <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="currentColor" opacity=".35" />
+            </svg>
+            <span class="status-net">5G</span>
+            <div class="status-battery"><span class="battery-level"></span></div>
+          </div>
+        </div>
+
+        <div class="h2-top">
+          <button
+            class="loc-btn location-btn"
+            type="button"
+            id="btnLoc"
+            aria-haspopup="dialog"
+            aria-expanded="false"
+            aria-label="选择地址"
+          >
+            <svg class="pin" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"
+              />
+            </svg>
+            <span class="loc-name" id="locName">选择地址</span>
+            <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor" d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+            </svg>
+          </button>
+          <span class="date-chip" id="h2DateChip">今日关怀</span>
+          <button class="nav-search" type="button" id="navSearch" aria-label="搜索">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+              />
+            </svg>
+          </button>
+          <button type="button" class="nav-elder" id="btnElder" aria-pressed="false" aria-label="切换大字模式">
+            大字
+          </button>
+        </div>
+
+        <div class="h2-greet">
+          <h1>早上好，<em>慢慢来</em></h1>
+          <p>今日服务 · 社区活动 · 健康提醒，一站安排好</p>
+        </div>
+      </div>
+
+      <div class="nav-bar h2-v10-hide" hidden aria-hidden="true"></div>
+
+      <main class="h2-body" id="h2Body">
+        <!-- 今日推荐：圆角轮播（保留 heroTrack / heroDots） -->
+        <div class="h2-hero-stage" aria-roledescription="轮播" aria-label="头图推荐">
+          <span class="h2-hero-rec">🎁 今日推荐</span>
+          <div class="h2-hero-track" id="heroTrack">
+            <a class="h2-hero-slide is-on" href="./activity.html" data-hero="0">
+              <img src="./assets/home/home-hero-full-bg-v3.png" alt="" draggable="false" />
+              <div class="shade"></div>
+              <div class="copy">
+                <p class="eyebrow">历下旗舰 · 今日关怀</p>
+                <h2>暖阳午后 · 把日子过成诗</h2>
+                <span class="cta">走进乐龄生活 ›</span>
+              </div>
+            </a>
+            <a class="h2-hero-slide" href="./search.html?q=上门" data-hero="1">
+              <img src="./assets/home2/h2-hero-main.png" alt="" draggable="false" />
+              <div class="shade"></div>
+              <div class="copy">
+                <p class="eyebrow">居家照护 · 安心到家</p>
+                <h2>有人陪伴 · 每一步都踏实</h2>
+                <span class="cta">查找上门服务 ›</span>
+              </div>
+            </a>
+            <a class="h2-hero-slide" href="./activity.html" data-hero="2">
+              <img src="./assets/home2/h2-promo.png" alt="" draggable="false" />
+              <div class="shade"></div>
+              <div class="copy">
+                <p class="eyebrow">春季专场 · 限时活动</p>
+                <h2>春风乐龄 · 嘉年华开启</h2>
+                <span class="cta">立即报名 ›</span>
+              </div>
+            </a>
+          </div>
+          <div class="h2-hero-dots" id="heroDots" role="tablist" aria-label="头图翻页"></div>
+        </div>
+        <div class="h2-hero-gap" aria-hidden="true"></div>
+
+        <div class="nb-h">今日服务 <span class="tag" id="todayDateTag">高频任务</span></div>
+        <section class="today" aria-labelledby="todayTitle">
+          <div class="today-hd">
+            <h2 id="todayTitle">今日服务</h2>
+            <span class="today-date">9 月 18 日 · 周四</span>
+          </div>
+          <div class="today-grid">
+            <a class="today-card is-sos" href="./app-v10.html#ai">
+              <span class="ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-2h2zm0-4h-2V7h2z"/></svg>
+              </span>
+              <strong>一键求助</strong>
+              <em>小象在线</em>
+            </a>
+            <a class="today-card is-med" href="./sleep-todo.html">
+              <span class="ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+              </span>
+              <strong>今日提醒</strong>
+              <em>用药 2 项</em>
+            </a>
+            <a class="today-card is-visit" href="./orders.html">
+              <span class="ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+              </span>
+              <strong>上门服务</strong>
+              <em>已预约 1 次</em>
+            </a>
+            <a class="today-card is-status" href="./order-detail.html">
+              <span class="ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+              </span>
+              <strong>服务进度</strong>
+              <em>进行中</em>
+            </a>
+          </div>
+          <a class="today-summary" href="./mine.html">
+            <span class="sum-label">长者状态</span>
+            <span class="sum-text">王秀兰 · 今日精神良好，血压已记录</span>
+            <span class="sum-go" aria-hidden="true">›</span>
+          </a>
+        </section>
+
+        <div class="nb-h">高频入口 <span class="tag">常用</span></div>
+        <section class="mosaic" aria-label="高频服务入口">
+          <a class="mosaic-card is-home" href="./search.html?q=上门">
+            <div class="copy">
+              <h3>居家服务</h3>
+              <p>助餐、助浴、陪诊一键预约</p>
+              <span class="action">立即预约 ›</span>
+            </div>
+            <div class="art-wrap">
+              <img class="art" src="./assets/cover-nutrition-meal.png" alt="" draggable="false" />
+            </div>
+          </a>
+          <a class="mosaic-card is-community" href="./activity.html">
+            <div class="copy">
+              <h3>社区活动</h3>
+              <p>附近课程与邻里社群</p>
+              <span class="action">本周 12 场 ›</span>
+            </div>
+            <div class="art-wrap">
+              <img class="art" src="./assets/home2/h2-social.png" alt="" draggable="false" />
+            </div>
+          </a>
+          <a class="mosaic-card is-health" href="./sleep-todo.html">
+            <div class="copy">
+              <h3>健康管理</h3>
+              <p>提醒、用药与服务进度</p>
+              <span class="action">今日 2 项提醒 ›</span>
+            </div>
+            <div class="art-wrap">
+              <img class="art" src="./assets/home/home-entry-plan-v2.png" alt="" draggable="false" />
+            </div>
+          </a>
+        </section>
+
+        <div class="nb-h">乐活好物 <span class="tag"><a href="./index.html">商城 ›</a></span></div>
+        <a class="h2-mall-entry" href="./index.html" aria-label="进入乐活好物商城">
+          <div class="mall-copy">
+            <span class="mall-k">🛒 春风乐活商城</span>
+            <h3>适老精选 · 一站选购</h3>
+            <p>营养配餐 · 辅具用品 · 健康好物</p>
+            <span class="mall-go">去逛逛 ›</span>
+          </div>
+          <div class="mall-art" aria-hidden="true">
+            <img src="./assets/home2/h2-mall.png" alt="" draggable="false" />
+          </div>
+        </a>
+
+        <div class="nb-h">更多服务 <span class="tag">便民</span></div>
+        <nav class="quad" aria-label="更多服务">
+          <a class="is-goods" href="./index.html">
+            <span class="ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.15.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0 0 20 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </span>
+            <strong>适老用品</strong>
+            <span>去选购</span>
+          </a>
+          <a class="is-org" href="./shop.html?id=store_cy001">
+            <span class="ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3l9 6v12h-6v-7H9v7H3V9l9-6z" /></svg>
+            </span>
+            <strong>机构服务</strong>
+            <span>靠谱机构</span>
+          </a>
+          <a class="is-canteen" href="./search.html?q=食堂">
+            <span class="ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path fill="currentColor" d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z" />
+              </svg>
+            </span>
+            <strong>长者食堂</strong>
+            <span>卫生安全</span>
+          </a>
+          <a class="is-family" href="./mine.html">
+            <span class="ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            </span>
+            <strong>家属关怀</strong>
+            <span>授权查看</span>
+          </a>
+        </nav>
+
+        <div class="nb-h">
+          精选推荐
+          <span class="tag"><a href="./discover.html">全部 ›</a></span>
+        </div>
+        <section class="feed-block" aria-labelledby="feedTitle">
+          <div class="feed-hd">
+            <h2 id="feedTitle">精选推荐</h2>
+            <a class="feed-more" href="./discover.html">全部 ›</a>
+          </div>
+          <div class="feed-tabs" id="feedTabs" role="tablist" aria-label="内容分类">
+            <button type="button" class="is-on" data-filter="all" role="tab" aria-selected="true">全部</button>
+            <button type="button" data-filter="care" role="tab" aria-selected="false">康养</button>
+            <button type="button" data-filter="promo" role="tab" aria-selected="false">活动</button>
+            <button type="button" data-filter="class" role="tab" aria-selected="false">课堂</button>
+          </div>
+          <div class="feed-grid" id="feedGrid" aria-live="polite"></div>
+        </section>
+      </main>
+
+      <nav class="tabbar has-agent" aria-label="主导航"></nav>
+
+      <div class="addr-mask" id="addrMask" hidden></div>
+      <div class="addr-sheet" id="addrSheet" hidden role="dialog" aria-labelledby="addrSheetTitle">
+        <div class="addr-sheet-hd">
+          <strong id="addrSheetTitle">选择地址</strong>
+          <button type="button" class="addr-sheet-close" id="addrSheetClose">关闭</button>
+        </div>
+        <p class="addr-sheet-tip">用于推荐附近服务与上门履约</p>
+        <div class="addr-sheet-bd" id="addrList"></div>
+      </div>
+    </div>
+
+    <script src="./js/agent-avatar.js?v=20260915-tabagent"></script>
+    <script src="./js/app-shell.js?v=20260921-tabv10"></script>
+    <script src="./js/home2.js?v=20260921-v10"></script>
+  </body>
+</html>

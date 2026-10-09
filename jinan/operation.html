@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="康养生态运营平台后台原型" />
+  <title>康养生态运营平台</title>
+  <style>
+    :root{--navy:#12283c;--navy2:#17364f;--ink:#182537;--muted:#66758a;--line:#e6ebf1;--bg:#f5f7fa;--teal:#148f8b;--orange:#ef8b3a;--red:#d95757;--blue:#2b73c9;--green:#2ca06d}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif;font-size:14px;line-height:1.45}.app{display:grid;grid-template-columns:236px 1fr;min-height:100vh}.side{background:linear-gradient(180deg,#132c42,#102235);color:#d6e0e9;padding:22px 12px;position:sticky;top:0;height:100vh}.brand{display:flex;gap:10px;align-items:center;padding:0 10px 24px;color:white;font-weight:700;font-size:16px}.brand i{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:#1d9e98;font-style:normal;font-size:18px}.brand small{display:block;font-size:11px;font-weight:400;color:#94adbf;margin-top:2px}.nav-title{margin:17px 10px 6px;color:#7390a5;font-size:11px;letter-spacing:.08em}.nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:7px;color:#bed0de;text-decoration:none;cursor:pointer;margin:2px 0}.nav a:hover,.nav a.active{background:#23465f;color:white}.nav .ico{width:18px;text-align:center;color:#84bebb}.nav .pill{margin-left:auto;background:#d96755;color:white;border-radius:10px;padding:1px 6px;font-size:11px}.account{position:absolute;bottom:18px;left:16px;right:16px;border-top:1px solid #315067;padding-top:14px;display:flex;gap:9px;align-items:center}.avatar{width:31px;height:31px;border-radius:50%;background:#ca8a49;color:white;display:grid;place-items:center}.account b{display:block;font-size:13px}.account span{font-size:11px;color:#8ba2b2}.main{min-width:0}.top{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px}.crumb{color:#8996a7}.crumb b{color:#25364b;margin-left:8px}.tools{display:flex;align-items:center;gap:18px;color:#65758a}.tools button{border:0;background:#f1f5f8;color:#3b5267;border-radius:7px;padding:7px 11px;cursor:pointer}.page{padding:25px 28px 40px;max-width:1600px;margin:auto}.headline{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px}.headline h1{font-size:23px;margin:0 0 4px;letter-spacing:.01em}.headline p{margin:0;color:var(--muted)}.date{color:#5b6e81;font-size:13px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.card{background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 2px 5px rgba(19,38,59,.025)}.kpi{padding:17px 18px;position:relative;overflow:hidden}.kpi:before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:3px;border-radius:2px;background:var(--teal)}.kpi:nth-child(2):before{background:var(--blue)}.kpi:nth-child(3):before{background:var(--orange)}.kpi:nth-child(4):before{background:var(--red)}.kpi label{display:block;color:#607187;font-size:13px}.kpi strong{font-size:27px;display:inline-block;margin-top:6px}.kpi em{font-style:normal;font-size:12px;color:var(--green);margin-left:7px}.kpi .warn{color:var(--red)}.content{display:grid;grid-template-columns:1.3fr .9fr;gap:18px}.card h2{font-size:16px;margin:0;padding:16px 18px;border-bottom:1px solid var(--line)}.sub{float:right;color:#728197;font-weight:400;font-size:12px;cursor:pointer}.chart{padding:16px 18px 18px}.bar-row{display:grid;grid-template-columns:80px 1fr 42px;align-items:center;gap:10px;margin:13px 0;color:#58697d}.bar{height:9px;background:#edf1f4;border-radius:8px;overflow:hidden}.bar span{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,#15908c,#54c1bb)}.bar-row:nth-child(3) .bar span{background:linear-gradient(90deg,#2b73c9,#78a9e5)}.bar-row:nth-child(4) .bar span{background:linear-gradient(90deg,#e4873c,#f3b06c)}.bar-row:nth-child(5) .bar span{background:linear-gradient(90deg,#845ac0,#bc9ee7)}.list{padding:4px 18px 10px}.event{display:grid;grid-template-columns:9px 1fr auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #eef1f4}.event:last-child{border-bottom:0}.dot{width:8px;height:8px;border-radius:50%;background:var(--red)}.event:nth-child(2) .dot{background:var(--orange)}.event:nth-child(3) .dot{background:var(--blue)}.event:nth-child(4) .dot{background:var(--teal)}.event b{font-weight:600}.event p{margin:2px 0 0;color:#738197;font-size:12px}.event time{color:#94a0ad;font-size:12px}.bottom{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;margin-top:18px}.table{width:100%;border-collapse:collapse}.table th{text-align:left;color:#718095;font-weight:500;background:#f8fafb;padding:10px 14px;font-size:12px}.table td{padding:12px 14px;border-top:1px solid #edf1f3}.status{font-size:12px;border-radius:10px;padding:3px 8px;display:inline-block}.s-green{background:#e9f7f1;color:#16794e}.s-blue{background:#edf4fd;color:#286bb9}.s-orange{background:#fff4e8;color:#bd6b21}.note{padding:18px}.note h3{font-size:15px;margin:0 0 4px}.note p{margin:0;color:#6d7d90;font-size:13px}.action{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid #edf1f3;align-items:center}.action:last-child{border:0}.btn{border:1px solid #d9e2ea;background:white;border-radius:6px;padding:6px 9px;color:#38607b;cursor:pointer}.modal{display:none;position:fixed;inset:0;background:rgba(14,30,45,.36);align-items:center;justify-content:center;padding:20px;z-index:5}.modal.show{display:flex}.dialog{background:#fff;border-radius:12px;width:min(760px,100%);box-shadow:0 12px 44px rgba(0,0,0,.2)}.dialog-head{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.dialog-head h2{margin:0;font-size:18px}.close{border:0;background:transparent;font-size:22px;color:#718095;cursor:pointer}.dialog-body{padding:18px 20px}.tabs{display:flex;gap:20px;border-bottom:1px solid var(--line);margin-bottom:15px}.tabs button{border:0;background:transparent;padding:8px 2px;color:#617186;cursor:pointer}.tabs button.active{color:var(--teal);border-bottom:2px solid var(--teal)}.profile{display:grid;grid-template-columns:100px 1fr 1fr;gap:12px}.profile label{color:#8491a1;font-size:12px;display:block}.profile strong{display:block;margin-top:3px}.safety{background:#fff7ed;border:1px solid #f8dcb9;border-radius:8px;padding:12px;margin-top:17px;color:#9b5a20}.toast{position:fixed;right:26px;bottom:24px;background:#183a50;color:white;padding:11px 16px;border-radius:8px;opacity:0;transform:translateY(12px);transition:.2s}.toast.show{opacity:1;transform:none}@media(max-width:1000px){.app{grid-template-columns:64px 1fr}.side{padding:18px 8px}.brand span,.nav a span:not(.ico),.nav-title,.account div{display:none}.brand{padding:0 8px 22px}.nav a{justify-content:center}.account{left:16px;right:auto}.kpis{grid-template-columns:repeat(2,1fr)}.content,.bottom{grid-template-columns:1fr}}@media(max-width:620px){.app{grid-template-columns:1fr}.side{display:none}.page{padding:18px}.top{padding:0 18px}.kpis{grid-template-columns:1fr}.headline{display:block}.date{display:block;margin-top:8px}.tools{gap:8px}.tools span{display:none}.profile{grid-template-columns:1fr 1fr}}
+    .primary{background:var(--teal);border-color:var(--teal);color:#fff}.module-card{padding:18px}.module-toolbar{display:flex;gap:10px;align-items:center;margin-bottom:16px}.module-toolbar input,.module-toolbar select,.form-grid input,.form-grid select{height:35px;border:1px solid #d9e2ea;border-radius:6px;padding:0 10px;background:white;color:#405268}.module-toolbar input{width:250px}.module-toolbar .primary{margin-left:auto}.count{font-size:12px;color:#7d8c9d;background:#f2f5f7;padding:4px 8px;border-radius:10px}.row-link{color:#2269b5;text-decoration:none;cursor:pointer}.ops{display:flex;gap:11px}.op{border:0;background:transparent;color:#39719e;padding:0;cursor:pointer}.op.danger{color:#d55c5c}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-grid label{font-size:13px;color:#637489}.form-grid input,.form-grid select{width:100%;margin-top:5px}.dialog-foot{padding:14px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:9px}@media(max-width:620px){.profile,.form-grid{grid-template-columns:1fr}.module-toolbar{flex-wrap:wrap}.module-toolbar input{width:100%}}
+    .pagination{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:16px;color:#6c7b8d}.pagination button{min-width:30px;height:29px;border:1px solid #dce4ea;background:white;color:#49627a;border-radius:5px;cursor:pointer}.pagination button.current{background:#168d89;color:white;border-color:#168d89}.pagination button:disabled{opacity:.45;cursor:not-allowed}.detail-section{margin-top:18px;border-top:1px solid #edf1f4;padding-top:15px}.detail-section h3{font-size:14px;margin:0 0 10px;color:#28445a}.detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.detail-grid label{display:block;color:#8a97a5;font-size:12px}.detail-grid strong{display:block;margin-top:3px;font-size:13px;color:#2c3e51}@media(max-width:620px){.detail-grid{grid-template-columns:1fr}}
+    /* 长菜单与宽表格的适配 */
+    .app{grid-template-columns:256px minmax(0,1fr)}
+    .side{padding:18px 12px 14px;display:flex;flex-direction:column;overflow:hidden}
+    .brand{flex:none;padding-bottom:16px}
+    .nav{flex:1;min-height:0;overflow-y:auto;padding-right:4px;scrollbar-color:#49677d transparent;scrollbar-width:thin}
+    .nav::-webkit-scrollbar{width:5px}.nav::-webkit-scrollbar-thumb{background:#49677d;border-radius:8px}
+    .nav-title{margin:14px 10px 5px}.nav a{padding:7px 10px;margin:1px 0}
+    .account{position:static;flex:none;margin:12px 4px 0;padding:12px 0 0}
+    .main{overflow:hidden}.module-card{overflow-x:auto}.module-toolbar .primary,.count,.ops{white-space:nowrap}
+    .dialog{max-height:calc(100vh - 40px);display:flex;flex-direction:column}.dialog-body{overflow-y:auto}.dialog-foot{flex:none}
+    @media(max-width:1000px){.account{margin:12px 0 0}.nav a{justify-content:center}}
+    .elder-hero{background:linear-gradient(125deg,#153c55,#1b766f);color:#fff;border-radius:10px;padding:17px 18px;display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center}.elder-avatar{width:54px;height:54px;border-radius:50%;background:#dca45b;display:grid;place-items:center;font-size:23px;font-weight:700}.elder-hero h3{margin:0;font-size:18px}.elder-hero p{margin:4px 0 0;color:#d3ebea;font-size:12px}.risk-chip{background:#fff0dd;color:#a85d18;border-radius:12px;padding:4px 9px;font-size:12px}.ai-box{background:linear-gradient(135deg,#edf9f8,#f4f8ff);border:1px solid #cfe8e6;border-radius:9px;padding:13px 14px;margin-top:14px}.ai-box b{color:#137b77}.ai-box p{margin:5px 0 0;color:#526d7c;font-size:13px}.elder-tabs{display:flex;gap:16px;overflow-x:auto;border-bottom:1px solid var(--line);margin-top:17px}.elder-tabs button{border:0;background:transparent;padding:9px 3px;color:#607187;white-space:nowrap;cursor:pointer}.elder-tabs button.active{color:var(--teal);border-bottom:2px solid var(--teal);font-weight:600}.health-score{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}.score-card{border:1px solid #e4eaee;border-radius:8px;padding:10px}.score-card label{display:block;color:#75869a;font-size:12px}.score-card strong{display:block;margin-top:5px;font-size:19px;color:#274258}.timeline{margin:14px 0 0;padding-left:15px;border-left:2px solid #b9dedb}.timeline div{position:relative;padding:0 0 13px 12px;color:#526b7b}.timeline div:before{content:'';position:absolute;width:8px;height:8px;border-radius:50%;background:var(--teal);left:-20px;top:5px}.timeline time{display:block;font-size:12px;color:#8c9aaa}.portrait-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.portrait-tags span{background:#eaf5f4;color:#17736f;border-radius:12px;padding:4px 8px;font-size:12px}@media(max-width:620px){.elder-hero{grid-template-columns:auto 1fr}.elder-hero .risk-chip{grid-column:1 / -1;width:max-content}.health-score{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+<script src="../js/ops-front-sync.js"></script>
+<div class="app">
+  <aside class="side"><div class="brand"><i>◒</i><span>康养生态运营平台<small>运营管理后台</small></span></div><nav class="nav">
+    <div class="nav-title">工作台</div><a class="active" data-page="运营驾驶舱"><span class="ico">▦</span><span>运营驾驶舱</span></a>
+    <div class="nav-title">核心业务</div><a data-page="长者与家庭"><span class="ico">♙</span><span>长者与家庭</span></a><a data-page="供给生态"><span class="ico">◫</span><span>供给生态</span></a><a data-page="服务设计"><span class="ico">◇</span><span>服务设计</span></a><a data-page="交易与履约"><span class="ico">↗</span><span>交易与履约</span><span class="pill">12</span></a>
+    <div class="nav-title">运营与财务</div><a data-page="权益与补贴"><span class="ico">◎</span><span>权益与补贴</span></a><a data-page="结算与对账"><span class="ico">￥</span><span>结算与对账</span></a><a data-page="质量与监管"><span class="ico">◉</span><span>质量与监管</span></a><a data-page="内容与增长"><span class="ico">✦</span><span>内容与增长</span></a>
+    <div class="nav-title">系统</div><a data-page="平台设置"><span class="ico">⚙</span><span>平台设置</span></a>
+  </nav><div class="account"><div class="avatar">周</div><div><b>周运营</b><span>平台管理员</span></div></div></aside>
+  <main class="main"><header class="top"><div class="crumb">康养生态运营平台 <b id="crumb">/ 运营驾驶舱</b></div><div class="tools"><span>华东示范区 · 全部服务</span><button onclick="notify('已打开全局筛选')">⌕ 筛选</button><span>🔔</span></div></header>
+  <section class="page" id="workspace"><div class="headline"><div><h1 id="title">运营驾驶舱</h1><p id="desc">聚合供给、服务履约、补贴与质量的日常运营视图</p></div><span class="date">2026 年 9 月 23 日　数据截至 16:00</span></div>
+    <div class="kpis"><div class="card kpi"><label>在服务长者</label><strong>12,684</strong><em>↑ 8.2%</em></div><div class="card kpi"><label>本月服务订单</label><strong>8,926</strong><em>↑ 12.6%</em></div><div class="card kpi"><label>服务履约率</label><strong>96.8%</strong><em>↑ 1.1pt</em></div><div class="card kpi"><label>待处置风险事件</label><strong>12</strong><em class="warn">需关注</em></div></div>
+    <div class="content"><section class="card"><h2>服务供给与履约概览 <span class="sub">近 30 天</span></h2><div class="chart"><div class="bar-row"><span>居家照护</span><div class="bar"><span style="width:86%"></span></div><b>3,286</b></div><div class="bar-row"><span>助餐服务</span><div class="bar"><span style="width:71%"></span></div><b>2,710</b></div><div class="bar-row"><span>康复理疗</span><div class="bar"><span style="width:55%"></span></div><b>2,103</b></div><div class="bar-row"><span>辅具租赁</span><div class="bar"><span style="width:33%"></span></div><b>827</b></div><div class="bar-row"><span>适老化改造</span><div class="bar"><span style="width:24%"></span></div><b>614</b></div></div></section>
+      <section class="card"><h2>运营待办 <span class="sub" onclick="notify('已跳转至待办中心')">查看全部</span></h2><div class="list"><div class="event"><i class="dot"></i><div><b>高风险长者回访逾期</b><p>8 位长者未完成 72 小时回访</p></div><time>刚刚</time></div><div class="event"><i class="dot"></i><div><b>服务商资质即将到期</b><p>3 家服务商需补充年检材料</p></div><time>10:12</time></div><div class="event"><i class="dot"></i><div><b>补贴核销差异待核查</b><p>9 笔记录金额与支付流水不一致</p></div><time>09:45</time></div><div class="event"><i class="dot"></i><div><b>辅具归还验收待处理</b><p>6 个租赁订单等待验收</p></div><time>昨天</time></div></div></section></div>
+    <div class="bottom"><section class="card"><h2>重点服务订单</h2><table class="table"><thead><tr><th>订单编号</th><th>服务对象</th><th>服务类型</th><th>履约状态</th><th>服务时间</th></tr></thead><tbody><tr><td>SO202609230081</td><td><a href="#" onclick="openProfile();return false">王秀兰 · 78 岁</a></td><td>居家照护</td><td><span class="status s-orange">待上门</span></td><td>今天 17:30</td></tr><tr><td>SO202609230075</td><td>李建国 · 82 岁</td><td>康复理疗</td><td><span class="status s-blue">服务中</span></td><td>今天 15:00</td></tr><tr><td>SO202609220163</td><td>陈桂芳 · 76 岁</td><td>辅具租赁</td><td><span class="status s-green">待验收</span></td><td>9 月 24 日</td></tr></tbody></table></section><section class="card"><h2>今日运营建议</h2><div class="note"><h3>优先处理高风险回访</h3><p>建议将 8 位逾期长者分配至属地服务管家，并于今日完成记录。</p><div class="action"><span>高风险回访任务</span><button class="btn" onclick="openProfile()">进入处理</button></div><div class="action"><span>补贴差异核查</span><button class="btn" onclick="notify('已生成差异核查任务')">创建任务</button></div><div class="action"><span>资质到期提醒</span><button class="btn" onclick="notify('提醒已发送至 3 家服务商')">发送提醒</button></div></div></section></div>
+  </section></main></div>
+<div class="modal" id="modal"><div class="dialog"><div class="dialog-head"><h2>长者 360° 档案</h2><button class="close" onclick="closeProfile()">×</button></div><div class="dialog-body"><div class="tabs"><button class="active">基本档案</button><button>健康与能力</button><button>照护计划</button><button>服务记录</button></div><div class="profile"><div><label>姓名</label><strong>王秀兰</strong></div><div><label>年龄 / 性别</label><strong>78 岁 / 女</strong></div><div><label>居住区域</label><strong>上海市 · 浦东新区</strong></div><div><label>照护等级</label><strong>轻度失能</strong></div><div><label>紧急联系人</label><strong>王丽（女儿）</strong></div><div><label>服务管家</label><strong>张敏</strong></div></div><div class="safety"><b>风险提示：</b>高血压用药关注；近 7 日睡眠评分下降，建议本周完成健康回访。</div></div></div></div><div class="toast" id="toast"></div>
+<script>const labels={"长者与家庭":["长者与家庭","管理长者档案、家庭授权、健康评估与个性化照护计划"],"供给生态":["供给生态","服务商准入、人员能力、服务资源与可预约容量管理"],"服务设计":["服务设计","服务目录、服务包、权益规则与照护方案配置"],"交易与履约":["交易与履约","统一订单、预约派单、服务工单、实物与租赁履约管理"],"权益与补贴":["权益与补贴","会员、积分、补贴资格、核销与资金追溯"],"结算与对账":["结算与对账","多方分账、结算账单、提现审核及对账差异处理"],"质量与监管":["质量与监管","服务质量、风险预警、投诉整改与监管报表"],"内容与增长":["内容与增长","内容、活动、触达和服务推荐的运营闭环"],"平台设置":["平台设置","组织权限、基础字典、消息模板、接口与审计配置"],"运营驾驶舱":["运营驾驶舱","聚合供给、服务履约、补贴与质量的日常运营视图"]};const data={"长者与家庭":{sub:"长者档案",cols:["长者姓名","照护等级","服务管家","健康风险","状态"],rows:[["王秀兰 · 78 岁","轻度失能","张敏","用药关注","服务中"],["李建国 · 82 岁","中度失能","陈伟","跌倒风险","服务中"],["陈桂芳 · 76 岁","自理","赵琳","低风险","待评估"]]},"供给生态":{sub:"服务商管理",cols:["服务商名称","服务范围","覆盖区域","综合评级","准入状态"],rows:[["安护居家服务中心","居家照护、助洁","浦东新区","4.8","已准入"],["颐康辅具有限公司","辅具租赁、适老化改造","全市","4.7","已准入"],["乐龄康复门诊部","康复理疗、陪诊","徐汇、静安","4.5","待复审"]]},"服务设计":{sub:"服务目录",cols:["服务名称","服务分类","标准时长","参考价格","上架状态"],rows:[["居家照护（基础）","居家照护","2 小时","¥168","已上架"],["上门康复理疗","康复服务","60 分钟","¥298","已上架"],["适老化卫浴改造","适老化改造","按方案","¥5,800 起","草稿"]]},"交易与履约":{sub:"订单与工单",cols:["订单编号","服务对象","服务项目","履约状态","预约时间"],rows:[["SO202609230081","王秀兰","居家照护","待上门","今天 17:30"],["SO202609230075","李建国","康复理疗","服务中","今天 15:00"],["SO202609220163","陈桂芳","辅具租赁","待验收","9 月 24 日"]]},"权益与补贴":{sub:"补贴核销",cols:["核销单号","长者","补贴类型","核销金额","处理状态"],rows:[["SX20260923018","王秀兰","居家养老服务券","¥120","待复核"],["SX20260923016","李建国","康复服务补贴","¥180","已核销"],["SX20260922092","陈桂芳","辅具租赁补贴","¥300","已核销"]]},"结算与对账":{sub:"结算账单",cols:["结算单号","结算对象","结算周期","应结金额","结算状态"],rows:[["JS202609-008","安护居家服务中心","2026-09","¥68,920","待确认"],["JS202609-006","颐康辅具有限公司","2026-09","¥51,360","对账中"],["JS202608-091","乐龄康复门诊部","2026-08","¥42,780","已结算"]]},"质量与监管":{sub:"质量事件",cols:["事件编号","关联对象","事件类型","风险等级","处置状态"],rows:[["Q202609-021","王秀兰","回访逾期","高","待处置"],["Q202609-018","安护居家服务中心","SOP 缺项","中","整改中"],["Q202609-012","李建国","服务投诉","中","已闭环"]]}};let dashboard=document.getElementById('workspace').innerHTML,activeModule='';function setHead(k){let [t,d]=labels[k];document.getElementById('crumb').textContent='/ '+t}function renderModule(k){activeModule=k;let m=data[k];if(!m){document.getElementById('workspace').innerHTML=dashboard;return}setHead(k);document.getElementById('workspace').innerHTML=`<div class="headline"><div><h1>${k}</h1><p>${labels[k][1]}</p></div><span class="date">共 ${m.rows.length} 条记录</span></div><section class="card module-card"><div class="module-toolbar"><input id="search" placeholder="搜索${m.sub}名称或编号" oninput="filterRows()"><select><option>全部状态</option><option>处理中</option><option>已完成</option></select><span class="count">${m.sub}</span><button class="btn primary" onclick="openForm()">+ 新增${m.sub}</button></div><table class="table"><thead><tr>${m.cols.map(x=>`<th>${x}</th>`).join('')}<th>操作</th></tr></thead><tbody id="records">${rowsHTML(m)}</tbody></table></section>`}function rowsHTML(m){return m.rows.map((r,i)=>`<tr>${r.map((v,j)=>`<td>${j===0?`<a class="row-link" onclick="openDetail(${i})">${v}</a>`:j===r.length-1?`<span class="status ${String(v).includes('已')?'s-green':String(v).includes('待')?'s-orange':'s-blue'}">${v}</span>`:v}</td>`).join('')}<td><div class="ops"><button class="op" onclick="openDetail(${i})">详情</button><button class="op" onclick="openForm(${i})">编辑</button><button class="op danger" onclick="removeRow(${i})">删除</button></div></td></tr>`).join('')}function filterRows(){let q=document.getElementById('search').value.trim();let m=data[activeModule];document.getElementById('records').innerHTML=rowsHTML({...m,rows:m.rows.filter(r=>r.join('').includes(q))})}function openDetail(i){let m=data[activeModule],r=m.rows[i];openDialog(`${m.sub}详情`,`<div class="profile">${m.cols.map((c,j)=>`<div><label>${c}</label><strong>${r[j]}</strong></div>`).join('')}</div><div class="safety"><b>业务记录：</b>该条记录支持查看流转日志、关联附件与操作审计。</div>`,`关闭`,closeDialog)}function openForm(i){let m=data[activeModule],r=i===undefined?Array(m.cols.length).fill(''):m.rows[i];openDialog(`${i===undefined?'新增':'编辑'}${m.sub}`,`<div class="form-grid">${m.cols.map((c,j)=>`<label>${c}<input id="f${j}" value="${r[j]||''}" placeholder="请输入${c}"></label>`).join('')}</div>`,`保存`,()=>saveRow(i))}function openDialog(t,body,confirm,fn){document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>${t}</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${body}</div><div class="dialog-foot"><button class="btn" onclick="closeDialog()">取消</button><button class="btn primary" onclick="(${fn.toString()})()">${confirm}</button></div></div>`;document.getElementById('modal').classList.add('show')}function saveRow(i){let m=data[activeModule],r=m.cols.map((_,j)=>document.getElementById('f'+j).value||'未填写');if(i===undefined)m.rows.unshift(r);else m.rows[i]=r;closeDialog();renderModule(activeModule);notify('已保存'+m.sub)}function removeRow(i){if(confirm('确认删除该条记录？')){data[activeModule].rows.splice(i,1);renderModule(activeModule);notify('记录已删除')}}function closeDialog(){document.getElementById('modal').classList.remove('show')}function openProfile(){activeModule='长者与家庭';openDetail(0)}function notify(t){let e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2200)}document.querySelectorAll('.nav a').forEach(a=>a.onclick=()=>{document.querySelectorAll('.nav a').forEach(x=>x.classList.remove('active'));a.classList.add('active');let k=a.dataset.page;if(k==='运营驾驶舱'){activeModule='';document.getElementById('workspace').innerHTML=dashboard;setHead(k)}else renderModule(k)});</script>
+<script>
+const moduleConfig={
+"长者与家庭":{sub:"长者档案",cols:["长者姓名","照护等级","服务管家","健康风险","状态"],base:[["王秀兰 · 78 岁","轻度失能","张敏","用药关注","服务中"],["李建国 · 82 岁","中度失能","陈伟","跌倒风险","服务中"],["陈桂芳 · 76 岁","自理","赵琳","低风险","待评估"]]},
+"供给生态":{sub:"服务商",cols:["服务商名称","服务范围","覆盖区域","综合评级","准入状态"],base:[["安护居家服务中心","居家照护、助洁","浦东新区","4.8","已准入"],["颐康辅具有限公司","辅具租赁、适老化改造","全市","4.7","已准入"],["乐龄康复门诊部","康复理疗、陪诊","徐汇、静安","4.5","待复审"]]},
+"服务设计":{sub:"服务目录",cols:["服务名称","服务分类","标准时长","参考价格","上架状态"],base:[["居家照护（基础）","居家照护","2 小时","¥168","已上架"],["上门康复理疗","康复服务","60 分钟","¥298","已上架"],["适老化卫浴改造","适老化改造","按方案","¥5,800 起","草稿"]]},
+"交易与履约":{sub:"订单与工单",cols:["订单编号","服务对象","服务项目","履约状态","预约时间"],base:[["SO202609230081","王秀兰","居家照护","待上门","今天 17:30"],["SO202609230075","李建国","康复理疗","服务中","今天 15:00"],["SO202609220163","陈桂芳","辅具租赁","待验收","9 月 24 日"]]},
+"权益与补贴":{sub:"补贴核销",cols:["核销单号","长者","补贴类型","核销金额","处理状态"],base:[["SX20260923018","王秀兰","居家养老服务券","¥120","待复核"],["SX20260923016","李建国","康复服务补贴","¥180","已核销"],["SX20260922092","陈桂芳","辅具租赁补贴","¥300","已核销"]]},
+"结算与对账":{sub:"结算账单",cols:["结算单号","结算对象","结算周期","应结金额","结算状态"],base:[["JS202609-008","安护居家服务中心","2026-09","¥68,920","待确认"],["JS202609-006","颐康辅具有限公司","2026-09","¥51,360","对账中"],["JS202608-091","乐龄康复门诊部","2026-08","¥42,780","已结算"]]},
+"质量与监管":{sub:"质量事件",cols:["事件编号","关联对象","事件类型","风险等级","处置状态"],base:[["Q202609-021","王秀兰","回访逾期","高","待处置"],["Q202609-018","安护居家服务中心","SOP 缺项","中","整改中"],["Q202609-012","李建国","服务投诉","中","已闭环"]]},
+"内容与增长":{sub:"运营内容",cols:["内容标题","内容类型","投放区域","浏览量","发布状态"],base:[["秋季居家防跌倒指南","健康科普","浦东新区","8,264","已发布"],["长者助餐服务周","运营活动","全市","5,683","已发布"],["适老化改造申请攻略","办事指南","全市","4,126","已发布"]]},
+"平台设置":{sub:"系统配置",cols:["配置名称","配置分类","适用范围","更新时间","启用状态"],base:[["服务区域规则","基础字典","平台全局","今天 10:30","已启用"],["上门服务超时预警","预警规则","居家照护","今天 09:12","已启用"],["补贴核销审批流","流程配置","补贴中心","昨天 16:20","已启用"]]}}
+for(const k in moduleConfig){let c=moduleConfig[k];c.rows=[...c.base];for(let i=1;i<=10-c.base.length;i++){let r=[...c.base[i%c.base.length]];r[0]+=` · ${String(i+c.base.length).padStart(2,'0')}`;r[r.length-1]=i%5===0?'待处理':i%4===0?'审核中':i%3===0?'已完成':r[r.length-1];c.rows.push(r)}}
+let richKey='',richPage=1;function statusX(v){return String(v).includes('已')?'s-green':String(v).includes('待')||String(v).includes('草稿')?'s-orange':'s-blue'}function drawRows(rows,offset){return rows.map((r,i)=>`<tr>${r.map((v,j)=>`<td>${j===0?`<a class="row-link" onclick="showDetailX(${offset+i})">${v}</a>`:j===r.length-1?`<span class="status ${statusX(v)}">${v}</span>`:v}</td>`).join('')}<td><div class="ops"><button class="op" onclick="showDetailX(${offset+i})">详情</button><button class="op" onclick="formX(${offset+i})">编辑</button><button class="op danger" onclick="deleteX(${offset+i})">删除</button></div></td></tr>`).join('')}function renderX(k,p=1){richKey=k;richPage=p;let c=moduleConfig[k];if(!c){document.getElementById('workspace').innerHTML=dashboard;document.getElementById('crumb').textContent='/ 运营驾驶舱';return}let pages=Math.ceil(c.rows.length/5),records=c.rows.slice((p-1)*5,p*5);document.getElementById('crumb').textContent='/ '+k;document.getElementById('workspace').innerHTML=`<div class="headline"><div><h1>${k}</h1><p>${labels[k][1]}</p></div><span class="date">共 ${c.rows.length} 条记录</span></div><section class="card module-card"><div class="module-toolbar"><input id="filterX" placeholder="搜索${c.sub}名称或编号" oninput="filterX()"><select><option>全部状态</option><option>处理中</option><option>已完成</option></select><span class="count">${c.sub}</span><button class="btn primary" onclick="formX()">+ 新增${c.sub}</button></div><table class="table"><thead><tr>${c.cols.map(x=>`<th>${x}</th>`).join('')}<th>操作</th></tr></thead><tbody id="rowsX">${drawRows(records,(p-1)*5)}</tbody></table><div class="pagination"><span>第 ${p} / ${pages} 页</span><button onclick="renderX(richKey,${p-1})" ${p===1?'disabled':''}>‹</button>${Array.from({length:pages},(_,i)=>`<button class="${i+1===p?'current':''}" onclick="renderX(richKey,${i+1})">${i+1}</button>`).join('')}<button onclick="renderX(richKey,${p+1})" ${p===pages?'disabled':''}>›</button></div></section>`}function filterX(){let q=document.getElementById('filterX').value,c=moduleConfig[richKey];document.getElementById('rowsX').innerHTML=drawRows(c.rows.filter(x=>x.join('').includes(q)),0)}function showDetailX(i){let c=moduleConfig[richKey],r=c.rows[i],extra=richKey==='供给生态'?`<div class="detail-section"><h3>服务商准入与经营信息</h3><div class="detail-grid"><div><label>统一社会信用代码</label><strong>91310115MA1K72${i}XQ</strong></div><div><label>入驻时间</label><strong>2024 年 ${i%9+1} 月 18 日</strong></div><div><label>合同有效期</label><strong>至 2027 年 12 月 31 日</strong></div><div><label>服务人员</label><strong>${18+i*4} 人（持证 ${15+i*3} 人）</strong></div><div><label>日均可接单容量</label><strong>${42+i*6} 单</strong></div><div><label>近 30 日履约率</label><strong>${(97.1-i*.2).toFixed(1)}%</strong></div><div><label>结算方式</label><strong>T+${7+i%3}，平台分账</strong></div><div><label>平台服务费率</label><strong>${8+i%3}%</strong></div><div><label>近 90 日投诉</label><strong>${i%3} 起 / 已闭环</strong></div></div></div><div class="safety"><b>资质校验：</b>营业执照、养老服务备案、责任保险均在有效期内；下次年审提醒：2027 年 3 月。</div>`:`<div class="detail-section"><h3>业务流转信息</h3><div class="detail-grid"><div><label>创建时间</label><strong>2026 年 9 月 ${23-i%18} 日</strong></div><div><label>最近操作人</label><strong>周运营</strong></div><div><label>操作审计</label><strong>可追溯</strong></div></div></div>`;document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>${c.sub}详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body"><div class="detail-grid">${c.cols.map((x,j)=>`<div><label>${x}</label><strong>${r[j]}</strong></div>`).join('')}</div>${extra}</div><div class="dialog-foot"><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;document.getElementById('modal').classList.add('show')}function formX(i){let c=moduleConfig[richKey],r=i===undefined?Array(c.cols.length).fill(''):c.rows[i];document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>${i===undefined?'新增':'编辑'}${c.sub}</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body"><div class="form-grid">${c.cols.map((x,j)=>`<label>${x}<input id="x${j}" value="${r[j]||''}" placeholder="请输入${x}"></label>`).join('')}</div></div><div class="dialog-foot"><button class="btn" onclick="closeDialog()">取消</button><button class="btn primary" onclick="saveX(${i===undefined?-1:i})">保存</button></div></div>`;document.getElementById('modal').classList.add('show')}function saveX(i){let c=moduleConfig[richKey],r=c.cols.map((_,j)=>document.getElementById('x'+j).value||'未填写');if(i<0)c.rows.unshift(r);else c.rows[i]=r;closeDialog();renderX(richKey,1);notify('已保存'+c.sub)}function deleteX(i){if(confirm('确认删除该条记录？')){moduleConfig[richKey].rows.splice(i,1);renderX(richKey,1);notify('记录已删除')}}document.querySelectorAll('.nav a').forEach(a=>a.onclick=()=>{document.querySelectorAll('.nav a').forEach(x=>x.classList.remove('active'));a.classList.add('active');let k=a.dataset.page;if(k==='运营驾驶舱'){document.getElementById('workspace').innerHTML=dashboard;document.getElementById('crumb').textContent='/ 运营驾驶舱'}else renderX(k)});
+</script>
+<script>
+const domainForms={
+"长者与家庭":[["姓名","text"],["性别","select:女|男"],["出生日期","date"],["身份证号","text"],["常住地址","text"],["照护等级","select:自理|轻度失能|中度失能|重度失能"],["主要照护人","text"],["紧急联系人","text"],["慢病情况","text"],["过敏史","text"],["服务管家","text"],["风险标签","select:低风险|用药关注|跌倒风险|认知关注"]],
+"供给生态":[["服务商名称","text"],["统一社会信用代码","text"],["服务类型","text"],["覆盖区域","text"],["联系人","text"],["联系电话","text"],["服务人员数量","number"],["持证人员数量","number"],["日均接单容量","number"],["结算周期","select:T+7|T+15|月结"],["平台服务费率","number"],["准入状态","select:资料补充|待复审|已准入|已暂停"]],
+"服务设计":[["服务名称","text"],["服务分类","select:居家照护|康复服务|助餐服务|辅具租赁|适老化改造"],["服务时长","text"],["标准价格","number"],["可服务区域","text"],["预约提前量","text"],["取消规则","text"],["服务SOP版本","text"],["所需人员资质","text"],["可售状态","select:草稿|待审核|已上架|已下架"]],
+"交易与履约":[["订单编号","text"],["服务对象","text"],["服务项目","text"],["服务商","text"],["服务人员","text"],["预约开始时间","datetime-local"],["服务地址","text"],["履约状态","select:待派单|待上门|服务中|待验收|已完成|已取消"],["支付金额","number"],["补贴抵扣金额","number"],["服务备注","text"]],
+"权益与补贴":[["核销单号","text"],["长者","text"],["补贴项目","text"],["资格类型","select:政府补贴|会员权益|平台活动"],["核销金额","number"],["有效期开始","date"],["有效期结束","date"],["核销渠道","select:扫码核销|人脸核销|人工核销"],["服务商","text"],["处理状态","select:资料待补|待复核|已核销|已作废"]],
+"结算与对账":[["结算单号","text"],["结算对象","text"],["结算周期","text"],["结算订单数","number"],["订单总金额","number"],["补贴结算金额","number"],["平台服务费率","number"],["应结金额","number"],["收款账户","text"],["结算状态","select:对账中|待确认|待打款|已结算"]],
+"质量与监管":[["事件编号","text"],["关联对象","text"],["事件类型","select:回访逾期|服务投诉|服务异常|SOP缺项|资质预警"],["风险等级","select:低|中|高"],["发现时间","datetime-local"],["责任服务商","text"],["处置负责人","text"],["整改期限","date"],["处置状态","select:待处置|整改中|已闭环"],["处置说明","text"]],
+"内容与增长":[["内容标题","text"],["内容类型","select:健康科普|运营活动|办事指南|产品介绍"],["投放区域","text"],["目标人群","text"],["投放渠道","select:小程序|公众号|短信|站内信"],["发布时间","datetime-local"],["封面素材","text"],["审核人","text"],["发布状态","select:草稿|审核中|待发布|已发布"]],
+"平台设置":[["配置名称","text"],["配置分类","select:基础字典|预警规则|流程配置|消息模板|财务参数"],["适用范围","text"],["配置值","text"],["生效时间","datetime-local"],["失效时间","datetime-local"],["变更原因","text"],["审批人","text"],["启用状态","select:草稿|已启用|已停用"]]};
+function sectionX(title,items){return `<div class="detail-section"><h3>${title}</h3><div class="detail-grid">${items.map(x=>`<div><label>${x[0]}</label><strong>${x[1]}</strong></div>`).join('')}</div></div>`}
+function showDetailX(i){let c=moduleConfig[richKey],r=c.rows[i],base=sectionX('基础信息',c.cols.map((x,j)=>[x,r[j]])),more='';switch(richKey){case '长者与家庭':more=sectionX('健康与能力评估',[['健康状况','高血压（规律服药）'],['能力评估','轻度失能 · Barthel 70 分'],['认知筛查','正常范围'],['跌倒风险','中风险'],['最近评估','2026 年 9 月 15 日'],['下次复评','2026 年 12 月 15 日']])+sectionX('绑定家庭与授权',[['家庭成员','王丽（女儿）'],['关系与授权','紧急联系人 · 代下单、代支付'],['联系电话','138****2981'],['家庭成员','王强（儿子）'],['关系与授权','服务进度查看'],['联系电话','139****7342']])+sectionX('照护计划与服务',[['当前照护计划','居家照护 + 健康回访'],['服务频次','每周 3 次'],['服务管家','张敏'],['近 30 日服务','12 次'],['待办事项','9 月 26 日健康复评'],['风险提示','用药提醒已开启']]);break;case '供给生态':more=sectionX('准入资质与合同',[['统一社会信用代码','91310115MA1K72'+i+'XQ'],['养老服务备案','有效'],['责任保险','有效至 2027-06-30'],['入驻合同','有效至 2027-12-31'],['年审状态','2027 年 3 月提醒'],['准入审核人','平台合规组']])+sectionX('服务能力与经营',[['服务人员',''+(18+i*4)+' 人（持证 '+(15+i*3)+' 人）'],['日均接单容量',''+(42+i*6)+' 单'],['近 30 日履约率',(97.1-i*.2).toFixed(1)+'%'],['准时上门率','98.4%'],['结算方式','T+'+(7+i%3)+'，平台分账'],['平台服务费率',(8+i%3)+'%'],['近 90 日投诉',i%3+' 起 / 已闭环'],['评级变动','近季度 +0.1']]);break;case '服务设计':more=sectionX('服务规则与SOP',[['服务SOP','V2.3 · 8 个执行节点'],['可预约提前量','24 小时'],['取消规则','服务前 4 小时可免费取消'],['所需人员资质','养老护理员 / 康复治疗师'],['服务留痕','签到、过程照片、用户确认'],['服务范围','按服务商覆盖区域校验']])+sectionX('价格与权益',[['基础价格',r[3]],['会员折扣','9.5 折'],['补贴适用','居家养老服务券'],['售后时限','服务完成后 7 日'],['当前SKU','标准版 / 加急版'],['上架审核','已通过']]);break;case '交易与履约':more=sectionX('派单与履约',[['服务商','安护居家服务中心'],['服务人员','刘芳 · 养老护理员'],['服务地址','浦东新区东明路 88 弄'],['签到方式','到达定位 + 长者确认'],['SOP完成度','6 / 8 节点'],['履约凭证','已上传 3 张照片']])+sectionX('支付与售后',[['订单金额','¥168'],['补贴抵扣','¥120'],['实付金额','¥48'],['支付方式','微信支付'],['售后状态','无售后申请'],['订单日志','共 7 条']]);break;case '权益与补贴':more=sectionX('资格与核销信息',[['资格来源','区级居家养老补贴'],['可用额度','¥1,200 / 月'],['本次服务','居家照护（基础）'],['核销方式','服务完成后自动核销'],['核销凭证','服务确认单 + 签到记录'],['资金追溯号','FUND-202609-'+(180+i)]]);break;case '结算与对账':more=sectionX('结算与对账明细',[['关联订单','共 '+(86+i*7)+' 笔'],['订单总金额','¥'+(74200+i*1300)],['补贴金额','¥'+(15280+i*500)],['平台服务费','¥'+(5280+i*210)],['收款账户','尾号 7618 · 企业账户'],['对账差异','0 笔']]);break;case '质量与监管':more=sectionX('事件处置与整改',[['发现渠道','服务巡检 / 用户反馈'],['责任服务商','安护居家服务中心'],['处置负责人','张敏'],['整改期限','2026 年 9 月 28 日'],['处置进展','已完成首次回访'],['监管报送','待月度汇总']]);break;case '内容与增长':more=sectionX('投放与效果',[['目标人群','60 岁以上长者及其子女'],['投放渠道','小程序首页 + 站内信'],['阅读完成率','61.8%'],['互动数','426'],['转化服务订单','73'],['审核记录','内容运营组已审核']]);break;case '平台设置':more=sectionX('变更与审计',[['当前配置值','已按现行运营规则生效'],['生效时间','2026-09-01 00:00'],['审批人','运营负责人'],['最近变更','2026-09-21'],['变更原因','优化服务预警阈值'],['关联系统','运营后台、服务商端']]);}document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>${c.sub}详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${base}${more}</div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">编辑</button><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;document.getElementById('modal').classList.add('show')}
+function formX(i){let c=moduleConfig[richKey],isNew=i===undefined,r=isNew?[]:c.rows[i],schema=domainForms[richKey]||[];let fields=schema.map((f,j)=>{let val=j<5?(r[j]||''):'';let type=f[1];if(type.startsWith('select:'))return `<label>${f[0]}<select id="fx${j}">${type.slice(7).split('|').map(x=>`<option ${val===x?'selected':''}>${x}</option>`).join('')}</select></label>`;return `<label>${f[0]}<input id="fx${j}" type="${type}" value="${val}" placeholder="请输入${f[0]}"></label>`}).join('');document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>${isNew?'新增':'编辑'}${c.sub}</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body"><div class="form-grid">${fields}</div></div><div class="dialog-foot"><button class="btn" onclick="closeDialog()">取消</button><button class="btn primary" onclick="saveDomainX(${isNew?-1:i})">保存</button></div></div>`;document.getElementById('modal').classList.add('show')}
+function saveDomainX(i){let c=moduleConfig[richKey],schema=domainForms[richKey],all=schema.map((_,j)=>document.getElementById('fx'+j).value||'未填写'),r=all.slice(0,5);if(i<0)c.rows.unshift(r);else c.rows[i]=r;closeDialog();renderX(richKey,1);notify('已保存'+c.sub)}
+</script>
+<script>
+/* 平台能力补全：把一级域拆为真实后台可访问的业务对象页面 */
+const supplement={
+  '组织与权限':{sub:'组织与角色',cols:['组织/角色名称','组织层级','负责人','数据范围','状态'],base:[['浦东新区运营中心','区域','李雯','浦东新区','已启用'],['服务管家','岗位角色','张敏','负责长者','已启用'],['财务审核员','岗位角色','陈浩','结算与账单','已启用']]},
+  '基础配置中心':{sub:'基础配置',cols:['配置项','配置分类','配置值','适用区域','状态'],base:[['服务分类','服务目录','居家照护、助餐、康复','全市','已启用'],['行政区划','区域字典','上海市/浦东新区','全市','已启用'],['风险标签','长者标签','跌倒、用药、认知','全市','已启用']]},
+  '接口与集成中心':{sub:'接口任务',cols:['接口名称','对接系统','任务类型','最近执行','状态'],base:[['补贴资格校验','区民政补贴平台','实时查询','今天 15:40','正常'],['支付流水同步','微信支付','定时同步','今天 15:35','正常'],['物流状态回传','配送服务商','回调接收','今天 14:12','异常待处理']]},
+  '服务人员管理':{sub:'服务人员',cols:['人员姓名','所属服务商','服务技能','今日排班','状态'],base:[['刘芳','安护居家服务中心','养老护理员（五级）','09:00–18:00','在岗'],['周宁','乐龄康复门诊部','康复治疗师','13:00–20:00','在岗'],['胡建华','安护居家服务中心','助浴师','休息','休息中']]},
+  '服务资源与容量':{sub:'服务资源',cols:['资源名称','资源类型','所属服务商','可用容量','状态'],base:[['居家照护班组 A','服务班组','安护居家服务中心','18 / 24 单','可预约'],['轮椅租赁库存','辅具库存','颐康辅具有限公司','42 / 60 台','可租'],['卫浴改造施工组','安装能力','颐康辅具有限公司','3 / 5 户','可预约']]},
+  '家庭授权管理':{sub:'家庭授权',cols:['长者','家庭成员','授权关系','授权范围','状态'],base:[['王秀兰','王丽（女儿）','紧急联系人','代下单、代支付、查看服务','有效'],['李建国','李军（儿子）','监护人','代下单、健康档案查看','有效'],['陈桂芳','陈敏（侄女）','联系人','接收服务通知','待确认']]},
+  '用户标签与分层':{sub:'用户分层规则',cols:['人群名称','筛选条件','覆盖人数','运营策略','状态'],base:[['新用户','注册 ≤7 日且无成交','642','新人礼 + 首页引导','已启用'],['活跃用户','近 30 日有服务订单 ≥1','3,860','限时活动预告','已启用'],['首购用户','历史仅 1 笔成交','1,124','复购券 + 组合套餐','已启用'],['复购用户','历史成交 ≥2 笔','2,486','会员价专场','已启用'],['沉默用户','近 90 日无成交','1,286','回归券唤醒','已启用'],['高风险需回访长者','跌倒风险或回访逾期','128','72 小时人工回访','已启用'],['适老化潜力人群','行动不便 + 自有住房','864','改造评估邀约','已启用']]},
+  '服务包与权益':{sub:'服务包',cols:['服务包名称','包含服务','定价','适用人群','状态'],base:[['居家安心包','照护 8 次 + 回访','¥1,188','轻度失能长者','已上架'],['术后康复包','康复 6 次 + 陪诊','¥1,680','术后 90 天内','已上架'],['辅具租赁月卡','轮椅/助行器租赁','¥299/月','行动不便长者','已上架']]},
+  '照护计划管理':{sub:'照护计划',cols:['计划编号','服务对象','计划周期','服务频次','状态'],base:[['CP202609-018','王秀兰','2026-09 至 2026-12','每周 3 次','执行中'],['CP202609-016','李建国','2026-09 至 2026-11','每周 2 次','待确认'],['CP202608-092','陈桂芳','2026-08 至 2026-10','每周 1 次','执行中']]},
+  '预约与派单':{sub:'派单任务',cols:['派单单号','订单编号','服务时间','候选人员','派单状态'],base:[['PD20260923081','SO202609230081','今天 17:30','刘芳、赵红','待接单'],['PD20260923075','SO202609230075','今天 15:00','周宁','已接单'],['PD20260922063','SO202609220163','9 月 24 日 10:00','胡建华','待确认']]},
+  '服务工单与SOP':{sub:'服务工单',cols:['工单编号','服务对象','SOP 完成度','签到状态','工单状态'],base:[['WO20260923081','王秀兰','6 / 8','未签到','待服务'],['WO20260923075','李建国','5 / 6','已签到','服务中'],['WO20260922063','陈桂芳','8 / 8','已签到','待验收']]},
+  '实物与租赁履约':{sub:'租赁与配送单',cols:['履约单号','商品/辅具','服务对象','履约节点','状态'],base:[['RF202609-119','电动轮椅','陈桂芳','待上门验收','待验收'],['RF202609-113','卫浴扶手套装','张阿姨','已预约安装','待配送'],['RF202609-102','助行器','李建国','归还检测','处理中']]},
+  '售后与投诉':{sub:'售后工单',cols:['售后单号','关联订单','问题类型','责任方','处理状态'],base:[['AF202609-022','SO202609220063','服务时间变更','服务商','待沟通'],['AF202609-018','SO202609180142','服务投诉','平台客服','处理中'],['AF202609-012','SO202609160098','辅具损坏','用户/服务商','已闭环']]},
+  '支付中心':{sub:'支付流水',cols:['支付流水号','关联订单','支付方式','支付金额','状态'],base:[['PAY202609230018','SO202609230081','微信支付','¥48.00','支付成功'],['PAY202609230016','SO202609230075','银行卡','¥118.00','支付成功'],['PAY202609220092','SO202609220163','混合支付','¥299.00','退款中']]},
+  '会员与积分':{sub:'会员账户',cols:['会员姓名','会员等级','当前积分','可用权益','状态'],base:[['王秀兰','银卡会员','1,280','服务 9.5 折','正常'],['李建国','金卡会员','2,460','陪诊优先预约','正常'],['陈桂芳','普通会员','320','新人券 1 张','正常']]},
+  '结算规则引擎':{sub:'结算规则',cols:['规则名称','分账对象','计算方式','生效日期','状态'],base:[['居家照护平台分账','服务商/平台','自动：平台应收=订单×费率；供应商应收=订单×(1-费率)','2026-01-01','已启用'],['补贴订单结算规则','服务商/补贴账户','自动：供应商应收含补贴核销额','2026-07-01','已启用'],['退款反算规则','平台/服务商/用户','自动：退款金额按责任比例冲减双方应收','2026-06-01','已启用'],['辅具损坏赔付规则','用户/服务商','验收金额按责任比例自动计入结算','2026-06-01','已启用']]},
+  '账户与提现':{sub:'账户提现',cols:['申请编号','申请对象','提现金额','收款账户','状态'],base:[['WD202609-028','安护居家服务中心','¥68,920','企业账户 · 7618','待审核'],['WD202609-022','乐龄康复门诊部','¥42,780','企业账户 · 2016','已打款'],['WD202609-019','颐康辅具有限公司','¥51,360','企业账户 · 6092','审核中']]},
+  '内容运营':{sub:'内容管理',cols:['内容标题','内容类型','推荐人群','关联落地','发布状态'],base:[['秋季防跌倒居家指南','健康科普','年龄 70+ · 兴趣=防跌倒','服务：防跌倒评估','已发布'],['控糖饮食一周食谱','健康科普','兴趣=慢病 · 消费=助餐高','商品：控糖套餐','已发布'],['适老化改造补贴申领','办事指南','年龄 65+ · 消费=改造意向','服务：上门评估','已发布'],['国庆陪诊服务活动','运营活动','活跃用户 · 近 30 日有单','活动：陪诊券包','草稿'],['康复训练短视频合集','产品介绍','兴趣=康复 · 浏览未购','服务：上门康复包','已发布'],['银发好物精选','产品介绍','复购用户 · 消费频次高','商品：乐活好物榜','已发布']]},
+  '社区互动治理':{sub:'社区内容',cols:['主题/用户','内容类型','互动量','审核结果','状态'],base:[['王阿姨的康复日记','帖子','128','通过','已发布'],['服务体验问题反馈','举报','6','处理中','限制可见'],['康复打卡群','话题','86','通过','已发布']]},
+  '营销与触达':{sub:'营销活动',cols:['活动名称','目标人群','触达渠道','转化订单','状态'],base:[['新人礼券推送','新用户','站内信 + 首页弹窗','86','执行中'],['沉默用户回归券','沉默用户','短信 + 站内信','52','执行中'],['复购组合套餐推荐','复购用户','站内信','94','执行中'],['限时助餐秒杀预告','活跃用户','小程序推送','118','执行中'],['高风险长者回访提醒','高风险长者','短信 + 电话','46','执行中'],['适老化评估邀约','改造潜力人群','小程序 + 短信','73','执行中'],['会员积分月活动','活跃会员','站内信','126','已结束']]},
+  '推荐与匹配':{sub:'推荐规则',cols:['规则名称','触发条件','推荐内容','命中人数','状态'],base:[['新用户服务推荐','分层=新用户','新人券 + 居家照护体验','642','已启用'],['沉默用户唤醒推荐','分层=沉默用户','回归券 + 热门助餐','1,286','已启用'],['复购用户套餐推荐','分层=复购用户','居家安心组合套餐','2,486','已启用'],['浏览未购催转化','近 7 日浏览 ≥3 未下单','今日推荐位对应服务','2,186','已启用'],['跌倒风险服务推荐','跌倒风险=中高','防跌倒评估 + 扶手改造','186','已启用'],['术后康复推荐','出院后 30 日内','上门康复服务包','94','已启用'],['辅具续租提醒','到期前 7 日','续租/归还服务','62','已启用']]},
+  '长者安全风控':{sub:'风险预警',cols:['预警编号','长者/对象','预警类型','触发时间','处置状态'],base:[['RK202609-031','王秀兰','连续 3 次未接回访','今天 10:20','待处置'],['RK202609-028','李建国','服务签到超时','今天 09:35','处理中'],['RK202609-022','陈桂芳','辅具逾期未归还','昨天 16:12','已闭环']]},
+  '监管驾驶舱':{sub:'监管报表',cols:['报表名称','统计周期','报送范围','生成时间','状态'],base:[['养老服务覆盖月报','2026-09','浦东新区','今天 09:00','待报送'],['补贴资金使用明细','2026-09','全市','今天 08:30','已生成'],['服务质量与投诉月报','2026-08','浦东新区','9 月 1 日','已报送']]},
+  '数据分析中心':{sub:'指标报表',cols:['报表名称','主题域','更新频率','最近更新','状态'],base:[['核心经营看板','经营分析','每日','今天 16:00','可查看'],['供应商经营对比','供给经营','每日','今天 15:40','可查看'],['服务履约分析','履约运营','每日','今天 15:00','可查看'],['补贴核销分析','财务补贴','每日','今天 14:30','可查看'],['长者服务画像','用户运营','每周','周一 08:00','可查看'],['经营数据导出中心','数据导出','按需','今天 16:20','可查看']]}
+};
+Object.entries(supplement).forEach(([k,v])=>{moduleConfig[k]=v;labels[k]=[k,`康养运营平台 · ${v.sub}管理`];v.rows=[...v.base];for(let i=1;i<=10-v.base.length;i++){let r=[...v.base[i%v.base.length]];r[0]+=` · ${String(i+v.base.length).padStart(2,'0')}`;v.rows.push(r)}});
+/* 仅保留平台运营侧的“看全局、定规则、做审核、处异常、管质量、管资金”能力 */
+const platformExtra={
+ '区域供给监测':{sub:'区域供给监测',cols:['区域','服务类型','已准入服务商','未来 7 日容量','供给状态'],base:[['浦东新区','居家照护','18 家','1,246 人次','充足'],['徐汇区','康复服务','7 家','132 人次','预警'],['静安区','适老化改造','5 家','46 户','紧张']]},
+ '服务标准与上架审核':{sub:'服务标准审核',cols:['服务名称','申报服务商','标准版本','审核节点','审核状态'],base:[['居家照护（基础）','安护居家服务中心','SOP V2.3','运营审核','已通过'],['适老化卫浴改造','颐康辅具有限公司','SOP V1.8','合规复核','待审核'],['上门康复理疗','乐龄康复门诊部','SOP V2.1','资质校验','待补材料']]},
+ '订单与履约监管':{sub:'订单履约监管',cols:['订单编号','订单类型','服务对象','服务商','履约节点','监管状态'],base:[['SO202609230081','上门服务','王秀兰','安护居家服务中心','待上门','正常'],['SO202609230075','到店服务','李建国','乐龄康复门诊部','服务中','关注签到'],['SO202609220163','租赁项目','陈桂芳','颐康辅具有限公司','待验收','正常'],['SO202609210112','实物商品','张梅','颐康辅具有限公司','配送中','正常'],['SO202609200087','健康管理服务','赵建华','安护居家服务中心','计划执行中','需回访']]},
+ '派单与异常介入':{sub:'派单异常',cols:['异常编号','关联订单','异常类型','已持续时间','处置状态'],base:[['EX202609-031','SO202609230081','接单超时','32 分钟','待介入'],['EX202609-028','SO202609230075','人员临时请假','18 分钟','协调中'],['EX202609-022','SO202609220163','跨区无可用服务商','4 小时','已转人工']]},
+ '售后与投诉仲裁':{sub:'投诉仲裁工单',cols:['工单编号','投诉对象','争议类型','责任判定','处置状态'],base:[['CS202609-022','安护居家服务中心','服务时长争议','待判定','处理中'],['CS202609-018','颐康辅具有限公司','安装质量投诉','服务商责任','整改复核'],['CS202609-012','乐龄康复门诊部','退款争议','协商结案','已闭环']]},
+ '支付与退款监管':{sub:'支付退款监管',cols:['流水编号','关联订单','资金类型','金额','处理状态'],base:[['PAY202609230018','SO202609230081','用户实付','¥48.00','支付成功'],['RF202609-029','SO202609220092','退款申请','¥299.00','待审核'],['PAY202609230016','SO202609230075','补贴抵扣','¥180.00','待对账']]},
+ '会员权益规则':{sub:'权益规则',cols:['规则名称','适用人群','权益内容','有效期','状态'],base:[['银卡会员折扣','银卡会员','指定服务 9.5 折','长期','已启用'],['高风险长者回访','高风险标签','每月一次免费回访','2026-12-31','已启用'],['适老化评估券','潜力人群','上门评估抵扣 ¥100','2026-10-31','已启用']]},
+ '用户分层画像':{sub:'用户分层画像',cols:['画像名称','核心特征','覆盖长者','推荐运营动作','状态'],base:[['新用户画像','注册初期 · 未完成首单','642 人','Banner 新人礼 + 办卡指引','已启用'],['活跃用户画像','近 30 日有单 · 互动高','3,860 人','限时秒杀与会员价专场','已启用'],['首购用户画像','仅 1 笔成交 · 待复购','1,124 人','组合套餐 + 复购券','已启用'],['复购用户画像','≥2 笔成交 · 粘性高','2,486 人','会员价 + 专属服务推荐','已启用'],['沉默用户画像','90 日无单 · 曾活跃','1,286 人','回归券 + 精准短信唤醒','已启用'],['高风险照护人群','中重度失能 + 风险预警','128 人','优先回访与照护复评','已启用'],['适老化改造潜力人群','行动不便 + 自有住房','864 人','评估邀约与补贴触达','已启用'],['高价值家庭用户','月均消费 > ¥1,500','326 人','家庭会员服务包推荐','已启用']]},
+ '资质审核中心':{sub:'服务商资质审核',cols:['申请编号','服务商名称','申请品类','材料完整度','审核状态'],base:[['IN202609-032','乐龄康复门诊部','康复理疗服务','8 / 9 项','待补材料'],['IN202609-028','安心陪诊服务有限公司','陪诊服务','10 / 10 项','待复核'],['IN202609-021','颐康辅具有限公司','医疗器械 / 辅具','6 / 6 项','已通过'],['IN202609-035','银发助餐配送中心','食品 / 助餐','7 / 8 项','待补材料'],['IN202609-030','安护居家服务中心','居家照护服务','9 / 9 项','已通过'],['IN202609-026','康宁适老化工程','适老化改造','5 / 6 项','审核中']]},
+ '服务商信息监管':{sub:'服务商监管台账',cols:['服务商名称','监管事项','风险信号','最近核验','监管状态'],base:[['安护居家服务中心','责任保险续期','30 日内到期','今天 10:20','待跟进'],['乐龄康复门诊部','持证人员比例','低于区域基准','昨天 16:40','整改中'],['颐康辅具有限公司','服务范围变更','无异常','9 月 21 日','正常']]},
+ '服务商评级':{sub:'服务商评级',cols:['服务商名称','综合评分','评级','评级周期','评级状态'],base:[['安护居家服务中心','92.6','A','2026 Q3','已生效'],['颐康辅具有限公司','88.4','A-','2026 Q3','已生效'],['乐龄康复门诊部','76.8','B','2026 Q3','复核中']]},
+ /* —— 运营自运营 / 营销 / 分层标签 / 精准触达 —— */
+ '首页与运营位':{sub:'首页运营配置',cols:['运营位名称','位置类型','投放内容','排序权重','生效状态'],base:[['首页 Banner 1 · AI 舒压 · 一键放松','Banner 轮播','春风优选 · 跳转 activity:act_massage_trial','1','已上线'],['首页 Banner 2 · 暖心简餐 · 每日新鲜','Banner 轮播','营养配餐 · 跳转 activity:act_meal_month','2','已上线'],['首页 Banner 3 · 体检套餐 · 安心守护','Banner 轮播','健康守护 · 跳转 activity:act_free_check','3','已上线'],['今日推荐主推卡','推荐位','AI舒压理疗服务（ai_massage）','4','已上线'],['乐活好物商品排序','商品排序','Feed：到店/到家/辅具/邮寄 · 置顶 ai_massage / nutrition_meal / health_check','5','已上线'],['场景服务推荐','服务推荐','金刚区：慢病守护 / 康复照护 / 银发餐桌 / 乐龄生活 / 安心适老','6','已上线'],['活动页 · AI 舒压 · 一键放松','活动页','activity.html?id=act_massage_trial','7','已上线'],['活动页 · 暖心简餐 · 每日新鲜','活动页','activity.html?id=act_meal_month','8','已上线'],['活动页 · 体检套餐 · 安心守护','活动页','activity.html?id=act_free_check','9','已上线'],['专题页 · 慢病守护','专题页','theme.html?id=chronic','10','已上线']]},
+ '广播站管理':{sub:'广播站内容',cols:['广播标题','内容类型','标签','发布时间','生效状态'],base:[['【科普】长者控糖饮食三原则，餐后血糖更稳','图文','科普','2026-09-14','已上线'],['【政策】济南高龄津贴与居家养老服务补贴申报提醒','图文','政策','2026-09-12','已上线'],['【合作】周边康复机构闲置床位可对接日托喘息','图文','合作','2026-09-11','已上线'],['【视频】认知训练手指操示范（3 分钟）','视频','视频','2026-09-10','已上线'],['本周健康讲座：控糖饮食专场，周日上午 9:00','讲座','讲座','2026-09-13','已上线'],['【活动】社区太极晨练班开始报名','通知','活动','2026-09-09','已上线'],['【通知】国庆期间站点服务时段调整','通知','通知','2026-09-08','草稿']]},
+ '营销工具':{sub:'营销工具',cols:['工具名称','工具类型','适用规则','库存 / 额度','状态'],base:[['服务满减券 ¥5','满减','首页热门推荐右侧 · 服务满减 · 限时领取','首页展示中','进行中'],['服务体验券','优惠券','抵扣服务金额 · 与首页券卡同源','与满减券共用展示位','进行中'],['超低折扣 9.9 折','会员价','首页折扣卡 · 会员/活动价展示','长期','已启用'],['AI 舒压新客 9.9 元','新人优惠','活动 act_massage_trial · 限新客 1 次','滚动名额','进行中'],['一个月服务免费领','限时活动','首页折扣卡 banner · 限时领取引导','活动期','进行中'],['营养配餐包月套餐','组合套餐','package_meal_month · 26 天可核销权益','在售','已上架'],['AI 舒压复购立减 ¥15','优惠券','满 ¥80 可用 · 来自活动 act_massage_trial','活动发放','进行中'],['体检套餐立减 ¥50','满减','转正式体检可用 · 来自活动 act_free_check','活动发放','进行中']]},
+ '用户标签库':{sub:'用户标签',cols:['标签名称','标签维度','取值示例','覆盖人数','状态'],base:[['年龄段','人口属性','60–69 / 70–79 / 80+','12,684','已启用'],['常住区域','区域','浦东 / 徐汇 / 静安…','12,684','已启用'],['兴趣偏好','兴趣','康复训练 / 助餐 / 社群活动','8,420','已启用'],['近 30 日浏览','浏览行为','浏览服务 ≥3 次未下单','2,186','已启用'],['购买品类','购买行为','上门照护 / 辅具 / 助餐','6,940','已启用'],['消费频次','消费','近 90 日订单数分层','12,684','已启用']]},
+ '精准触达任务':{sub:'精准触达',cols:['任务名称','目标人群','触达内容','渠道','状态'],base:[['沉默用户唤醒','沉默用户（90 日无单）','送 20 元回归券 + 居家照护推荐','站内信 + 短信','执行中'],['首购转化催单','首购未转化浏览用户','今日推荐位服务 + 新人券提醒','小程序推送','执行中'],['复购用户加码','复购用户','会员价专场 + 组合套餐','站内信','执行中'],['新用户引导','新用户','Banner 新人礼 + 办卡指引','站内信 + 首页弹窗','已启用'],['活跃用户运营','活跃用户','限时秒杀预告','站内信','草稿']]},
+ /* —— 内容运营：分类推荐 / 效果统计 / 外部承接 —— */
+ '内容分类推荐':{sub:'内容分类推荐',cols:['推荐规则','匹配维度','推荐内容','命中人群','状态'],base:[['高龄防跌倒内容流','年龄=70–79 / 80+','秋季防跌倒居家指南','3,420','已启用'],['慢病兴趣内容流','兴趣=控糖 / 高血压','控糖饮食一周食谱','2,186','已启用'],['康复兴趣内容流','兴趣=康复训练','康复训练短视频合集','1,640','已启用'],['助餐消费行为流','消费行为=近 90 日助餐 ≥2','银发好物精选 · 助餐专题','1,280','已启用'],['浏览未购转化流','浏览行为=服务详情 ≥3 未下单','对应服务介绍文 + 体验券','2,186','已启用'],['高消费频次精选','消费频次=高（≥4 单/90 日）','会员价专场内容 + 组合套餐','864','已启用']]},
+ '内容效果统计':{sub:'内容效果统计',cols:['内容标题','阅读量','点击商品','进入服务页','最终成交'],base:[['秋季防跌倒居家指南','12,480','862','1,246','186'],['控糖饮食一周食谱','8,620','1,420','968','242'],['适老化改造补贴申领','6,340','420','1,860','96'],['康复训练短视频合集','9,180','680','1,520','158'],['银发好物精选','5,760','2,140','420','318'],['国庆陪诊服务活动','3,240','186','2,060','124']]},
+ '外部内容承接':{sub:'外部内容承接',cols:['承接名称','来源渠道','落地类型','落地页面','状态'],base:[['公众号·防跌倒专题','微信公众号','活动页','活动：秋季居家防跌倒','已启用'],['公众号·控糖商品卡','微信公众号','商品详情','商品：控糖营养套餐','已启用'],['视频号·康复短视频','微信视频号','服务详情','服务：上门康复包','已启用'],['视频号·陪诊直播回放','微信视频号','活动页','活动：国庆陪诊券包','已启用'],['公众号·补贴办事指南','微信公众号','服务详情','服务：适老化上门评估','已启用'],['视频号·好物种草','微信视频号','商品详情','商品：乐活好物榜 TOP','草稿']]},
+ /* —— 用户来源识别 / 渠道效果数据 —— */
+ '用户来源识别':{sub:'用户来源识别',cols:['来源编码','渠道类型','渠道名称','识别方式','状态'],base:[['SRC-GZH','微信公众号','康养服务号·菜单/图文','utm + 公众号 OpenID','已启用'],['SRC-SPH','微信视频号','康养视频号·挂载小程序','utm + 视频号 scene','已启用'],['SRC-QW','企业微信','属地企微社群 / 管家活码','企微 userId + 活码','已启用'],['SRC-NYJT','能源集团内部渠道','集团员工/家属专属入口','内部 SSO + 渠道码','已启用'],['SRC-OFF','线下活动','社区义诊 / 嘉年华扫码','活动码 + 地推工号','已启用'],['SRC-SUP','供应商渠道','服务商地推 / 门店二维码','供应商 ID + 渠道码','已启用']]},
+ '渠道数据':{sub:'渠道效果数据',cols:['渠道 / 活动','注册用户','下单数','销售额','复购用户'],base:[['线下活动 · 浦东社区义诊（9/20）','186','94','¥42,680','28'],['微信公众号 · 防跌倒专题','420','168','¥86,240','52'],['微信视频号 · 康复短视频','312','126','¥71,580','38'],['企业微信 · 管家活码获客','248','142','¥98,360','64'],['能源集团内部渠道 · Q3 家属入口','156','88','¥62,140','41'],['供应商渠道 · 安护门店码','134','76','¥48,920','29']]},
+ /* —— 核心经营 / 供应商经营 / 数据导出 —— */
+ '核心经营数据':{sub:'核心经营指标',cols:['指标名称','本期值','环比','同比','状态'],base:[['用户数','12,684','+3.2%','+18.6%','正常'],['活跃用户（MAU）','4,862','+5.1%','+22.4%','正常'],['订单量','8,426','+4.8%','+16.2%','正常'],['销售额','¥3,286,400','+6.4%','+21.8%','正常'],['客单价','¥390','+1.5%','+4.8%','正常'],['转化率','6.8%','+0.3pt','+1.1pt','正常'],['复购率','28.4%','+1.2pt','+3.6pt','正常']]},
+ '供应商经营情况':{sub:'供应商经营看板',cols:['供应商名称','销售额','履约率','投诉数','经营评价'],base:[['安护居家服务中心','¥1,286,400','98.6%','2','销售好 · 履约好 · 投诉少'],['颐康辅具有限公司','¥986,200','97.2%','3','销售好 · 履约好'],['安心陪诊服务有限公司','¥642,800','96.8%','1','履约好 · 投诉少'],['乐龄康复门诊部','¥428,600','94.1%','7','销售一般 · 投诉偏高'],['银发助餐配送中心','¥386,400','95.4%','4','履约稳定'],['康宁适老化工程','¥312,800','93.8%','5','待提升']]},
+ '经营数据导出':{sub:'经营数据导出',cols:['导出任务','数据范围','文件格式','申请时间','状态'],base:[['核心经营日报','近 30 日 · 全平台','Excel','今天 16:20','已完成'],['供应商经营明细','2026 Q3 · 全部供应商','Excel','今天 15:05','已完成'],['订单与销售额明细','近 7 日 · 浦东新区','CSV','今天 14:40','生成中'],['用户活跃与复购分析','近 90 日 · 全平台','Excel','昨天 18:12','已完成'],['渠道经营汇总','近 30 日 · 全渠道','Excel','昨天 11:30','已完成'],['客单价与转化漏斗','近 30 日 · 小程序端','CSV','9 月 26 日','已完成']]},
+ /* —— 结算自动化：平台应收 / 供应商应收 / 退款自动计算 —— */
+ '结算与对账':{sub:'结算账单',cols:['结算单号','结算对象','平台应收','供应商应收','退款金额','结算状态'],base:[['JS202609-008','安护居家服务中心','¥6,218','¥68,920','¥1,280','待确认'],['JS202609-006','颐康辅具有限公司','¥4,864','¥51,360','¥860','对账中'],['JS202608-091','乐龄康复门诊部','¥3,942','¥42,780','¥1,120','已结算'],['JS202609-012','安心陪诊服务有限公司','¥2,680','¥31,460','¥420','待确认'],['JS202609-010','银发助餐配送中心','¥2,148','¥28,640','¥360','对账中']]},
+ '结算自动计算':{sub:'结算自动计算',cols:['计算批次','订单金额','平台应收','供应商应收','退款金额','计算状态'],base:[['AUTO-20260928-01 · 安护居家','¥76,418','¥6,218','¥68,920','¥1,280','已自动生成'],['AUTO-20260928-02 · 颐康辅具','¥57,084','¥4,864','¥51,360','¥860','已自动生成'],['AUTO-20260928-03 · 乐龄康复','¥47,842','¥3,942','¥42,780','¥1,120','已自动生成'],['AUTO-20260927-08 · 安心陪诊','¥34,560','¥2,680','¥31,460','¥420','已自动生成'],['AUTO-20260927-06 · 银发助餐','¥31,148','¥2,148','¥28,640','¥360','试算完成'],['AUTO-20260926-04 · 康宁适老化','¥26,880','¥2,150','¥24,120','¥610','待确认']]},
+ /* —— 品类资质 / 内容合规 / 操作留痕 —— */
+ '品类准入要求':{sub:'品类准入要求',cols:['品类名称','必备资质','证照有效期规则','差异要点','状态'],base:[['居家照护服务','营业执照 + 养老服务备案 + 责任险 + 护理员证','责任险到期前 30 日预警','须持证护理员占比 ≥80%','已启用'],['康复理疗服务','营业执照 + 医疗机构执业许可/备案 + 治疗师证','执业许可年审','禁止无资质人员上岗','已启用'],['食品 / 助餐','营业执照 + 食品经营许可证 + 健康证','食经许可到期停单','餐食留样与配送温控台账','已启用'],['医疗器械 / 辅具','营业执照 + 二类械经营备案/许可','械证与保险双校验','租赁辅具须有检测报告','已启用'],['陪诊服务','营业执照 + 陪诊人员健康证 + 无犯罪证明','健康证一年一审','不得承诺医疗结果','已启用'],['适老化改造','营业执照 + 施工资质/安全生产协议','合同与保险齐全','进场前安全交底必填','已启用']]},
+ '内容合规审核':{sub:'内容合规审核',cols:['内容标题','内容类型','风险点','审核结论','审核状态'],base:[['秋季防跌倒居家指南','健康科普','含「有效预防」表述','修改后通过','已通过'],['控糖饮食一周食谱','健康科普','功效边界清晰','通过','已通过'],['某辅具「治疗关节炎」广告','产品介绍','功效断言 / 绝对化用语','驳回 · 禁止发布','已驳回'],['国庆陪诊服务活动','运营活动','未承诺医疗效果','通过','已通过'],['康复训练短视频合集','产品介绍','需补充「非医疗建议」提示','待补充','审核中'],['银发好物精选','产品介绍','对比竞品夸大','修改后复审','待复审']]},
+ '操作留痕':{sub:'操作留痕',cols:['操作时间','操作类型','操作对象','操作人','结果'],base:[['今天 16:42','价格调整','居家照护（基础） ¥168→¥178','李雯','已生效'],['今天 15:18','商品修改','控糖营养套餐 · 规格说明','王倩','已保存'],['今天 14:05','上下架','助餐午市套餐 · 上架','陈浩','已上架'],['今天 11:30','退款处理','SO202609220092 · 全额退 ¥299','财务 · 赵敏','已退款'],['今天 10:12','投诉处理','CS202609-022 · 服务时长争议','客服 · 周宁','处理中'],['昨天 17:40','上下架','适老化扶手套装 · 下架','李雯','已下架'],['昨天 15:20','价格调整','上门康复理疗 ¥298→¥288','王倩','已生效'],['昨天 09:50','商品修改','电动轮椅 · 主图更换','陈浩','已保存']]}
+};
+Object.entries(platformExtra).forEach(([k,v])=>{moduleConfig[k]=v;labels[k]=[k,`平台运营视角 · ${v.sub}`];v.rows=[...v.base];if(k!=='首页与运营位'&&k!=='营销工具'&&k!=='广播站管理'){for(let i=1;i<=10-v.base.length;i++){let r=[...v.base[i%v.base.length]];r[0]+=` · ${String(i+v.base.length).padStart(2,'0')}`;v.rows.push(r)}}});
+if(window.OPS_FRONT_SYNC){OPS_FRONT_SYNC.ensureDefaults();OPS_FRONT_SYNC.applyModules(moduleConfig);OPS_FRONT_SYNC.syncAllFromModules(moduleConfig);labels['首页与运营位']=['首页与运营位','对接 index.html 首页 Banner / 推荐 / 排序 / 活动 / 专题，保存后写入前台配置'];labels['营销工具']=['营销工具','对接首页券、折扣、新人价、限时活动与组合套餐，保存后同步前台'];labels['广播站管理']=['广播站管理','对接前台 broadcast.html / broadcast-detail.html 广播内容，支持上架、下架与分类标签'];}
+Object.assign(domainForms,{
+ '资质审核中心':[['申请编号','text'],['服务商名称','text'],['审核类型','select:新入驻审核|续约年审|服务范围变更'],['营业执照','select:有效|待补充|已过期'],['养老服务备案','select:有效|待补充|不适用'],['责任保险有效期','date'],['合同服务范围','text'],['审核结论','select:待补材料|待复核|通过|驳回'],['审核意见','text']],
+ '服务商信息监管':[['服务商名称','text'],['监管事项','select:证照预警|履约质量|投诉整改|服务范围'],['风险等级','select:低|中|高'],['风险信号','text'],['监管措施','select:提醒|限期整改|限制上架|暂停合作'],['整改截止日','date'],['处置负责人','text'],['监管状态','select:正常|待跟进|整改中|已闭环']],
+ '服务商评级':[['服务商名称','text'],['评级周期','text'],['履约质量得分','number'],['满意度得分','number'],['合规得分','number'],['投诉整改得分','number'],['综合评级','select:S|A|A-|B|C'],['评级结论','text'],['生效日期','date']]
+ ,'订单与履约监管':[['订单编号','text'],['订单类型','select:实物商品|上门服务|到店服务|健康管理服务|租赁项目'],['服务对象','text'],['服务商','text'],['履约节点','text'],['监管状态','select:正常|关注签到|需回访|异常介入'],['风险等级','select:低|中|高'],['平台处置意见','text']],
+ '首页与运营位':[['运营位名称','text'],['位置类型','select:Banner轮播|推荐位|商品排序|服务推荐|活动页|专题页'],['投放内容','text'],['目标人群','select:全部|新用户|活跃用户|首购用户|复购用户|沉默用户'],['排序权重','number'],['生效开始','date'],['生效结束','date'],['生效状态','select:草稿|待审核|已上线|已下线']],
+ '广播站管理':[['广播标题','text'],['内容类型','select:图文|视频|讲座|通知'],['标签','select:科普|政策|合作|视频|讲座|活动|通知'],['摘要','text'],['关联落地页','text'],['发布时间','date'],['排序权重','number'],['生效状态','select:草稿|待审核|已上线|已下线']],
+ '营销工具':[['工具名称','text'],['工具类型','select:优惠券|满减|会员价|新人优惠|限时活动|组合套餐'],['适用规则','text'],['适用人群','select:全部|新用户|活跃用户|首购用户|复购用户|沉默用户|会员'],['库存额度','text'],['开始时间','datetime-local'],['结束时间','datetime-local'],['状态','select:草稿|进行中|已启用|已上架|已结束']],
+ '用户标签库':[['标签名称','text'],['标签维度','select:人口属性|区域|兴趣|浏览行为|购买行为|消费'],['取值规则','text'],['更新频率','select:实时|每日|每周'],['覆盖人数','number'],['状态','select:草稿|已启用|已停用']],
+ '精准触达任务':[['任务名称','text'],['目标人群','select:新用户|活跃用户|首购用户|复购用户|沉默用户|自定义标签人群'],['触达内容','text'],['内容类型','select:优惠券|商品|服务|活动页|专题页|图文'],['渠道','select:站内信|短信|小程序推送|首页弹窗|电话'],['频控','text'],['状态','select:草稿|已启用|执行中|已结束']],
+ '内容运营':[['内容标题','text'],['内容类型','select:健康科普|运营活动|办事指南|产品介绍'],['推荐人群','text'],['年龄标签','select:全部|60–69|70–79|80+|不限'],['兴趣标签','select:防跌倒|慢病|康复|助餐|社群|不限'],['消费行为','select:不限|浏览未购|助餐高消费|改造意向|复购高频'],['关联落地','select:商品详情|服务详情|活动页|专题页|无'],['落地对象','text'],['发布状态','select:草稿|审核中|待发布|已发布']],
+ '内容分类推荐':[['推荐规则','text'],['匹配维度','select:年龄|兴趣|消费行为|浏览行为|组合维度'],['年龄条件','text'],['兴趣条件','text'],['消费行为条件','text'],['推荐内容','text'],['排序权重','number'],['状态','select:草稿|已启用|已停用']],
+ '内容效果统计':[['内容标题','text'],['统计周期','select:近7日|近30日|近90日|自定义'],['阅读量','number'],['点击商品','number'],['进入服务页','number'],['最终成交','number'],['成交金额','number'],['备注','text']],
+ '外部内容承接':[['承接名称','text'],['来源渠道','select:微信公众号|微信视频号|短信链接|外部H5'],['落地类型','select:商品详情|服务详情|活动页|专题页|内容详情'],['落地页面','text'],['DeepLink / 路径','text'],['参数透传','text'],['状态','select:草稿|已启用|已停用']],
+ '用户来源识别':[['来源编码','text'],['渠道类型','select:微信公众号|微信视频号|企业微信|能源集团内部渠道|线下活动|供应商渠道|其他'],['渠道名称','text'],['识别方式','text'],['渠道码 / 活码','text'],['归属组织','text'],['状态','select:草稿|已启用|已停用']],
+ '渠道数据':[['渠道 / 活动','text'],['渠道类型','select:微信公众号|微信视频号|企业微信|能源集团内部渠道|线下活动|供应商渠道|其他'],['统计周期','select:近7日|近30日|近90日|单次活动|自定义'],['注册用户','number'],['下单数','number'],['销售额','number'],['复购用户','number'],['备注','text']],
+ '核心经营数据':[['指标名称','text'],['统计周期','select:今日|近7日|近30日|本月|本季|自定义'],['本期值','text'],['环比','text'],['同比','text'],['口径说明','text'],['状态','select:正常|关注|预警']],
+ '供应商经营情况':[['供应商名称','text'],['统计周期','select:近7日|近30日|本月|本季|自定义'],['销售额','number'],['订单量','number'],['履约率','text'],['投诉数','number'],['经营评价','select:销售好 · 履约好 · 投诉少|销售好 · 履约好|履约好 · 投诉少|销售一般 · 投诉偏高|履约稳定|待提升'],['备注','text']],
+ '经营数据导出':[['导出任务','text'],['数据类型','select:核心经营|供应商经营|订单明细|用户活跃|渠道汇总|转化漏斗|自定义'],['数据范围','text'],['文件格式','select:Excel|CSV|PDF'],['接收邮箱','text'],['状态','select:待生成|生成中|已完成|失败']],
+ '结算与对账':[['结算单号','text'],['结算对象','text'],['结算周期','text'],['订单金额','number'],['平台费率%','number'],['平台应收','number'],['供应商应收','number'],['退款金额','number'],['计算方式','select:规则引擎自动计算|手工调整复核'],['结算状态','select:对账中|待确认|待打款|已结算']],
+ '结算自动计算':[['计算批次','text'],['结算对象','text'],['结算周期','select:日结|周结|月结|自定义'],['订单金额','number'],['平台费率%','number'],['已审退款','number'],['平台应收','number'],['供应商应收','number'],['退款金额','number'],['计算状态','select:试算完成|已自动生成|待确认|已入账']],
+ '品类准入要求':[['品类名称','select:居家照护服务|康复理疗服务|食品 / 助餐|医疗器械 / 辅具|陪诊服务|适老化改造'],['必备资质','text'],['证照有效期规则','text'],['差异要点','text'],['审核节点','select:材料初审|合规复核|抽检|通过'],['状态','select:草稿|已启用|已停用']],
+ '资质审核中心':[['申请编号','text'],['服务商名称','text'],['申请品类','select:居家照护服务|康复理疗服务|食品 / 助餐|医疗器械 / 辅具|陪诊服务|适老化改造'],['审核类型','select:新入驻审核|续约年审|服务范围变更'],['材料完整度','text'],['对照准入清单','text'],['审核结论','select:待补材料|待复核|通过|驳回'],['审核意见','text']],
+ '内容合规审核':[['内容标题','text'],['内容类型','select:健康科普|运营活动|产品介绍|办事指南'],['风险点','text'],['功效表述检查','select:无功效断言|需修改|绝对化用语|医疗承诺'],['审核结论','text'],['审核人','text'],['审核状态','select:审核中|待补充|待复审|已通过|已驳回']],
+ '操作留痕':[['操作时间','datetime-local'],['操作类型','select:商品修改|价格调整|上下架|退款处理|投诉处理|其他'],['操作对象','text'],['变更前','text'],['变更后','text'],['操作人','text'],['结果','text']]
+});
+const menuGroups=[
+ ['供给准入与监管',['供给生态','品类准入要求','服务商信息监管','服务商评级','区域供给监测']],
+ ['长者与家庭',['长者与家庭','家庭授权管理','用户标签库','用户标签与分层','用户分层画像']],
+ ['服务治理',['服务标准与上架审核','服务包与权益','照护计划管理']],
+ ['交易与履约监管',['订单与履约监管','派单与异常介入','售后与投诉仲裁','供需匹配']],
+ ['权益、补贴与支付',['权益与补贴','支付与退款监管','会员权益规则','营销工具']],
+ ['结算与财务运营',['结算规则引擎','结算自动计算','结算与对账','账户与提现']],
+ ['运营增长与社区',['首页与运营位','广播站管理','内容运营','内容合规审核','内容分类推荐','内容效果统计','外部内容承接','用户来源识别','渠道数据','社区互动治理','营销与触达','精准触达任务','推荐与匹配']],
+ ['质量、风控与监管',['质量与监管','长者安全风控','监管驾驶舱','核心经营数据','供应商经营情况','经营数据导出','数据分析中心']],
+ ['平台基础',['组织与权限','基础配置中心','操作留痕','接口与集成中心']]
+];
+const nav=document.querySelector('.nav');nav.innerHTML='<div class="nav-title">工作台</div><a class="active" data-page="运营驾驶舱"><span class="ico">▦</span><span>运营驾驶舱</span></a>'+menuGroups.map(([g,items])=>`<div class="nav-title">${g}</div>${items.map(x=>`<a data-page="${x}"><span class="ico">·</span><span>${x}</span></a>`).join('')}`).join('');
+nav.querySelectorAll('a').forEach(a=>a.onclick=()=>{nav.querySelectorAll('a').forEach(x=>x.classList.remove('active'));a.classList.add('active');const k=a.dataset.page;if(k==='运营驾驶舱'){document.getElementById('workspace').innerHTML=dashboard;document.getElementById('crumb').textContent='/ 运营驾驶舱';document.getElementById('title').textContent='运营驾驶舱'}else renderX(k)});
+</script>
+<script>
+const legacyShowDetailX=showDetailX;
+function elderTabContent(tab){
+ const blocks={
+  '综合概览':`<div class="health-score"><div class="score-card"><label>照护风险指数</label><strong>72 <small>/100</small></strong></div><div class="score-card"><label>健康稳定度</label><strong>84%</strong></div><div class="score-card"><label>服务满意度</label><strong>4.8</strong></div><div class="score-card"><label>本月服务</label><strong>12 次</strong></div></div>${sectionX('智能洞察',[['风险趋势','近 7 日睡眠评分下降，需关注用药与作息'],['建议行动','72 小时内完成健康回访；推荐防跌倒居家评估'],['服务匹配','当前照护计划匹配度 91%，建议增加康复训练 1 次/周'],['家庭协同','女儿王丽近 14 日已查看服务进度 6 次']])}`,
+  '健康与评估':`${sectionX('健康与能力评估',[['慢病与用药','高血压；氨氯地平每日 1 次'],['Barthel 指数','70 分 · 轻度失能'],['认知筛查','MMSE 27 分 · 正常范围'],['跌倒风险','中风险 · 卫浴场景需重点关注'],['最近评估','2026-09-15'],['下次复评','2026-12-15']])}<div class="timeline"><div><time>09-21</time>智能规则识别到夜间起夜频次增加</div><div><time>09-15</time>完成能力复评，照护等级维持轻度失能</div><div><time>09-03</time>服务管家记录用药提醒已开启</div></div>`,
+  '家庭与授权':`${sectionX('家庭成员与授权',[['王丽（女儿）','紧急联系人；代下单、代支付、查看服务进度'],['王强（儿子）','服务进度查看；接收异常通知'],['授权有效期','长期授权 · 最近核验 2026-08-18'],['家庭协同评分','86 分 · 互动活跃']])}<div class="ai-box"><b>智能家庭协同提示</b><p>建议将“9 月健康复评”同步推送给王丽，并邀请其确认下阶段照护预算。</p></div>`,
+  '照护计划':`${sectionX('当前照护计划',[['计划名称','居家安心照护计划（秋季）'],['计划目标','维持日常生活能力，降低跌倒风险'],['服务组合','居家照护每周 3 次 + 健康回访每月 1 次'],['预算使用','¥1,344 / ¥1,800'],['责任管家','张敏'],['执行状态','进行中']])}${sectionX('计划智能建议',[['缺口识别','康复训练频次低于同类画像建议水平'],['建议调整','增加上门康复训练，每周 1 次'],['预计影响','预计跌倒风险指数下降 8–12 分']])}`,
+  '服务与消费':`${sectionX('近 30 日服务记录',[['服务次数','12 次'],['准时履约率','100%'],['满意度','4.8 / 5'],['累计消费','¥1,536'],['补贴核销','¥960'],['自费金额','¥576']])}<div class="timeline"><div><time>今天 17:30</time>居家照护待上门</div><div><time>09-21 10:06</time>健康回访已完成，长者状态稳定</div><div><time>09-19 14:20</time>居家照护完成，家属评分 5 星</div></div>`,
+  '风险与事件':`${sectionX('当前风险',[['风险等级','中风险'],['风险标签','用药关注、跌倒风险、睡眠波动'],['未闭环事件','1 项：健康回访任务将于 24 小时后逾期'],['应急联系人','王丽 · 138****2981'],['最近异常','09-21 夜间起夜频次增加'],['处置负责人','张敏']])}<div class="ai-box"><b>智能预警说明</b><p>系统依据健康评估、服务记录与近 7 日回访数据生成风险提示；需由服务管家人工确认后进入处置流程。</p></div>`
+ };
+ return blocks[tab]||blocks['综合概览'];
+}
+function switchElderTab(tab){document.querySelectorAll('.elder-tabs button').forEach(x=>x.classList.toggle('active',x.textContent===tab));document.getElementById('elderTabBody').innerHTML=elderTabContent(tab)}
+function showDetailX(i){
+ if(richKey==='用户分层画像'){
+  const c=moduleConfig[richKey],r=c.rows[i];document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>用户分层画像详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body"><div class="elder-hero"><div class="elder-avatar">群</div><div><h3>${r[0]}</h3><p>${r[1]} · 当前覆盖 ${r[2]} · 数据刷新：今天 06:00</p><div class="portrait-tags"><span>自动标签</span><span>规则分群</span><span>可触达</span></div></div><span class="risk-chip">运营中</span></div>${sectionX('画像规则与人群构成',[['核心入组规则',r[1]],['覆盖长者',r[2]],['新增趋势','近 30 日 +12.4%'],['重点区域','浦东新区 46% · 徐汇区 22%'],['家庭授权可触达','78%'],['数据有效性','98.6%']])}${sectionX('运营建议',[['建议动作',r[3]],['推荐触达方式','站内信 + 家属短信 + 服务管家任务'],['建议频控','7 日内不超过 2 次营销触达'],['预期指标','服务预约转化率 8.5%'],['当前活动','秋季安心照护计划'],['负责人','用户运营组']])}<div class="ai-box"><b>AI 人群洞察</b><p>该人群的服务需求集中在居家照护、风险回访与适老化改造。建议优先触达家庭授权完整、近 30 日未完成服务预约的长者。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">编辑画像规则</button><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;document.getElementById('modal').classList.add('show');return;
+ }
+ if(['供给生态','资质审核中心','服务商信息监管','服务商评级'].includes(richKey)){
+  const c=moduleConfig[richKey],r=c.rows[i];let body=sectionX('基础信息',c.cols.map((x,j)=>[x,r[j]]));
+  if(richKey==='供给生态')body+=sectionX('准入资质与审核轨迹',[['统一社会信用代码','91310115MA1K72'+i+'XQ'],['养老服务备案','有效'],['责任保险','有效至 2027-06-30'],['入驻合同','有效至 2027-12-31'],['最近审核','2026-09-18 · 平台合规组'],['审核结论','已准入，纳入季度监管']])+sectionX('平台监管与评级表现',[['近 30 日履约率',(97.1-i*.2).toFixed(1)+'%'],['准时上门率','98.4%'],['有效投诉率','0.18%'],['SOP 合规率','96.2%'],['当前评级','A · 92.6 分'],['下次评级','2026-12-31']])+`<div class="ai-box"><b>智能监管提示</b><p>责任保险将在 30 日内到期；系统已生成续期核验待办。当前履约质量稳定，建议维持 A 级服务商的区域供给配额。</p></div>`;
+  if(richKey==='资质审核中心'){const cat=r[2]||'申请品类';body+=sectionX('品类差异化准入',[['申请品类',cat],['加载清单','按品类准入要求自动带出'],['材料完整度',r[3]],['审核状态',r[4]]])+sectionX('材料核验清单',[['营业执照','已通过 OCR 校验'],['品类专属资质','按清单逐项核验'],['责任保险','有效期校验'],['服务合同','待人工复核'],['法人实名认证','已完成'],['审核时限','剩余 18 小时']])+`<div class="ai-box"><b>审核辅助建议</b><p>当前按「${cat}」品类准入要求核验；未满足项将阻断通过。不同品类必备资质不同。</p></div>`;}
+  if(richKey==='服务商信息监管')body+=sectionX('监管数据与处置',[['服务人员持证率','82%（区域基准 88%）'],['近 30 日履约率','94.6%'],['投诉闭环时效','18.2 小时'],['证照到期预警','责任保险 30 日内到期'],['当前监管措施','限期补足持证人员材料'],['整改截止日','2026-10-08']])+`<div class="ai-box"><b>智能风险研判</b><p>该服务商“持证人员比例”连续两周低于区域基准，建议触发黄色预警并限制新增康复服务上架。</p></div>`;
+  if(richKey==='服务商评级')body+=sectionX('评级指标构成',[['履约质量','38.2 / 40'],['服务满意度','18.7 / 20'],['合规与资质','17.5 / 20'],['投诉与整改','9.2 / 10'],['平台协同','9.0 / 10'],['评级有效期','2026 Q3']])+sectionX('评级应用',[['可获得权益','区域优先推荐、结算周期 T+7'],['限制措施','无'],['评级变动','较上季度 +1.8 分'],['复核申请','未发起']]);
+ document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>${c.sub}详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${body}</div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">处理/编辑</button><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;document.getElementById('modal').classList.add('show');return;
+ }
+ if(richKey==='订单与履约监管'){
+  const c=moduleConfig[richKey],r=c.rows[i],type=r[1];const orderBase=sectionX('订单与监管概览',c.cols.map((x,j)=>[x,r[j]]));
+  const details={
+   '实物商品':sectionX('商品配送与交付',[['商品信息','智能助行器（标准款）× 1'],['收货地址','浦东新区东明路 88 弄 602'],['配送单号','WL202609-8119'],['物流状态','配送员已揽收，预计今天 18:00 前送达'],['签收凭证','待上传签收照片'],['退换货时效','签收后 7 日内']]),
+   '上门服务':sectionX('预约与上门履约',[['预约时间','2026-09-23 17:30–19:30'],['服务项目','居家照护（基础）'],['服务人员','刘芳 · 养老护理员'],['签到要求','定位签到 + 长者确认'],['SOP 进度','待执行 0 / 8 节点'],['服务凭证','服务后需上传照片与签名']]),
+   '到店服务':sectionX('到店核验与服务',[['门店/机构','乐龄康复门诊部 · 徐汇店'],['预约时段','2026-09-23 15:00–16:00'],['核销方式','长者二维码 + 前台人工核验'],['服务项目','康复理疗评估'],['到店状态','已到店，服务中'],['服务报告','待康复治疗师上传']]),
+   '健康管理服务':sectionX('健康管理计划',[['服务周期','2026-09-20 至 2026-12-20'],['健康目标','血压稳定、改善睡眠质量'],['随访频次','每周一次健康随访'],['当前进度','第 1 / 12 周'],['数据来源','服务回访、长者自报、家属反馈'],['下次任务','09-27 线上随访']]),
+   '租赁项目':sectionX('租赁交付与资产监管',[['租赁物','电动轮椅 · 资产编号 EQ-10294'],['租期','2026-09-01 至 2026-12-01'],['押金','¥1,000（已冻结）'],['交付状态','已交付，待首次验收'],['使用巡检','10 月 1 日首次回访'],['归还规则','到期前 7 日发起续租或归还确认']])
+  };
+  const supervise=sectionX('平台监管详情',[['支付与补贴','订单 ¥168；补贴抵扣 ¥120；用户实付 ¥48'],['履约时效','当前节点未超时'],['风险识别',type==='健康管理服务'?'健康随访待确认':type==='租赁项目'?'资产首次验收待跟进':'无高风险信号'],['监管规则','适用 '+type+' 履约规则 V2.1'],['异常介入','无；触发超时后自动生成平台待办'],['操作审计','共 6 条流转记录，可追溯']]);
+  document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>${type}订单监管详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body"><div class="elder-hero"><div class="elder-avatar">单</div><div><h3>${r[0]}</h3><p>${r[2]} · ${r[3]} · 当前节点：${r[4]}</p><div class="portrait-tags"><span>${type}</span><span>平台监管</span><span>资金可追溯</span></div></div><span class="risk-chip">${r[5]}</span></div>${orderBase}${details[type]}${supervise}<div class="ai-box"><b>智能履约研判</b><p>系统已根据订单类型匹配对应履约规则和风险阈值；若出现节点超时、凭证缺失或用户异常反馈，将自动升级至平台异常介入。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">更新监管处置</button><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;document.getElementById('modal').classList.add('show');return;
+ }
+ if(richKey!=='长者与家庭')return legacyShowDetailX(i);
+ const c=moduleConfig[richKey],r=c.rows[i];
+ document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>长者 360° 档案</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body"><div class="elder-hero"><div class="elder-avatar">王</div><div><h3>${r[0]}</h3><p>浦东新区 · 轻度失能 · 服务管家：张敏 · 档案完整度 96%</p><div class="portrait-tags"><span>居家照护</span><span>高血压</span><span>女儿代办</span><span>银卡会员</span></div></div><span class="risk-chip">● 中风险 · 需关注</span></div><div class="ai-box"><b>AI 照护洞察</b><p>结合评估、服务履约、家属互动与回访数据，识别到睡眠波动与跌倒风险；建议本周完成健康回访，并向家属推送防跌倒改造评估。</p></div><div class="elder-tabs">${['综合概览','健康与评估','家庭与授权','照护计划','服务与消费','风险与事件'].map((x,n)=>`<button class="${n===0?'active':''}" onclick="switchElderTab('${x}')">${x}</button>`).join('')}</div><div id="elderTabBody">${elderTabContent('综合概览')}</div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">编辑档案</button><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;
+ document.getElementById('modal').classList.add('show');
+}
+</script>
+<script>
+/* 将资质审核收纳为供给生态的子页，而非同级运营模块 */
+const baseRenderX=renderX;
+renderX=function(k,p=1){
+ baseRenderX(k,p);
+ const toolbar=document.querySelector('.module-toolbar');
+ if(k==='供给生态'&&toolbar){
+  const entry=document.createElement('button');entry.className='btn';entry.textContent='资质审核事项';entry.onclick=()=>renderX('资质审核中心');
+  toolbar.insertBefore(entry,toolbar.querySelector('.count'));
+  const note=document.createElement('div');note.className='ai-box';note.style.marginTop='0';note.innerHTML='<b>服务商台账</b><p>展示已准入服务商及其当前合作状态。新入驻、年审、资质续期和服务范围变更，请进入“资质审核事项”处理。</p>';
+  toolbar.parentElement.insertBefore(note,toolbar.nextSibling);
+ }
+ if(k==='资质审核中心'&&toolbar){
+  const back=document.createElement('button');back.className='btn';back.textContent='‹ 返回服务商台账';back.onclick=()=>renderX('供给生态');toolbar.insertBefore(back,toolbar.firstChild);
+  document.getElementById('crumb').textContent='/ 供给生态 / 资质审核事项';
+ }
+};
+</script>
+<script>
+/* 所有模块的编辑交互兜底：未定义专属表单时，自动使用当前列表业务字段生成表单 */
+function fieldSchema(k){const c=moduleConfig[k];return domainForms[k]||c.cols.map(x=>[x,x.includes('状态')?'select:正常|待处理|已完成':'text'])}
+formX=function(i){
+ const c=moduleConfig[richKey],isNew=i===undefined,r=isNew?[]:c.rows[i],schema=fieldSchema(richKey);
+ const fields=schema.map((f,j)=>{const val=j<c.cols.length?(r[j]||''):'';const type=f[1];if(type.startsWith('select:'))return `<label>${f[0]}<select id="fx${j}">${type.slice(7).split('|').map(x=>`<option ${val===x?'selected':''}>${x}</option>`).join('')}</select></label>`;return `<label>${f[0]}<input id="fx${j}" type="${type}" value="${val}" placeholder="请输入${f[0]}"></label>`}).join('');
+ document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>${isNew?'新增':'编辑'}${c.sub}</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body"><div class="form-grid">${fields}</div></div><div class="dialog-foot"><button class="btn" onclick="closeDialog()">取消</button><button class="btn primary" onclick="saveDomainX(${isNew?-1:i})">保存</button></div></div>`;document.getElementById('modal').classList.add('show');
+};
+saveDomainX=function(i){
+ const c=moduleConfig[richKey],schema=fieldSchema(richKey),record=c.cols.map((_,j)=>document.getElementById('fx'+j).value||'未填写');
+ if(i<0)c.rows.unshift(record);else c.rows[i]=record;closeDialog();renderX(richKey,1);notify('已保存'+c.sub);
+};
+</script>
+<script>
+/* 平台运营模块专属表单字段：每个对象按真实运营动作建模 */
+Object.assign(domainForms,{
+ '组织与权限':[['组织/角色名称','text'],['组织层级','select:平台|区域|街道/社区|服务站|岗位角色'],['上级组织','text'],['负责人','text'],['数据权限范围','text'],['菜单权限包','text'],['生效日期','date'],['启用状态','select:已启用|已停用']],
+ '基础配置中心':[['配置项','text'],['配置分类','select:服务类目|行政区划|评估量表|风险标签|费用项'],['配置编码','text'],['配置值','text'],['适用区域','text'],['版本号','text'],['生效时间','datetime-local'],['变更说明','text'],['启用状态','select:已启用|已停用']],
+ '接口与集成中心':[['接口名称','text'],['对接系统','text'],['接口类型','select:实时查询|定时同步|回调接收'],['业务对象','select:补贴资格|支付流水|物流状态|实名核验'],['调用频率','text'],['失败重试策略','text'],['告警负责人','text'],['启用状态','select:正常|停用|灰度中']],
+ '区域供给监测':[['区域','text'],['服务类型','select:居家照护|康复服务|适老化改造|助餐服务'],['预警阈值','number'],['未来 7 日容量','number'],['需求预测值','number'],['调度策略','select:提醒扩容|跨区协调|暂停营销'],['监测负责人','text'],['状态','select:充足|预警|紧张']],
+ '家庭授权管理':[['长者','text'],['家庭成员','text'],['关系','select:子女|配偶|监护人|其他亲属'],['授权范围','text'],['紧急联系人','select:是|否'],['授权开始日','date'],['授权截止日','date'],['确认方式','select:长者确认|线下协议|监护证明'],['状态','select:有效|待确认|已撤销']],
+ '用户标签与分层':[['标签名称','text'],['标签类别','select:健康风险|服务偏好|消费能力|运营行为'],['标签规则','text'],['计算周期','select:实时|每日|每周'],['适用长者数','number'],['标签负责人','text'],['使用范围','text'],['状态','select:已启用|已停用']],
+ '用户分层画像':[['画像名称','text'],['核心入组规则','text'],['排除条件','text'],['刷新周期','select:每日|每周|每月'],['目标区域','text'],['推荐运营动作','text'],['触达频控','text'],['负责人','text'],['状态','select:已启用|已停用']],
+ '服务标准与上架审核':[['服务名称','text'],['申报服务商','text'],['服务类目','select:居家照护|康复服务|适老化改造|助餐服务'],['SOP版本','text'],['人员资质要求','text'],['服务留痕要求','text'],['价格与补贴规则','text'],['审核结论','select:待审核|待补材料|已通过|已驳回'],['审核意见','text']],
+ '服务包与权益':[['服务包名称','text'],['适用人群','text'],['服务组合','text'],['有效期规则','text'],['价格','number'],['补贴可用规则','text'],['退款扣减规则','text'],['上架区域','text'],['状态','select:草稿|待审核|已上架|已下架']],
+ '照护计划管理':[['计划编号','text'],['服务对象','text'],['评估结论','text'],['照护目标','text'],['服务组合与频次','text'],['预算上限','number'],['计划周期','text'],['责任管家','text'],['审批状态','select:草稿|待确认|执行中|已结束']],
+ '派单与异常介入':[['异常编号','text'],['关联订单','text'],['异常类型','select:接单超时|无人接单|改派失败|服务取消'],['影响等级','select:低|中|高'],['自动处置规则','text'],['人工处置动作','text'],['处置负责人','text'],['升级时限','text'],['状态','select:待介入|协调中|已闭环']],
+ '售后与投诉仲裁':[['工单编号','text'],['关联订单','text'],['投诉类型','select:履约争议|质量投诉|退款争议|安全事件'],['投诉诉求','text'],['责任判定','select:服务商责任|用户责任|平台责任|待判定'],['补偿方案','text'],['仲裁负责人','text'],['处置时限','datetime-local'],['状态','select:处理中|整改复核|已闭环']],
+ '支付与退款监管':[['流水编号','text'],['关联订单','text'],['资金类型','select:用户支付|补贴抵扣|退款申请|服务商结算'],['金额','number'],['支付渠道','select:微信支付|银行卡|线下支付'],['退款原因','text'],['对账状态','select:待对账|已对账|差异待核查'],['审核人','text'],['状态','select:支付成功|待审核|退款中|已退款']],
+ '会员权益规则':[['规则名称','text'],['适用人群','text'],['权益类型','select:折扣|服务次数|优先预约|评估券'],['权益内容','text'],['发放条件','text'],['叠加限制','text'],['有效期','text'],['风控规则','text'],['状态','select:已启用|已停用']],
+ '结算规则引擎':[['规则名称','text'],['适用订单类型','select:上门服务|到店服务|实物商品|租赁项目'],['分账对象','text'],['计算方式','text'],['服务费率','number'],['补贴结算规则','text'],['退款反算规则','text'],['生效日期','date'],['状态','select:已启用|已停用']],
+ '账户与提现':[['申请编号','text'],['申请对象','text'],['可提现金额','number'],['申请提现金额','number'],['收款账户','text'],['账户认证状态','select:已认证|待认证|异常'],['风控校验','select:通过|待人工复核|拦截'],['打款批次','text'],['状态','select:待审核|审核中|已打款|已驳回']],
+ '社区互动治理':[['主题/用户','text'],['内容类型','select:帖子|评论|举报|话题'],['风险类型','select:无|广告营销|不当言论|健康谣言'],['审核结论','select:通过|限制可见|删除|禁言'],['处置依据','text'],['处置人员','text'],['申诉状态','select:无申诉|待处理|已处理'],['状态','select:已发布|处理中|已闭环']],
+ '营销与触达':[['活动名称','text'],['目标人群','text'],['触达渠道','select:站内信|短信|服务管家任务|小程序'],['触达频控','text'],['活动规则','text'],['预算上限','number'],['开始时间','datetime-local'],['结束时间','datetime-local'],['状态','select:草稿|执行中|已结束']],
+ '推荐与匹配':[['规则名称','text'],['触发条件','text'],['推荐服务','text'],['准入限制','text'],['排序权重','number'],['人工干预人群','text'],['效果评价指标','text'],['生效时间','datetime-local'],['状态','select:已启用|已停用']],
+ '长者安全风控':[['预警编号','text'],['长者/对象','text'],['预警类型','select:失联风险|签到超时|健康异常|服务未履约'],['风险等级','select:低|中|高'],['触发规则','text'],['应急联系人','text'],['处置负责人','text'],['升级时限','text'],['状态','select:待处置|处理中|已闭环']],
+ '监管驾驶舱':[['报表名称','text'],['统计周期','text'],['报送范围','text'],['指标口径版本','text'],['数据截止时间','datetime-local'],['报送责任人','text'],['报送渠道','text'],['状态','select:待生成|待报送|已报送|已退回']],
+ '数据分析中心':[['报表名称','text'],['主题域','select:长者运营|供给履约|补贴财务|质量风险'],['统计口径','text'],['更新频率','select:实时|每日|每周|每月'],['数据权限','text'],['订阅对象','text'],['预警阈值','text'],['状态','select:可查看|维护中|已下线']]
+});
+</script>
+<script>
+/* 未使用专属大屏详情的运营对象，按各自监管场景展示详情，而非通用记录页 */
+const detailShowBase=showDetailX;
+const detailScenes={
+ '组织与权限':[['组织与权限范围',[['组织树位置','平台 / 华东示范区 / 浦东新区'],['数据范围','浦东新区全量运营数据'],['菜单权限','供给、订单、质量、报表'],['最近授权变更','2026-09-22 · 周运营']]]],
+ '基础配置中心':[['配置生效与影响',[['当前版本','V3.6'],['生效范围','浦东新区'],['关联业务','服务目录、订单校验'],['变更审计','已完成双人复核']]]],
+ '接口与集成中心':[['调用与监控',[['近 24 小时调用','12,486 次'],['成功率','99.82%'],['失败重试','已开启，最多 3 次'],['最近告警','无未处理告警']]]],
+ '区域供给监测':[['供需研判与调度',[['未来 7 日需求预测','1,320 人次'],['容量缺口','74 人次'],['建议动作','协调相邻区域服务商扩容'],['预警责任人','区域运营负责人']]]],
+ '家庭授权管理':[['授权留痕与安全',[['授权凭证','长者线上确认'],['最近使用','2026-09-22 代支付服务订单'],['敏感信息权限','健康摘要可见'],['撤销记录','无']]]],
+ '用户标签与分层':[['标签计算与使用',[['命中规则','每日凌晨自动计算'],['数据来源','档案、订单、回访记录'],['被引用活动','秋季安心照护计划'],['规则版本','V1.4']]]],
+ '服务标准与上架审核':[['标准执行要求',[['服务留痕','签到、过程照片、用户确认'],['抽检比例','不少于 5%'],['补贴适用','居家养老服务券'],['审核意见','通过后可在指定区域上架']]]],
+ '服务包与权益':[['权益履约规则',[['库存/次数','按服务次数实时冻结'],['可叠加优惠','仅会员折扣'],['退款处理','未使用次数按比例退回'],['运营负责人','用户运营组']]]],
+ '照护计划管理':[['计划执行与复评',[['上次复评','2026-09-15'],['计划完成率','75%'],['异常服务','0 次'],['下次复评','2026-12-15']]]],
+ '派单与异常介入':[['异常处置轨迹',[['自动触发时间','今天 15:28'],['服务商响应','已响应'],['平台协调动作','已推送备选资源'],['闭环依据','服务完成确认单']]]],
+ '售后与投诉仲裁':[['仲裁与整改',[['证据材料','订单日志、服务凭证、沟通记录'],['责任认定依据','平台售后规则 V2.0'],['服务商整改','已要求 48 小时内回复'],['回访计划','结案后 3 日回访']]]],
+ '支付与退款监管':[['资金监管与对账',[['支付流水','已与支付渠道对账'],['补贴资金','待补贴平台回执'],['退款风险','低'],['财务处理人','陈浩']]]],
+ '会员权益规则':[['权益使用控制',[['可用渠道','小程序、客服代办'],['核销校验','长者资格 + 有效期'],['防套利规则','不可转赠，不可叠加'],['近 30 日使用','326 次']]]],
+ '结算规则引擎':[['结算试算与版本',[['试算订单','86 笔'],['预计应结','¥68,920'],['规则版本','V2.1'],['最近调整','2026-09-01']]]],
+ '账户与提现':[['账户与打款风控',[['账户实名','已校验'],['历史提现','12 笔，无退票'],['风控命中','无'],['打款回单','待关联']]]],
+ '社区互动治理':[['治理处置记录',[['审核规则','敏感词 + 人工复核'],['关联举报','0 条'],['用户历史违规','无'],['处置通知','已发送']]]],
+ '营销与触达':[['投放与转化',[['已触达人数','4,286'],['送达率','96.8%'],['预约转化','8.5%'],['频控命中','3%']]]],
+ '推荐与匹配':[['推荐效果与可解释性',[['推荐理由','风险标签与服务需求匹配'],['人工干预','允许运营人员置顶'],['近 7 日点击率','12.6%'],['服务转化','7.2%']]]],
+ '长者安全风控':[['事件处置与上报',[['预警来源','规则引擎 + 服务数据'],['通知链路','管家、家属、区域运营'],['处置 SLA','高风险 2 小时'],['监管报送','重大事件自动入台账']]]],
+ '监管驾驶舱':[['报送与留痕',[['校验结果','指标口径校验通过'],['审批状态','待区域负责人确认'],['报送凭证','生成后自动归档'],['历史版本','保留 3 年']]]],
+ '数据分析中心':[['数据使用与订阅',[['数据血缘','订单、履约、补贴主题表'],['刷新状态','已完成'],['订阅任务','每周一 08:00 推送'],['数据权限','按区域与角色控制']]]]
+};
+showDetailX=function(i){const scene=detailScenes[richKey];if(!scene)return detailShowBase(i);const c=moduleConfig[richKey],r=c.rows[i],base=sectionX('业务基础信息',c.cols.map((x,j)=>[x,r[j]])),ext=scene.map(x=>sectionX(x[0],x[1])).join('');document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>${c.sub}详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${base}${ext}</div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">编辑</button><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;document.getElementById('modal').classList.add('show');};
+</script>
+<script>
+/* 统一每页 10 条；仅数据超过 10 条时显示分页 */
+const renderBeforePageSize=renderX;
+renderX=function(k,p=1){
+ richKey=k;richPage=p;const c=moduleConfig[k];
+ if(!c){document.getElementById('workspace').innerHTML=dashboard;document.getElementById('crumb').textContent='/ 运营驾驶舱';return;}
+ const pageSize=10,pages=Math.ceil(c.rows.length/pageSize),safePage=Math.min(Math.max(p,1),pages),records=c.rows.slice((safePage-1)*pageSize,safePage*pageSize),pager=pages>1?`<div class="pagination"><span>第 ${safePage} / ${pages} 页</span><button onclick="renderX(richKey,${safePage-1})" ${safePage===1?'disabled':''}>‹</button>${Array.from({length:pages},(_,i)=>`<button class="${i+1===safePage?'current':''}" onclick="renderX(richKey,${i+1})">${i+1}</button>`).join('')}<button onclick="renderX(richKey,${safePage+1})" ${safePage===pages?'disabled':''}>›</button></div>`:'';
+ document.getElementById('crumb').textContent='/ '+k;document.getElementById('workspace').innerHTML=`<div class="headline"><div><h1>${k}</h1><p>${labels[k][1]}</p></div><span class="date">共 ${c.rows.length} 条记录</span></div><section class="card module-card"><div class="module-toolbar"><input id="filterX" placeholder="搜索${c.sub}名称或编号" oninput="filterX()"><select><option>全部状态</option><option>处理中</option><option>已完成</option></select><span class="count">${c.sub}</span><button class="btn primary" onclick="formX()">+ 新增${c.sub}</button></div><table class="table"><thead><tr>${c.cols.map(x=>`<th>${x}</th>`).join('')}<th>操作</th></tr></thead><tbody id="rowsX">${drawRows(records,(safePage-1)*pageSize)}</tbody></table>${pager}</section>`;
+ const toolbar=document.querySelector('.module-toolbar');
+ if(k==='供给生态'&&toolbar){const entry=document.createElement('button');entry.className='btn';entry.textContent='资质审核事项';entry.onclick=()=>renderX('资质审核中心');toolbar.insertBefore(entry,toolbar.querySelector('.count'));const note=document.createElement('div');note.className='ai-box';note.style.marginTop='0';note.innerHTML='<b>服务商台账</b><p>展示已准入服务商及其当前合作状态。新入驻、年审、资质续期和服务范围变更，请进入“资质审核事项”处理。</p>';toolbar.parentElement.insertBefore(note,toolbar.nextSibling);}
+ if(k==='资质审核中心'&&toolbar){const back=document.createElement('button');back.className='btn';back.textContent='‹ 返回服务商台账';back.onclick=()=>renderX('供给生态');toolbar.insertBefore(back,toolbar.firstChild);document.getElementById('crumb').textContent='/ 供给生态 / 资质审核事项';}
+};
+</script>
+<script>
+/* 供需匹配：运营人员配置前端推荐策略，不直接维护服务商内部经营数据 */
+moduleConfig['供需匹配']={sub:'供需匹配策略',cols:['策略名称','触达/展示场景','目标人群或意图','推荐内容','状态'],rows:[['高风险长者主动推送','主动推送','跌倒风险中高','防跌倒评估服务','已启用'],['适老化改造 Feed 加权','商品流权重','行动不便 + 自有住房','卫浴扶手/适老化改造','已启用'],['首页安心照护运营位','首页运营位','轻度失能长者家庭','居家安心服务包','排期中'],['搜索“轮椅”意图识别','搜索意图','轮椅/助行器/行动不便','辅具租赁专区','已启用'],['术后康复服务推荐','主动推送','出院后 30 日内','上门康复理疗','已启用'],['助餐服务首屏加权','商品流权重','高龄独居长者','社区助餐服务','已启用'],['节假日陪诊运营位','首页运营位','子女异地居住','陪诊服务','草稿'],['搜索“改造补贴”意图','搜索意图','补贴/扶手/卫浴','适老化补贴指南','已启用'],['沉默用户唤醒推送','主动推送','90 日无服务订单','健康评估券','已启用'],['康复服务搜索联想','搜索意图','康复/理疗/术后','到店与上门康复','已启用']]};
+labels['供需匹配']=['供需匹配','配置面向前端商品与服务流的智能匹配、运营推荐与搜索意图策略'];
+domainForms['供需匹配']=[['策略名称','text'],['策略类型','select:主动推送|商品流权重调整|首页运营位推荐|主动搜索意图识别'],['目标人群/搜索意图','text'],['推荐商品或服务','text'],['展示位置','select:消息中心|商品 Feed 流|首页运营位|搜索结果页'],['排序/权重值','number'],['触达频控','text'],['生效时间','datetime-local'],['结束时间','datetime-local'],['状态','select:草稿|排期中|已启用|已停用']];
+const detailBeforeMatching=showDetailX;
+showDetailX=function(i){
+ if(richKey==='服务商评级'){const c=moduleConfig[richKey],r=c.rows[i];const auto=sectionX('系统自动综合评级模型',[['履约质量 35%','准时率 98.4% · 履约率 97.1% · 工单合规率 96.2%'],['服务质量 25%','长者满意度 4.8 · 有效投诉率 0.18%'],['合规经营 20%','证照有效、年审通过、整改按时率 100%'],['供给能力 10%','区域容量达标率 92% · 高峰期响应达标'],['平台协同 10%','派单响应、账单确认、异常配合均达标'],['综合结果','92.6 分 · A 级 · 数据周期：2026 Q3']]);document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>服务商自动评级详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('评级对象',c.cols.map((x,j)=>[x,r[j]]))}${auto}<div class="ai-box"><b>评级说明</b><p>评级由平台按已沉淀的订单、履约、评价、投诉、资质、容量与协同数据自动计算；运营人员只能发起数据复核，不能手工填写评级分数。</p></div></div><div class="dialog-foot"><button class="btn" onclick="notify('已发起评级数据复核任务')">发起数据复核</button><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;document.getElementById('modal').classList.add('show');return;}if(richKey==='供需匹配'){const c=moduleConfig[richKey],r=c.rows[i];document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>供需匹配策略详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('策略配置',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('前端呈现与效果',[['人群/意图命中','1,286 人 / 日'],['预计曝光位置',r[1]],['近 7 日点击率','13.8%'],['服务转化率','7.6%'],['频控命中率','2.1%'],['人工干预','可暂停、置顶或调整权重']])}<div class="ai-box"><b>匹配说明</b><p>系统根据长者画像、区域可达性、服务商质量与实时供给能力筛选内容；运营人员负责配置规则与运营优先级。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">调整策略</button><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;document.getElementById('modal').classList.add('show');return;}return detailBeforeMatching(i);
+};
+const formBeforeRating=formX;
+formX=function(i){if(richKey==='服务商评级'){notify('服务商评级由平台数据模型自动计算；请在详情中发起数据复核。');return;}return formBeforeRating(i);};
+</script>
+</body>
+<script>
+/* 运营自运营 / 营销 / 内容 / 渠道 / 经营分析 · 详情补强 */
+(function(){
+  const prev = showDetailX;
+  showDetailX = function(i){
+    const richExtras = {
+      '首页与运营位': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        const tip = {
+          'Banner 轮播':'支持多图轮播、跳转活动页 / 专题页 / 商品详情，可按时段与人群投放。',
+          '推荐位':'首页双卡推荐，可绑定商品、服务或活动，支持按用户分层差异化展示。',
+          '商品排序':'后台可配置人工置顶 + 转化率加权，商户侧不可改平台规则。',
+          '服务推荐':'按场景配置服务入口排序，可对新人 / 沉默用户使用不同推荐序列。',
+          '活动页':'活动落地页模板可配头图、领券、预约与秒杀组件。',
+          '专题页':'按病种 / 场景聚合服务与商品，支持运营自建与上下架。'
+        }[r[1]] || '运营位支持后台自行配置内容、排序、生效期与目标人群。';
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>运营位配置详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('配置信息',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('投放与生效',[['目标人群','可按新用户 / 活跃 / 首购 / 复购 / 沉默分层'],['生效期','支持长期或限时'],['预览','长者端首页实时预览'],['变更审计','保存后写入操作日志']])}<div class="ai-box"><b>配置说明</b><p>${tip}</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">编辑配置</button><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '广播站管理': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>广播站内容详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('广播信息',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('前台展示',[['列表页','broadcast.html 广播站列表'],['详情页','broadcast-detail.html 内容落地'],['首页入口','index.html 广播站滚动条'],['标签筛选','科普 / 政策 / 合作 / 视频 / 讲座 / 活动 / 通知']])}${sectionX('运营动作',[['上架规则','已上线内容立即进入前台列表'],['排序','按发布时间与权重混合排序'],['关联商品','可挂商品 / 服务 / 讲座预约'],['合规','需过「内容合规审核」后方可上线']])}<div class="ai-box"><b>广播站说明</b><p>「${r[0]}」为「${r[1]}」内容，标签「${r[2]}」。保存后可在前台广播站列表与首页滚动条中生效（原型演示）。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">编辑广播</button><button class="btn primary" onclick="window.open('../broadcast.html','_blank')">预览前台</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '营销工具': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>营销工具详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('工具信息',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('核销与限制',[['叠加规则','优惠券可与会员价叠加，不与满减同享'],['适用端','小程序长者端 / 家属端'],['领取方式','系统自动发放或用户主动领'],['风控','同设备 / 同手机号限领']])}<div class="ai-box"><b>运营建议</b><p>建议将「${r[0]}」绑定到对应用户分层触达任务，并通过首页 Banner 或推荐位放大曝光。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">编辑工具</button><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '用户标签库': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>用户标签详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('标签定义',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('应用场景',[['分层入组','作为用户分层规则的筛选条件'],['精准触达','按标签圈选推送内容 / 商品 / 服务'],['推荐排序','影响首页推荐位与服务推荐'],['数据分析','支撑转化与复购分析']])}<div class="ai-box"><b>标签说明</b><p>标签覆盖人口属性、区域、兴趣、浏览、购买与消费频次，可与「新用户 / 活跃 / 首购 / 复购 / 沉默」生命周期分层组合使用。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">编辑标签</button><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '精准触达任务': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>精准触达任务详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('任务信息',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('触达策略',[['人群来源','用户分层 + 标签库交叉圈选'],['内容差异化','不同人群推送不同券 / 商品 / 服务 / 专题'],['频控','同用户 7 日内营销触达 ≤2 次'],['效果回传','打开率 / 领券率 / 下单转化']])}<div class="ai-box"><b>精准运营说明</b><p>任务「${r[0]}」面向「${r[1]}」，推送「${r[2]}」。可与首页运营位、营销工具联动，形成配置 → 圈人 → 触达 → 转化闭环。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">编辑任务</button><button class="btn primary" onclick="notify('已按当前任务发起触达（原型演示）');closeDialog()">立即触达</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '内容运营': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>内容详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('内容信息',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('分类推荐',[['年龄','可按 60–69 / 70–79 / 80+ 定向'],['兴趣','防跌倒 / 慢病 / 康复 / 助餐等'],['消费行为','浏览未购、品类偏好、消费频次'],['落地','可挂商品 / 服务 / 活动 / 专题']])}${sectionX('效果摘要',[['阅读量','见「内容效果统计」'],['点击商品','文章内商品卡点击'],['进入服务页','服务入口点击'],['最终成交','归因订单数']])}<div class="ai-box"><b>内容运营说明</b><p>「${r[0]}」面向「${r[2]}」，关联「${r[3]}」。可配置分类推荐规则，并在公众号 / 视频号外链直达对应落地页。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">编辑内容</button><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '内容分类推荐': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>内容分类推荐详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('推荐规则',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('匹配逻辑',[['年龄','标签库 · 年龄段'],['兴趣','标签库 · 兴趣偏好'],['消费行为','浏览 / 购买 / 消费频次'],['优先级','权重高者优先曝光'],['生效端','小程序首页 / 发现 / 内容流']])}<div class="ai-box"><b>分类推荐说明</b><p>规则「${r[0]}」按「${r[1]}」匹配，向「${r[3]}」人推荐「${r[2]}」。不同年龄、兴趣、消费行为看到不同内容。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">编辑规则</button><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '内容效果统计': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        const read=r[1], goods=r[2], svc=r[3], deal=r[4];
+        const ctr = read && read!=='0' ? ((parseInt(String(goods).replace(/,/g,''),10)/parseInt(String(read).replace(/,/g,''),10))*100).toFixed(1)+'%' : '-';
+        const cvr = read && read!=='0' ? ((parseInt(String(deal).replace(/,/g,''),10)/parseInt(String(read).replace(/,/g,''),10))*100).toFixed(1)+'%' : '-';
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>内容效果统计</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('漏斗数据',[['内容标题',r[0]],['文章阅读',read],['点击商品',goods],['进入服务页',svc],['最终成交',deal]])}${sectionX('转化指标',[['商品点击率',ctr],['成交转化率',cvr],['统计周期','近 30 日'],['归因方式','末次点击 · 7 日窗口']])}<div class="ai-box"><b>效果解读</b><p>「${r[0]}」阅读 ${read}，商品点击 ${goods}，进入服务页 ${svc}，最终成交 ${deal}。可据此调整分类推荐权重与落地挂载。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">修正数据</button><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '外部内容承接': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>外部内容承接详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('承接配置',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('跳转链路',[['入口','公众号图文 / 视频号挂载 / 菜单'],['中间页','微信开放标签 / 小程序路径'],['APP / 小程序落地','商品详情 · 服务详情 · 活动页 · 专题页'],['参数','utm_source / content_id / sku_id 透传'],['失败兜底','落地不可用时回首页对应频道']])}<div class="ai-box"><b>外部承接说明</b><p>「${r[0]}」来自「${r[1]}」，进入 APP / 小程序后直达「${r[3]}」（${r[2]}）。支持从公众号、视频号一键进入对应商品、服务或活动页。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">编辑承接</button><button class="btn primary" onclick="notify('已复制 DeepLink（原型演示）');closeDialog()">复制链接</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '用户来源识别': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>用户来源识别详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('来源定义',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('识别能力',[['可区分渠道','公众号 / 视频号 / 企微 / 能源集团内部 / 线下活动 / 供应商渠道'],['落库字段','首访来源 + 注册来源 + 最近触点'],['绑定时机','扫码、外链、SSO、活码、地推码'],['与承接联动','可挂 DeepLink / 活动页 / 商品服务落地'],['去重规则','同用户多触点保留首访与末次']])}<div class="ai-box"><b>来源识别说明</b><p>编码「${r[0]}」对应「${r[1]} · ${r[2]}」，通过「${r[3]}」完成归因。用户注册与下单均可追溯到具体渠道。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">编辑来源</button><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '渠道数据': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        const reg=r[1], orders=r[2], sales=r[3], repurchase=r[4];
+        const regN=parseInt(String(reg).replace(/,/g,''),10)||0;
+        const ordN=parseInt(String(orders).replace(/,/g,''),10)||0;
+        const repN=parseInt(String(repurchase).replace(/,/g,''),10)||0;
+        const orderRate = regN ? ((ordN/regN)*100).toFixed(1)+'%' : '-';
+        const repRate = ordN ? ((repN/ordN)*100).toFixed(1)+'%' : '-';
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>渠道效果数据</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('核心指标',[['渠道 / 活动',r[0]],['注册用户',reg],['下单数',orders],['销售额',sales],['复购用户',repurchase]])}${sectionX('转化解读',[['注册→下单率',orderRate],['下单→复购率',repRate],['归因窗口','注册 30 日 / 下单 90 日'],['口径','按用户来源编码汇总，支持单次活动下钻']])}<div class="ai-box"><b>渠道效果说明</b><p>「${r[0]}」带来注册 ${reg}、下单 ${orders}、销售额 ${sales}、复购用户 ${repurchase}。可对比公众号、视频号、企微、能源集团内部、线下活动与供应商渠道效果。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">调整口径</button><button class="btn primary" onclick="notify('已导出渠道明细（原型演示）');closeDialog()">导出明细</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '核心经营数据': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>核心经营指标详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('指标信息',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('口径说明',[['用户数','累计注册且未注销'],['活跃用户','近 30 日有登录或下单'],['订单量','已支付订单（含服务/商品）'],['销售额','实付 + 补贴核销口径可切换'],['客单价','销售额 ÷ 订单量'],['转化率','下单用户 ÷ 访问用户'],['复购率','复购用户 ÷ 成交用户']])}<div class="ai-box"><b>经营解读</b><p>「${r[0]}」本期 ${r[1]}，环比 ${r[2]}，同比 ${r[3]}。可与供应商经营、渠道数据联动分析，并一键导出。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">调整口径</button><button class="btn primary" onclick="notify('已加入导出队列（原型演示）');closeDialog()">导出该指标</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '供应商经营情况': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>供应商经营详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('经营表现',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('三维对比',[['销售','按销售额 / 订单量排序，识别销售好的供应商'],['履约','履约率、准时上门、工单合规'],['投诉','有效投诉数与闭环时效'],['综合评价',r[4]],['联动','可下钻订单与投诉工单']])}<div class="ai-box"><b>经营判断</b><p>「${r[0]}」销售额 ${r[1]}、履约率 ${r[2]}、投诉 ${r[3]}，评价为「${r[4]}」。便于识别销售好、履约好、投诉少的优质供应商。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">编辑备注</button><button class="btn primary" onclick="notify('已导出该供应商经营明细（原型演示）');closeDialog()">导出明细</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '经营数据导出': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        const done = r[4]==='已完成';
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>经营数据导出</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('导出任务',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('导出能力',[['支持范围','核心经营 / 供应商经营 / 订单 / 用户 / 渠道 / 转化漏斗'],['格式','Excel · CSV · PDF'],['方式','后台直接导出或邮箱投递'],['权限','按角色与区域脱敏'],['保留','已完成文件保留 30 日']])}<div class="ai-box"><b>导出说明</b><p>任务「${r[0]}」范围「${r[1]}」，格式「${r[2]}」，状态「${r[4]}」。运营可在后台直接发起导出并下载分析。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(-1)">新建导出</button><button class="btn primary" onclick="notify('${done?'已开始下载（原型演示）':'已重新加入生成队列（原型演示）'}');closeDialog()">${done?'下载文件':'重新生成'}</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '结算自动计算': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>结算自动计算详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('计算结果',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('自动计算口径',[['平台应收','订单实付 × 平台服务费率 + 其他平台费用 − 退款分摊（平台）'],['供应商应收','订单金额 × (1−费率) + 补贴结算 − 退款分摊（供应商）'],['退款金额','已审核退款单自动汇总，并反算冲减双方应收'],['触发','日终批处理 / 订单完成 / 退款审核通过'],['人工','仅允许复核调整，调整需留痕']])}<div class="ai-box"><b>自动化说明</b><p>批次「${r[0]}」已自动算出：订单金额 ${r[1]}，平台应收 ${r[2]}，供应商应收 ${r[3]}，退款金额 ${r[4]}。状态：${r[5]}。</p></div></div><div class="dialog-foot"><button class="btn" onclick="notify('已按最新规则重新试算（原型演示）')">重新试算</button><button class="btn primary" onclick="notify('已生成结算账单（原型演示）');closeDialog()">生成结算单</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '结算与对账': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>结算账单详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('账单信息',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('金额构成（自动）',[['平台应收',r[2]+' · 由费率规则自动计算'],['供应商应收',r[3]+' · 由分账规则自动计算'],['退款金额',r[4]+' · 由已审退款自动汇总反算'],['勾稽','平台应收 + 供应商应收 + 退款冲减 ≈ 订单金额'],['来源','结算自动计算批次入账']])}<div class="ai-box"><b>结算说明</b><p>账单「${r[0]}」对象「${r[1]}」：平台应收 ${r[2]}、供应商应收 ${r[3]}、退款金额 ${r[4]}，均为规则引擎自动计算后入账，运营仅做确认与打款。</p></div></div><div class="dialog-foot"><button class="btn" onclick="notify('已发起金额复核（原型演示）')">发起复核</button><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '结算规则引擎': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>结算规则详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('规则信息',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('自动计算覆盖',[['平台应收','按费率 / 服务费规则自动算出'],['供应商应收','按分账比例与补贴规则自动算出'],['退款金额','退款审核通过后自动反算冲减'],['试算','支持按供应商 / 周期预览'],['版本','规则变更后新订单按新版本计算']])}<div class="ai-box"><b>规则说明</b><p>「${r[0]}」面向「${r[1]}」，计算方式：${r[2]}。启用后平台应收、供应商应收、退款金额均可自动计算并进入结算账单。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">编辑规则</button><button class="btn primary" onclick="notify('已发起规则试算（原型演示）');closeDialog()">试算</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      ,
+      '品类准入要求': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>品类准入要求详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('品类规则',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('差异化准入',[['规则说明','不同品类配置不同必备资质与有效期规则'],['校验时机','入驻申请 / 年审 / 服务范围变更'],['不满足','自动阻断准入或限制上架'],['联动','资质审核中心按申请品类加载对应清单']])}<div class="ai-box"><b>品类说明</b><p>「${r[0]}」必备：${r[1]}。差异要点：${r[3]}。供应商按品类走不同准入要求。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">编辑要求</button><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '资质审核中心': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        const cat=r[2];
+        const checklist={
+          '居家照护服务':'营业执照、养老服务备案、责任险、护理员证（持证占比≥80%）',
+          '康复理疗服务':'营业执照、医疗机构执业许可/备案、治疗师证',
+          '食品 / 助餐':'营业执照、食品经营许可证、健康证、留样温控台账',
+          '医疗器械 / 辅具':'营业执照、二类械经营备案/许可、检测报告',
+          '陪诊服务':'营业执照、健康证、无犯罪证明（禁医疗结果承诺）',
+          '适老化改造':'营业执照、施工资质/安全生产协议、保险与交底'
+        }[cat]||'按品类准入清单核验';
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>供应商资质审核</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('申请信息',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('品类准入对照',[['申请品类',cat],['必备清单',checklist],['材料完整度',r[3]],['审核状态',r[4]],['说明','系统按品类自动加载差异化准入项']])}<div class="ai-box"><b>审核说明</b><p>「${r[1]}」申请「${cat}」，材料 ${r[3]}。不同品类准入要求不同，未满足项将阻断通过。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">填写意见</button><button class="btn primary" onclick="notify('已按品类清单完成核验（原型演示）');closeDialog()">确认核验</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '内容合规审核': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>内容合规审核</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('审核对象',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('合规检查项',[['宣传用语','禁止绝对化、虚假对比'],['功效表述','康养/健康内容不得承诺治疗/治愈'],['医疗边界','需标注「非医疗建议」等提示'],['复审','驳回修改后须复审方可发布'],['留痕','审核人、意见、版本写入操作留痕']])}<div class="ai-box"><b>合规说明</b><p>「${r[0]}」风险点：${r[2]}。结论：${r[3]}（${r[4]}）。康养健康类宣传与功效表述须过审后方可上架。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">填写审核</button><button class="btn primary" onclick="notify('已提交合规审核结论（原型演示）');closeDialog()">提交结论</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      },
+      '操作留痕': () => {
+        const c=moduleConfig[richKey], r=c.rows[i];
+        document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>操作留痕详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('操作记录',c.cols.map((x,j)=>[x,r[j]]))}${sectionX('审计信息',[['覆盖动作','商品修改 / 价格调整 / 上下架 / 退款 / 投诉处理'],['不可篡改','仅追加，不可删改原文'],['责任追溯','操作人 + 时间 + 对象 + 结果'],['导出','支持按时间 / 类型 / 操作人导出'],['保留','不少于 3 年']])}<div class="ai-box"><b>留痕说明</b><p>${r[0]} · ${r[1]} · ${r[2]}，由「${r[3]}」操作，结果「${r[4]}」。用于审计与责任追溯。</p></div></div><div class="dialog-foot"><button class="btn" onclick="notify('已导出该条留痕（原型演示）')">导出</button><button class="btn primary" onclick="closeDialog()">关闭</button></div></div>`;
+        document.getElementById('modal').classList.add('show');
+      }
+    };
+    if(richExtras[richKey]){ richExtras[richKey](); return; }
+    return prev(i);
+  };
+})();
+</script>
+
+
+<script>
+/* 首页运营位 / 营销工具 ↔ index.html 打通 */
+(function(){
+  if(!window.OPS_FRONT_SYNC) return;
+  const prevSave = saveDomainX;
+  saveDomainX = function(i){
+    prevSave(i);
+    if(richKey==='首页与运营位'){
+      OPS_FRONT_SYNC.syncHomeFromOpsRows(moduleConfig['首页与运营位'].rows);
+      notify('已保存并同步到前台首页配置（index.html）');
+    } else if(richKey==='营销工具'){
+      OPS_FRONT_SYNC.syncMarketFromOpsRows(moduleConfig['营销工具'].rows);
+      notify('已保存并同步营销工具到前台券/折扣卡');
+    }
+  };
+  const prevRender = renderX;
+  renderX = function(k,p){
+    prevRender(k,p);
+    if(k!=='首页与运营位' && k!=='营销工具') return;
+    const toolbar = document.querySelector('.module-toolbar');
+    if(!toolbar || toolbar.querySelector('[data-front-sync]')) return;
+    const syncBtn = document.createElement('button');
+    syncBtn.className = 'btn primary';
+    syncBtn.dataset.frontSync = '1';
+    syncBtn.textContent = '同步到前台首页';
+    syncBtn.onclick = () => {
+      if(k==='首页与运营位') OPS_FRONT_SYNC.syncHomeFromOpsRows(moduleConfig[k].rows);
+      else OPS_FRONT_SYNC.syncMarketFromOpsRows(moduleConfig[k].rows);
+      notify('已写入 localStorage，打开 index.html 即可看到效果');
+    };
+    const preview = document.createElement('button');
+    preview.className = 'btn';
+    preview.textContent = '打开前台首页';
+    preview.onclick = () => window.open('../index.html','_blank');
+    toolbar.appendChild(preview);
+    toolbar.appendChild(syncBtn);
+    const note = document.createElement('div');
+    note.className = 'ai-box';
+    note.style.marginTop = '0';
+    note.innerHTML = k==='首页与运营位'
+      ? '<b>已对接 index.html</b><p>Banner / 推荐位 / 商品排序 / 服务推荐 / 活动页 / 专题页 数据来自商城首页；保存或点「同步到前台首页」后写入 <code>kangyang-admin:mall:home-config</code>。</p>'
+      : '<b>已对接首页营销位</b><p>优惠券、满减、会员价、新人优惠、限时活动、组合套餐与首页券卡/折扣卡/活动页同源；同步后前台立即生效。</p>';
+    toolbar.parentElement.insertBefore(note, toolbar.nextSibling);
+  };
+  // strengthen detail for linked modules
+  const prevDetail = showDetailX;
+  showDetailX = function(i){
+    if(richKey!=='首页与运营位' && richKey!=='营销工具') return prevDetail(i);
+    const c=moduleConfig[richKey], r=c.rows[i];
+    const href = OPS_FRONT_SYNC.frontPreviewHref(r, richKey);
+    const extra = richKey==='首页与运营位'
+      ? sectionX('前台打通',[['数据源','index.html 首页模块'],['配置键','kangyang-admin:mall:home-config'],['预览页',href],['说明','与商城首页装修 / Banner 管理共用配置']])
+      : sectionX('前台打通',[['数据源','首页券卡 / 折扣卡 / 活动页 / 套餐商品'],['配置键','kangyang-admin:mall:marketing-tools'],['预览页',href],['说明','保存后同步券面金额与折扣文案到首页']]);
+    document.getElementById('modal').innerHTML=`<div class="dialog"><div class="dialog-head"><h2>${c.sub}详情</h2><button class="close" onclick="closeDialog()">×</button></div><div class="dialog-body">${sectionX('配置信息',c.cols.map((x,j)=>[x,r[j]]))}${extra}<div class="ai-box"><b>联调说明</b><p>「${r[0]}」已对齐前台数据。可同步到首页配置，并在新窗口打开前台验证。</p></div></div><div class="dialog-foot"><button class="btn" onclick="formX(${i})">编辑</button><button class="btn" onclick="window.open('${href}','_blank')">打开前台</button><button class="btn primary" onclick="(richKey==='首页与运营位'?OPS_FRONT_SYNC.syncHomeFromOpsRows:OPS_FRONT_SYNC.syncMarketFromOpsRows)(moduleConfig[richKey].rows);notify('已同步到前台');closeDialog()">同步到前台</button></div></div>`;
+    document.getElementById('modal').classList.add('show');
+  };
+})();
+</script>
+
+</html>

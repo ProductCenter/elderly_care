@@ -6,48 +6,73 @@
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
     />
-    <meta name="theme-color" content="#f6eee2" />
+    <meta name="theme-color" content="#FCF6E8" />
     <title>广播详情</title>
-    <link rel="stylesheet" href="./css/broadcast-detail.css?v=20260912-bclist" />
-    <link rel="stylesheet" href="./css/app-shell.css?v=20260912-covers5" />
-
+    <link rel="stylesheet" href="./css/app-shell.css?v=20260928-appv10" />
+    <link rel="stylesheet" href="./css/broadcast-detail.css?v=20260929-bcv10" />
   </head>
-  <body>
-    <div class="phone" id="app">
-      <div class="status-bar" aria-hidden="true">
-        <span class="status-time">09:41</span>
-        <div class="status-right">
-          <svg class="status-signal" viewBox="0 0 18 12">
-            <rect x="0" y="8" width="3" height="4" rx="0.5" fill="currentColor" />
-            <rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="currentColor" />
-            <rect x="9" y="2.5" width="3" height="9.5" rx="0.5" fill="currentColor" />
-            <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="currentColor" opacity=".35" />
-          </svg>
-          <span class="status-net">5G</span>
-          <div class="status-battery"><span class="battery-level"></span></div>
+  <body class="app-page-v10">
+    <div class="ip-stage">
+      <div class="ip-body">
+        <span class="ip-key k-mute"></span>
+        <span class="ip-key k-vup"></span>
+        <span class="ip-key k-vdn"></span>
+        <span class="ip-key k-pwr"></span>
+        <div class="phone app-theme" id="app" data-no-tabbar>
+          <div class="blob blob-1" aria-hidden="true"></div>
+          <div class="blob blob-2" aria-hidden="true"></div>
+          <div class="status-bar" aria-hidden="true">
+            <span class="status-time">09:41</span>
+            <div class="status-right">
+              <svg class="status-signal" viewBox="0 0 18 12">
+                <rect x="0" y="8" width="3" height="4" rx="0.5" fill="currentColor" />
+                <rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="currentColor" />
+                <rect x="9" y="2.5" width="3" height="9.5" rx="0.5" fill="currentColor" />
+                <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="currentColor" opacity=".35" />
+              </svg>
+              <span class="status-net">5G</span>
+              <div class="status-battery"><span class="battery-level"></span></div>
+            </div>
+          </div>
+
+          <header class="nav-bar">
+            <button class="nav-back" type="button" id="btnBack" aria-label="返回">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </button>
+            <h1 class="nav-title">广播详情</h1>
+            <div class="mp-capsule" aria-hidden="true">
+              <span class="capsule-more"><i></i><i></i><i></i></span>
+              <i class="capsule-divider"></i>
+              <span class="capsule-home"><i class="ring"></i></span>
+            </div>
+          </header>
+
+          <main class="page-body" id="root"></main>
+          <footer class="bottom-bar" id="bottomBar"></footer>
+          <div class="wx-toast" id="toast" hidden></div>
         </div>
       </div>
-
-      <header class="nav-bar">
-        <button class="nav-back" type="button" id="btnBack" aria-label="返回">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-        </button>
-        <h1 class="nav-title">广播详情</h1>
-        <div class="mp-capsule" aria-hidden="true">
-          <span class="capsule-more"><i></i><i></i><i></i></span>
-          <i class="capsule-divider"></i>
-          <span class="capsule-home"><i class="ring"></i></span>
-        </div>
-      </header>
-
-      <main class="page-body" id="root"></main>
-      <footer class="bottom-bar" id="bottomBar"></footer>
-      <div class="wx-toast" id="toast" hidden></div>
     </div>
 
-    <script src="./js/mall-links.js?v=20260912-bclist"></script>
-    <script src="./js/broadcast-detail.js?v=20260912-bclist"></script>
-    <script src="./js/app-shell.js?v=20260912-covers5"></script>
-
+    <script src="./js/mall-links.js?v=20260916-fix1"></script>
+    <script src="./js/broadcast-detail.js?v=20260916-fix1"></script>
+    <script src="./js/app-shell.js?v=20260917-home2tab"></script>
+    <script>
+      (function () {
+        var bd = document.querySelector(".ip-body");
+        if (!bd) return;
+        function fit() {
+          bd.style.zoom = "1";
+          var r = bd.getBoundingClientRect();
+          if (!r.width || !r.height) return;
+          var k = Math.min(1, (window.innerWidth - 108) / r.width, (window.innerHeight - 56) / r.height);
+          if (!isFinite(k) || k <= 0) k = 1;
+          k = Math.max(0.42, Math.round(k * 10000) / 10000);
+          bd.style.zoom = String(k);
+        }
+        fit();
+        window.addEventListener("resize", fit);
+      })();
+    </script>
   </body>
 </html>
